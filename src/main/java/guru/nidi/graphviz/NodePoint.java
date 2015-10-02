@@ -18,7 +18,7 @@ package guru.nidi.graphviz;
 /**
  *
  */
-public class NodePoint {
+public class NodePoint implements LinkTarget{
     final Node node;
     final String record;
     final Compass compass;
@@ -47,5 +47,10 @@ public class NodePoint {
 
     public NodePoint compass(Compass compass) {
         return new NodePoint(node, record, compass);
+    }
+
+    @Override
+    public Name name() {
+        return node.name;
     }
 }

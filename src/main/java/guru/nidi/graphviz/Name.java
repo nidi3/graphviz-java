@@ -35,6 +35,10 @@ public class Name {
         return new Name(value, true);
     }
 
+    public boolean isEmpty() {
+        return value.length() == 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

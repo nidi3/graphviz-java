@@ -22,16 +22,16 @@ import java.util.Map;
  *
  */
 public class Link {
-    final NodePoint from;
-    final NodePoint to;
+    final LinkTarget from;
+    final LinkTarget to;
     final Map<String, Object> attributes = new HashMap<>();
 
-    private Link(NodePoint from, NodePoint to) {
+    private Link(LinkTarget from, LinkTarget to) {
         this.from = from;
         this.to = to;
     }
 
-    public static Link to(NodePoint to) {
+    public static Link to(LinkTarget to) {
         return new Link(null, to);
     }
 
@@ -39,7 +39,7 @@ public class Link {
         return to(NodePoint.of(to));
     }
 
-    public static Link between(NodePoint from, NodePoint to) {
+    public static Link between(LinkTarget from, LinkTarget to) {
         return new Link(from, to);
     }
 

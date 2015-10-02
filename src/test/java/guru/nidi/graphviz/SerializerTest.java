@@ -17,8 +17,7 @@ package guru.nidi.graphviz;
 
 import org.junit.Test;
 
-import static guru.nidi.graphviz.Compass.NE;
-import static guru.nidi.graphviz.Compass.SW;
+import static guru.nidi.graphviz.Compass.*;
 import static guru.nidi.graphviz.Factory.*;
 import static org.junit.Assert.assertEquals;
 
@@ -28,80 +27,107 @@ import static org.junit.Assert.assertEquals;
 public class SerializerTest {
     @Test
     public void simple() {
-        assertGraph("graph 'x' {\n}\n", graph("x"));
+        assertGraph("graph {\n}", graph());
     }
 
     @Test
     public void directed() {
-        assertGraph("digraph 'x' {\n}\n", graph("x").directed());
+        assertGraph("digraph 'x' {\n}", graph("x").directed());
     }
 
     @Test
     public void strict() {
-        assertGraph("strict graph 'x' {\n}\n", graph("x").strict());
+        assertGraph("strict graph 'x' {\n}", graph("x").strict());
     }
 
     @Test
     public void escapeName() {
-        assertGraph("graph 'b\\'la' {\n}\n", graph("b\"la"));
+        assertGraph("graph 'b\\'la' {\n}", graph("b\"la"));
     }
 
     @Test
     public void htmlName() {
-        assertGraph("graph <bla> {\n}\n", graph(html("bla")));
+        assertGraph("graph <bla> {\n}", graph(html("bla")));
     }
 
     @Test
     public void graphAttr() {
-        assertGraph("graph 'x' {\ngraph ['bla'='blu']\n}\n", graph("x").attr("bla", "blu"));
+        assertGraph("graph 'x' {\ngraph ['bla'='blu']\n}", graph("x").attr("bla", "blu"));
     }
 
     @Test
     public void nodes() {
-        assertGraph("graph 'x' {\n'x' ['bla'='blu']\n}\n", graph("x")
+        assertGraph("graph 'x' {\n'x' ['bla'='blu']\n}", graph("x")
                 .with(node("x").attr("bla", "blu")));
     }
 
     @Test
     public void subgraph() {
-        assertGraph("graph 'x' {\nsubgraph 'x' {\n'x' ['bla'='blu']\n}\n}\n", graph("x")
+        assertGraph("graph 'x' {\nsubgraph 'x' {\n'x' ['bla'='blu']\n}\n}", graph("x")
                 .with(graph("x").with(node("x").attr("bla", "blu"))));
     }
 
     @Test
+    public void namelesSubgraph() {
+        assertGraph("graph 'x' {\n{\n'x' ['bla'='blu']\n}\n}", graph("x")
+                .with(graph().with(node("x").attr("bla", "blu"))));
+    }
+
+    @Test
     public void simpleEdge() {
-        assertGraph("graph 'x' {\n'x' -- 'y'\n}\n", graph("x")
+        assertGraph("graph 'x' {\n'x' -- 'y'\n}", graph("x")
                 .with(node("x").link(to(node("y")))));
     }
 
     @Test
     public void attrEdge() {
-        assertGraph("graph 'x' {\n'x' -- 'y' ['bla'='blu']\n}\n", graph("x")
+        assertGraph("graph 'x' {\n'x' -- 'y' ['bla'='blu']\n}", graph("x")
                 .with(node("x").link(to(node("y")).attr("bla", "blu"))));
     }
 
     @Test
+    public void graphEdgeStart() {
+        assertGraph("graph 'x' {\nsubgraph 'y' {\n'z' -- 'a'\n} -- 'x':n\n}", graph("x").with(
+                graph("y").with(node("z").link(to(
+                        node("a")))).link(to(node("x").compass(N)))));
+    }
+
+    @Test
+    public void graphEdgeEnd() {
+        assertGraph("graph 'x' {\n'x':n -- subgraph 'y' {\n'z' -- 'a'\n}\n}", graph("x").with(
+                node("x").link(between(compass(N),
+                        graph("y").with(node("z").link(to(node("a"))))))));
+    }
+
+    @Test
+    public void graphEdge() {
+        assertGraph("graph 'x' {\nsubgraph 'y' {\n'z' -- 'a'\n} -- subgraph 'y2' {\n'z2' -- 'a2'\n}\n}", graph("x").with(
+                graph("y").with(node("z").link(to(node("a")))).link(to(
+                        graph("y2").with(node("z2").link(to(node("a2"))))))));
+    }
+
+    @Test
     public void compassEdge() {
-        assertGraph("graph 'x' {\n'x':sw -- 'y':ne\n}\n", graph("x")
+        assertGraph("graph 'x' {\n'x':sw -- 'y':ne\n}", graph("x")
                 .with(node("x").link(between(compass(SW), node("y").compass(NE)))));
     }
 
     @Test
     public void recordEdge() {
-        assertGraph("graph 'x' {\n'x':'r1' -- 'y':'r2'\n}\n", graph("x")
+        assertGraph("graph 'x' {\n'x':'r1' -- 'y':'r2'\n}", graph("x")
                 .with(node("x").link(between(record("r1"), node("y").record("r2")))));
     }
 
     @Test
     public void compassRecordEdge() {
-        assertGraph("graph 'x' {\n'x':'r1':sw -- 'y':'r2':ne\n}\n", graph("x")
+        assertGraph("graph 'x' {\n'x':'r1':sw -- 'y':'r2':ne\n}", graph("x")
                 .with(node("x").link(
                         between(record("r1").compass(SW), node("y").record("r2").compass(NE)))));
     }
 
     @Test
     public void complexEdge() {
-        assertGraph("digraph 'x' {\n'x' -> 'y'\n'y' -> 'z'\n'a' -> 'x'\n}\n", graph("x").directed()
+        assertGraph("digraph 'x' {\n'x' -> 'y'\n'y' -> 'z'\n'a' -> 'x'\n}", graph("x").directed()
                 .with(
                         node("x").link(to(node("y").link(to(node("z"))))))
                 .with(

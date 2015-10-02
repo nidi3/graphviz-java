@@ -15,21 +15,19 @@
  */
 package guru.nidi.graphviz;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
  */
-public class Graph {
+public class Graph implements Linkable, LinkTarget {
     final boolean strict;
     final boolean directed;
     final Name name;
     final Map<String, Object> attributes = new HashMap<>();
     final Set<Node> nodes = new LinkedHashSet<>();
     final Set<Graph> subgraphs = new LinkedHashSet<>();
+    final List<Link> links = new ArrayList<>();
 
     private Graph(boolean strict, boolean directed, Name name) {
         this.strict = strict;
@@ -43,6 +41,10 @@ public class Graph {
 
     public static Graph named(String name) {
         return named(Name.of(name));
+    }
+
+    public static Graph nameless() {
+        return named("");
     }
 
     public Graph strict() {
@@ -67,14 +69,50 @@ public class Graph {
         return attrs(Factory.attrs(keysAndValues));
     }
 
+    public Graph with(Node... nodes) {
+        for (final Node node : nodes) {
+            with(node);
+        }
+        return this;
+    }
+
     public Graph with(Node node) {
         nodes.add(node);
+        return this;
+    }
+
+    public Graph with(Graph... subgraphs) {
+        for (final Graph subgraph : subgraphs) {
+            with(subgraph);
+        }
         return this;
     }
 
     public Graph with(Graph subgraph) {
         subgraphs.add(subgraph);
         return this;
+    }
+
+    public Graph links(Link... links) {
+        for (final Link link : links) {
+            link(link);
+        }
+        return this;
+    }
+
+    public Graph link(Link link) {
+        links.add(Link.between(this, link.to).attrs(link.attributes));
+        return this;
+    }
+
+    @Override
+    public Name name() {
+        return name;
+    }
+
+    @Override
+    public Collection<Link> links() {
+        return links;
     }
 
 }

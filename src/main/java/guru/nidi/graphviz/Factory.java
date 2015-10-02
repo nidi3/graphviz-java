@@ -25,6 +25,9 @@ public class Factory {
     private Factory() {
     }
 
+    public static Graph graph() {
+        return Graph.nameless();
+    }
     public static Graph graph(String name) {
         return Graph.named(name);
     }
@@ -61,11 +64,11 @@ public class Factory {
         return Link.to(node);
     }
 
-    public static Link to(NodePoint node) {
+    public static Link to(LinkTarget node) {
         return Link.to(node);
     }
 
-    public static Link between(NodePoint from, NodePoint to) {
+    public static Link between(LinkTarget from, LinkTarget to) {
         return Link.between(from, to);
     }
 

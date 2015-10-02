@@ -15,17 +15,14 @@
  */
 package guru.nidi.graphviz;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
 /**
  *
  */
-public class Node {
+public class Node implements Linkable {
     final Name name;
     final Map<String, Object> attributes = new HashMap<>();
     final List<Link> links = new ArrayList<>();
@@ -73,12 +70,11 @@ public class Node {
 
     public Node link(Link link) {
         final NodePoint from;
-        if (link.from == null) {
-            from = NodePoint.of(this);
-        } else if (link.from.node == null) {
-            from = NodePoint.of(this).record(link.from.record).compass(link.from.compass);
+        if (link.from instanceof NodePoint) {
+            final NodePoint f = (NodePoint) link.from;
+            from = NodePoint.of(this).record(f.record).compass(f.compass);
         } else {
-            from = link.from;
+            from = NodePoint.of(this);
         }
         links.add(Link.between(from, link.to).attrs(link.attributes));
         return this;
@@ -106,7 +102,11 @@ public class Node {
     @Override
     public String toString() {
         return name + attributes.toString() + "->" +
-                links.stream().map(l -> l.to.node.name.toString()).collect(joining(","));
+                links.stream().map(l -> l.to.name().toString()).collect(joining(","));
     }
 
+    @Override
+    public Collection<Link> links() {
+        return links;
+    }
 }

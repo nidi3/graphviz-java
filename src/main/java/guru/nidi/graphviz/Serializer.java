@@ -40,27 +40,38 @@ class Serializer {
     private void graph(Graph graph, boolean toplevel) {
         if (toplevel) {
             s.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
-        } else {
+            if (!graph.name.isEmpty()) {
+                name(graph.name);
+                s.append(" ");
+            }
+        } else if (!graph.name.isEmpty()) {
             s.append("subgraph ");
+            name(graph.name);
+            s.append(" ");
         }
-        name(graph.name);
-        s.append(" {\n");
+        s.append("{\n");
         if (!graph.attributes.isEmpty()) {
             s.append("graph");
             attrs(graph.attributes);
             s.append("\n");
         }
         for (final Node node : linkedNodes(graph.nodes)) {
-            if (!node.attributes.isEmpty()) {
+            if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty())) {
                 node(node);
                 s.append("\n");
             }
         }
         for (final Graph subgraph : graph.subgraphs) {
-            graph(subgraph, false);
+            if (subgraph.links.isEmpty()) {
+                graph(subgraph, false);
+                s.append("\n");
+            }
         }
+
         edges(graph.nodes);
-        s.append("}\n");
+        edges(graph.subgraphs);
+
+        s.append("}");
     }
 
     private Collection<Node> linkedNodes(Collection<Node> nodes) {
@@ -75,29 +86,42 @@ class Serializer {
         if (!visited.contains(node)) {
             visited.add(node);
             for (final Link link : node.links) {
-                linkedNodes(link.to.node, visited);
+                if (link.to instanceof NodePoint) {
+                    linkedNodes(((NodePoint) link.to).node, visited);
+                }
             }
         }
     }
 
-    private void edges(Collection<Node> nodes) {
-        final HashSet<Node> visited = new HashSet<>();
-        for (final Node node : nodes) {
-            edges(node, visited);
+    private Collection<Linkable> edges(Collection<? extends Linkable> linkables) {
+        final HashSet<Linkable> visited = new HashSet<>();
+        for (final Linkable linkable : linkables) {
+            edges(linkable, visited);
         }
+        return visited;
     }
 
-    private void edges(Node node, Set<Node> visited) {
-        if (!visited.contains(node)) {
-            visited.add(node);
-            for (final Link link : node.links) {
-                point(link.from);
+    private void edges(Linkable linkable, Set<Linkable> visited) {
+        if (!visited.contains(linkable)) {
+            visited.add(linkable);
+            for (final Link link : linkable.links()) {
+                linkTarget(link.from);
                 s.append(graph.directed ? " -> " : " -- ");
-                point(link.to);
+                linkTarget(link.to);
                 attrs(link.attributes);
                 s.append("\n");
-                edges(link.to.node, visited);
+                if (link.to instanceof NodePoint) {
+                    edges(((NodePoint) link.to).node, visited);
+                }
             }
+        }
+    }
+
+    private void linkTarget(LinkTarget linkable) {
+        if (linkable instanceof NodePoint) {
+            point((NodePoint) linkable);
+        } else if (linkable instanceof Graph) {
+            graph((Graph) linkable, false);
         }
     }
 
