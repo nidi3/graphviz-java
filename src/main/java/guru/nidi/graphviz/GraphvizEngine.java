@@ -35,6 +35,9 @@ public class GraphvizEngine {
     private static CountDownLatch state = new CountDownLatch(State.START);
     private static Exception initException;
 
+    /**
+     * Init the engine in a separate thread.
+     */
     public static void init() {
         final Thread starter = new Thread(GraphvizEngine::doInit);
         starter.setDaemon(true);
@@ -44,7 +47,8 @@ public class GraphvizEngine {
     static String execute(String dot) {
         checkInited();
         try {
-            return (String) ENGINE.eval("$$prints=[]; Viz('" + dot + "');");
+            final String escaped = dot.replace("\n", " ").replace("\\", "\\\\").replace("'", "\\'");
+            return (String) ENGINE.eval("$$prints=[]; Viz('" + escaped + "');");
         } catch (ScriptException e) {
             if (e.getMessage().startsWith("abort")) {
                 try {
