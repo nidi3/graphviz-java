@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  */
@@ -64,5 +67,19 @@ public class Factory {
 
     public static Link between(NodePoint from, NodePoint to) {
         return Link.between(from, to);
+    }
+
+    public static Map<String, Object> attrs(Object... keysAndValues) {
+        if (keysAndValues.length % 2 != 0) {
+            throw new IllegalArgumentException("keysAndValues must be an even number");
+        }
+        final Map<String, Object> res = new HashMap<>();
+        for (int i = 0; i < keysAndValues.length; i += 2) {
+            if (!(keysAndValues[i] instanceof String)) {
+                throw new IllegalArgumentException(i + "th argument '" + keysAndValues[i] + "' is a key, but not a string");
+            }
+            res.put((String) keysAndValues[i], keysAndValues[i + 1]);
+        }
+        return res;
     }
 }

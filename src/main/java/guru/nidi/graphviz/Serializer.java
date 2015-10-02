@@ -50,7 +50,7 @@ class Serializer {
             attrs(graph.attributes);
             s.append("\n");
         }
-        for (final Node node : graph.nodes) {
+        for (final Node node : linkedNodes(graph.nodes)) {
             if (!node.attributes.isEmpty()) {
                 node(node);
                 s.append("\n");
@@ -61,6 +61,23 @@ class Serializer {
         }
         edges(graph.nodes);
         s.append("}\n");
+    }
+
+    private Collection<Node> linkedNodes(Collection<Node> nodes) {
+        final HashSet<Node> visited = new HashSet<>();
+        for (final Node node : nodes) {
+            linkedNodes(node, visited);
+        }
+        return visited;
+    }
+
+    private void linkedNodes(Node node, Set<Node> visited) {
+        if (!visited.contains(node)) {
+            visited.add(node);
+            for (final Link link : node.links) {
+                linkedNodes(link.to.node, visited);
+            }
+        }
     }
 
     private void edges(Collection<Node> nodes) {
@@ -98,12 +115,11 @@ class Serializer {
         if (point.compass != null) {
             s.append(":").append(point.compass.name().toLowerCase());
         }
-        attrs(point.node.attributes);
     }
 
     private void name(Name name) {
         if (name != null) {
-            s.append(name.html ? ("<" + name.value + ">") : ("\"" + name.value.replace("\"", "\\\"") + "\""));
+            s.append(name.html ? ("<" + name.value + ">") : ("\"" + name.value.replace("\"", "\\\"").replace("\n", "\\n") + "\""));
         }
     }
 

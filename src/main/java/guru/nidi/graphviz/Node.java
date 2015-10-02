@@ -30,12 +30,12 @@ public class Node {
     final Map<String, Object> attributes = new HashMap<>();
     final List<Link> links = new ArrayList<>();
 
-    private Node(Name name) {
+    Node(Name name) {
         this.name = name;
     }
 
     public static Node named(Name name) {
-        return new Node(name);
+        return NodeContext.getOrCreateNode(name);
     }
 
     public static Node named(String name) {
@@ -52,12 +52,23 @@ public class Node {
         return this;
     }
 
+    public Node attrs(Object... keysAndValues) {
+        return attrs(Factory.attrs(keysAndValues));
+    }
+
     public NodePoint record(String record) {
         return NodePoint.of(this).record(record);
     }
 
     public NodePoint compass(Compass compass) {
         return NodePoint.of(this).compass(compass);
+    }
+
+    public Node links(Link... links) {
+        for (final Link link : links) {
+            link(link);
+        }
+        return this;
     }
 
     public Node link(Link link) {

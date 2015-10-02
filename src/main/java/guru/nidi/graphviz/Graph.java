@@ -63,6 +63,10 @@ public class Graph {
         return this;
     }
 
+    public Graph attrs(Object... keysAndValues) {
+        return attrs(Factory.attrs(keysAndValues));
+    }
+
     public Graph with(Node node) {
         nodes.add(node);
         return this;

@@ -57,4 +57,8 @@ public class Link {
         return this;
     }
 
+    public Link attrs(Object... keysAndValues) {
+        return attrs(Factory.attrs(keysAndValues));
+    }
+
 }
