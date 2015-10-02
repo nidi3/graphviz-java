@@ -15,12 +15,13 @@
  */
 package guru.nidi.graphviz;
 
+import guru.nidi.graphviz.attribute.*;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Map;
 
-import static guru.nidi.graphviz.Factory.*;
+import static guru.nidi.graphviz.Factory.graph;
+import static guru.nidi.graphviz.Factory.node;
 import static guru.nidi.graphviz.Link.to;
 
 /**
@@ -49,7 +50,7 @@ public class ExampleTest {
                 printf = node("printf"),
                 make_string = node("make_string");
         final Graph g = graph("ex1").directed().with(
-                node("main").links(
+                node("main").attrs(Color.rgb("ffcc00"), Style.FILLED).links(
                         to(node("parse")
                                 .link(to(node("execute")
                                         .links(to(make_string), to(printf), to(node("compare")))))),
@@ -63,26 +64,37 @@ public class ExampleTest {
     @Test
     public void ex2() {
         final Node
-                main = node("main").attr("shape", "box"),
+                main = node("main").attrs(Shape.RECTANGLE),
                 parse = node("parse"),
                 init = node("init"),
                 execute = node("execute"),
-                compare = node("compare").attrs("shape", "box", "style", "filled", "color", ".7 .3 1.0"),
+                compare = node("compare").attrs(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
                 make_string = node("make_string"),
                 printf = node("printf");
-        final Map<String, Object> red = attrs("color", "red");
+        final Attribute red = Color.RED;
         final Graph g = graph("ex2").directed().attr("size", "4,4").with(
                 main.links(
                         to(parse).attr("weight", 8),
-                        to(init).attr("style", "dotted"),
+                        to(init).attrs(Style.DOTTED),
                         to(node("cleanup")),
-                        to(printf).attr("style", "bold").attr("label", "100 times").attrs(red)),
+                        to(printf).attrs(Style.BOLD, Label.of("100 times"), red)),
                 parse.link(to(execute)),
                 execute.link(to(graph().with(make_string, printf))),
-                init.link(to(make_string.attr("label", "make a\nstring"))),
+                init.link(to(make_string.attrs(Label.of("make a\nstring")))),
                 execute.link(to(compare).attrs(red)));
-        System.out.println(new Serializer(g).serialize());
         Graphviz.fromGraph(g).renderToFile(new File("target/ex2.png"), "png", 300, 300);
+    }
 
+    @Test
+    public void ex3() {
+        final Node
+                a = node("a").attrs(Shape.polygon(5, 0, 0), "peripheries", 3, Color.LIGHTBLUE, Style.FILLED),
+                c = node("c").attrs(Shape.polygon(4, .4, 0), Label.of("hello world")),
+                d = node("d").attrs(Shape.INV_TRIANGLE),
+                e = node("e").attrs(Shape.polygon(4, 0, .7));
+        final Graph g = graph("ex3").directed().with(
+                a.link(to(node("b").links(to(c), to(d)))),
+                e);
+        Graphviz.fromGraph(g).renderToFile(new File("target/ex3.png"), "png", 300, 300);
     }
 }

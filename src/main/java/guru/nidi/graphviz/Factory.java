@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz;
 
+import guru.nidi.graphviz.attribute.Attribute;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ public class Factory {
     public static Graph graph() {
         return Graph.nameless();
     }
+
     public static Graph graph(String name) {
         return Graph.named(name);
     }
@@ -73,15 +76,21 @@ public class Factory {
     }
 
     public static Map<String, Object> attrs(Object... keysAndValues) {
-        if (keysAndValues.length % 2 != 0) {
-            throw new IllegalArgumentException("keysAndValues must be an even number");
-        }
         final Map<String, Object> res = new HashMap<>();
-        for (int i = 0; i < keysAndValues.length; i += 2) {
-            if (!(keysAndValues[i] instanceof String)) {
+        for (int i = 0; i < keysAndValues.length; i++) {
+            if (keysAndValues[i] instanceof Attribute) {
+                ((Attribute) keysAndValues[i]).apply(res);
+            } else if (keysAndValues[i] instanceof Map) {
+                res.putAll((Map<String, Object>) keysAndValues[i]);
+            } else if (!(keysAndValues[i] instanceof String)) {
                 throw new IllegalArgumentException(i + "th argument '" + keysAndValues[i] + "' is a key, but not a string");
+            } else {
+                if (i == keysAndValues.length - 1) {
+                    throw new IllegalArgumentException("Last key '" + keysAndValues[i] + "' has no value");
+                }
+                res.put((String) keysAndValues[i], keysAndValues[i + 1]);
+                i++;
             }
-            res.put((String) keysAndValues[i], keysAndValues[i + 1]);
         }
         return res;
     }
