@@ -20,9 +20,10 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static guru.nidi.graphviz.Factory.graph;
-import static guru.nidi.graphviz.Factory.node;
+import static guru.nidi.graphviz.Factory.*;
 import static guru.nidi.graphviz.Link.to;
+import static guru.nidi.graphviz.attribute.Record.item;
+import static guru.nidi.graphviz.attribute.Record.turn;
 
 /**
  *
@@ -97,4 +98,36 @@ public class ExampleTest {
                 e);
         Graphviz.fromGraph(g).renderToFile(new File("target/ex3.png"), "png", 300, 300);
     }
+
+    @Test
+    public void ex41() {
+        final Node
+                struct1 = node("struct1").attrs(Record.label("<f0> left|<f1> mid\\ dle|<f2> right")),
+                struct2 = node("struct2").attrs(Record.label("<f0> one|<f1> two")),
+                struct3 = node("struct3").attrs(Record.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
+        final Graph g = graph("ex41").directed().with(
+                struct1.links(
+                        between(record("f1"), struct2.record("f0")),
+                        between(record("f2"), struct3.record("here"))));
+        Graphviz.fromGraph(g).renderToFile(new File("target/ex41.png"), "png", 300, 300);
+    }
+
+    @Test
+    public void ex42() {
+        final Node
+                struct1 = node("struct1").attrs(Record.mItems(item("f0", "left"), item("f1", "mid dle"), item("f2", "right"))),
+                struct2 = node("struct2").attrs(Record.mItems(item("f0", "one"), item("f1", "two"))),
+                struct3 = node("struct3").attrs(Record.mItems(
+                        item("hello\nworld"),
+                        turn(item("b"),
+                                turn(item("c"), item("here", "d"), item("e")),
+                                item("f")),
+                        item("g"), item("h")));
+        final Graph g = graph("ex42").directed().with(
+                struct1.links(
+                        between(record("f1"), struct2.record("f0")),
+                        between(record("f2"), struct3.record("here"))));
+        Graphviz.fromGraph(g).renderToFile(new File("target/ex42.png"), "png", 300, 300);
+    }
+
 }

@@ -75,6 +75,10 @@ public class Factory {
         return Link.between(from, to);
     }
 
+    public static Link between(LinkTarget from, Node to) {
+        return between(from, NodePoint.of(to));
+    }
+
     public static Map<String, Object> attrs(Object... keysAndValues) {
         final Map<String, Object> res = new HashMap<>();
         for (int i = 0; i < keysAndValues.length; i++) {
