@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>guru.nidi</groupId>
+        <artifactId>guru-nidi-parent-pom</artifactId>
+        <version>1.0.5</version>
+    </parent>
+
+    <artifactId>graphviz-java</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>${project.artifactId}</name>
+    <description>Use graphviz in a pure java environment.</description>
+    <url>https://github.com/nidi3/graphviz-java</url>
+    <inceptionYear>2015</inceptionYear>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <scm>
+        <connection>scm:git:https://github.com/nidi3/graphviz-java</connection>
+        <developerConnection>scm:git:https://github.com/nidi3/graphviz-java</developerConnection>
+        <url>https://github.com/nidi3/graphviz-java</url>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.kitfox.svg</groupId>
+            <artifactId>svg-salamander</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
