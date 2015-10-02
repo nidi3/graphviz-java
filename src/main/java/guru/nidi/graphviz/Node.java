@@ -56,7 +56,7 @@ public class Node {
         return NodePoint.of(this).record(record);
     }
 
-    public NodePoint compass(String compass) {
+    public NodePoint compass(Compass compass) {
         return NodePoint.of(this).compass(compass);
     }
 

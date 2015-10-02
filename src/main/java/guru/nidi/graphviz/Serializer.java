@@ -33,12 +33,16 @@ class Serializer {
     }
 
     public String serialize() {
-        graph(graph);
+        graph(graph, true);
         return s.toString();
     }
 
-    private void graph(Graph graph) {
-        s.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
+    private void graph(Graph graph, boolean toplevel) {
+        if (toplevel) {
+            s.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
+        } else {
+            s.append("subgraph ");
+        }
         name(graph.name);
         s.append(" {\n");
         if (!graph.attributes.isEmpty()) {
@@ -52,8 +56,11 @@ class Serializer {
                 s.append("\n");
             }
         }
+        for (final Graph subgraph : graph.subgraphs) {
+            graph(subgraph, false);
+        }
         edges(graph.nodes);
-        s.append("}");
+        s.append("}\n");
     }
 
     private void edges(Collection<Node> nodes) {
@@ -89,7 +96,7 @@ class Serializer {
             name(Name.of(point.record));
         }
         if (point.compass != null) {
-            s.append(":").append(point.compass);
+            s.append(":").append(point.compass.name().toLowerCase());
         }
         attrs(point.node.attributes);
     }

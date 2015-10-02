@@ -21,9 +21,9 @@ package guru.nidi.graphviz;
 public class NodePoint {
     final Node node;
     final String record;
-    final String compass;
+    final Compass compass;
 
-    private NodePoint(Node node, String record, String compass) {
+    private NodePoint(Node node, String record, Compass compass) {
         this.node = node;
         this.record = record;
         this.compass = compass;
@@ -33,7 +33,7 @@ public class NodePoint {
         return new NodePoint(null, record, null);
     }
 
-    public static NodePoint ofCompass(String compass) {
+    public static NodePoint ofCompass(Compass compass) {
         return new NodePoint(null, null, compass);
     }
 
@@ -45,7 +45,7 @@ public class NodePoint {
         return new NodePoint(node, record, compass);
     }
 
-    public NodePoint compass(String compass) {
+    public NodePoint compass(Compass compass) {
         return new NodePoint(node, record, compass);
     }
 }

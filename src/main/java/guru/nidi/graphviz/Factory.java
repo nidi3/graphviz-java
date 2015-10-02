@@ -38,7 +38,7 @@ public class Factory {
         return Node.named(name);
     }
 
-    public static NodePoint compass(String compass) {
+    public static NodePoint compass(Compass compass) {
         return NodePoint.ofCompass(compass);
     }
 

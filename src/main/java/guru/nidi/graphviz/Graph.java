@@ -29,6 +29,7 @@ public class Graph {
     final Name name;
     final Map<String, Object> attributes = new HashMap<>();
     final Set<Node> nodes = new LinkedHashSet<>();
+    final Set<Graph> subgraphs = new LinkedHashSet<>();
 
     private Graph(boolean strict, boolean directed, Name name) {
         this.strict = strict;
@@ -66,4 +67,10 @@ public class Graph {
         nodes.add(node);
         return this;
     }
+
+    public Graph with(Graph subgraph) {
+        subgraphs.add(subgraph);
+        return this;
+    }
+
 }

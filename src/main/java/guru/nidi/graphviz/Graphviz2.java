@@ -30,18 +30,18 @@ import java.net.URI;
 /**
  *
  */
-public class Graphviz {
+public class Graphviz2 {
     private final String dot;
 
-    private Graphviz(String dot) {
+    private Graphviz2(String dot) {
         this.dot = dot;
     }
 
-    public static Graphviz fromString(String dot) {
-        return new Graphviz(dot);
+    public static Graphviz2 fromString(String dot) {
+        return new Graphviz2(dot);
     }
 
-    public static Graphviz fromGraph(Graph graph) {
+    public static Graphviz2 fromGraph(Graph graph) {
         return fromString(new Serializer(graph).serialize());
     }
 
