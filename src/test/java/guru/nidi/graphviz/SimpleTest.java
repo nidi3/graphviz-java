@@ -32,7 +32,7 @@ import static org.junit.Assert.fail;
 public class SimpleTest {
     @Test
     public void simple() throws IOException, ScriptException, SVGException {
-        final Graphviz2 viz = Graphviz2.fromString("digraph g { \"a\\b'c\" -> b; }");
+        final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");
         System.out.println(viz.createSvg());
         viz.renderToFile(new File("g2.png"), "png", 200, 200);
     }
@@ -40,7 +40,7 @@ public class SimpleTest {
     @Test
     public void dotError() throws IOException, ScriptException, SVGException {
         try {
-            Graphviz2.fromString("g { a -> b; }").createSvg();
+            Graphviz.fromString("g { a -> b; }").createSvg();
             fail();
         } catch (GraphvizException e) {
             assertThat(e.getMessage(), startsWith("Error: syntax error in line 1 near 'g'"));
