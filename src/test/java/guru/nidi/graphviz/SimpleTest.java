@@ -36,7 +36,7 @@ public class SimpleTest {
     public void simple() throws IOException, ScriptException, SVGException {
         final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");
         System.out.println(viz.createSvg());
-        viz.renderToFile(new File("g2.png"), "png", 200, 200);
+        viz.renderToFile(new File("target/g2.png"), "png", 200, 200);
     }
 
     @Test

@@ -34,7 +34,7 @@ class GraphvizServer {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("starting...");
+        System.out.println("starting graphviz server...");
         GraphvizEngine.initLocally();
         System.out.println("started.");
         try (final ServerSocket ss = new ServerSocket(PORT)) {
@@ -61,7 +61,7 @@ class GraphvizServer {
                 }
             }
         }
-        System.out.println("stopped.");
+        System.out.println("graphviz server stopped.");
     }
 
 }

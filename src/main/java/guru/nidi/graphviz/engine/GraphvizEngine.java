@@ -35,7 +35,7 @@ public class GraphvizEngine {
     private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
     private static CountDownLatch state = new CountDownLatch(State.START);
     private static Exception initException;
-    private static boolean remoteMode = true;
+    private static boolean remoteMode = false;
 
     /**
      * Init the engine in a separate thread.
