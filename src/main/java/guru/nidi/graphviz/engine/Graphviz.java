@@ -33,10 +33,27 @@ import java.net.URI;
  *
  */
 public class Graphviz {
+    private static GraphvizEngine engine;
     private final String dot;
 
     private Graphviz(String dot) {
         this.dot = dot;
+    }
+
+    public static void useEngine(GraphvizEngine engine) {
+        Graphviz.engine = engine;
+    }
+
+    public static void initEngine() {
+        engine = new GraphvizV8Engine(e ->
+                engine = new GraphvizServerEngine(e1 ->
+                        engine = new GraphvizJdkEngine()));
+    }
+
+    public static void releaseEngine() {
+        if (engine != null) {
+            engine.release();
+        }
     }
 
     public static Graphviz fromString(String dot) {
@@ -48,7 +65,10 @@ public class Graphviz {
     }
 
     public String createSvg() {
-        return GraphvizEngine.execute(dot);
+        if (engine == null) {
+            initEngine();
+        }
+        return engine.execute(dot);
     }
 
     public void renderToGraphics(Graphics2D graphics) {

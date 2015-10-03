@@ -29,13 +29,13 @@ class GraphvizServer {
         final boolean windows = System.getProperty("os.name").contains("windows");
         final String executable = windows ? "java.exe" : "java";
         final ProcessBuilder builder = new ProcessBuilder(System.getProperty("java.home") + "/bin/" + executable,
-                "-cp", System.getProperty("java.class.path"), "guru.nidi.graphviz.engine.GraphvizServer").inheritIO();
+                "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()).inheritIO();
         builder.start();
     }
 
     public static void main(String[] args) throws IOException {
         System.out.println("starting graphviz server...");
-        GraphvizEngine.initLocally();
+        Graphviz.useEngine(new GraphvizV8Engine(e -> new GraphvizJdkEngine()));
         System.out.println("started.");
         try (final ServerSocket ss = new ServerSocket(PORT)) {
             while (true) {

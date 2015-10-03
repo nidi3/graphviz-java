@@ -18,8 +18,6 @@ package guru.nidi.graphviz.engine;
 /**
  *
  */
-public interface GraphvizEngine {
-    String execute(String dot);
-
-    void release();
+public interface EngineInitListener {
+    void engineInitException(Exception e);
 }

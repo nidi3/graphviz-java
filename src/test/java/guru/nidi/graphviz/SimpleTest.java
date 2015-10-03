@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz;
 
+import com.eclipsesource.v8.V8;
+import com.eclipsesource.v8.V8Array;
 import com.kitfox.svg.SVGException;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizException;
@@ -23,6 +25,7 @@ import org.junit.Test;
 import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -48,6 +51,4 @@ public class SimpleTest {
             assertThat(e.getMessage(), startsWith("Error: syntax error in line 1 near 'g'"));
         }
     }
-
-
 }

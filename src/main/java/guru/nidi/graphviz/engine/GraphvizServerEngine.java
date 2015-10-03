@@ -21,8 +21,46 @@ import java.net.Socket;
 /**
  *
  */
-class GraphvizClient {
-    public static boolean canConnect() {
+public class GraphvizServerEngine extends AbstractGraphvizEngine {
+    public GraphvizServerEngine() {
+        this(null);
+    }
+
+    public GraphvizServerEngine(EngineInitListener engineInitListener) {
+        super(false,engineInitListener);
+    }
+
+    @Override
+    public void release() {
+    }
+
+    @Override
+    protected String doExecute(String dot) {
+        try {
+            return createSvg(dot);
+        } catch (IOException e) {
+            throw new GraphvizException("Problem in communication with server", e);
+        }
+    }
+
+    @Override
+    protected void doInit() throws Exception {
+        if (!canConnect()) {
+            GraphvizServer.start();
+            for (int i = 0; i < 50 && !canConnect(); i++) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    //ignore
+                }
+            }
+            if (!canConnect()) {
+                throw new IOException("Could not connect to server");
+            }
+        }
+    }
+
+    public boolean canConnect() {
         try {
             try (final Socket socket = new Socket("localhost", GraphvizServer.PORT)) {
                 return true;
@@ -32,7 +70,7 @@ class GraphvizClient {
         }
     }
 
-    public static String createSvg(String dot) throws IOException {
+    private String createSvg(String dot) throws IOException {
         try (final Socket socket = new Socket("localhost", GraphvizServer.PORT);
              final Communicator com = new Communicator(socket.getInputStream(), socket.getOutputStream())) {
             com.writeContent(dot);

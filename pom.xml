@@ -33,7 +33,21 @@
             <artifactId>svg-salamander</artifactId>
             <version>1.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.eclipsesource.j2v8</groupId>
+            <artifactId>j2v8_macosx_x86_64</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.eclipsesource.j2v8</groupId>
+            <artifactId>j2v8_linux_x86_64</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.eclipsesource.j2v8</groupId>
+            <artifactId>j2v8_win32_x86_64</artifactId>
+            <version>3.0.2</version>
+        </dependency>
         <dependency>
             <groupId>guru.nidi</groupId>
             <artifactId>jdepend</artifactId>
