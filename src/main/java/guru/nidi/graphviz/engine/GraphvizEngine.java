@@ -57,7 +57,7 @@ public class GraphvizEngine {
         starter.start();
     }
 
-    public static void stopServer(){
+    public static void stopServer() {
         GraphvizClient.stopServer();
     }
 
@@ -109,7 +109,16 @@ public class GraphvizEngine {
         if (!GraphvizClient.canConnect()) {
             try {
                 GraphvizServer.start();
-                GraphvizClient.createSvg("digraph g { a -> b; }");
+                for (int i = 0; i < 50 && !GraphvizClient.canConnect(); i++) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        //ignore
+                    }
+                }
+                if (!GraphvizClient.canConnect()) {
+                    throw new IOException("Could not connect to server");
+                }
             } catch (IOException e) {
                 remoteMode = false;
                 throw new GraphvizException("Cannot start server", e);
