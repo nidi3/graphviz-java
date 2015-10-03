@@ -148,7 +148,7 @@ public class GraphvizEngine {
             throw new GraphvizException("Could not start graphviz engine", initException);
         }
         try {
-            if (!state.await(30, TimeUnit.SECONDS)) {
+            if (!state.await(60, TimeUnit.SECONDS)) {
                 throw new GraphvizException("Initializing graphviz engine took too long");
             }
         } catch (InterruptedException e) {
