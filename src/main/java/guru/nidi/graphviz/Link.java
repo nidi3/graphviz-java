@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz;
 
+import guru.nidi.graphviz.attribute.Attribute;
+import guru.nidi.graphviz.attribute.Attributes;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +61,7 @@ public class Link {
     }
 
     public Link attrs(Object... keysAndValues) {
-        return attrs(Factory.attrs(keysAndValues));
+        return attrs(Attributes.from(keysAndValues));
     }
 
 }

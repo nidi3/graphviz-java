@@ -16,9 +16,11 @@
 package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.*;
+import guru.nidi.graphviz.engine.Graphviz;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
 import static guru.nidi.graphviz.Factory.*;
 import static guru.nidi.graphviz.Link.to;
@@ -113,7 +115,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex42() {
+    public void ex42() throws IOException {
         final Node
                 struct1 = node("struct1").attrs(Record.mItems(item("f0", "left"), item("f1", "mid dle"), item("f2", "right"))),
                 struct2 = node("struct2").attrs(Record.mItems(item("f0", "one"), item("f1", "two"))),

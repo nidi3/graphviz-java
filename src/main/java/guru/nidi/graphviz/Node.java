@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz;
 
+import guru.nidi.graphviz.attribute.Attribute;
+import guru.nidi.graphviz.attribute.Attributes;
+
 import java.util.*;
 
 import static java.util.stream.Collectors.joining;
@@ -50,7 +53,7 @@ public class Node implements Linkable {
     }
 
     public Node attrs(Object... keysAndValues) {
-        return attrs(Factory.attrs(keysAndValues));
+        return attrs(Attributes.from(keysAndValues));
     }
 
     public NodePoint record(String record) {

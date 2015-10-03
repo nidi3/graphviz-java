@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz;
 
+import guru.nidi.graphviz.attribute.Attributes;
+
 import java.util.*;
 
 /**
@@ -66,7 +68,7 @@ public class Graph implements Linkable, LinkTarget {
     }
 
     public Graph attrs(Object... keysAndValues) {
-        return attrs(Factory.attrs(keysAndValues));
+        return attrs(Attributes.from(keysAndValues));
     }
 
     public Graph with(Node... nodes) {

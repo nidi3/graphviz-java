@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz;
+package guru.nidi.graphviz.engine;
 
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGException;
 import com.kitfox.svg.SVGUniverse;
+import guru.nidi.graphviz.Graph;
+import guru.nidi.graphviz.Serializer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

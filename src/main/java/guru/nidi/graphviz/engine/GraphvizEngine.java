@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz;
+package guru.nidi.graphviz.engine;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -34,18 +35,51 @@ public class GraphvizEngine {
     private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
     private static CountDownLatch state = new CountDownLatch(State.START);
     private static Exception initException;
+    private static boolean remoteMode = true;
 
     /**
      * Init the engine in a separate thread.
      */
-    public static void init() {
-        final Thread starter = new Thread(GraphvizEngine::doInit);
+    public static void initLocally() {
+        remoteMode = false;
+        final Thread starter = new Thread(GraphvizEngine::doInitLocally);
         starter.setDaemon(true);
         starter.start();
     }
 
+    /**
+     * Init the engine in a separate process or connect to running process.
+     */
+    public static void initRemotely() {
+        remoteMode = true;
+        doInitRemotely();
+    }
+
     static String execute(String dot) {
-        checkInited();
+        if (remoteMode) {
+            return executeRemotely(dot);
+        } else {
+            return executeLocally(dot);
+        }
+    }
+
+    private static String executeRemotely(String dot) {
+        checkRemotelyInited();
+        try {
+            return GraphvizClient.createSvg(dot);
+        } catch (IOException e) {
+            throw new GraphvizException("Problem in communication with server", e);
+        }
+    }
+
+    private static void checkRemotelyInited() {
+        if (state.getCount() == State.START) {
+            doInitRemotely();
+        }
+    }
+
+    private static String executeLocally(String dot) {
+        checkLocallyInited();
         try {
             final String escaped = dot.replace("\n", " ").replace("\\", "\\\\").replace("'", "\\'");
             return (String) ENGINE.eval("$$prints=[]; Viz('" + escaped + "');");
@@ -65,7 +99,19 @@ public class GraphvizEngine {
         }
     }
 
-    private static void doInit() {
+    private static void doInitRemotely() {
+        if (!GraphvizClient.canConnect()) {
+            try {
+                GraphvizServer.start();
+            } catch (IOException e) {
+                throw new GraphvizException("Cannot start server", e);
+            }
+        }
+        state.countDown();
+        state.countDown();
+    }
+
+    private static void doInitLocally() {
         try {
             state.countDown();
             ENGINE.eval("var $$prints=[], print=function(s){$$prints.push(s);};");
@@ -77,9 +123,9 @@ public class GraphvizEngine {
         }
     }
 
-    private static void checkInited() {
+    private static void checkLocallyInited() {
         if (state.getCount() == State.START) {
-            doInit();
+            doInitLocally();
         }
         if (initException != null) {
             throw new GraphvizException("Could not start graphviz engine", initException);

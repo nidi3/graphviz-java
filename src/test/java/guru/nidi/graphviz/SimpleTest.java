@@ -16,6 +16,8 @@
 package guru.nidi.graphviz;
 
 import com.kitfox.svg.SVGException;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.engine.GraphvizException;
 import org.junit.Test;
 
 import javax.script.ScriptException;

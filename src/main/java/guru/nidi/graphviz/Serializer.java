@@ -23,7 +23,7 @@ import java.util.Set;
 /**
  *
  */
-class Serializer {
+public class Serializer {
     private final Graph graph;
     private final StringBuilder s;
 

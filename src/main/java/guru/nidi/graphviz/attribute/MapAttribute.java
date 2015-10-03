@@ -15,8 +15,6 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import guru.nidi.graphviz.Factory;
-
 import java.util.Map;
 
 /**
@@ -26,7 +24,7 @@ public class MapAttribute implements Attribute {
     private final Map<String, Object> attrs;
 
     public MapAttribute(Object... keysAndValues) {
-        attrs = Factory.attrs(keysAndValues);
+        attrs = Attributes.from(keysAndValues);
     }
 
     @Override

@@ -78,24 +78,4 @@ public class Factory {
     public static Link between(LinkTarget from, Node to) {
         return between(from, NodePoint.of(to));
     }
-
-    public static Map<String, Object> attrs(Object... keysAndValues) {
-        final Map<String, Object> res = new HashMap<>();
-        for (int i = 0; i < keysAndValues.length; i++) {
-            if (keysAndValues[i] instanceof Attribute) {
-                ((Attribute) keysAndValues[i]).apply(res);
-            } else if (keysAndValues[i] instanceof Map) {
-                res.putAll((Map<String, Object>) keysAndValues[i]);
-            } else if (!(keysAndValues[i] instanceof String)) {
-                throw new IllegalArgumentException(i + "th argument '" + keysAndValues[i] + "' is a key, but not a string");
-            } else {
-                if (i == keysAndValues.length - 1) {
-                    throw new IllegalArgumentException("Last key '" + keysAndValues[i] + "' has no value");
-                }
-                res.put((String) keysAndValues[i], keysAndValues[i + 1]);
-                i++;
-            }
-        }
-        return res;
-    }
 }
