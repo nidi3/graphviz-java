@@ -18,8 +18,8 @@ package guru.nidi.graphviz.attribute;
 /**
  *
  */
-public class Record {
-    private Record() {
+public class Records {
+    private Records() {
     }
 
     public static Attribute label(String label) {
@@ -30,19 +30,19 @@ public class Record {
         return new MapAttribute("shape", "Mrecord", "label", label);
     }
 
-    public static Attribute items(String... label) {
-        return new MapAttribute("shape", "record", "label", join(label, "|"));
+    public static Attribute of(String... recs) {
+        return new MapAttribute("shape", "record", "label", join(recs, "|"));
     }
 
-    public static Attribute mItems(String... label) {
-        return new MapAttribute("shape", "Mrecord", "label", join(label, "|"));
+    public static Attribute mOf(String... recs) {
+        return new MapAttribute("shape", "Mrecord", "label", join(recs, "|"));
     }
 
-    public static String item(String tag, String label) {
-        return "<" + tag + ">" + item(label);
+    public static String rec(String tag, String label) {
+        return "<" + tag + ">" + rec(label);
     }
 
-    public static String item(String label) {
+    public static String rec(String label) {
         return label.replace("{", "\\{").replace("}", "\\}").replace("<", "\\<").replace(">", "\\>").replace("|", "\\|").replace(" ", "\\ ");
     }
 

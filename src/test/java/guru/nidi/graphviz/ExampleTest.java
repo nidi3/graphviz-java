@@ -17,7 +17,6 @@ package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.GraphvizEngine;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,8 +24,8 @@ import java.io.IOException;
 
 import static guru.nidi.graphviz.Factory.*;
 import static guru.nidi.graphviz.Link.to;
-import static guru.nidi.graphviz.attribute.Record.item;
-import static guru.nidi.graphviz.attribute.Record.turn;
+import static guru.nidi.graphviz.attribute.Records.rec;
+import static guru.nidi.graphviz.attribute.Records.turn;
 
 /**
  *
@@ -105,9 +104,9 @@ public class ExampleTest {
     @Test
     public void ex41() {
         final Node
-                struct1 = node("struct1").attrs(Record.label("<f0> left|<f1> mid\\ dle|<f2> right")),
-                struct2 = node("struct2").attrs(Record.label("<f0> one|<f1> two")),
-                struct3 = node("struct3").attrs(Record.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
+                struct1 = node("struct1").attrs(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
+                struct2 = node("struct2").attrs(Records.label("<f0> one|<f1> two")),
+                struct3 = node("struct3").attrs(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
         final Graph g = graph("ex41").directed().with(
                 struct1.links(
                         between(record("f1"), struct2.record("f0")),
@@ -118,14 +117,14 @@ public class ExampleTest {
     @Test
     public void ex42() throws IOException {
         final Node
-                struct1 = node("struct1").attrs(Record.mItems(item("f0", "left"), item("f1", "mid dle"), item("f2", "right"))),
-                struct2 = node("struct2").attrs(Record.mItems(item("f0", "one"), item("f1", "two"))),
-                struct3 = node("struct3").attrs(Record.mItems(
-                        item("hello\nworld"),
-                        turn(item("b"),
-                                turn(item("c"), item("here", "d"), item("e")),
-                                item("f")),
-                        item("g"), item("h")));
+                struct1 = node("struct1").attrs(Records.mOf(rec("f0", "left"), rec("f1", "mid dle"), rec("f2", "right"))),
+                struct2 = node("struct2").attrs(Records.mOf(rec("f0", "one"), rec("f1", "two"))),
+                struct3 = node("struct3").attrs(Records.mOf(
+                        rec("hello\nworld"),
+                        turn(rec("b"),
+                                turn(rec("c"), rec("here", "d"), rec("e")),
+                                rec("f")),
+                        rec("g"), rec("h")));
         final Graph g = graph("ex42").directed().with(
                 struct1.links(
                         between(record("f1"), struct2.record("f0")),
