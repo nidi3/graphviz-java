@@ -29,7 +29,7 @@ class GraphvizServer {
         final boolean windows = System.getProperty("os.name").contains("windows");
         final String executable = windows ? "java.exe" : "java";
         final ProcessBuilder builder = new ProcessBuilder(System.getProperty("java.home") + "/bin/" + executable,
-                "-cp", System.getProperty("java.class.path"), "guru.nidi.graphviz.GraphvizServer").inheritIO();
+                "-cp", System.getProperty("java.class.path"), "guru.nidi.graphviz.engine.GraphvizServer").inheritIO();
         builder.start();
     }
 
@@ -42,17 +42,19 @@ class GraphvizServer {
                 try (final Socket socket = ss.accept();
                      final Communicator com = new Communicator(socket.getInputStream(), socket.getOutputStream())) {
                     final int len = com.readLen();
-                    if (len == -1) {
-                        break;
-                    }
-                    final String s = com.readContent(len);
-                    try {
-                        final String svg = Graphviz.fromString(s).createSvg();
-                        com.writeStatus("ok");
-                        com.writeContent(svg);
-                    } catch (GraphvizException e) {
-                        com.writeStatus("fail");
-                        com.writeContent(e.getMessage());
+                    if (len != 0) {
+                        if (len == -1) {
+                            break;
+                        }
+                        final String s = com.readContent(len);
+                        try {
+                            final String svg = Graphviz.fromString(s).createSvg();
+                            com.writeStatus("ok");
+                            com.writeContent(svg);
+                        } catch (GraphvizException e) {
+                            com.writeStatus("fail");
+                            com.writeContent(e.getMessage());
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

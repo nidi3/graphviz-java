@@ -50,9 +50,15 @@ public class GraphvizEngine {
     /**
      * Init the engine in a separate process or connect to running process.
      */
-    public static void initRemotely() {
+    public static void initServer() {
         remoteMode = true;
-        doInitRemotely();
+        final Thread starter = new Thread(GraphvizEngine::doInitRemotely);
+        starter.setDaemon(true);
+        starter.start();
+    }
+
+    public static void stopServer(){
+        GraphvizClient.stopServer();
     }
 
     static String execute(String dot) {
@@ -103,7 +109,9 @@ public class GraphvizEngine {
         if (!GraphvizClient.canConnect()) {
             try {
                 GraphvizServer.start();
+                GraphvizClient.createSvg("digraph g { a -> b; }");
             } catch (IOException e) {
+                remoteMode = false;
                 throw new GraphvizException("Cannot start server", e);
             }
         }

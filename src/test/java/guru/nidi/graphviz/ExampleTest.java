@@ -17,6 +17,7 @@ package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.engine.GraphvizEngine;
 import org.junit.Test;
 
 import java.io.File;

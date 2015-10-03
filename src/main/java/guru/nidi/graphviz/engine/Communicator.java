@@ -29,9 +29,9 @@ class Communicator implements Closeable {
         this.out = new BufferedWriter(new OutputStreamWriter(out, "utf-8"));
     }
 
-
     public int readLen() throws IOException {
-        return Integer.parseInt(in.readLine());
+        final String line = in.readLine();
+        return line == null ? 0 : Integer.parseInt(line);
     }
 
     public String readStatus() throws IOException {
@@ -49,9 +49,14 @@ class Communicator implements Closeable {
         out.newLine();
     }
 
-    public void writeContent(String content) throws IOException {
-        out.write("" + content.length());
+    public void writeLen(int len) throws IOException {
+        out.write("" + len);
         out.newLine();
+        out.flush();
+    }
+
+    public void writeContent(String content) throws IOException {
+        writeLen(content.length());
         out.write(content);
         out.newLine();
         out.flush();

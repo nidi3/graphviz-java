@@ -45,4 +45,13 @@ class GraphvizClient {
             return content;
         }
     }
+
+    public static void stopServer() {
+        try (final Socket socket = new Socket("localhost", GraphvizServer.PORT);
+             final Communicator com = new Communicator(socket.getInputStream(), socket.getOutputStream())) {
+            com.writeLen(-1);
+        } catch (IOException e) {
+            //ignore
+        }
+    }
 }
