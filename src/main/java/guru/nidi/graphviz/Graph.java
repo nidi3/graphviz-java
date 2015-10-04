@@ -20,21 +20,25 @@ import java.util.*;
 /**
  *
  */
-public class Graph extends Attributed<Graph> implements Linkable, LinkTarget {
+public class Graph implements Linkable, LinkTarget {
     final boolean strict;
     final boolean directed;
     final Label label;
     final Set<Node> nodes = new LinkedHashSet<>();
     final Set<Graph> subgraphs = new LinkedHashSet<>();
     final List<Link> links = new ArrayList<>();
+    final SimpleAttributed<Graph> attributes = new SimpleAttributed<>(this);
+    final SimpleAttributed<Graph> nodeAttributes = new SimpleAttributed<>(this);
+    final SimpleAttributed<Graph> linkAttributes = new SimpleAttributed<>(this);
+    final SimpleAttributed<Graph> graphAttributes = new SimpleAttributed<>(this);
 
     private Graph(boolean strict, boolean directed, Label label) {
         this.strict = strict;
         this.directed = directed;
         this.label = label;
         final CreationContext ctx = CreationContext.current();
-        if (ctx!=null){
-            attrs(ctx.graphs());
+        if (ctx != null) {
+            general().attrs(ctx.graphs());
         }
     }
 
@@ -61,6 +65,13 @@ public class Graph extends Attributed<Graph> implements Linkable, LinkTarget {
     public Graph with(Node... nodes) {
         for (final Node node : nodes) {
             with(node);
+        }
+        return this;
+    }
+
+    public Graph nodes(String... nodes) {
+        for (final String node : nodes) {
+            with(Node.named(node));
         }
         return this;
     }
@@ -94,13 +105,29 @@ public class Graph extends Attributed<Graph> implements Linkable, LinkTarget {
         return this;
     }
 
+    public Attributed<Graph> nodes() {
+        return nodeAttributes;
+    }
+
+    public Attributed<Graph> links() {
+        return linkAttributes;
+    }
+
+    public Attributed<Graph> graphs() {
+        return graphAttributes;
+    }
+
+    public Attributed<Graph> general() {
+        return attributes;
+    }
+
     @Override
-    public Label name() {
+    public Label getName() {
         return label;
     }
 
     @Override
-    public Collection<Link> links() {
+    public Collection<Link> getLinks() {
         return links;
     }
 

@@ -25,11 +25,11 @@ import java.util.function.Consumer;
 public class CreationContext {
     private final static ThreadLocal<CreationContext> context = new ThreadLocal<>();
     private final Map<Label, Node> nodes = new HashMap<>();
-    private final Attributed<Attributed<Node>> nodeAttributes = new Attributed<>();
-    private final Attributed<Attributed<Link>> linkAttributes = new Attributed<>();
-    private final Attributed<Attributed<Graph>> graphAttributes = new Attributed<>();
+    private final SimpleAttributed<CreationContext> nodeAttributes = new SimpleAttributed<>(this);
+    private final SimpleAttributed<CreationContext> linkAttributes = new SimpleAttributed<>(this);
+    private final SimpleAttributed<CreationContext> graphAttributes = new SimpleAttributed<>(this);
 
-    public CreationContext() {
+    private CreationContext() {
     }
 
     public CreationContext(Consumer<CreationContext> consumer) {
@@ -58,19 +58,23 @@ public class CreationContext {
         context.remove();
     }
 
-    public Attributed<Attributed<Node>> nodes() {
+    public Attributed<CreationContext> nodes() {
         return nodeAttributes;
     }
 
-    public Attributed<Attributed<Link>> links() {
+    public Attributed<CreationContext> links() {
         return linkAttributes;
     }
 
-    public Attributed<Attributed<Graph>> graphs() {
+    public Attributed<CreationContext> graphs() {
         return graphAttributes;
     }
 
+    Link initLink(Link link) {
+        return link.attrs(linkAttributes.attributes);
+    }
+
     Node getOrCreateNode(Label label) {
-        return nodes.computeIfAbsent(label, Node::new).attrs(nodeAttributes);
+        return nodes.computeIfAbsent(label, Node::new).attrs(nodeAttributes.attributes);
     }
 }

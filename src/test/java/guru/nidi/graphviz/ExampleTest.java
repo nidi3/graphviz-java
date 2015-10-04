@@ -81,7 +81,7 @@ public class ExampleTest {
                 make_string = node("make_string"),
                 printf = node("printf");
         final Attribute red = Color.RED;
-        final Graph g = graph("ex2").directed().attr("size", "4,4").with(
+        final Graph g = graph("ex2").directed().general().attr("size", "4,4").with(
                 main.links(
                         to(parse).attr("weight", 8),
                         to(init).attrs(Style.DOTTED),
@@ -122,10 +122,10 @@ public class ExampleTest {
 
     @Test
     public void ex42() throws IOException {
-        final CreationContext ctx = CreationContext.begin();
-        ctx.graphs().attrs(Color.YELLOWGREEN.background());
-        ctx.nodes().attrs(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font());
-        ctx.links().attrs(Style.DOTTED);
+        CreationContext.begin()
+                .graphs().attrs(Color.YELLOWGREEN.background())
+                .nodes().attrs(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
+                .links().attrs(Style.DOTTED);
         final Node
                 struct1 = node("struct1").attrs(Records.mOf(rec("f0", "left"), rec("f1", "mid dle"), rec("f2", "right"))),
                 struct2 = node("struct2").attrs(Records.mOf(rec("f0", "one"), rec("f1", "two"))),
@@ -142,4 +142,44 @@ public class ExampleTest {
         Graphviz.fromGraph(g).renderToFile(new File("target/ex42.png"), "png", 300, 300);
     }
 
+    @Test
+    public void ex5() throws IOException {
+        final Node
+                ksh = node("ksh"),
+                nmake = node("nmake");
+
+        final Graph g = graph("ex5").directed().general().attrs("ranksep", .75, "size", "7.5,7.5").with(
+                graph().with(
+                        node("past").link(to(
+                                node("1978").link(to(
+                                        node("1980").link(to(
+                                                node("1982").link(to(
+                                                        node("1983").link(to(
+                                                                node("1985")
+                                                        )))))))))))
+                        .nodes(
+                                "Bourne sh", "make", "SCCS", "yacc", "cron", "Reiser cpp", "Cshell", "emacs",
+                                "build", "vi", "<curses>", "RCS", "C"
+                        ),
+                graph().general().attrs(Rank.SAME).nodes("Software IS", "Configuration Mgt", "Architecture & Libraries", "Process"),
+                graph().general().attrs(Rank.SAME).nodes("past", "scss", "make", "Bourne sh", "yacc", "cron"),
+                graph().general().attrs(Rank.SAME).nodes("1978", "Reiser cpp", "Cshell"),
+                graph().general().attrs(Rank.SAME).nodes("1980", "build", "emacs", "vi"),
+                graph().general().attrs(Rank.SAME).nodes("1982", "rcs", "curses", "IMX", "SYNED"),
+                graph().general().attrs(Rank.SAME).nodes("1983", "ksh", "IFS", "TTU"),
+                graph().general().attrs(Rank.SAME).nodes("1985", "nmake", "Peggy"))
+                .with(
+                        node("scss").links(to(node("rcs")), to(nmake)),
+                        node("make").links(to(node("build")), to(nmake)),
+                        node("bsh").links(to(node("csh").link(to(ksh))), to(ksh)),
+                        ksh.link(to(nmake)),
+                        nmake.link(to(ksh)),
+                        node("vi").link(to(ksh)),
+                        node("emacs").link(to(ksh)),
+                        node("SYNED").link(to(node("Peggy"))),
+                        node("IMX").link(to(node("TTU")))
+                );
+        Graphviz.fromGraph(g).renderToFile(new File("target/ex5.png"), "png", 1000, 1000);
+
+    }
 }

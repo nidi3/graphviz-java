@@ -16,33 +16,16 @@
 package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.Attribute;
-import guru.nidi.graphviz.attribute.Attributes;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
  */
-public class Attributed<T> implements Attribute {
-    final Map<String, Object> attributes = new HashMap<>();
+public interface Attributed<T> extends Attribute {
+    T attr(String name, Object value);
 
-    public T attr(String name, Object value) {
-        attributes.put(name, value);
-        return (T) this;
-    }
+    T attrs(Map<String, Object> attrs);
 
-    public T attrs(Map<String, Object> attrs) {
-        attributes.putAll(attrs);
-        return (T) this;
-    }
-
-    public T attrs(Object... keysAndValues) {
-        return attrs(Attributes.from(keysAndValues));
-    }
-
-    @Override
-    public void apply(Map<String, Object> attrs) {
-        attrs.putAll(attributes);
-    }
+    T attrs(Object... keysAndValues);
 }

@@ -47,11 +47,17 @@ public class Serializer {
             s.append("subgraph ").append(graph.label.serialized()).append(" ");
         }
         s.append("{\n");
-        if (!graph.attributes.isEmpty()) {
-            s.append("graph");
-            attrs(graph.attributes);
-            s.append("\n");
+
+        attributes("graph", graph.graphAttributes);
+        attributes("node", graph.nodeAttributes);
+        attributes("edge", graph.linkAttributes);
+        for (final Map.Entry<String, Object> attr : graph.attributes.attributes.entrySet()) {
+            s.append(Label.of(attr.getKey()).serialized())
+                    .append("=")
+                    .append(Label.of(attr.getValue().toString()).serialized())
+                    .append("\n");
         }
+
         linkedNodes(graph.nodes).stream()
                 .filter(node -> !node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty()))
                 .forEach(node -> {
@@ -69,6 +75,14 @@ public class Serializer {
         edges(graph.subgraphs);
 
         s.append("}");
+    }
+
+    private void attributes(String name, SimpleAttributed<?> attributed) {
+        if (!attributed.attributes.isEmpty()) {
+            s.append(name);
+            attrs(attributed.attributes);
+            s.append("\n");
+        }
     }
 
     private Collection<Node> linkedNodes(Collection<Node> nodes) {
@@ -99,7 +113,7 @@ public class Serializer {
     private void edges(Linkable linkable, Set<Linkable> visited) {
         if (!visited.contains(linkable)) {
             visited.add(linkable);
-            for (final Link link : linkable.links()) {
+            for (final Link link : linkable.getLinks()) {
                 linkTarget(link.from);
                 s.append(graph.directed ? " -> " : " -- ");
                 linkTarget(link.to);

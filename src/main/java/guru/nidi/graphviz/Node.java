@@ -15,21 +15,29 @@
  */
 package guru.nidi.graphviz;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import guru.nidi.graphviz.attribute.Attribute;
+import guru.nidi.graphviz.attribute.Attributes;
+
+import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
 /**
  *
  */
-public class Node extends Attributed<Node> implements Linkable {
+public class Node implements Linkable, Attributed<Node> {
     final Label label;
-    final List<Link> links = new ArrayList<>();
+    final List<Link> links;
+    final Map<String, Object> attributes;
 
     Node(Label label) {
+        this(label, Collections.emptyList(), Collections.emptyMap());
+    }
+
+    private Node(Label label, List<Link> links, Map<String, Object> attributes) {
         this.label = label;
+        this.links = links;
+        this.attributes = attributes;
     }
 
     public static Node named(Label label) {
@@ -50,22 +58,46 @@ public class Node extends Attributed<Node> implements Linkable {
     }
 
     public Node links(Link... links) {
+        final List<Link> newLinks = new ArrayList<>(this.links);
         for (final Link link : links) {
-            link(link);
+            newLinks.add(Link.between(from(link), link.to).attrs(link.attributes));
         }
-        return this;
+        return new Node(label, newLinks, attributes);
     }
 
     public Node link(Link link) {
-        final NodePoint from;
+        final List<Link> newLinks = new ArrayList<>(this.links);
+        newLinks.add(Link.between(from(link), link.to).attrs(link.attributes));
+        return new Node(label, newLinks, attributes);
+    }
+
+    public Node attr(String name, Object value) {
+        final Map<String, Object> newAttrs = new HashMap<>(this.attributes);
+        newAttrs.put(name, value);
+        return new Node(label, links, newAttrs);
+    }
+
+    public Node attrs(Map<String, Object> attrs) {
+        final Map<String, Object> newAttrs = new HashMap<>(this.attributes);
+        newAttrs.putAll(attrs);
+        return new Node(label, links, newAttrs);
+    }
+
+    public Node attrs(Object... keysAndValues) {
+        return attrs(Attributes.from(keysAndValues));
+    }
+
+    @Override
+    public void apply(Map<String, Object> attrs) {
+        attrs.putAll(attributes);
+    }
+
+    private NodePoint from(Link link) {
         if (link.from instanceof NodePoint) {
             final NodePoint f = (NodePoint) link.from;
-            from = NodePoint.of(this).record(f.record).compass(f.compass);
-        } else {
-            from = NodePoint.of(this);
+            return NodePoint.of(this).record(f.record).compass(f.compass);
         }
-        links.add(Link.between(from, link.to).attrs(link.attributes));
-        return this;
+        return NodePoint.of(this);
     }
 
     @Override
@@ -90,11 +122,11 @@ public class Node extends Attributed<Node> implements Linkable {
     @Override
     public String toString() {
         return label + attributes.toString() + "->" +
-                links.stream().map(l -> l.to.name().toString()).collect(joining(","));
+                links.stream().map(l -> l.to.getName().toString()).collect(joining(","));
     }
 
     @Override
-    public Collection<Link> links() {
+    public Collection<Link> getLinks() {
         return links;
     }
 }

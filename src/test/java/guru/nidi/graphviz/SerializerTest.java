@@ -58,7 +58,22 @@ public class SerializerTest {
 
     @Test
     public void graphAttr() {
-        assertGraph("graph 'x' {\ngraph ['bla'='blu']\n}", graph("x").attr("bla", "blu"));
+        assertGraph("graph 'x' {\ngraph ['bla'='blu']\n}", graph("x").graphs().attr("bla", "blu"));
+    }
+
+    @Test
+    public void nodeAttr() {
+        assertGraph("graph 'x' {\nnode ['bla'='blu']\n}", graph("x").nodes().attr("bla", "blu"));
+    }
+
+    @Test
+    public void linkAttr() {
+        assertGraph("graph 'x' {\nedge ['bla'='blu']\n}", graph("x").links().attr("bla", "blu"));
+    }
+
+    @Test
+    public void generalAttr() {
+        assertGraph("graph 'x' {\n'bla'='blu'\n}", graph("x").general().attr("bla", "blu"));
     }
 
     @Test
@@ -69,11 +84,11 @@ public class SerializerTest {
 
     @Test
     public void context() {
-        final CreationContext ctx = CreationContext.begin();
-        ctx.graphs().attrs("g", "x");
-        ctx.nodes().attrs("n", "y");
-        ctx.links().attrs("l", "z");
-        assertGraph("graph 'x' {\ngraph ['g'='x']\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
+        CreationContext.begin()
+                .graphs().attrs("g", "x")
+                .nodes().attrs("n", "y")
+                .links().attrs("l", "z");
+        assertGraph("graph 'x' {\n'g'='x'\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
                 .with(node("x").attr("bla", "blu").link(to(node("y")))));
     }
 

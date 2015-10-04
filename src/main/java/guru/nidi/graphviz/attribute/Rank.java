@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz;
-
-import java.util.Collection;
+package guru.nidi.graphviz.attribute;
 
 /**
  *
  */
-public interface Linkable {
-    Collection<Link> getLinks();
+public class Rank extends SimpleAttribute<String> {
+    protected Rank(String value) {
+        super("rank", value);
+    }
+
+    public static final Rank
+            SAME = new Rank("same"),
+            MIN = new Rank("min"),
+            MAX = new Rank("max"),
+            SOURCE = new Rank("source"),
+            SINK = new Rank("sink");
 }

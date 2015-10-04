@@ -15,35 +15,64 @@
  */
 package guru.nidi.graphviz;
 
+import guru.nidi.graphviz.attribute.Attributes;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  */
-public class Link extends Attributed<Link> {
+public class Link implements Attributed<Link> {
     final LinkTarget from;
     final LinkTarget to;
-
-    private Link(LinkTarget from, LinkTarget to) {
-        this.from = from;
-        this.to = to;
-        final CreationContext ctx = CreationContext.current();
-        if (ctx != null) {
-            attrs(ctx.links());
-        }
-    }
-
-    public static Link to(LinkTarget to) {
-        return new Link(null, to);
-    }
+    final Map<String, Object> attributes;
 
     public static Link to(Node to) {
         return to(NodePoint.of(to));
     }
 
-    public static Link between(LinkTarget from, LinkTarget to) {
-        return new Link(from, to);
+    public static Link to(LinkTarget to) {
+        return between(null, to);
     }
 
     public static Link between(Node from, Node to) {
         return between(NodePoint.of(from), NodePoint.of(to));
     }
+
+    public static Link between(LinkTarget from, LinkTarget to) {
+        final Link link = new Link(from, to, Collections.emptyMap());
+        final CreationContext ctx = CreationContext.current();
+        return ctx == null ? link : ctx.initLink(link);
+    }
+
+    private Link(LinkTarget from, LinkTarget to, Map<String, Object> attributes) {
+        this.from = from;
+        this.to = to;
+        this.attributes = attributes;
+    }
+
+    public Link attr(String name, Object value) {
+        final Map<String, Object> newAttrs = new HashMap<>(this.attributes);
+        newAttrs.put(name, value);
+        return new Link(from, to, newAttrs);
+    }
+
+    public Link attrs(Map<String, Object> attrs) {
+        final Map<String, Object> newAttrs = new HashMap<>(this.attributes);
+        newAttrs.putAll(attrs);
+        return new Link(from, to, newAttrs);
+    }
+
+    public Link attrs(Object... keysAndValues) {
+        return attrs(Attributes.from(keysAndValues));
+    }
+
+    @Override
+    public void apply(Map<String, Object> attrs) {
+        attrs.putAll(attributes);
+    }
+
+
 }

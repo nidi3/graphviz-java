@@ -50,7 +50,7 @@ public class NodePoint implements LinkTarget{
     }
 
     @Override
-    public Label name() {
+    public Label getName() {
         return node.label;
     }
 }

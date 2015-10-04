@@ -19,5 +19,5 @@ package guru.nidi.graphviz;
  *
  */
 public interface LinkTarget {
-    Label name();
+    Label getName();
 }
