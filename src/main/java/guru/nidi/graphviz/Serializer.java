@@ -52,18 +52,18 @@ public class Serializer {
             attrs(graph.attributes);
             s.append("\n");
         }
-        for (final Node node : linkedNodes(graph.nodes)) {
-            if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty())) {
-                node(node);
-                s.append("\n");
-            }
-        }
-        for (final Graph subgraph : graph.subgraphs) {
-            if (subgraph.links.isEmpty()) {
-                graph(subgraph, false);
-                s.append("\n");
-            }
-        }
+        linkedNodes(graph.nodes).stream()
+                .filter(node -> !node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty()))
+                .forEach(node -> {
+                    node(node);
+                    s.append("\n");
+                });
+        graph.subgraphs.stream()
+                .filter(subgraph -> subgraph.links.isEmpty())
+                .forEach(subgraph -> {
+                    graph(subgraph, false);
+                    s.append("\n");
+                });
 
         edges(graph.nodes);
         edges(graph.subgraphs);
@@ -82,11 +82,9 @@ public class Serializer {
     private void linkedNodes(Node node, Set<Node> visited) {
         if (!visited.contains(node)) {
             visited.add(node);
-            for (final Link link : node.links) {
-                if (link.to instanceof NodePoint) {
-                    linkedNodes(((NodePoint) link.to).node, visited);
-                }
-            }
+            node.links.stream()
+                    .filter(link -> link.to instanceof NodePoint)
+                    .forEach(link -> linkedNodes(((NodePoint) link.to).node, visited));
         }
     }
 

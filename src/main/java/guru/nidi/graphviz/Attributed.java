@@ -38,7 +38,7 @@ public class Attributed<T> implements Attribute {
     }
 
     public T attrs(Object... keysAndValues) {
-        return (T) attrs(Attributes.from(keysAndValues));
+        return attrs(Attributes.from(keysAndValues));
     }
 
     @Override
