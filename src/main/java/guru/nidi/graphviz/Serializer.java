@@ -114,7 +114,7 @@ public class Serializer {
     }
 
     private Collection<Linkable> linkedNodes(Collection<? extends Linkable> nodes) {
-        final Set<Linkable> visited = new HashSet<>();
+        final Set<Linkable> visited = new LinkedHashSet<>();
         for (final Linkable node : nodes) {
             linkedNodes(node, visited);
         }
