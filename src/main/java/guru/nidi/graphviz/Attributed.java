@@ -15,41 +15,34 @@
  */
 package guru.nidi.graphviz;
 
+import guru.nidi.graphviz.attribute.Attribute;
+import guru.nidi.graphviz.attribute.Attributes;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
  */
-public class NodeContext {
-    private final static ThreadLocal<NodeContext> context = new ThreadLocal<>();
-    private final Map<Name, Node> nodes = new HashMap<>();
+public class Attributed<T> implements Attribute {
+    final Map<String, Object> attributes = new HashMap<>();
 
-    public NodeContext() {
+    public T attr(String name, Object value) {
+        attributes.put(name, value);
+        return (T) this;
     }
 
-    public NodeContext(Runnable runnable) {
-        context.set(this);
-        try {
-            runnable.run();
-        } finally {
-            context.remove();
-        }
+    public T attrs(Map<String, Object> attrs) {
+        attributes.putAll(attrs);
+        return (T) this;
     }
 
-    public static void begin() {
-        context.set(new NodeContext());
+    public T attrs(Object... keysAndValues) {
+        return (T) attrs(Attributes.from(keysAndValues));
     }
 
-    public static void end() {
-        context.remove();
-    }
-
-    static Node getOrCreateNode(Name name) {
-        final NodeContext ctx = context.get();
-        if (ctx == null) {
-            return new Node(name);
-        }
-        return ctx.nodes.computeIfAbsent(name, Node::new);
+    @Override
+    public void apply(Map<String, Object> attrs) {
+        attrs.putAll(attributes);
     }
 }

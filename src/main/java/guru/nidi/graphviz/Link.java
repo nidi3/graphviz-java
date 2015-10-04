@@ -15,23 +15,20 @@
  */
 package guru.nidi.graphviz;
 
-import guru.nidi.graphviz.attribute.Attribute;
-import guru.nidi.graphviz.attribute.Attributes;
-
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  *
  */
-public class Link {
+public class Link extends Attributed<Link> {
     final LinkTarget from;
     final LinkTarget to;
-    final Map<String, Object> attributes = new HashMap<>();
 
     private Link(LinkTarget from, LinkTarget to) {
         this.from = from;
         this.to = to;
+        final CreationContext ctx = CreationContext.current();
+        if (ctx != null) {
+            attrs(ctx.links());
+        }
     }
 
     public static Link to(LinkTarget to) {
@@ -49,19 +46,4 @@ public class Link {
     public static Link between(Node from, Node to) {
         return between(NodePoint.of(from), NodePoint.of(to));
     }
-
-    public Link attr(String name, Object value) {
-        attributes.put(name, value);
-        return this;
-    }
-
-    public Link attrs(Map<String, Object> attrs) {
-        attributes.putAll(attrs);
-        return this;
-    }
-
-    public Link attrs(Object... keysAndValues) {
-        return attrs(Attributes.from(keysAndValues));
-    }
-
 }

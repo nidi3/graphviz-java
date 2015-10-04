@@ -21,12 +21,16 @@ import java.util.Map;
  *
  */
 public class SimpleAttribute<T> implements Attribute {
-    private final String key;
-    private final T value;
+    protected final String key;
+    protected final T value;
 
     protected SimpleAttribute(String key, T value) {
         this.key = key;
         this.value = value;
+    }
+
+    public SimpleAttribute<T> key(String key) {
+        return new SimpleAttribute<>(key, value);
     }
 
     @Override

@@ -15,19 +15,17 @@
  */
 package guru.nidi.graphviz;
 
-import guru.nidi.graphviz.attribute.Attribute;
-import guru.nidi.graphviz.attribute.Attributes;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static java.util.stream.Collectors.joining;
 
 /**
  *
  */
-public class Node implements Linkable {
+public class Node extends Attributed<Node> implements Linkable {
     final Name name;
-    final Map<String, Object> attributes = new HashMap<>();
     final List<Link> links = new ArrayList<>();
 
     Node(Name name) {
@@ -35,25 +33,12 @@ public class Node implements Linkable {
     }
 
     public static Node named(Name name) {
-        return NodeContext.getOrCreateNode(name);
+        final CreationContext ctx = CreationContext.current();
+        return ctx == null ? new Node(name) : ctx.getOrCreateNode(name);
     }
 
     public static Node named(String name) {
         return named(Name.of(name));
-    }
-
-    public Node attr(String name, Object value) {
-        attributes.put(name, value);
-        return this;
-    }
-
-    public Node attrs(Map<String, Object> attrs) {
-        attributes.putAll(attrs);
-        return this;
-    }
-
-    public Node attrs(Object... keysAndValues) {
-        return attrs(Attributes.from(keysAndValues));
     }
 
     public NodePoint record(String record) {

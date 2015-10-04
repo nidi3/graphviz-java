@@ -24,6 +24,22 @@ public class Color extends SimpleAttribute<String> {
         super("color", value);
     }
 
+    public Attribute fill() {
+        return key("fillcolor");
+    }
+
+    public Attribute background() {
+        return key("bgcolor");
+    }
+
+    public Attribute font() {
+        return key("fontcolor");
+    }
+
+    public Attribute labelFont() {
+        return key("labelfontcolor");
+    }
+
     public static Color rgb(String rgb) {
         if (rgb.length() != 6) {
             throw new IllegalArgumentException("Must have length 6");

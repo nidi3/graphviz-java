@@ -33,7 +33,7 @@ import static guru.nidi.graphviz.attribute.Records.turn;
 public class ExampleTest {
     @Test
     public void ex11() {
-        new NodeContext(() -> {
+        new CreationContext(cc -> {
             final Graph g = graph("ex1").directed().with(
                     node("main").links(
                             to(node("parse")), to(node("init")), to(node("cleanup")), to(node("printf"))),
@@ -116,6 +116,10 @@ public class ExampleTest {
 
     @Test
     public void ex42() throws IOException {
+        final CreationContext ctx = CreationContext.begin();
+        ctx.graphs().attrs(Color.YELLOWGREEN.background());
+        ctx.nodes().attrs(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font());
+        ctx.links().attrs(Style.DOTTED);
         final Node
                 struct1 = node("struct1").attrs(Records.mOf(rec("f0", "left"), rec("f1", "mid dle"), rec("f2", "right"))),
                 struct2 = node("struct2").attrs(Records.mOf(rec("f0", "one"), rec("f1", "two"))),

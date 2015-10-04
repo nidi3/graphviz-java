@@ -22,11 +22,10 @@ import java.util.*;
 /**
  *
  */
-public class Graph implements Linkable, LinkTarget {
+public class Graph extends Attributed<Graph> implements Linkable, LinkTarget {
     final boolean strict;
     final boolean directed;
     final Name name;
-    final Map<String, Object> attributes = new HashMap<>();
     final Set<Node> nodes = new LinkedHashSet<>();
     final Set<Graph> subgraphs = new LinkedHashSet<>();
     final List<Link> links = new ArrayList<>();
@@ -35,6 +34,10 @@ public class Graph implements Linkable, LinkTarget {
         this.strict = strict;
         this.directed = directed;
         this.name = name;
+        final CreationContext ctx = CreationContext.current();
+        if (ctx!=null){
+            attrs(ctx.graphs());
+        }
     }
 
     public static Graph named(Name name) {
@@ -55,20 +58,6 @@ public class Graph implements Linkable, LinkTarget {
 
     public Graph directed() {
         return new Graph(strict, true, name);
-    }
-
-    public Graph attr(String name, Object value) {
-        attributes.put(name, value);
-        return this;
-    }
-
-    public Graph attrs(Map<String, Object> attrs) {
-        attributes.putAll(attrs);
-        return this;
-    }
-
-    public Graph attrs(Object... keysAndValues) {
-        return attrs(Attributes.from(keysAndValues));
     }
 
     public Graph with(Node... nodes) {
