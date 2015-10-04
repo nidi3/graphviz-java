@@ -23,6 +23,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
+import static guru.nidi.graphviz.Compass.W;
 import static guru.nidi.graphviz.Factory.*;
 import static guru.nidi.graphviz.Link.to;
 import static guru.nidi.graphviz.attribute.Records.rec;
@@ -260,6 +261,30 @@ public class ExampleTest {
                         proc.link(adv)
                 );
         Graphviz.fromGraph(g).renderToFile(new File("target/ex5.png"), "png", 1000, 1000);
+    }
 
+    @Test
+    public void ex6() throws IOException {
+        final Node
+                node0 = node("node0").attr(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""), rec("f5", ""), rec("f6", ""))),
+                node1 = node("node1").attr(Records.of(turn(rec("n", "n14"), rec("719"), rec("p", "")))),
+                node2 = node("node2").attr(Records.of(turn(rec("n", "a1"), rec("805"), rec("p", "")))),
+                node3 = node("node3").attr(Records.of(turn(rec("n", "i9"), rec("718"), rec("p", "")))),
+                node4 = node("node4").attr(Records.of(turn(rec("n", "e5"), rec("989"), rec("p", "")))),
+                node5 = node("node5").attr(Records.of(turn(rec("n", "t20"), rec("959"), rec("p", "")))),
+                node6 = node("node6").attr(Records.of(turn(rec("n", "o15"), rec("794"), rec("p", "")))),
+                node7 = node("node7").attr(Records.of(turn(rec("n", "s19"), rec("659"), rec("p", ""))));
+        final Graph g = graph("ex6").directed()
+                .general().attr(RankDir.LEFT_TO_RIGHT)
+                .node(
+                        node0.link(
+                                between(record("f0"), node1.compass(W)),
+                                between(record("f1"), node2.compass(W)),
+                                between(record("f2"), node3.compass(W)),
+                                between(record("f5"), node4.compass(W)),
+                                between(record("f6"), node5.compass(W))),
+                        node2.link(between(record("p"), node6.compass(W))),
+                        node4.link(between(record("p"), node7.compass(W))));
+        Graphviz.fromGraph(g).renderToFile(new File("target/ex6.png"), "png", 300, 300);
     }
 }
