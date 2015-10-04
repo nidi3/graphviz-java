@@ -158,7 +158,7 @@ public class SerializerTest {
 
     @Test
     public void complexEdge() {
-        assertGraph("digraph 'x' {\n'x' -> 'y'\n'a' -> 'x'\n'y' -> 'z'\n}", graph("x").directed()
+        assertGraph("digraph 'x' {\n'a' -> 'x'\n'x' -> 'y'\n'y' -> 'z'\n}", graph("x").directed()
                 .node(
                         node("x").link(node("y").link(node("z"))))
                 .node(
