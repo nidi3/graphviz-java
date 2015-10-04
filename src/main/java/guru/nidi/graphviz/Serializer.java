@@ -15,10 +15,7 @@
  */
 package guru.nidi.graphviz;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -58,12 +55,16 @@ public class Serializer {
                     .append("\n");
         }
 
-        linkedNodes(graph.nodes).stream()
-                .filter(node -> !node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty()))
-                .forEach(node -> {
+        for (final Linkable linkable : linkedNodes(graph.nodes)) {
+            if (linkable instanceof Node) {
+                final Node node = (Node) linkable;
+                if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty())) {
                     node(node);
                     s.append("\n");
-                });
+                }
+            }
+        }
+
         graph.subgraphs.stream()
                 .filter(subgraph -> subgraph.links.isEmpty())
                 .forEach(subgraph -> {
@@ -71,10 +72,37 @@ public class Serializer {
                     s.append("\n");
                 });
 
-        edges(graph.nodes);
-        edges(graph.subgraphs);
+        final List<Node> nodes = new ArrayList<>();
+        final List<Graph> graphs = new ArrayList<>();
+        final Collection<Linkable> linkables = linkedNodes(graph.nodes);
+        linkables.addAll(linkedNodes(graph.subgraphs));
+        for (final Linkable linkable : linkables) {
+            if (linkable instanceof Node) {
+                final Node node = (Node) linkable;
+                final int i = indexOfLabel(nodes, node.label);
+                if (i < 0) {
+                    nodes.add(node);
+                } else {
+                    nodes.set(i, node.merged(nodes.get(i)));
+                }
+            } else {
+                graphs.add((Graph) linkable);
+            }
+        }
+
+        edges(nodes);
+        edges(graphs);
 
         s.append("}");
+    }
+
+    private int indexOfLabel(List<Node> nodes, Label label) {
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).label.equals(label)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void attributes(String name, SimpleAttributed<?> attributed) {
@@ -85,43 +113,31 @@ public class Serializer {
         }
     }
 
-    private Collection<Node> linkedNodes(Collection<Node> nodes) {
-        final HashSet<Node> visited = new HashSet<>();
-        for (final Node node : nodes) {
+    private Collection<Linkable> linkedNodes(Collection<? extends Linkable> nodes) {
+        final Set<Linkable> visited = new HashSet<>();
+        for (final Linkable node : nodes) {
             linkedNodes(node, visited);
         }
         return visited;
     }
 
-    private void linkedNodes(Node node, Set<Node> visited) {
+    private void linkedNodes(Linkable node, Set<Linkable> visited) {
         if (!visited.contains(node)) {
             visited.add(node);
-            node.links.stream()
+            node.getLinks().stream()
                     .filter(link -> link.to instanceof NodePoint)
                     .forEach(link -> linkedNodes(((NodePoint) link.to).node, visited));
         }
     }
 
-    private Collection<Linkable> edges(Collection<? extends Linkable> linkables) {
-        final HashSet<Linkable> visited = new HashSet<>();
+    private void edges(List<? extends Linkable> linkables) {
         for (final Linkable linkable : linkables) {
-            edges(linkable, visited);
-        }
-        return visited;
-    }
-
-    private void edges(Linkable linkable, Set<Linkable> visited) {
-        if (!visited.contains(linkable)) {
-            visited.add(linkable);
             for (final Link link : linkable.getLinks()) {
                 linkTarget(link.from);
                 s.append(graph.directed ? " -> " : " -- ");
                 linkTarget(link.to);
                 attrs(link.attributes);
                 s.append("\n");
-                if (link.to instanceof NodePoint) {
-                    edges(((NodePoint) link.to).node, visited);
-                }
             }
         }
     }

@@ -15,7 +15,6 @@
  */
 package guru.nidi.graphviz;
 
-import guru.nidi.graphviz.attribute.Attribute;
 import guru.nidi.graphviz.attribute.Attributes;
 
 import java.util.*;
@@ -25,7 +24,7 @@ import static java.util.stream.Collectors.joining;
 /**
  *
  */
-public class Node implements Linkable, Attributed<Node> {
+public class Node implements Linkable, Attributed<Node>,LinkSource {
     final Label label;
     final List<Link> links;
     final Map<String, Object> attributes;
@@ -45,6 +44,14 @@ public class Node implements Linkable, Attributed<Node> {
         return ctx == null ? new Node(label) : ctx.getOrCreateNode(label);
     }
 
+    public Node merged(Node n) {
+        final List<Link> newLinks = new ArrayList<>(links);
+        newLinks.addAll(n.links);
+        final Map<String, Object> newAttrs = new HashMap<>(attributes);
+        newAttrs.putAll(n.attributes);
+        return new Node(label, newLinks, newAttrs);
+    }
+
     public static Node named(String name) {
         return named(Label.of(name));
     }
@@ -57,17 +64,19 @@ public class Node implements Linkable, Attributed<Node> {
         return NodePoint.of(this).compass(compass);
     }
 
-    public Node links(Link... links) {
+    public Node link(LinkSource source) {
         final List<Link> newLinks = new ArrayList<>(this.links);
-        for (final Link link : links) {
-            newLinks.add(Link.between(from(link), link.to).attrs(link.attributes));
-        }
+        final Link link = source.linkFrom();
+        newLinks.add(Link.between(from(link), link.to).attr(link.attributes));
         return new Node(label, newLinks, attributes);
     }
 
-    public Node link(Link link) {
+    public Node link(LinkSource... sources) {
         final List<Link> newLinks = new ArrayList<>(this.links);
-        newLinks.add(Link.between(from(link), link.to).attrs(link.attributes));
+        for (final LinkSource source : sources) {
+            final Link link = source.linkFrom();
+            newLinks.add(Link.between(from(link), link.to).attr(link.attributes));
+        }
         return new Node(label, newLinks, attributes);
     }
 
@@ -77,14 +86,14 @@ public class Node implements Linkable, Attributed<Node> {
         return new Node(label, links, newAttrs);
     }
 
-    public Node attrs(Map<String, Object> attrs) {
+    public Node attr(Map<String, Object> attrs) {
         final Map<String, Object> newAttrs = new HashMap<>(this.attributes);
         newAttrs.putAll(attrs);
         return new Node(label, links, newAttrs);
     }
 
-    public Node attrs(Object... keysAndValues) {
-        return attrs(Attributes.from(keysAndValues));
+    public Node attr(Object... keysAndValues) {
+        return attr(Attributes.from(keysAndValues));
     }
 
     @Override
@@ -111,12 +120,22 @@ public class Node implements Linkable, Attributed<Node> {
 
         Node node = (Node) o;
 
-        return !(label != null ? !label.equals(node.label) : node.label != null);
+        if (label != null ? !label.equals(node.label) : node.label != null) {
+            return false;
+        }
+        if (links != null ? !links.equals(node.links) : node.links != null) {
+            return false;
+        }
+        return !(attributes != null ? !attributes.equals(node.attributes) : node.attributes != null);
+
     }
 
     @Override
     public int hashCode() {
-        return label != null ? label.hashCode() : 0;
+        int result = label != null ? label.hashCode() : 0;
+        result = 31 * result + (links != null ? links.hashCode() : 0);
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -128,5 +147,10 @@ public class Node implements Linkable, Attributed<Node> {
     @Override
     public Collection<Link> getLinks() {
         return links;
+    }
+
+    @Override
+    public Link linkFrom() {
+        return Link.to(this);
     }
 }

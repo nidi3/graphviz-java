@@ -40,15 +40,15 @@ public class ExampleTest {
     @Test
     public void ex11() {
         new CreationContext(cc -> {
-            final Graph g = graph("ex1").directed().with(
-                    node("main").links(
-                            to(node("parse")), to(node("init")), to(node("cleanup")), to(node("printf"))),
+            final Graph g = graph("ex1").directed().node(
+                    node("main").link(
+                            node("parse"), node("init"), node("cleanup"), node("printf")),
                     node("parse").link(
-                            to(node("execute"))),
-                    node("execute").links(
-                            to(node("make_string")), to(node("printf")), to(node("compare"))),
+                            node("execute")),
+                    node("execute").link(
+                            node("make_string"), node("printf"), node("compare")),
                     node("init").link(
-                            to(node("make_string"))));
+                            node("make_string")));
             Graphviz.fromGraph(g).renderToFile(new File("target/ex11.png"), "png", 300, 300);
         });
     }
@@ -58,51 +58,49 @@ public class ExampleTest {
         final Node
                 printf = node("printf"),
                 make_string = node("make_string");
-        final Graph g = graph("ex1").directed().with(
-                node("main").attrs(Color.rgb("ffcc00"), Style.FILLED).links(
-                        to(node("parse")
-                                .link(to(node("execute")
-                                        .links(to(make_string), to(printf), to(node("compare")))))),
-                        to(node("init")
-                                .link(to(make_string))),
-                        to(node("cleanup")),
-                        to(printf)));
+        final Graph g = graph("ex1").directed().node(
+                node("main").attr(Color.rgb("ffcc00"), Style.FILLED).link(
+                        node("parse").link(node("execute")
+                                .link(make_string, printf, node("compare"))),
+                        node("init").link(make_string),
+                        node("cleanup"),
+                        printf));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex12.png"), "png", 300, 300);
     }
 
     @Test
     public void ex2() {
         final Node
-                main = node("main").attrs(Shape.RECTANGLE),
+                main = node("main").attr(Shape.RECTANGLE),
                 parse = node("parse"),
                 init = node("init"),
                 execute = node("execute"),
-                compare = node("compare").attrs(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
+                compare = node("compare").attr(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
                 make_string = node("make_string"),
                 printf = node("printf");
         final Attribute red = Color.RED;
-        final Graph g = graph("ex2").directed().general().attr("size", "4,4").with(
-                main.links(
+        final Graph g = graph("ex2").directed().general().attr("size", "4,4").node(
+                main.link(
                         to(parse).attr("weight", 8),
-                        to(init).attrs(Style.DOTTED),
-                        to(node("cleanup")),
-                        to(printf).attrs(Style.BOLD, Label.of("100 times"), red)),
+                        to(init).attr(Style.DOTTED),
+                        node("cleanup"),
+                        to(printf).attr(Style.BOLD, Label.of("100 times"), red)),
                 parse.link(to(execute)),
-                execute.link(to(graph().with(make_string, printf))),
-                init.link(to(make_string.attrs(Label.of("make a\nstring")))),
-                execute.link(to(compare).attrs(red)));
+                execute.link(to(graph().node(make_string, printf))),
+                init.link(to(make_string.attr(Label.of("make a\nstring")))),
+                execute.link(to(compare).attr(red)));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex2.png"), "png", 300, 300);
     }
 
     @Test
     public void ex3() {
         final Node
-                a = node("a").attrs(Shape.polygon(5, 0, 0), "peripheries", 3, Color.LIGHTBLUE, Style.FILLED),
-                c = node("c").attrs(Shape.polygon(4, .4, 0), Label.of("hello world")),
-                d = node("d").attrs(Shape.INV_TRIANGLE),
-                e = node("e").attrs(Shape.polygon(4, 0, .7));
-        final Graph g = graph("ex3").directed().with(
-                a.link(to(node("b").links(to(c), to(d)))),
+                a = node("a").attr(Shape.polygon(5, 0, 0), "peripheries", 3, Color.LIGHTBLUE, Style.FILLED),
+                c = node("c").attr(Shape.polygon(4, .4, 0), Label.of("hello world")),
+                d = node("d").attr(Shape.INV_TRIANGLE),
+                e = node("e").attr(Shape.polygon(4, 0, .7));
+        final Graph g = graph("ex3").directed().node(
+                a.link(node("b").link(c, d)),
                 e);
         Graphviz.fromGraph(g).renderToFile(new File("target/ex3.png"), "png", 300, 300);
     }
@@ -110,11 +108,11 @@ public class ExampleTest {
     @Test
     public void ex41() {
         final Node
-                struct1 = node("struct1").attrs(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
-                struct2 = node("struct2").attrs(Records.label("<f0> one|<f1> two")),
-                struct3 = node("struct3").attrs(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
-        final Graph g = graph("ex41").directed().with(
-                struct1.links(
+                struct1 = node("struct1").attr(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
+                struct2 = node("struct2").attr(Records.label("<f0> one|<f1> two")),
+                struct3 = node("struct3").attr(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
+        final Graph g = graph("ex41").directed().node(
+                struct1.link(
                         between(record("f1"), struct2.record("f0")),
                         between(record("f2"), struct3.record("here"))));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex41.png"), "png", 300, 300);
@@ -123,20 +121,20 @@ public class ExampleTest {
     @Test
     public void ex42() throws IOException {
         CreationContext.begin()
-                .graphs().attrs(Color.YELLOWGREEN.background())
-                .nodes().attrs(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
-                .links().attrs(Style.DOTTED);
+                .graphs().attr(Color.YELLOWGREEN.background())
+                .nodes().attr(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
+                .links().attr(Style.DOTTED);
         final Node
-                struct1 = node("struct1").attrs(Records.mOf(rec("f0", "left"), rec("f1", "mid dle"), rec("f2", "right"))),
-                struct2 = node("struct2").attrs(Records.mOf(rec("f0", "one"), rec("f1", "two"))),
-                struct3 = node("struct3").attrs(Records.mOf(
+                struct1 = node("struct1").attr(Records.mOf(rec("f0", "left"), rec("f1", "mid dle"), rec("f2", "right"))),
+                struct2 = node("struct2").attr(Records.mOf(rec("f0", "one"), rec("f1", "two"))),
+                struct3 = node("struct3").attr(Records.mOf(
                         rec("hello\nworld"),
                         turn(rec("b"),
                                 turn(rec("c"), rec("here", "d"), rec("e")),
                                 rec("f")),
                         rec("g"), rec("h")));
-        final Graph g = graph("ex42").directed().with(
-                struct1.links(
+        final Graph g = graph("ex42").directed().node(
+                struct1.link(
                         between(record("f1"), struct2.record("f0")),
                         between(record("f2"), struct3.record("here"))));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex42.png"), "png", 300, 300);
@@ -145,39 +143,121 @@ public class ExampleTest {
     @Test
     public void ex5() throws IOException {
         final Node
-                ksh = node("ksh"),
-                nmake = node("nmake");
+                reiser = node("Reiser cpp"), csh = node("Cshell"),
+                ksh = node("ksh"), emacs = node("emacs"),
+                vi = node("vi"), build = node("build"),
+                bsh = node("Bourne sh"), sccs = node("SCCS"),
+                rcs = node("RCS"), make = node("make"),
+                yacc = node("yacc"), cron = node("cron"),
+                nmake = node("nmake"), ifs = node("IFS"),
+                ttu = node("TTU"), cs = node("C*"),
+                ncpp = node("ncpp"), kshi = node("ksh-i"),
+                curses = node("<curses>"), imx = node("IMX"),
+                syned = node("SYNED"), cursesi = node("<curses-i>"),
+                pg2 = node("PG2"), peggy = node("Peggy"),
+                dag = node("DAG"), csas = node("CSAS"),
+                ansiCpp = node("Ansi cpp"), fdelta = node("fdelta"),
+                d3fs = node("3D File System"), nmake2 = node("nmake 2.0"),
+                cia = node("CIA"), sbcs = node("SBCS"),
+                pax = node("PAX"), ksh88 = node("ksh-88"),
+                pegasus = node("PEGASUS/PML"), ciapp = node("CIA++"),
+                app = node("APP"), ship = node("SHIP"),
+                dataShare = node("DataShare"), ryacc = node("Ryacc"),
+                mosaic = node("Mosaic"), backtalk = node("backtalk"),
+                dot = node("DOT"), dia = node("DIA"),
+                libft = node("libft"), coshell = node("CoShell"),
+                sfio = node("sfio"), ifsi = node("IFS-i"),
+                mlx = node("ML-X"), kyacc = node("kyacc"),
+                yeast = node("yeast"), sis = node("Software IS"),
+                cfg = node("Configuration Mgt"), archlib = node("Architecture & Libraries"),
+                proc = node("Process"), adv = node("Adv. Software Technology");
 
-        final Graph g = graph("ex5").directed().general().attrs("ranksep", .75, "size", "7.5,7.5").with(
-                graph().with(
-                        node("past").link(to(
-                                node("1978").link(to(
-                                        node("1980").link(to(
-                                                node("1982").link(to(
-                                                        node("1983").link(to(
-                                                                node("1985")
-                                                        )))))))))))
-                        .nodes(
-                                "Bourne sh", "make", "SCCS", "yacc", "cron", "Reiser cpp", "Cshell", "emacs",
-                                "build", "vi", "<curses>", "RCS", "C"
-                        ),
-                graph().general().attrs(Rank.SAME).nodes("Software IS", "Configuration Mgt", "Architecture & Libraries", "Process"),
-                graph().general().attrs(Rank.SAME).nodes("past", "scss", "make", "Bourne sh", "yacc", "cron"),
-                graph().general().attrs(Rank.SAME).nodes("1978", "Reiser cpp", "Cshell"),
-                graph().general().attrs(Rank.SAME).nodes("1980", "build", "emacs", "vi"),
-                graph().general().attrs(Rank.SAME).nodes("1982", "rcs", "curses", "IMX", "SYNED"),
-                graph().general().attrs(Rank.SAME).nodes("1983", "ksh", "IFS", "TTU"),
-                graph().general().attrs(Rank.SAME).nodes("1985", "nmake", "Peggy"))
-                .with(
-                        node("scss").links(to(node("rcs")), to(nmake)),
-                        node("make").links(to(node("build")), to(nmake)),
-                        node("bsh").links(to(node("csh").link(to(ksh))), to(ksh)),
-                        ksh.link(to(nmake)),
-                        nmake.link(to(ksh)),
-                        node("vi").link(to(ksh)),
-                        node("emacs").link(to(ksh)),
-                        node("SYNED").link(to(node("Peggy"))),
-                        node("IMX").link(to(node("TTU")))
+        final Graph g = graph("ex5").directed()
+                .general().attr("ranksep", .75, "size", "7.5,7.5")
+                .node().attr(Shape.RECTANGLE)
+                .graph(
+                        graph().node().attr(Shape.NONE).node(
+                                node("past").link(
+                                        node("1978").link(
+                                                node("1980").link(
+                                                        node("1982").link(
+                                                                node("1983").link(
+                                                                        node("1985").link(
+                                                                                node("1986").link(
+                                                                                        node("1987").link(
+                                                                                                node("1988").link(
+                                                                                                        node("1989").link(
+                                                                                                                node("1990").link(
+                                                                                                                        node("future")))))))))))))
+                                .node(bsh, make, sccs, reiser, csh, yacc, cron, rcs, emacs, build, vi, curses),
+                        graph().general().attr(Rank.SAME).node().attr(Shape.ELLIPSE).node(sis, cfg, archlib, proc),
+                        graph().general().attr(Rank.SAME).node("past").node(sccs, make, bsh, yacc, cron),
+                        graph().general().attr(Rank.SAME).node("1978").node(reiser, csh),
+                        graph().general().attr(Rank.SAME).node("1980").node(build, emacs, vi),
+                        graph().general().attr(Rank.SAME).node("1982").node(rcs, curses, imx, syned),
+                        graph().general().attr(Rank.SAME).node("1983").node(ksh, ifs, ttu),
+                        graph().general().attr(Rank.SAME).node("1985").node(nmake, peggy),
+                        graph().general().attr(Rank.SAME).node("1986").node(cs, ncpp, kshi, cursesi, pg2),
+                        graph().general().attr(Rank.SAME).node("1987").node(dag, csas, ansiCpp, fdelta, d3fs, nmake2),
+                        graph().general().attr(Rank.SAME).node("1988").node(cia, sbcs, pax, ksh88, pegasus, backtalk),
+                        graph().general().attr(Rank.SAME).node("1989").node(ciapp, app, ship, dataShare, ryacc, mosaic),
+                        graph().general().attr(Rank.SAME).node("1990").node(dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
+                        graph().general().attr(Rank.SAME).node("future").node(adv))
+                .node(
+                        sccs.link(rcs, nmake, d3fs),
+                        make.link(build, nmake),
+                        build.link(nmake2),
+                        bsh.link(csh.link(ksh), ksh),
+                        reiser.link(ncpp),
+                        vi.link(curses, ksh),
+                        emacs.link(ksh),
+                        rcs.link(fdelta, sbcs),
+                        curses.link(cursesi),
+                        syned.link(peggy),
+                        imx.link(ttu),
+                        ksh.link(nmake, ksh88),
+                        ifs.link(cursesi, sfio, ifsi),
+                        ttu.link(pg2),
+                        nmake.link(ksh, ncpp, d3fs, nmake2),
+                        cs.link(csas),
+                        ncpp.link(ansiCpp),
+                        cursesi.link(fdelta),
+                        csas.link(cia),
+                        fdelta.link(sbcs, pax),
+                        kshi.link(ksh88),
+                        peggy.link(pegasus, ryacc),
+                        pg2.link(backtalk),
+                        cia.link(ciapp, dia),
+                        pax.link(ship),
+                        backtalk.link(dataShare),
+                        yacc.link(ryacc),
+                        dag.link(dot, dia, sis),
+                        app.link(dia, sis),
+                        nmake2.link(coshell, cfg),
+                        ksh88.link(sfio, coshell, archlib),
+                        pegasus.link(mlx, archlib),
+                        ryacc.link(kyacc),
+                        cron.link(yeast),
+                        dot.link(sis),
+                        ciapp.link(sis),
+                        dia.link(sis),
+                        libft.link(sis),
+                        ansiCpp.link(cfg),
+                        sbcs.link(cfg),
+                        ship.link(cfg),
+                        d3fs.link(cfg),
+                        coshell.link(cfg, archlib),
+                        sfio.link(archlib),
+                        ifsi.link(archlib),
+                        mlx.link(archlib),
+                        dataShare.link(archlib),
+                        kyacc.link(archlib),
+                        mosaic.link(proc),
+                        yeast.link(proc),
+                        sis.link(adv),
+                        cfg.link(adv),
+                        archlib.link(adv),
+                        proc.link(adv)
                 );
         Graphviz.fromGraph(g).renderToFile(new File("target/ex5.png"), "png", 1000, 1000);
 

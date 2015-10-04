@@ -38,7 +38,7 @@ public class Graph implements Linkable, LinkTarget {
         this.label = label;
         final CreationContext ctx = CreationContext.current();
         if (ctx != null) {
-            general().attrs(ctx.graphs());
+            general().attr(ctx.graphs());
         }
     }
 
@@ -62,58 +62,63 @@ public class Graph implements Linkable, LinkTarget {
         return new Graph(strict, true, label);
     }
 
-    public Graph with(Node... nodes) {
+    public Graph node(Node... nodes) {
         for (final Node node : nodes) {
-            with(node);
+            node(node);
         }
         return this;
     }
 
-    public Graph nodes(String... nodes) {
-        for (final String node : nodes) {
-            with(Node.named(node));
-        }
-        return this;
-    }
-
-    public Graph with(Node node) {
+    public Graph node(Node node) {
         nodes.add(node);
         return this;
     }
 
-    public Graph with(Graph... subgraphs) {
-        for (final Graph subgraph : subgraphs) {
-            with(subgraph);
+    public Graph node(String... nodes) {
+        for (final String node : nodes) {
+            node(node);
         }
         return this;
     }
 
-    public Graph with(Graph subgraph) {
+    public Graph node(String node) {
+        return node(Node.named(node));
+    }
+
+    public Graph graph(Graph... subgraphs) {
+        for (final Graph subgraph : subgraphs) {
+            graph(subgraph);
+        }
+        return this;
+    }
+
+    public Graph graph(Graph subgraph) {
         subgraphs.add(subgraph);
         return this;
     }
 
-    public Graph links(Link... links) {
-        for (final Link link : links) {
-            link(link);
+    public Graph link(LinkSource... sources) {
+        for (final LinkSource source : sources) {
+            link(source.linkFrom());
         }
         return this;
     }
 
-    public Graph link(Link link) {
-        links.add(Link.between(this, link.to).attrs(link.attributes));
+    public Graph link(LinkSource source) {
+        final Link link = source.linkFrom();
+        links.add(Link.between(this, link.to).attr(link.attributes));
         return this;
     }
 
-    public Attributed<Graph> nodes() {
+    public Attributed<Graph> node() {
         return nodeAttributes;
     }
 
-    public Attributed<Graph> links() {
+    public Attributed<Graph> link() {
         return linkAttributes;
     }
 
-    public Attributed<Graph> graphs() {
+    public Attributed<Graph> graph() {
         return graphAttributes;
     }
 
@@ -131,4 +136,8 @@ public class Graph implements Linkable, LinkTarget {
         return links;
     }
 
+    @Override
+    public Link linkFrom() {
+        return Link.to(this);
+    }
 }

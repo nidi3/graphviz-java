@@ -53,4 +53,9 @@ public class NodePoint implements LinkTarget{
     public Label getName() {
         return node.label;
     }
+
+    @Override
+    public Link linkFrom() {
+        return Link.to(this);
+    }
 }

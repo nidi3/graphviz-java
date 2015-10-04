@@ -25,7 +25,7 @@ import java.util.Map;
 public interface Attributed<T> extends Attribute {
     T attr(String name, Object value);
 
-    T attrs(Map<String, Object> attrs);
+    T attr(Map<String, Object> attrs);
 
-    T attrs(Object... keysAndValues);
+    T attr(Object... keysAndValues);
 }

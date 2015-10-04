@@ -40,13 +40,13 @@ public class SimpleAttributed<E> implements Attributed<E> {
         return target;
     }
 
-    public E attrs(Map<String, Object> attrs) {
+    public E attr(Map<String, Object> attrs) {
         attributes.putAll(attrs);
         return target;
     }
 
-    public E attrs(Object... keysAndValues) {
-        return attrs(Attributes.from(keysAndValues));
+    public E attr(Object... keysAndValues) {
+        return attr(Attributes.from(keysAndValues));
     }
 
     @Override

@@ -71,10 +71,10 @@ public class CreationContext {
     }
 
     Link initLink(Link link) {
-        return link.attrs(linkAttributes.attributes);
+        return link.attr(linkAttributes.attributes);
     }
 
     Node getOrCreateNode(Label label) {
-        return nodes.computeIfAbsent(label, Node::new).attrs(nodeAttributes.attributes);
+        return nodes.computeIfAbsent(label, Node::new).attr(nodeAttributes.attributes);
     }
 }

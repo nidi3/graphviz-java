@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  *
  */
-public class Link implements Attributed<Link> {
+public class Link implements Attributed<Link>,LinkSource {
     final LinkTarget from;
     final LinkTarget to;
     final Map<String, Object> attributes;
@@ -59,14 +59,14 @@ public class Link implements Attributed<Link> {
         return new Link(from, to, newAttrs);
     }
 
-    public Link attrs(Map<String, Object> attrs) {
+    public Link attr(Map<String, Object> attrs) {
         final Map<String, Object> newAttrs = new HashMap<>(this.attributes);
         newAttrs.putAll(attrs);
         return new Link(from, to, newAttrs);
     }
 
-    public Link attrs(Object... keysAndValues) {
-        return attrs(Attributes.from(keysAndValues));
+    public Link attr(Object... keysAndValues) {
+        return attr(Attributes.from(keysAndValues));
     }
 
     @Override
@@ -74,5 +74,8 @@ public class Link implements Attributed<Link> {
         attrs.putAll(attributes);
     }
 
-
+    @Override
+    public Link linkFrom() {
+        return this;
+    }
 }

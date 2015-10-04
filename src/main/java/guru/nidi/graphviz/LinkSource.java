@@ -18,6 +18,6 @@ package guru.nidi.graphviz;
 /**
  *
  */
-public interface LinkTarget extends LinkSource {
-    Label getName();
+public interface LinkSource {
+    Link linkFrom();
 }
