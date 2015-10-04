@@ -15,28 +15,43 @@
  */
 package guru.nidi.graphviz;
 
+import guru.nidi.graphviz.attribute.Attribute;
+
+import java.util.Map;
+
 /**
  *
  */
-public class Name {
+public class Label implements Attribute {
     final String value;
     final boolean html;
 
-    private Name(String value, boolean html) {
+    private Label(String value, boolean html) {
         this.value = value;
         this.html = html;
     }
 
-    public static Name of(String value) {
-        return new Name(value, false);
+    public static Label of(String value) {
+        return new Label(value, false);
     }
 
-    public static Name html(String value) {
-        return new Name(value, true);
+    public static Label html(String value) {
+        return new Label(value, true);
     }
 
     public boolean isEmpty() {
         return value.length() == 0;
+    }
+
+    public String serialized() {
+        return html
+                ? ("<" + value + ">")
+                : ("\"" + value.replace("\"", "\\\"").replace("\n", "\\n") + "\"");
+    }
+
+    @Override
+    public void apply(Map<String, Object> attrs) {
+        attrs.put("label", serialized());
     }
 
     @Override
@@ -48,9 +63,9 @@ public class Name {
             return false;
         }
 
-        Name name = (Name) o;
+        Label label = (Label) o;
 
-        return !(value != null ? !value.equals(name.value) : name.value != null);
+        return !(value != null ? !value.equals(label.value) : label.value != null);
     }
 
     @Override
@@ -62,4 +77,6 @@ public class Name {
     public String toString() {
         return value;
     }
+
+
 }

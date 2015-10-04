@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz;
 
+import org.junit.After;
 import org.junit.Test;
 
 import static guru.nidi.graphviz.Compass.*;
@@ -25,6 +26,11 @@ import static org.junit.Assert.assertEquals;
  *
  */
 public class SerializerTest {
+    @After
+    public void closeContext() {
+        CreationContext.end();
+    }
+
     @Test
     public void simple() {
         assertGraph("graph {\n}", graph());
@@ -59,6 +65,16 @@ public class SerializerTest {
     public void nodes() {
         assertGraph("graph 'x' {\n'x' ['bla'='blu']\n}", graph("x")
                 .with(node("x").attr("bla", "blu")));
+    }
+
+    @Test
+    public void context() {
+        final CreationContext ctx = CreationContext.begin();
+        ctx.graphs().attrs("g", "x");
+        ctx.nodes().attrs("n", "y");
+        ctx.links().attrs("l", "z");
+        assertGraph("graph 'x' {\ngraph ['g'='x']\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
+                .with(node("x").attr("bla", "blu").link(to(node("y")))));
     }
 
     @Test

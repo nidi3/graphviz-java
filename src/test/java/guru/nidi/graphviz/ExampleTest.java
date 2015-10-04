@@ -17,6 +17,7 @@ package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.File;
@@ -31,6 +32,11 @@ import static guru.nidi.graphviz.attribute.Records.turn;
  *
  */
 public class ExampleTest {
+    @After
+    public void closeContext() {
+        CreationContext.end();
+    }
+
     @Test
     public void ex11() {
         new CreationContext(cc -> {

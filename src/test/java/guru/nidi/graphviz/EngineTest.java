@@ -19,6 +19,7 @@ import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizJdkEngine;
 import guru.nidi.graphviz.engine.GraphvizServerEngine;
 import guru.nidi.graphviz.engine.GraphvizV8Engine;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -35,6 +36,11 @@ public class EngineTest {
             " -->\n" +
             "<!-- Title: g Pages: 1 -->\n" +
             "<svg";
+
+    @AfterClass
+    public static void end() {
+        Graphviz.useEngine(null);
+    }
 
     @Test
     public void jdk() {

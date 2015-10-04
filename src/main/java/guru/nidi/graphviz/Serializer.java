@@ -40,14 +40,11 @@ public class Serializer {
     private void graph(Graph graph, boolean toplevel) {
         if (toplevel) {
             s.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
-            if (!graph.name.isEmpty()) {
-                name(graph.name);
-                s.append(" ");
+            if (!graph.label.isEmpty()) {
+                s.append(graph.label.serialized()).append(" ");
             }
-        } else if (!graph.name.isEmpty()) {
-            s.append("subgraph ");
-            name(graph.name);
-            s.append(" ");
+        } else if (!graph.label.isEmpty()) {
+            s.append("subgraph ").append(graph.label.serialized()).append(" ");
         }
         s.append("{\n");
         if (!graph.attributes.isEmpty()) {
@@ -126,24 +123,18 @@ public class Serializer {
     }
 
     private void node(Node node) {
-        name(node.name);
+        s.append(node.label.serialized());
         attrs(node.attributes);
     }
 
     private void point(NodePoint point) {
-        name(point.node.name);
+        s.append(point.node.label.serialized());
         if (point.record != null) {
             s.append(":");
-            name(Name.of(point.record));
+            s.append(Label.of(point.record).serialized());
         }
         if (point.compass != null) {
             s.append(":").append(point.compass.name().toLowerCase());
-        }
-    }
-
-    private void name(Name name) {
-        if (name != null) {
-            s.append(name.html ? ("<" + name.value + ">") : ("\"" + name.value.replace("\"", "\\\"").replace("\n", "\\n") + "\""));
         }
     }
 
@@ -157,9 +148,9 @@ public class Serializer {
                 } else {
                     s.append(",");
                 }
-                name(Name.of(attr.getKey()));
-                s.append("=");
-                name(Name.of(attr.getValue().toString()));
+                s.append(Label.of(attr.getKey()).serialized())
+                        .append("=")
+                        .append(Label.of(attr.getValue().toString()).serialized());
             }
             s.append("]");
         }

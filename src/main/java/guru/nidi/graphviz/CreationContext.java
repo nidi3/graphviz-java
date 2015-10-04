@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  */
 public class CreationContext {
     private final static ThreadLocal<CreationContext> context = new ThreadLocal<>();
-    private final Map<Name, Node> nodes = new HashMap<>();
+    private final Map<Label, Node> nodes = new HashMap<>();
     private final Attributed<Attributed<Node>> nodeAttributes = new Attributed<>();
     private final Attributed<Attributed<Link>> linkAttributes = new Attributed<>();
     private final Attributed<Attributed<Graph>> graphAttributes = new Attributed<>();
@@ -70,7 +70,7 @@ public class CreationContext {
         return graphAttributes;
     }
 
-    Node getOrCreateNode(Name name) {
-        return nodes.computeIfAbsent(name, Node::new).attrs(nodeAttributes);
+    Node getOrCreateNode(Label label) {
+        return nodes.computeIfAbsent(label, Node::new).attrs(nodeAttributes);
     }
 }

@@ -15,11 +15,6 @@
  */
 package guru.nidi.graphviz;
 
-import guru.nidi.graphviz.attribute.Attribute;
-
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  *
  */
@@ -35,16 +30,16 @@ public class Factory {
         return Graph.named(name);
     }
 
-    public static Graph graph(Name name) {
-        return Graph.named(name);
+    public static Graph graph(Label label) {
+        return Graph.named(label);
     }
 
     public static Node node(String name) {
         return Node.named(name);
     }
 
-    public static Node node(Name name) {
-        return Node.named(name);
+    public static Node node(Label label) {
+        return Node.named(label);
     }
 
     public static NodePoint compass(Compass compass) {
@@ -55,12 +50,12 @@ public class Factory {
         return NodePoint.ofRecord(record);
     }
 
-    public static Name name(String name) {
-        return Name.of(name);
+    public static Label name(String name) {
+        return Label.of(name);
     }
 
-    public static Name html(String html) {
-        return Name.html(html);
+    public static Label html(String html) {
+        return Label.html(html);
     }
 
     public static Link to(Node node) {

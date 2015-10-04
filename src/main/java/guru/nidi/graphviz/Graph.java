@@ -15,8 +15,6 @@
  */
 package guru.nidi.graphviz;
 
-import guru.nidi.graphviz.attribute.Attributes;
-
 import java.util.*;
 
 /**
@@ -25,27 +23,27 @@ import java.util.*;
 public class Graph extends Attributed<Graph> implements Linkable, LinkTarget {
     final boolean strict;
     final boolean directed;
-    final Name name;
+    final Label label;
     final Set<Node> nodes = new LinkedHashSet<>();
     final Set<Graph> subgraphs = new LinkedHashSet<>();
     final List<Link> links = new ArrayList<>();
 
-    private Graph(boolean strict, boolean directed, Name name) {
+    private Graph(boolean strict, boolean directed, Label label) {
         this.strict = strict;
         this.directed = directed;
-        this.name = name;
+        this.label = label;
         final CreationContext ctx = CreationContext.current();
         if (ctx!=null){
             attrs(ctx.graphs());
         }
     }
 
-    public static Graph named(Name name) {
-        return new Graph(false, false, name);
+    public static Graph named(Label label) {
+        return new Graph(false, false, label);
     }
 
     public static Graph named(String name) {
-        return named(Name.of(name));
+        return named(Label.of(name));
     }
 
     public static Graph nameless() {
@@ -53,11 +51,11 @@ public class Graph extends Attributed<Graph> implements Linkable, LinkTarget {
     }
 
     public Graph strict() {
-        return new Graph(true, directed, name);
+        return new Graph(true, directed, label);
     }
 
     public Graph directed() {
-        return new Graph(strict, true, name);
+        return new Graph(strict, true, label);
     }
 
     public Graph with(Node... nodes) {
@@ -97,8 +95,8 @@ public class Graph extends Attributed<Graph> implements Linkable, LinkTarget {
     }
 
     @Override
-    public Name name() {
-        return name;
+    public Label name() {
+        return label;
     }
 
     @Override

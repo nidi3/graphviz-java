@@ -25,20 +25,20 @@ import static java.util.stream.Collectors.joining;
  *
  */
 public class Node extends Attributed<Node> implements Linkable {
-    final Name name;
+    final Label label;
     final List<Link> links = new ArrayList<>();
 
-    Node(Name name) {
-        this.name = name;
+    Node(Label label) {
+        this.label = label;
     }
 
-    public static Node named(Name name) {
+    public static Node named(Label label) {
         final CreationContext ctx = CreationContext.current();
-        return ctx == null ? new Node(name) : ctx.getOrCreateNode(name);
+        return ctx == null ? new Node(label) : ctx.getOrCreateNode(label);
     }
 
     public static Node named(String name) {
-        return named(Name.of(name));
+        return named(Label.of(name));
     }
 
     public NodePoint record(String record) {
@@ -79,17 +79,17 @@ public class Node extends Attributed<Node> implements Linkable {
 
         Node node = (Node) o;
 
-        return !(name != null ? !name.equals(node.name) : node.name != null);
+        return !(label != null ? !label.equals(node.label) : node.label != null);
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        return label != null ? label.hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        return name + attributes.toString() + "->" +
+        return label + attributes.toString() + "->" +
                 links.stream().map(l -> l.to.name().toString()).collect(joining(","));
     }
 
