@@ -23,6 +23,7 @@ import java.util.*;
 public class Graph implements Linkable, LinkTarget {
     final boolean strict;
     final boolean directed;
+    final boolean cluster;
     final Label label;
     final Set<Node> nodes = new LinkedHashSet<>();
     final Set<Graph> subgraphs = new LinkedHashSet<>();
@@ -32,9 +33,10 @@ public class Graph implements Linkable, LinkTarget {
     final SimpleAttributed<Graph> linkAttributes = new SimpleAttributed<>(this);
     final SimpleAttributed<Graph> graphAttributes = new SimpleAttributed<>(this);
 
-    private Graph(boolean strict, boolean directed, Label label) {
+    private Graph(boolean strict, boolean directed, boolean cluster, Label label) {
         this.strict = strict;
         this.directed = directed;
+        this.cluster = cluster;
         this.label = label;
         final CreationContext ctx = CreationContext.current();
         if (ctx != null) {
@@ -43,7 +45,7 @@ public class Graph implements Linkable, LinkTarget {
     }
 
     public static Graph named(Label label) {
-        return new Graph(false, false, label);
+        return new Graph(false, false, false, label);
     }
 
     public static Graph named(String name) {
@@ -55,11 +57,15 @@ public class Graph implements Linkable, LinkTarget {
     }
 
     public Graph strict() {
-        return new Graph(true, directed, label);
+        return new Graph(true, directed, false, label);
     }
 
     public Graph directed() {
-        return new Graph(strict, true, label);
+        return new Graph(strict, true, false, label);
+    }
+
+    public Graph cluster() {
+        return new Graph(strict, directed, true, label);
     }
 
     public Graph node(Node... nodes) {

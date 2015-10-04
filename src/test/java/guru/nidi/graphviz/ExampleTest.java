@@ -287,4 +287,28 @@ public class ExampleTest {
                         node4.link(between(record("p"), node7.compass(W))));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex6.png"), "png", 300, 300);
     }
+
+    @Test
+    public void ex7() throws IOException {
+        final Graph g = graph("ex7").directed()
+                .graph(
+                        graph().cluster()
+                                .node().attr(Style.FILLED, Color.WHITE)
+                                .general().attr(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
+                                .node(node("a0").link(node("a1").link(node("a2").link(node("a3"))))),
+                        graph("x").cluster()
+                                .node().attr(Style.FILLED)
+                                .general().attr(Color.BLUE, Label.of("process #2"))
+                                .node(node("b0").link(node("b1").link(node("b2").link(node("b3"))))))
+                .node(
+                        node("start").link("a0", "b0"),
+                        node("a1").link("b3"),
+                        node("b2").link("a3"),
+                        node("a3").link("a0"),
+                        node("a3").link("end"),
+                        node("b3").link("end")
+                );
+        Graphviz.fromGraph(g).renderToFile(new File("target/ex7.png"), "png", 300, 300);
+    }
+
 }

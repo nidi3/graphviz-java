@@ -51,7 +51,7 @@ public class Label implements Attribute {
 
     @Override
     public void apply(Map<String, Object> attrs) {
-        attrs.put("label", serialized());
+        attrs.put("label", this);
     }
 
     @Override

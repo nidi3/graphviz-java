@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.joining;
 /**
  *
  */
-public class Node implements Linkable, Attributed<Node>,LinkSource {
+public class Node implements Linkable, Attributed<Node>, LinkSource {
     final Label label;
     final List<Link> links;
     final Map<String, Object> attributes;
@@ -78,6 +78,18 @@ public class Node implements Linkable, Attributed<Node>,LinkSource {
             newLinks.add(Link.between(from(link), link.to).attr(link.attributes));
         }
         return new Node(label, newLinks, attributes);
+    }
+
+    public Node link(String node) {
+        return link(Node.named(node));
+    }
+
+    public Node link(String... nodes) {
+        final Node[] ns = new Node[nodes.length];
+        for (int i = 0; i < ns.length; i++) {
+            ns[i] = Node.named(nodes[i]);
+        }
+        return link(ns);
     }
 
     public Node attr(String name, Object value) {

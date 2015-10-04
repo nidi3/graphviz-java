@@ -40,8 +40,10 @@ public class Serializer {
             if (!graph.label.isEmpty()) {
                 s.append(graph.label.serialized()).append(" ");
             }
-        } else if (!graph.label.isEmpty()) {
-            s.append("subgraph ").append(graph.label.serialized()).append(" ");
+        } else if (!graph.label.isEmpty() || graph.cluster) {
+            s.append("subgraph ")
+                    .append((graph.cluster ? Label.of("cluster" + graph.label.value) : graph.label).serialized())
+                    .append(" ");
         }
         s.append("{\n");
 
@@ -49,10 +51,8 @@ public class Serializer {
         attributes("node", graph.nodeAttributes);
         attributes("edge", graph.linkAttributes);
         for (final Map.Entry<String, Object> attr : graph.attributes.attributes.entrySet()) {
-            s.append(Label.of(attr.getKey()).serialized())
-                    .append("=")
-                    .append(Label.of(attr.getValue().toString()).serialized())
-                    .append("\n");
+            attr(attr.getKey(), attr.getValue());
+            s.append("\n");
         }
 
         final List<Node> nodes = new ArrayList<>();
@@ -177,11 +177,15 @@ public class Serializer {
                 } else {
                     s.append(",");
                 }
-                s.append(Label.of(attr.getKey()).serialized())
-                        .append("=")
-                        .append(Label.of(attr.getValue().toString()).serialized());
+                attr(attr.getKey(), attr.getValue());
             }
             s.append("]");
         }
+    }
+
+    private void attr(String key, Object value) {
+        s.append(Label.of(key).serialized())
+                .append("=")
+                .append((value instanceof Label ? (Label) value : Label.of(value.toString())).serialized());
     }
 }
