@@ -301,12 +301,13 @@ public class ExampleTest {
                                 .general().attr(Color.BLUE, Label.of("process #2"))
                                 .node(node("b0").link(node("b1").link(node("b2").link(node("b3"))))))
                 .node(
-                        node("start").link("a0", "b0"),
+                        node("start").attr(Shape.mDiamond("", "")).link("a0", "b0"),
                         node("a1").link("b3"),
                         node("b2").link("a3"),
                         node("a3").link("a0"),
                         node("a3").link("end"),
-                        node("b3").link("end")
+                        node("b3").link("end"),
+                        node("end").attr(Shape.mSquare("", ""))
                 );
         Graphviz.fromGraph(g).renderToFile(new File("target/ex7.png"), "png", 300, 300);
     }

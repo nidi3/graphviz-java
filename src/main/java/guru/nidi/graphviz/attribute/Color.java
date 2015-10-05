@@ -19,24 +19,27 @@ package guru.nidi.graphviz.attribute;
  *
  */
 public class Color extends SimpleAttribute<String> {
+    private Color(String key, String value) {
+        super(key, value);
+    }
 
     protected Color(String value) {
         super("color", value);
     }
 
-    public Attribute fill() {
+    public Color fill() {
         return key("fillcolor");
     }
 
-    public Attribute background() {
+    public Color background() {
         return key("bgcolor");
     }
 
-    public Attribute font() {
+    public Color font() {
         return key("fontcolor");
     }
 
-    public Attribute labelFont() {
+    public Color labelFont() {
         return key("labelfontcolor");
     }
 
