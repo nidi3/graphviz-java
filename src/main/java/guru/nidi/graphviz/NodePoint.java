@@ -29,23 +29,31 @@ public class NodePoint implements LinkTarget {
         this.compass = compass;
     }
 
-    public static NodePoint ofRecord(String record) {
-        return new NodePoint(null, record, null);
+    public static NodePoint ofLoc(String record) {
+        return ofLoc(record, null);
     }
 
-    public static NodePoint ofCompass(Compass compass) {
-        return new NodePoint(null, null, compass);
+    public static NodePoint ofLoc(Compass compass) {
+        return ofLoc(null, compass);
+    }
+
+    public static NodePoint ofLoc(String record, Compass compass) {
+        return new NodePoint(null, record, compass);
     }
 
     public static NodePoint of(Node node) {
         return new NodePoint(node, null, null);
     }
 
-    public NodePoint record(String record) {
+    public NodePoint loc(String record) {
         return new NodePoint(node, record, compass);
     }
 
-    public NodePoint compass(Compass compass) {
+    public NodePoint loc(Compass compass) {
+        return new NodePoint(node, record, compass);
+    }
+
+    public NodePoint loc(String record, Compass compass) {
         return new NodePoint(node, record, compass);
     }
 

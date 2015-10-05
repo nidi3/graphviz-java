@@ -42,12 +42,16 @@ public class Factory {
         return Node.named(label);
     }
 
-    public static NodePoint compass(Compass compass) {
-        return NodePoint.ofCompass(compass);
+    public static NodePoint loc(String record) {
+        return NodePoint.ofLoc(record);
     }
 
-    public static NodePoint record(String record) {
-        return NodePoint.ofRecord(record);
+    public static NodePoint loc(Compass compass) {
+        return NodePoint.ofLoc(compass);
+    }
+
+    public static NodePoint loc(String record, Compass compass) {
+        return NodePoint.ofLoc(record, compass);
     }
 
     public static Label name(String name) {

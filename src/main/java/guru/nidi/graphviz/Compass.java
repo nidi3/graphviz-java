@@ -19,5 +19,14 @@ package guru.nidi.graphviz;
  *
  */
 public enum Compass {
-    N, NE, E, SE, S, SW, W, NW, C
+    NORTH("n"), NORTH_EAST("ne"), EAST("e"), SOUTH_EAST("se"),
+    SOUTH("s"), SOUTH_WEST("sw"), WEST("w"), NORTH_WEST("nw"),
+    CENTER("c");
+
+    final String value;
+
+    Compass(String value) {
+        this.value = value;
+    }
+
 }

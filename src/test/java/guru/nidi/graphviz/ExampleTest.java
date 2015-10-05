@@ -23,7 +23,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static guru.nidi.graphviz.Compass.W;
+import static guru.nidi.graphviz.Compass.*;
 import static guru.nidi.graphviz.Factory.*;
 import static guru.nidi.graphviz.Link.to;
 import static guru.nidi.graphviz.attribute.Records.rec;
@@ -109,8 +109,8 @@ public class ExampleTest {
                 struct3 = node("struct3").attr(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
         final Graph g = graph("ex41").directed().node(
                 struct1.link(
-                        between(record("f1"), struct2.record("f0")),
-                        between(record("f2"), struct3.record("here"))));
+                        between(loc("f1"), struct2.loc("f0")),
+                        between(loc("f2"), struct3.loc("here"))));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex41.png"), "png", 300, 300);
     }
 
@@ -131,8 +131,8 @@ public class ExampleTest {
                         rec("g"), rec("h")));
         final Graph g = graph("ex42").directed().node(
                 struct1.link(
-                        between(record("f1"), struct2.record("f0")),
-                        between(record("f2"), struct3.record("here"))));
+                        between(loc("f1"), struct2.loc("f0")),
+                        between(loc("f2"), struct3.loc("here"))));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex42.png"), "png", 300, 300);
     }
 
@@ -273,13 +273,13 @@ public class ExampleTest {
                 .general().attr(RankDir.LEFT_TO_RIGHT)
                 .node(
                         node0.link(
-                                between(record("f0"), node1.compass(W)),
-                                between(record("f1"), node2.compass(W)),
-                                between(record("f2"), node3.compass(W)),
-                                between(record("f5"), node4.compass(W)),
-                                between(record("f6"), node5.compass(W))),
-                        node2.link(between(record("p"), node6.compass(W))),
-                        node4.link(between(record("p"), node7.compass(W))));
+                                between(loc("f0"), node1.loc(WEST)),
+                                between(loc("f1"), node2.loc(WEST)),
+                                between(loc("f2"), node3.loc(WEST)),
+                                between(loc("f5"), node4.loc(WEST)),
+                                between(loc("f6"), node5.loc(WEST))),
+                        node2.link(between(loc("p"), node6.loc(WEST))),
+                        node4.link(between(loc("p"), node7.loc(WEST))));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex6.png"), "png", 300, 300);
     }
 

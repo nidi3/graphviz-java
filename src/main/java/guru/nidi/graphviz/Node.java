@@ -56,12 +56,16 @@ public class Node implements Linkable, Attributed<Node>, LinkSource {
         return named(Label.of(name));
     }
 
-    public NodePoint record(String record) {
-        return NodePoint.of(this).record(record);
+    public NodePoint loc(String record) {
+        return NodePoint.of(this).loc(record);
     }
 
-    public NodePoint compass(Compass compass) {
-        return NodePoint.of(this).compass(compass);
+    public NodePoint loc(Compass compass) {
+        return NodePoint.of(this).loc(compass);
+    }
+
+    public NodePoint loc(String record, Compass compass) {
+        return NodePoint.of(this).loc(record, compass);
     }
 
     public Node link(LinkSource source) {
@@ -116,7 +120,7 @@ public class Node implements Linkable, Attributed<Node>, LinkSource {
     private NodePoint from(Link link) {
         if (link.from instanceof NodePoint) {
             final NodePoint f = (NodePoint) link.from;
-            return NodePoint.of(this).record(f.record).compass(f.compass);
+            return NodePoint.of(this).loc(f.record, f.compass);
         }
         return NodePoint.of(this);
     }

@@ -181,7 +181,7 @@ public class Serializer {
             s.append(Label.of(point.record).serialized());
         }
         if (point.compass != null) {
-            s.append(":").append(point.compass.name().toLowerCase());
+            s.append(":").append(point.compass.value);
         }
     }
 
