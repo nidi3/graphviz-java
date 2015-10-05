@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz;
+package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.model.CreationContext;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Serializer;
 import org.junit.After;
 import org.junit.Test;
 
-import static guru.nidi.graphviz.Compass.*;
-import static guru.nidi.graphviz.Factory.*;
+import static guru.nidi.graphviz.model.Compass.*;
+import static guru.nidi.graphviz.model.Factory.*;
 import static org.junit.Assert.assertEquals;
 
 /**

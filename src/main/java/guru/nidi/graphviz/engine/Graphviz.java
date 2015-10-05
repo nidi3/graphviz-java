@@ -18,8 +18,8 @@ package guru.nidi.graphviz.engine;
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGException;
 import com.kitfox.svg.SVGUniverse;
-import guru.nidi.graphviz.Graph;
-import guru.nidi.graphviz.Serializer;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Serializer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

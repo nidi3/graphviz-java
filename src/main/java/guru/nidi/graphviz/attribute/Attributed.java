@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz;
+package guru.nidi.graphviz.attribute;
+
+import guru.nidi.graphviz.attribute.Attribute;
+
+import java.util.Map;
 
 /**
  *
  */
-public interface LinkTarget extends LinkSource {
-    Label getName();
+public interface Attributed<T> extends Attribute {
+    T attr(String name, Object value);
+
+    T attr(Map<String, Object> attrs);
+
+    T attr(Object... keysAndValues);
 }

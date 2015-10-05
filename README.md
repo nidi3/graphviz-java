@@ -11,7 +11,7 @@ as a fallback with Java 8's Nashorn engine.
 The basic usage is as follows:
   
 ```java
-import static guru.nidi.graphviz.Factory.*;
+import static guru.nidi.graphviz.model.Factory.*;
 
 Graph g = graph("example").directed().node(node("a").link(node("b")));
 Graphviz.fromGraph(g).renderToFile(new File("example.png"), "png", 100, 100);

@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz;
+package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.CreationContext;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
 import org.junit.After;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static guru.nidi.graphviz.Compass.*;
-import static guru.nidi.graphviz.Factory.*;
-import static guru.nidi.graphviz.Link.to;
+import static guru.nidi.graphviz.model.Compass.*;
+import static guru.nidi.graphviz.model.Factory.*;
+import static guru.nidi.graphviz.model.Link.to;
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
 

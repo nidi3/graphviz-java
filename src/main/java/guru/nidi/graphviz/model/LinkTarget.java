@@ -13,20 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz;
+package guru.nidi.graphviz.model;
 
 /**
  *
  */
-public enum Compass {
-    NORTH("n"), NORTH_EAST("ne"), EAST("e"), SOUTH_EAST("se"),
-    SOUTH("s"), SOUTH_WEST("sw"), WEST("w"), NORTH_WEST("nw"),
-    CENTER("c");
-
-    final String value;
-
-    Compass(String value) {
-        this.value = value;
-    }
-
+public interface LinkTarget extends LinkSource {
+    Label getName();
 }

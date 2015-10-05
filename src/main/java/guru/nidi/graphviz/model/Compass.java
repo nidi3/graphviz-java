@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz;
-
-import guru.nidi.graphviz.attribute.Attribute;
-
-import java.util.Map;
+package guru.nidi.graphviz.model;
 
 /**
  *
  */
-public interface Attributed<T> extends Attribute {
-    T attr(String name, Object value);
+public enum Compass {
+    NORTH("n"), NORTH_EAST("ne"), EAST("e"), SOUTH_EAST("se"),
+    SOUTH("s"), SOUTH_WEST("sw"), WEST("w"), NORTH_WEST("nw"),
+    CENTER("c");
 
-    T attr(Map<String, Object> attrs);
+    final String value;
 
-    T attr(Object... keysAndValues);
+    Compass(String value) {
+        this.value = value;
+    }
+
 }
