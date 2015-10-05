@@ -99,7 +99,7 @@ public class SerializerTest {
     }
 
     @Test
-    public void namelesSubgraph() {
+    public void namelessSubgraph() {
         assertGraph("graph 'x' {\n{\n'x' ['bla'='blu']\n}\n}", graph("x")
                 .graph(graph().node(node("x").attr("bla", "blu"))));
     }

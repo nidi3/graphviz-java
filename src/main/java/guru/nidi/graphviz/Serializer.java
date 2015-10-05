@@ -74,7 +74,7 @@ public class Serializer {
         }
 
         nodes(graph, nodes);
-        graphs(graphs);
+        graphs(graphs, nodes);
 
         edges(nodes);
         edges(graphs);
@@ -129,13 +129,24 @@ public class Serializer {
         }
     }
 
-    private void graphs(List<Graph> graphs) {
+    private void graphs(List<Graph> graphs, List<Node> nodes) {
         for (final Graph graph : graphs) {
-            if (graph.links.isEmpty()) {
+            if (graph.links.isEmpty() && !isLinked(graph, nodes) && !isLinked(graph, graphs)) {
                 graph(graph, false);
                 s.append("\n");
             }
         }
+    }
+
+    private boolean isLinked(Graph graph, List<? extends Linkable> linkables) {
+        for (final Linkable linkable : linkables) {
+            for (final Link link : linkable.getLinks()) {
+                if (link.to.equals(graph)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void edges(List<? extends Linkable> linkables) {

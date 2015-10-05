@@ -23,7 +23,7 @@ Node
     init = node("init"),
     execute = node("execute"),
     compare = node("compare").attr(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
-    make_string = node("make_string").attr(Label.of("make a\nstring")),
+    mkString = node("mkString").attr(Label.of("make a\nstring")),
     printf = node("printf");
 
 Graph g = graph("example2").directed().node(
@@ -33,9 +33,9 @@ Graph g = graph("example2").directed().node(
         node("cleanup"),
         to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
     execute.link(
-        graph().node(make_string, printf),
+        graph().node(mkString, printf),
         to(compare).attr(Color.RED)),
-    init.link(make_string));
+    init.link(mkString));
 
 Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"), "png", 300, 300);
 ```
