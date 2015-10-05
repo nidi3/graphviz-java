@@ -16,7 +16,7 @@ import static guru.nidi.graphviz.Factory.*;
 Graph g = graph("example").directed().node(node("a").link(node("b")));
 Graphviz.fromGraph(g).renderToFile(new File("example.png"), "png", 300, 300);
 ```
-    
+which gives
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex1.png)
 
 ### Complex example
@@ -42,7 +42,7 @@ Graph g = graph("example2").directed().node(
 
 Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"), "png", 300, 300);
 ```
-    
+gives
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex2.png)
 
 ### Example with records
@@ -70,4 +70,5 @@ Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"), "png", 300, 300)
             node4.link(between(loc("p"), node7.loc(SOUTH_WEST))));
     Graphviz.fromGraph(g).renderToFile(new File("example/ex3.png"), "png", 300, 300);
 ```
+gives
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex3.png)
