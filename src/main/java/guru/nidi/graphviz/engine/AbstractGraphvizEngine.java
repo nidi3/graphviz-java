@@ -73,7 +73,10 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
     protected String vizCode() throws IOException {
         final InputStream in = getClass().getResourceAsStream("/viz-1.0.1.js");
         final byte[] buf = new byte[in.available()];
-        in.read(buf);
+        int read, total = 0;
+        while ((read = in.read(buf, total, Math.min(100000, buf.length - total))) > 0) {
+            total += read;
+        }
         return new String(buf, "utf-8");
     }
 
