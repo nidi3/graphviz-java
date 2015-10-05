@@ -18,7 +18,7 @@ package guru.nidi.graphviz;
 /**
  *
  */
-public class NodePoint implements LinkTarget{
+public class NodePoint implements LinkTarget {
     final Node node;
     final String record;
     final Compass compass;

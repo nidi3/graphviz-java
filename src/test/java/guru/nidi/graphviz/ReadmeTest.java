@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz;
 
+import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Graphviz;
 import org.junit.Test;
 
@@ -22,6 +25,7 @@ import java.io.File;
 
 import static guru.nidi.graphviz.Factory.graph;
 import static guru.nidi.graphviz.Factory.node;
+import static guru.nidi.graphviz.Link.to;
 
 /**
  *
@@ -29,8 +33,29 @@ import static guru.nidi.graphviz.Factory.node;
 public class ReadmeTest {
     @Test
     public void ex1() {
-        final Graph g = graph("example").directed().node(node("a").link(node("b")));
+        Graph g = graph("example1").directed().node(node("a").link(node("b")));
         Graphviz.fromGraph(g).renderToFile(new File("example/ex1.png"), "png", 300, 300);
+    }
+
+    @Test
+    public void ex2() {
+        Node
+                init = node("init"),
+                execute = node("execute"),
+                compare = node("compare").attr(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
+                make_string = node("make_string"),
+                printf = node("printf");
+
+        Graph g = graph("example2").directed().node(
+                node("main").attr(Shape.RECTANGLE).link(
+                        to(node("parse").link(execute)).attr("weight", 8),
+                        to(init).attr(Style.DOTTED),
+                        node("cleanup"),
+                        to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
+                execute.link(graph().node(make_string, printf), to(compare).attr(Color.RED)),
+                init.link(make_string.attr(Label.of("make a\nstring"))));
+
+        Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"), "png", 300, 300);
     }
 
 }

@@ -72,24 +72,19 @@ public class ExampleTest {
     @Test
     public void ex2() {
         final Node
-                main = node("main").attr(Shape.RECTANGLE),
-                parse = node("parse"),
                 init = node("init"),
                 execute = node("execute"),
                 compare = node("compare").attr(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
                 make_string = node("make_string"),
                 printf = node("printf");
-        final Attribute red = Color.RED;
-        final Graph g = graph("ex2").directed().general().attr("size", "4,4").node(
-                main.link(
-                        to(parse).attr("weight", 8),
+        final Graph g = graph("ex2").directed().node(
+                node("main").attr(Shape.RECTANGLE).link(
+                        to(node("parse").link(execute)).attr("weight", 8),
                         to(init).attr(Style.DOTTED),
                         node("cleanup"),
-                        to(printf).attr(Style.BOLD, Label.of("100 times"), red)),
-                parse.link(to(execute)),
-                execute.link(to(graph().node(make_string, printf))),
-                init.link(to(make_string.attr(Label.of("make a\nstring")))),
-                execute.link(to(compare).attr(red)));
+                        to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
+                execute.link(graph().node(make_string, printf), to(compare).attr(Color.RED)),
+                init.link(make_string.attr(Label.of("make a\nstring"))));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex2.png"), "png", 300, 300);
     }
 
