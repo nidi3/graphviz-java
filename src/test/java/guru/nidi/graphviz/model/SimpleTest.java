@@ -15,17 +15,11 @@
  */
 package guru.nidi.graphviz.model;
 
-import com.eclipsesource.v8.V8;
-import com.eclipsesource.v8.V8Array;
-import com.kitfox.svg.SVGException;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizException;
 import org.junit.Test;
 
-import javax.script.ScriptException;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -36,15 +30,16 @@ import static org.junit.Assert.fail;
  */
 public class SimpleTest {
     @Test
-    public void simple() throws IOException, ScriptException, SVGException {
+    public void simple() {
         final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");
-        System.out.println(viz.createSvg());
         viz.renderToFile(new File("target/g2.png"), "png", 200, 200);
+        System.out.println(viz.createSvg());
     }
 
     @Test
-    public void dotError() throws IOException, ScriptException, SVGException {
+    public void dotError() {
         try {
+            System.out.println("Try error...");
             Graphviz.fromString("g { a -> b; }").createSvg();
             fail();
         } catch (GraphvizException e) {
