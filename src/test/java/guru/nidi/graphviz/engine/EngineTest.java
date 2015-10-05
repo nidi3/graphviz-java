@@ -50,6 +50,7 @@ public class EngineTest {
 
     @Test
     public void server() {
+        GraphvizServerEngine.stopServer();
         try {
             Graphviz.useEngine(new GraphvizServerEngine());
             assertThat(Graphviz.fromString("graph g {a--b}").createSvg(), startsWith(START));
