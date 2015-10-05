@@ -9,7 +9,7 @@ as a fallback with Java 8's Nashorn engine.
 
 The basic usage is as follows:
   
-```
+```java
 import static guru.nidi.graphviz.Factory.*;
 
 Graph g = graph("example").directed().node(node("a").link(node("b")));
@@ -18,7 +18,7 @@ Graphviz.fromGraph(g).renderToFile(new File("example.png"), "png", 300, 300);
     
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex1.png)
 
-```
+```java
 Node
     init = node("init"),
     execute = node("execute"),
