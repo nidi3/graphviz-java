@@ -35,7 +35,7 @@ public class ReadmeTest {
     @Test
     public void ex1() {
         Graph g = graph("example1").directed().node(node("a").link(node("b")));
-        Graphviz.fromGraph(g).renderToFile(new File("example/ex1.png"), "png", 300, 300);
+        Graphviz.fromGraph(g).renderToFile(new File("example/ex1.png"), "png", 100, 100);
     }
 
     @Test
