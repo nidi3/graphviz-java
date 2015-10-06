@@ -32,7 +32,7 @@ public class SimpleTest {
     @Test
     public void simple() {
         final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");
-        viz.renderToFile(new File("target/g2.png"), "png", 200, 200);
+        viz.renderToFile(new File("target/g2.png"));
         System.out.println(viz.createSvg());
     }
 

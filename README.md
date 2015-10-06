@@ -14,7 +14,7 @@ The basic usage is as follows:
 import static guru.nidi.graphviz.model.Factory.*;
 
 Graph g = graph("example").directed().node(node("a").link(node("b")));
-Graphviz.fromGraph(g).renderToFile(new File("example.png"), "png", 100, 100);
+Graphviz.fromGraph(g).renderToFile(new File("example.png"));
 ```
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex1.png)
 
@@ -39,7 +39,7 @@ Graph g = graph("example2").directed().node(
         to(compare).attr(Color.RED)),
     init.link(mkString));
 
-Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"), "png", 300, 300);
+Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"));
 ```
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex2.png)
 
@@ -66,6 +66,6 @@ Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"), "png", 300, 300)
                 between(loc("f4"), node5.loc("v", NORTH))),
             node2.link(between(loc("p"), node6.loc(NORTH_WEST))),
             node4.link(between(loc("p"), node7.loc(SOUTH_WEST))));
-    Graphviz.fromGraph(g).renderToFile(new File("example/ex3.png"), "png", 300, 300);
+    Graphviz.fromGraph(g).renderToFile(new File("example/ex3.png"));
 ```
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex3.png)

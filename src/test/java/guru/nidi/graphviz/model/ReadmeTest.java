@@ -17,19 +17,16 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.model.Label;
-import guru.nidi.graphviz.model.Node;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
+import static guru.nidi.graphviz.attribute.Records.rec;
+import static guru.nidi.graphviz.attribute.Records.turn;
 import static guru.nidi.graphviz.model.Compass.*;
 import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.model.Link.to;
-import static guru.nidi.graphviz.attribute.Records.rec;
-import static guru.nidi.graphviz.attribute.Records.turn;
 
 /**
  *
@@ -38,7 +35,7 @@ public class ReadmeTest {
     @Test
     public void ex1() {
         Graph g = graph("example1").directed().node(node("a").link(node("b")));
-        Graphviz.fromGraph(g).renderToFile(new File("example/ex1.png"), "png", 100, 100);
+        Graphviz.fromGraph(g).renderToFile(new File("example/ex1.png"));
     }
 
     @Test
@@ -61,7 +58,7 @@ public class ReadmeTest {
                         to(compare).attr(Color.RED)),
                 init.link(mkString));
 
-        Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"), "png", 300, 300);
+        Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"));
     }
 
     @Test
@@ -86,7 +83,7 @@ public class ReadmeTest {
                                 between(loc("f4"), node5.loc("v", NORTH))),
                         node2.link(between(loc("p"), node6.loc(NORTH_WEST))),
                         node4.link(between(loc("p"), node7.loc(SOUTH_WEST))));
-        Graphviz.fromGraph(g).renderToFile(new File("example/ex3.png"), "png", 300, 300);
+        Graphviz.fromGraph(g).renderToFile(new File("example/ex3.png"));
     }
 
 }

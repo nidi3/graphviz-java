@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model;
+package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
-import org.junit.After;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
+import guru.nidi.graphviz.engine.GraphvizJdkEngine;
+import guru.nidi.graphviz.engine.GraphvizV8Engine;
+import guru.nidi.graphviz.model.CreationContext;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.model.Node;
 
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
@@ -32,14 +33,70 @@ import static guru.nidi.graphviz.model.Link.to;
 /**
  *
  */
-public class ExampleTest {
-    @After
-    public void closeContext() {
-        CreationContext.end();
+public class PerformanceTest {
+    public static void main(String[] args) {
+        final long a = System.nanoTime();
+        Graphviz.useEngine(new GraphvizV8Engine());
+//        Graphviz.useEngine(new GraphvizJdkEngine());
+        Graphviz.fromString("graph {a--b}").createSvg();
+        final long b = System.nanoTime();
+        System.out.printf("init %.0f ms%n", (b - a) / 1e6);
+
+        final PerformanceTest pt = new PerformanceTest();
+        print(pt.test());
+        for (int k = 0; k < 10; k++) {
+            print(pt.test());
+        }
+        print(pt.test(50));
     }
 
-    @Test
-    public void ex11() {
+    private static void print(long[] t) {
+//        System.out.printf("init %.0f ms%n", (t[1] - t[0]) / 1e6 );
+        System.out.printf("1 %.1f ms%n", (t[2] - t[1]) / 1e6);
+        System.out.printf("2 %.1f ms%n", (t[3] - t[2]) / 1e6);
+        System.out.printf("3 %.1f ms%n", (t[4] - t[3]) / 1e6);
+        System.out.printf("4 %.1f ms%n", (t[5] - t[4]) / 1e6);
+        System.out.printf("5 %.1f ms%n", (t[6] - t[5]) / 1e6);
+        System.out.printf("6 %.1f ms%n", (t[7] - t[6]) / 1e6);
+        System.out.printf("7 %.1f ms%n", (t[8] - t[7]) / 1e6);
+    }
+
+    private long[] test(int rounds) {
+        long[] sum = new long[9];
+        for (int i = 0; i < rounds; i++) {
+            final long[] s = test();
+            for (int j = 0; j < 9; j++) {
+                sum[j] += s[j];
+            }
+        }
+        for (int j = 0; j < 9; j++) {
+            sum[j] /= rounds;
+        }
+        return sum;
+    }
+
+    private long[] test() {
+        final long[] t = new long[9];
+        t[0] = System.nanoTime();
+        t[1] = System.nanoTime();
+        ex1();
+        t[2] = System.nanoTime();
+        ex2();
+        t[3] = System.nanoTime();
+        ex3();
+        t[4] = System.nanoTime();
+        ex4();
+        t[5] = System.nanoTime();
+        ex5();
+        t[6] = System.nanoTime();
+        ex6();
+        t[7] = System.nanoTime();
+        ex7();
+        t[8] = System.nanoTime();
+        return t;
+    }
+
+    public void ex1() {
         new CreationContext(cc -> {
             final Graph g = graph("ex1").directed().node(
                     node("main").link(
@@ -50,26 +107,10 @@ public class ExampleTest {
                             node("make_string"), node("printf"), node("compare")),
                     node("init").link(
                             node("make_string")));
-            Graphviz.fromGraph(g).renderToFile(new File("target/ex11.png"));
+            Graphviz.fromGraph(g).createSvg();
         });
     }
 
-    @Test
-    public void ex12() {
-        final Node
-                printf = node("printf"),
-                make_string = node("make_string");
-        final Graph g = graph("ex1").directed().node(
-                node("main").attr(Color.rgb("ffcc00"), Style.FILLED).link(
-                        node("parse").link(node("execute")
-                                .link(make_string, printf, node("compare"))),
-                        node("init").link(make_string),
-                        node("cleanup"),
-                        printf));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex12.png"));
-    }
-
-    @Test
     public void ex2() {
         final Node
                 init = node("init"),
@@ -85,24 +126,22 @@ public class ExampleTest {
                         to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
                 execute.link(graph().node(make_string, printf), to(compare).attr(Color.RED)),
                 init.link(make_string.attr(Label.of("make a\nstring"))));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex2.png"));
+        Graphviz.fromGraph(g).createSvg();
     }
 
-    @Test
     public void ex3() {
         final Node
                 a = node("a").attr(Shape.polygon(5, 0, 0), "peripheries", 3, Color.LIGHTBLUE, Style.FILLED),
-                c = node("c").attr(Shape.polygon(4, .4, 0), Label.html("hello world")),
+                c = node("c").attr(Shape.polygon(4, .4, 0), Label.of("hello world")),
                 d = node("d").attr(Shape.INV_TRIANGLE),
                 e = node("e").attr(Shape.polygon(4, 0, .7));
         final Graph g = graph("ex3").directed().node(
                 a.link(node("b").link(c, d)),
                 e);
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex3.png"));
+        Graphviz.fromGraph(g).createSvg();
     }
 
-    @Test
-    public void ex41() {
+    public void ex4() {
         final Node
                 struct1 = node("struct1").attr(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
                 struct2 = node("struct2").attr(Records.label("<f0> one|<f1> two")),
@@ -111,32 +150,9 @@ public class ExampleTest {
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex41.png"));
+        Graphviz.fromGraph(g).createSvg();
     }
 
-    @Test
-    public void ex42() throws IOException {
-        CreationContext.begin()
-                .graphs().attr(Color.YELLOWGREEN.background())
-                .nodes().attr(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
-                .links().attr(Style.DOTTED);
-        final Node
-                struct1 = node("struct1").attr(Records.mOf(rec("f0", "left"), rec("f1", "mid dle"), rec("f2", "right"))),
-                struct2 = node("struct2").attr(Records.mOf(rec("f0", "one"), rec("f1", "two"))),
-                struct3 = node("struct3").attr(Records.mOf(
-                        rec("hello\nworld"),
-                        turn(rec("b"),
-                                turn(rec("c"), rec("here", "d"), rec("e")),
-                                rec("f")),
-                        rec("g"), rec("h")));
-        final Graph g = graph("ex42").directed().node(
-                struct1.link(
-                        between(loc("f1"), struct2.loc("f0")),
-                        between(loc("f2"), struct3.loc("here"))));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex42.png"));
-    }
-
-    @Test
     public void ex5() {
         final Node
                 reiser = node("Reiser cpp"), csh = node("Cshell"),
@@ -255,10 +271,9 @@ public class ExampleTest {
                         archlib.link(adv),
                         proc.link(adv)
                 );
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex5.png"));
+        Graphviz.fromGraph(g).createSvg();
     }
 
-    @Test
     public void ex6() {
         final Node
                 node0 = node("node0").attr(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""), rec("f5", ""), rec("f6", ""))),
@@ -280,10 +295,9 @@ public class ExampleTest {
                                 between(loc("f6"), node5.loc(WEST))),
                         node2.link(between(loc("p"), node6.loc(WEST))),
                         node4.link(between(loc("p"), node7.loc(WEST))));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex6.png"));
+        Graphviz.fromGraph(g).createSvg();
     }
 
-    @Test
     public void ex7() {
         final Graph g = graph("ex7").directed()
                 .graph(
@@ -304,7 +318,7 @@ public class ExampleTest {
                         node("b3").link("end"),
                         node("end").attr(Shape.mSquare("", ""))
                 );
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex7.png"));
+        Graphviz.fromGraph(g).createSvg();
     }
 
 }

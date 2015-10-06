@@ -24,9 +24,7 @@ import guru.nidi.graphviz.model.Serializer;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URI;
 
 /**
@@ -35,9 +33,14 @@ import java.net.URI;
 public class Graphviz {
     private static GraphvizEngine engine;
     private final String dot;
+    private final String format;
+    private final int targetWidth, targetHeight;
 
-    private Graphviz(String dot) {
+    private Graphviz(String dot, String format, int targetWidth, int targetHeight) {
         this.dot = dot;
+        this.format = format;
+        this.targetWidth = targetWidth;
+        this.targetHeight = targetHeight;
     }
 
     public static void useEngine(GraphvizEngine engine) {
@@ -57,11 +60,25 @@ public class Graphviz {
     }
 
     public static Graphviz fromString(String dot) {
-        return new Graphviz(dot);
+        return new Graphviz(dot, null, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+
+    public static Graphviz fromFile(File dot) throws IOException {
+        try (final InputStream in = new FileInputStream(dot)) {
+            return fromString(IoUtils.readStream(in));
+        }
     }
 
     public static Graphviz fromGraph(Graph graph) {
         return fromString(new Serializer(graph).serialize());
+    }
+
+    public Graphviz targetSize(int targetWidth, int targetHeight) {
+        return new Graphviz(dot, format, targetWidth, targetHeight);
+    }
+
+    public Graphviz format(String format) {
+        return new Graphviz(dot, format, targetWidth, targetHeight);
     }
 
     public String createSvg() {
@@ -75,13 +92,25 @@ public class Graphviz {
         renderToGraphics(createDiagram(), graphics);
     }
 
-    public void renderToFile(File output, String format, int maxWidth, int maxHeight) {
+    public void renderToFile(File output) {
         final SVGDiagram diagram = createDiagram();
-        final double scale = Math.min(maxWidth / diagram.getWidth(), maxHeight / diagram.getHeight());
-        final BufferedImage img = new BufferedImage((int) (scale * diagram.getWidth()), (int) (scale * diagram.getHeight()), BufferedImage.TYPE_INT_ARGB);
+        double scale = Math.min(targetWidth / diagram.getWidth(), targetHeight / diagram.getHeight());
+        if (scale > 1000) {
+            scale = 1;
+        }
+        final BufferedImage img = new BufferedImage((int) Math.ceil(scale * diagram.getWidth()), (int) Math.ceil(scale * diagram.getHeight()), BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g = img.createGraphics();
-        g.scale(scale, scale);
+        if (scale != 1) {
+            g.scale(scale, scale);
+        }
         renderToGraphics(diagram, g);
+        final String f = format == null
+                ? output.getName().substring(output.getName().lastIndexOf('.') + 1)
+                : format;
+        writeToFile(output, f, img);
+    }
+
+    private void writeToFile(File output, String format, BufferedImage img) {
         try {
             ImageIO.write(img, format, output);
         } catch (IOException e) {
