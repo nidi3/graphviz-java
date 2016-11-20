@@ -43,10 +43,11 @@ public class DependencyTest {
     @Test
     public void dependencies() {
         class GuruNidiGraphviz implements DependencyDefiner {
-            JavaPackage model, attribute, engine;
+            JavaPackage model, attribute, engine, parse;
 
             public void dependUpon() {
                 engine.dependsUpon(model);
+                parse.dependsUpon(model, attribute);
                 model.dependsUpon(attribute);
             }
         }
