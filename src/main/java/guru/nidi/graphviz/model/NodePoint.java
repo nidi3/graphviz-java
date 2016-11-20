@@ -19,9 +19,9 @@ package guru.nidi.graphviz.model;
  *
  */
 public class NodePoint implements LinkTarget {
-    final Node node;
-    final String record;
-    final Compass compass;
+    public final Node node;
+    public final String record;
+    public final Compass compass;
 
     private NodePoint(Node node, String record, Compass compass) {
         this.node = node;
@@ -65,5 +65,33 @@ public class NodePoint implements LinkTarget {
     @Override
     public Link linkFrom() {
         return Link.to(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        NodePoint nodePoint = (NodePoint) o;
+
+        if (node != null ? !node.equals(nodePoint.node) : nodePoint.node != null) {
+            return false;
+        }
+        if (record != null ? !record.equals(nodePoint.record) : nodePoint.record != null) {
+            return false;
+        }
+        return compass == nodePoint.compass;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = node != null ? node.hashCode() : 0;
+        result = 31 * result + (record != null ? record.hashCode() : 0);
+        result = 31 * result + (compass != null ? compass.hashCode() : 0);
+        return result;
     }
 }

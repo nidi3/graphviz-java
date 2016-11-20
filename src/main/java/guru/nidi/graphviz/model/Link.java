@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  *
  */
-public class Link implements Attributed<Link>,LinkSource {
+public class Link implements Attributed<Link>, LinkSource {
     final LinkTarget from;
     final LinkTarget to;
     final Map<String, Object> attributes;
@@ -78,5 +78,33 @@ public class Link implements Attributed<Link>,LinkSource {
     @Override
     public Link linkFrom() {
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Link link = (Link) o;
+
+        if (from != null ? !from.equals(link.from) : link.from != null) {
+            return false;
+        }
+        if (to != null ? !to.equals(link.to) : link.to != null) {
+            return false;
+        }
+        return attributes.equals(link.attributes);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = from != null ? from.hashCode() : 0;
+        result = 31 * result + (to != null ? to.hashCode() : 0);
+        result = 31 * result + attributes.hashCode();
+        return result;
     }
 }

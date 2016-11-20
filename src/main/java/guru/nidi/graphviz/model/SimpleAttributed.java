@@ -54,4 +54,25 @@ public class SimpleAttributed<E> implements Attributed<E> {
     public void apply(Map<String, Object> attrs) {
         attrs.putAll(attributes);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        SimpleAttributed<?> that = (SimpleAttributed<?>) o;
+
+        return attributes.equals(that.attributes);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = attributes.hashCode();
+        return result;
+    }
 }

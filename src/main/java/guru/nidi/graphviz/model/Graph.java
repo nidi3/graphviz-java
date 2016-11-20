@@ -152,4 +152,70 @@ public class Graph implements Linkable, LinkTarget {
     public Link linkFrom() {
         return Link.to(this);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Graph graph = (Graph) o;
+
+        if (strict != graph.strict) {
+            return false;
+        }
+        if (directed != graph.directed) {
+            return false;
+        }
+        if (cluster != graph.cluster) {
+            return false;
+        }
+        if (!label.equals(graph.label)) {
+            return false;
+        }
+        if (!nodes.equals(graph.nodes)) {
+            return false;
+        }
+        if (!subgraphs.equals(graph.subgraphs)) {
+            return false;
+        }
+        if (!links.equals(graph.links)) {
+            return false;
+        }
+        if (!attributes.equals(graph.attributes)) {
+            return false;
+        }
+        if (!nodeAttributes.equals(graph.nodeAttributes)) {
+            return false;
+        }
+        if (!linkAttributes.equals(graph.linkAttributes)) {
+            return false;
+        }
+        return graphAttributes.equals(graph.graphAttributes);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (strict ? 1 : 0);
+        result = 31 * result + (directed ? 1 : 0);
+        result = 31 * result + (cluster ? 1 : 0);
+        result = 31 * result + label.hashCode();
+        result = 31 * result + nodes.hashCode();
+        result = 31 * result + subgraphs.hashCode();
+        result = 31 * result + links.hashCode();
+        result = 31 * result + attributes.hashCode();
+        result = 31 * result + nodeAttributes.hashCode();
+        result = 31 * result + linkAttributes.hashCode();
+        result = 31 * result + graphAttributes.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return new Serializer(this).serialize();
+    }
 }
