@@ -23,10 +23,10 @@ import java.util.*;
  *
  */
 public class Graph implements Linkable, LinkTarget {
-    final boolean strict;
-    final boolean directed;
-    final boolean cluster;
-    final Label label;
+    public final boolean strict;
+    public final boolean directed;
+    public final boolean cluster;
+    public final Label label;
     final Set<Node> nodes = new LinkedHashSet<>();
     final Set<Graph> subgraphs = new LinkedHashSet<>();
     final List<Link> links = new ArrayList<>();
@@ -68,6 +68,10 @@ public class Graph implements Linkable, LinkTarget {
 
     public Graph cluster() {
         return new Graph(strict, directed, true, label);
+    }
+
+    public Graph labeled(Label label) {
+        return new Graph(strict, directed, cluster, label);
     }
 
     public Graph node(Node... nodes) {
