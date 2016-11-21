@@ -17,7 +17,6 @@ package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.GraphvizJdkEngine;
 import guru.nidi.graphviz.engine.GraphvizV8Engine;
 import guru.nidi.graphviz.model.CreationContext;
 import guru.nidi.graphviz.model.Graph;
@@ -98,7 +97,7 @@ public class PerformanceTest {
 
     public void ex1() {
         new CreationContext(cc -> {
-            final Graph g = graph("ex1").directed().node(
+            final Graph g = graph("ex1").directed().withNodes(
                     node("main").link(
                             node("parse"), node("init"), node("cleanup"), node("printf")),
                     node("parse").link(
@@ -118,13 +117,13 @@ public class PerformanceTest {
                 compare = node("compare").attr(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
                 make_string = node("make_string"),
                 printf = node("printf");
-        final Graph g = graph("ex2").directed().node(
+        final Graph g = graph("ex2").directed().withNodes(
                 node("main").attr(Shape.RECTANGLE).link(
                         to(node("parse").link(execute)).attr("weight", 8),
                         to(init).attr(Style.DOTTED),
                         node("cleanup"),
                         to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
-                execute.link(graph().node(make_string, printf), to(compare).attr(Color.RED)),
+                execute.link(graph().withNodes(make_string, printf), to(compare).attr(Color.RED)),
                 init.link(make_string.attr(Label.of("make a\nstring"))));
         Graphviz.fromGraph(g).createSvg();
     }
@@ -135,7 +134,7 @@ public class PerformanceTest {
                 c = node("c").attr(Shape.polygon(4, .4, 0), Label.of("hello world")),
                 d = node("d").attr(Shape.INV_TRIANGLE),
                 e = node("e").attr(Shape.polygon(4, 0, .7));
-        final Graph g = graph("ex3").directed().node(
+        final Graph g = graph("ex3").directed().withNodes(
                 a.link(node("b").link(c, d)),
                 e);
         Graphviz.fromGraph(g).createSvg();
@@ -146,7 +145,7 @@ public class PerformanceTest {
                 struct1 = node("struct1").attr(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
                 struct2 = node("struct2").attr(Records.label("<f0> one|<f1> two")),
                 struct3 = node("struct3").attr(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
-        final Graph g = graph("ex41").directed().node(
+        final Graph g = graph("ex41").directed().with(
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
@@ -186,9 +185,9 @@ public class PerformanceTest {
 
         final Graph g = graph("ex5").directed()
                 .general().attr("ranksep", .75, "size", "7.5,7.5")
-                .node().attr(Shape.RECTANGLE)
-                .graph(
-                        graph().node().attr(Shape.NONE).node(
+                .nodes().attr(Shape.RECTANGLE)
+                .withGraphs(
+                        graph().nodes().attr(Shape.NONE).with(
                                 node("past").link(
                                         node("1978").link(
                                                 node("1980").link(
@@ -201,21 +200,21 @@ public class PerformanceTest {
                                                                                                         node("1989").link(
                                                                                                                 node("1990").link(
                                                                                                                         node("future")))))))))))))
-                                .node(bsh, make, sccs, reiser, csh, yacc, cron, rcs, emacs, build, vi, curses),
-                        graph().general().attr(Rank.SAME).node().attr(Shape.ELLIPSE).node(sis, cfg, archlib, proc),
-                        graph().general().attr(Rank.SAME).node("past").node(sccs, make, bsh, yacc, cron),
-                        graph().general().attr(Rank.SAME).node("1978").node(reiser, csh),
-                        graph().general().attr(Rank.SAME).node("1980").node(build, emacs, vi),
-                        graph().general().attr(Rank.SAME).node("1982").node(rcs, curses, imx, syned),
-                        graph().general().attr(Rank.SAME).node("1983").node(ksh, ifs, ttu),
-                        graph().general().attr(Rank.SAME).node("1985").node(nmake, peggy),
-                        graph().general().attr(Rank.SAME).node("1986").node(cs, ncpp, kshi, cursesi, pg2),
-                        graph().general().attr(Rank.SAME).node("1987").node(dag, csas, ansiCpp, fdelta, d3fs, nmake2),
-                        graph().general().attr(Rank.SAME).node("1988").node(cia, sbcs, pax, ksh88, pegasus, backtalk),
-                        graph().general().attr(Rank.SAME).node("1989").node(ciapp, app, ship, dataShare, ryacc, mosaic),
-                        graph().general().attr(Rank.SAME).node("1990").node(dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
-                        graph().general().attr(Rank.SAME).node("future").node(adv))
-                .node(
+                                .withNodes(bsh, make, sccs, reiser, csh, yacc, cron, rcs, emacs, build, vi, curses),
+                        graph().general().attr(Rank.SAME).nodes().attr(Shape.ELLIPSE).withNodes(sis, cfg, archlib, proc),
+                        graph().general().attr(Rank.SAME).withNodes("past").withNodes(sccs, make, bsh, yacc, cron),
+                        graph().general().attr(Rank.SAME).withNodes("1978").withNodes(reiser, csh),
+                        graph().general().attr(Rank.SAME).withNodes("1980").withNodes(build, emacs, vi),
+                        graph().general().attr(Rank.SAME).withNodes("1982").withNodes(rcs, curses, imx, syned),
+                        graph().general().attr(Rank.SAME).withNodes("1983").withNodes(ksh, ifs, ttu),
+                        graph().general().attr(Rank.SAME).withNodes("1985").withNodes(nmake, peggy),
+                        graph().general().attr(Rank.SAME).withNodes("1986").withNodes(cs, ncpp, kshi, cursesi, pg2),
+                        graph().general().attr(Rank.SAME).withNodes("1987").withNodes(dag, csas, ansiCpp, fdelta, d3fs, nmake2),
+                        graph().general().attr(Rank.SAME).withNodes("1988").withNodes(cia, sbcs, pax, ksh88, pegasus, backtalk),
+                        graph().general().attr(Rank.SAME).withNodes("1989").withNodes(ciapp, app, ship, dataShare, ryacc, mosaic),
+                        graph().general().attr(Rank.SAME).withNodes("1990").withNodes(dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
+                        graph().general().attr(Rank.SAME).withNodes("future").with(adv))
+                .withNodes(
                         sccs.link(rcs, nmake, d3fs),
                         make.link(build, nmake),
                         build.link(nmake2),
@@ -286,7 +285,7 @@ public class PerformanceTest {
                 node7 = node("node7").attr(Records.of(turn(rec("n", "s19"), rec("659"), rec("p", ""))));
         final Graph g = graph("ex6").directed()
                 .general().attr(RankDir.LEFT_TO_RIGHT)
-                .node(
+                .withNodes(
                         node0.link(
                                 between(loc("f0"), node1.loc(WEST)),
                                 between(loc("f1"), node2.loc(WEST)),
@@ -300,16 +299,16 @@ public class PerformanceTest {
 
     public void ex7() {
         final Graph g = graph("ex7").directed()
-                .graph(
+                .withGraphs(
                         graph().cluster()
-                                .node().attr(Style.FILLED, Color.WHITE)
+                                .nodes().attr(Style.FILLED, Color.WHITE)
                                 .general().attr(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
-                                .node(node("a0").link(node("a1").link(node("a2").link(node("a3"))))),
+                                .with(node("a0").link(node("a1").link(node("a2").link(node("a3"))))),
                         graph("x").cluster()
-                                .node().attr(Style.FILLED)
+                                .nodes().attr(Style.FILLED)
                                 .general().attr(Color.BLUE, Label.of("process #2"))
-                                .node(node("b0").link(node("b1").link(node("b2").link(node("b3"))))))
-                .node(
+                                .with(node("b0").link(node("b1").link(node("b2").link(node("b3"))))))
+                .withNodes(
                         node("start").attr(Shape.mDiamond("", "")).link("a0", "b0"),
                         node("a1").link("b3"),
                         node("b2").link("a3"),

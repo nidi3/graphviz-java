@@ -25,8 +25,8 @@ import static java.util.stream.Collectors.joining;
 /**
  *
  */
-public class Node implements Linkable, Attributed<Node>, LinkSource {
-    final Label label;
+public class Node implements Linkable, Attributed<Node>, LinkTarget, LinkSource {
+    public final Label label;
     final List<Link> links;
     final Map<String, Object> attributes;
 
@@ -69,17 +69,18 @@ public class Node implements Linkable, Attributed<Node>, LinkSource {
         return NodePoint.of(this).loc(record, compass);
     }
 
-    public Node link(LinkSource source) {
+    @Override
+    public Node link(LinkTarget target) {
         final List<Link> newLinks = new ArrayList<>(this.links);
-        final Link link = source.linkFrom();
+        final Link link = target.linkTo();
         newLinks.add(Link.between(from(link), link.to).attr(link.attributes));
         return new Node(label, newLinks, attributes);
     }
 
-    public Node link(LinkSource... sources) {
+    public Node link(LinkTarget... targets) {
         final List<Link> newLinks = new ArrayList<>(this.links);
-        for (final LinkSource source : sources) {
-            final Link link = source.linkFrom();
+        for (final LinkTarget target : targets) {
+            final Link link = target.linkTo();
             newLinks.add(Link.between(from(link), link.to).attr(link.attributes));
         }
         return new Node(label, newLinks, attributes);
@@ -158,7 +159,7 @@ public class Node implements Linkable, Attributed<Node>, LinkSource {
     @Override
     public String toString() {
         return label + attributes.toString() + "->" +
-                links.stream().map(l -> l.to.getName().toString()).collect(joining(","));
+                links.stream().map(l -> l.to.toString()).collect(joining(","));
     }
 
     @Override
@@ -167,7 +168,12 @@ public class Node implements Linkable, Attributed<Node>, LinkSource {
     }
 
     @Override
-    public Link linkFrom() {
+    public Link linkTo() {
         return Link.to(this);
+    }
+
+    @Override
+    public Label getName() {
+        return label;
     }
 }

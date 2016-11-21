@@ -25,8 +25,8 @@ import java.util.Map;
 /**
  *
  */
-public class Link implements Attributed<Link>, LinkSource {
-    final LinkTarget from;
+public class Link implements Attributed<Link>, LinkTarget {
+    final LinkSource from;
     final LinkTarget to;
     final Map<String, Object> attributes;
 
@@ -42,13 +42,13 @@ public class Link implements Attributed<Link>, LinkSource {
         return between(NodePoint.of(from), NodePoint.of(to));
     }
 
-    public static Link between(LinkTarget from, LinkTarget to) {
+    public static Link between(LinkSource from, LinkTarget to) {
         final Link link = new Link(from, to, Collections.emptyMap());
         final CreationContext ctx = CreationContext.current();
         return ctx == null ? link : ctx.initLink(link);
     }
 
-    private Link(LinkTarget from, LinkTarget to, Map<String, Object> attributes) {
+    private Link(LinkSource from, LinkTarget to, Map<String, Object> attributes) {
         this.from = from;
         this.to = to;
         this.attributes = attributes;
@@ -76,7 +76,7 @@ public class Link implements Attributed<Link>, LinkSource {
     }
 
     @Override
-    public Link linkFrom() {
+    public Link linkTo() {
         return this;
     }
 
@@ -91,9 +91,10 @@ public class Link implements Attributed<Link>, LinkSource {
 
         Link link = (Link) o;
 
-        if (from != null ? !from.equals(link.from) : link.from != null) {
-            return false;
-        }
+        //including from could cause circular executions
+//        if (from != null ? !from.equals(link.from) : link.from != null) {
+//            return false;
+//        }
         if (to != null ? !to.equals(link.to) : link.to != null) {
             return false;
         }
@@ -102,7 +103,8 @@ public class Link implements Attributed<Link>, LinkSource {
 
     @Override
     public int hashCode() {
-        int result = from != null ? from.hashCode() : 0;
+        //including from could cause circular executions
+        int result = 0;// from != null ? from.hashCode() : 0;
         result = 31 * result + (to != null ? to.hashCode() : 0);
         result = 31 * result + attributes.hashCode();
         return result;

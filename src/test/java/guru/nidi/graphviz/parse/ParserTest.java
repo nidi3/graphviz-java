@@ -48,15 +48,15 @@ public class ParserTest {
     public void attributesGraph() throws IOException {
         assertEquals(graph()
                         .general().attr("x", "y")
-                        .graph().attr("a", "b")
-                        .node().attr("c", "d")
-                        .link().attr("e", "f", "g", "h", "i", "j"),
+                        .graphs().attr("a", "b")
+                        .nodes().attr("c", "d")
+                        .links().attr("e", "f", "g", "h", "i", "j"),
                 parse("graph { x=y; graph [a=b]; node[c=d] edge[e=f,g=h][i=j] }"));
     }
 
     @Test
     public void nodes() throws IOException {
-        assertEquals(graph().node("simple").node(node("attr").attr("a", "b")),
+        assertEquals(graph().withNodes("simple").with(node("attr").attr("a", "b")),
                 parse("graph { simple attr[\"a\"=b]}")); //TODO with port? "d:1 full:1:ne
     }
 
@@ -66,7 +66,7 @@ public class ParserTest {
                 simple = node("simple"),
                 d = node("d"),
                 full = node("full");
-        assertEquals(graph().node(
+        assertEquals(graph().withNodes(
                 simple.link(to(d.loc(SOUTH_WEST)).attr("a", "b")),
                 d.link(between(loc(SOUTH_WEST), full.loc("2", NORTH_EAST)).attr("a", "b"))),
                 parse("graph { simple -- d:sw -- full:2:ne [a=b]}"));
@@ -74,15 +74,39 @@ public class ParserTest {
 
     @Test
     public void subgraph() throws IOException {
-        assertEquals(graph().graph(graph("s"), graph(), graph()),
-                parse("graph { subgraph s {}; subgraph {}; {} }"));
+        assertEquals(graph().withGraphs(
+                graph("s").general().attr("a", "b"),
+                graph().general().attr("c", "d"),
+                graph().general().attr("e", "f")),
+                parse("graph { subgraph s { a=b }; subgraph { c=d }; { e=f } }"));
     }
 
-//    @Test
-//    public void subgraphEdge() throws IOException {
-//        assertEquals(graph().graph(graph().link(node("x"))),
-//                parse("graph{ {} -- x }"));
-//    }
+    @Test
+    public void leftSubgraphEdge() throws IOException {
+        assertEquals(graph().withGraphs(
+                graph().link(to(node("x")).attr("a", "b")),
+                graph().link(node("y")),
+                graph("a").link(node("z"))),
+                parse("graph{ {} -- x [a=b]  subgraph{} -- y  subgraph a{} -- z }"));
+    }
+
+    @Test
+    public void rightSubgraphEdge() throws IOException {
+        assertEquals(graph().withNodes(
+                node("x").link(to(graph()).attr("a", "b")),
+                node("y").link(graph()),
+                node("z").link(graph("a"))),
+                parse("graph{ x -- {} [a=b]  y -- subgraph{}  z -- subgraph a{} }"));
+    }
+
+    @Test
+    public void subgraphSubgraphEdge() throws IOException {
+        assertEquals(graph().withGraphs(
+                graph().link(to(graph()).attr("a", "b")),
+                graph().link(graph()),
+                graph().link(graph("a"))),
+                parse("graph{ {} -- {} [a=b]  {} -- subgraph{}  {} -- subgraph a{} }"));
+    }
 
     private Graph parse(String s) throws IOException {
         final Parser parser = new Parser(new Lexer(new StringReader(s)));

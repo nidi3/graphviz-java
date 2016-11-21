@@ -161,7 +161,7 @@ public class Serializer {
         }
     }
 
-    private void linkTarget(LinkTarget linkable) {
+    private void linkTarget(Object linkable) {
         if (linkable instanceof NodePoint) {
             point((NodePoint) linkable);
         } else if (linkable instanceof Graph) {

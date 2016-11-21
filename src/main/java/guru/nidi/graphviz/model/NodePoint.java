@@ -18,7 +18,7 @@ package guru.nidi.graphviz.model;
 /**
  *
  */
-public class NodePoint implements LinkTarget {
+public class NodePoint implements LinkTarget, LinkSource {
     public final Node node;
     public final String record;
     public final Compass compass;
@@ -63,7 +63,12 @@ public class NodePoint implements LinkTarget {
     }
 
     @Override
-    public Link linkFrom() {
+    public LinkSource link(LinkTarget target) {
+        return node.link(target);
+    }
+
+    @Override
+    public Link linkTo() {
         return Link.to(this);
     }
 

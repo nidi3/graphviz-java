@@ -34,7 +34,7 @@ import static guru.nidi.graphviz.model.Link.to;
 public class ReadmeTest {
     @Test
     public void ex1() {
-        Graph g = graph("example1").directed().node(node("a").link(node("b")));
+        Graph g = graph("example1").directed().withNodes(node("a").link(node("b")));
         Graphviz.fromGraph(g).renderToFile(new File("example/ex1.png"));
     }
 
@@ -47,14 +47,14 @@ public class ReadmeTest {
                 mkString = node("mkString").attr(Label.of("make a\nstring")),
                 printf = node("printf");
 
-        Graph g = graph("example2").directed().node(
+        Graph g = graph("example2").directed().withNodes(
                 node("main").attr(Shape.RECTANGLE).link(
                         to(node("parse").link(execute)).attr("weight", 8),
                         to(init).attr(Style.DOTTED),
                         node("cleanup"),
                         to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
                 execute.link(
-                        graph().node(mkString, printf),
+                        graph().withNodes(mkString, printf),
                         to(compare).attr(Color.RED)),
                 init.link(mkString));
 
@@ -74,7 +74,7 @@ public class ReadmeTest {
                 node7 = node("node7").attr(Records.of(turn(rec("s7"), rec("659"), rec(""))));
         Graph g = graph("example3").directed()
                 .general().attr(RankDir.LEFT_TO_RIGHT)
-                .node(
+                .withNodes(
                         node0.link(
                                 between(loc("f0"), node1.loc("v", SOUTH)),
                                 between(loc("f1"), node2.loc(WEST)),

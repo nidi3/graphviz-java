@@ -70,11 +70,8 @@ public class Factory {
         return Link.to(node);
     }
 
-    public static Link between(LinkTarget from, LinkTarget to) {
+    public static Link between(LinkSource from, LinkTarget to) {
         return Link.between(from, to);
     }
 
-    public static Link between(LinkTarget from, Node to) {
-        return between(from, NodePoint.of(to));
-    }
 }

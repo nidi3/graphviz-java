@@ -22,7 +22,7 @@ import java.util.*;
 /**
  *
  */
-public class Graph implements Linkable, LinkTarget {
+public class Graph implements Linkable, LinkSource, LinkTarget {
     public final boolean strict;
     public final boolean directed;
     public final boolean cluster;
@@ -74,63 +74,75 @@ public class Graph implements Linkable, LinkTarget {
         return new Graph(strict, directed, cluster, label);
     }
 
-    public Graph node(Node... nodes) {
+    public Graph withNodes(Node... nodes) {
         for (final Node node : nodes) {
-            node(node);
+            withNode(node);
         }
         return this;
     }
 
-    public Graph node(Node node) {
+    Graph withNode(Node node) {
         nodes.add(node);
         return this;
     }
 
-    public Graph node(String... nodes) {
+    public Graph withNodes(String... nodes) {
         for (final String node : nodes) {
-            node(node);
+            withNode(node);
         }
         return this;
     }
 
-    public Graph node(String node) {
-        return node(Node.named(node));
+    Graph withNode(String node) {
+        return withNode(Node.named(node));
     }
 
-    public Graph graph(Graph... subgraphs) {
+    public Graph withGraphs(Graph... subgraphs) {
         for (final Graph subgraph : subgraphs) {
-            graph(subgraph);
+            withGraph(subgraph);
         }
         return this;
     }
 
-    public Graph graph(Graph subgraph) {
+    Graph withGraph(Graph subgraph) {
         subgraphs.add(subgraph);
         return this;
     }
 
-    public Graph link(LinkSource... sources) {
-        for (final LinkSource source : sources) {
-            link(source.linkFrom());
+    public Graph with(LinkSource source) {
+        if (source instanceof Node) {
+            return withNode((Node) source);
+        } else if (source instanceof NodePoint) {
+            return withNode(((NodePoint) source).node);
+        } else if (source instanceof Graph) {
+            return withGraph((Graph) source);
+        }
+        throw new IllegalArgumentException("Unknown source of type " + source.getClass());
+    }
+
+    public Graph link(LinkTarget... targets) {
+        for (final LinkTarget target : targets) {
+            link(target);
         }
         return this;
     }
 
-    public Graph link(LinkSource source) {
-        final Link link = source.linkFrom();
+    @Override
+    public Graph link(LinkTarget target) {
+        final Link link = target.linkTo();
         links.add(Link.between(this, link.to).attr(link.attributes));
         return this;
     }
 
-    public Attributed<Graph> node() {
+    public Attributed<Graph> nodes() {
         return nodeAttributes;
     }
 
-    public Attributed<Graph> link() {
+    public Attributed<Graph> links() {
         return linkAttributes;
     }
 
-    public Attributed<Graph> graph() {
+    public Attributed<Graph> graphs() {
         return graphAttributes;
     }
 
@@ -149,7 +161,7 @@ public class Graph implements Linkable, LinkTarget {
     }
 
     @Override
-    public Link linkFrom() {
+    public Link linkTo() {
         return Link.to(this);
     }
 

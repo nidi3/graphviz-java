@@ -84,7 +84,7 @@ public class Parser {
                     applyMutableAttributes(graph.general(), Arrays.asList(base, nextToken(ID, "identifier")));
                     nextToken();
                 } else {
-                    final List<Token> nodeId = nodeId(base);
+                    final NodePoint nodeId = nodeId(base);
                     if (token.type == MINUS_MINUS || token.type == ARROW) {
                         edgeStatement(graph, nodeId);
                     } else {
@@ -94,16 +94,12 @@ public class Parser {
                 return true;
             case SUBGRAPH:
             case BRACE_OPEN:
-                Graph sub = Graph.nameless();
-                if (token.type == SUBGRAPH) {
-                    nextToken();
-                    if (token.type == ID) {
-                        sub = sub.labeled(label(token));
-                        nextToken();
-                    }
+                final Graph sub = subgraph();
+                if (token.type == MINUS_MINUS || token.type == ARROW) {
+                    edgeStatement(graph, sub);
+                } else {
+                    graph.with(sub);
                 }
-                statementList(sub);
-                graph.graph(sub);
                 return true;
             case GRAPH:
             case NODE:
@@ -115,9 +111,22 @@ public class Parser {
         }
     }
 
-    private void edgeStatement(Graph graph, List<Token> nodeId) throws IOException {
-        final List<List<Token>> nodes = new ArrayList<>();
-        nodes.add(nodeId);
+    private Graph subgraph() throws IOException {
+        Graph sub = Graph.nameless();
+        if (token.type == SUBGRAPH) {
+            nextToken();
+            if (token.type == ID) {
+                sub = sub.labeled(label(token));
+                nextToken();
+            }
+        }
+        statementList(sub);
+        return sub;
+    }
+
+    private void edgeStatement(Graph graph, LinkSource nodeId) throws IOException {
+        final List<Object> points = new ArrayList<>();
+        points.add(nodeId);
         do {
             if (graph.directed && token.type == MINUS_MINUS) {
                 throw new ParserException("-- used in digraph. Use -> instead.");
@@ -129,26 +138,17 @@ public class Parser {
             if (token.type == ID) {
                 final Token id = token;
                 nextToken();
-                nodes.add(nodeId(id));
+                points.add(nodeId(id));
+            } else if (token.type == SUBGRAPH || token.type == BRACE_OPEN) {
+                points.add(subgraph());
             }
         } while (token.type == MINUS_MINUS || token.type == ARROW);
         final List<Token> attrs = (token.type == BRACKET_OPEN) ? attributeList() : Collections.emptyList();
-        for (int i = 0; i < nodes.size() - 1; i++) {
-            final NodePoint from = point(nodes.get(i));
-            final NodePoint to = point(nodes.get(i + 1));
-            graph.node(from.node.link(applyAttributes(between(from, to), attrs)));
+        for (int i = 0; i < points.size() - 1; i++) {
+            final LinkSource from = (LinkSource) points.get(i);
+            final LinkTarget to = (LinkTarget) points.get(i + 1);
+            graph.with(from.link(applyAttributes(between(from, to), attrs)));
         }
-    }
-
-    private NodePoint point(List<Token> tokens) {
-        NodePoint node = NodePoint.of(Node.named(label(tokens.get(0))));
-        if (tokens.size() == 2) {
-            node = node.loc(compass(tokens.get(1).value));
-        }
-        if (tokens.size() == 3) {
-            node = node.loc(tokens.get(1).value, compass(tokens.get(2).value));
-        }
-        return node;
     }
 
     private Compass compass(String name) {
@@ -159,26 +159,27 @@ public class Parser {
         return c;
     }
 
-    private void nodeStatement(Graph graph, List<Token> nodeId) throws IOException {
-        Node node = Factory.node(label(nodeId.get(0))); //TODO ignore port and compass?
+    private void nodeStatement(Graph graph, NodePoint nodeId) throws IOException {
+        Node node = Factory.node(nodeId.node.label); //TODO ignore port and compass?
         if (token.type == BRACKET_OPEN) {
             node = applyAttributes(node, attributeList());
         }
-        graph.node(node);
+        graph.with(node);
     }
 
-    private List<Token> nodeId(Token base) throws IOException {
-        final List<Token> res = new ArrayList<>();
-        res.add(base);
+    private NodePoint nodeId(Token base) throws IOException {
+        NodePoint node = NodePoint.of(Node.named(label(base)));
         if (token.type == COLON) {
-            res.add(nextToken(ID, "identifier"));
+            final String second = nextToken(ID, "identifier").value;
             nextToken();
             if (token.type == COLON) {
-                res.add(nextToken(ID, "identifier"));
+                node = node.loc(second, compass(nextToken(ID, "identifier").value));
                 nextToken();
+            } else {
+                node = node.loc(compass(second));
             }
         }
-        return res;
+        return node;
     }
 
     private void attributeStatement(Graph graph) throws IOException {
@@ -203,11 +204,11 @@ public class Parser {
     private Attributed<Graph> attributes(Graph graph, Token token) {
         switch (token.type) {
             case GRAPH:
-                return graph.graph();
+                return graph.graphs();
             case NODE:
-                return graph.node();
+                return graph.nodes();
             case EDGE:
-                return graph.link();
+                return graph.links();
             default:
                 return null;
         }
