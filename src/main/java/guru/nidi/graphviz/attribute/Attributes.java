@@ -29,7 +29,7 @@ public class Attributes {
         final Map<String, Object> res = new HashMap<>();
         for (int i = 0; i < keysAndValues.length; i++) {
             if (keysAndValues[i] instanceof Attribute) {
-                ((Attribute) keysAndValues[i]).apply(res);
+                ((Attribute) keysAndValues[i]).applyTo(res);
             } else if (keysAndValues[i] instanceof Map) {
                 res.putAll((Map<String, Object>) keysAndValues[i]);
             } else if (!(keysAndValues[i] instanceof String)) {

@@ -50,7 +50,7 @@ public class Label implements Attribute {
     }
 
     @Override
-    public void apply(Map<String, Object> attrs) {
+    public void applyTo(Map<String, Object> attrs) {
         attrs.put("label", this);
     }
 

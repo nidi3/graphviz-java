@@ -71,7 +71,7 @@ public class Link implements Attributed<Link>, LinkTarget {
     }
 
     @Override
-    public void apply(Map<String, Object> attrs) {
+    public void applyTo(Map<String, Object> attrs) {
         attrs.putAll(attributes);
     }
 

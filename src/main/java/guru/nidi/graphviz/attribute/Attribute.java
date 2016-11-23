@@ -21,5 +21,5 @@ import java.util.Map;
  *
  */
 public interface Attribute {
-    void apply(Map<String, Object> attrs);
+    void applyTo(Map<String, Object> attrs);
 }

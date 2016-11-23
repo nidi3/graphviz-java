@@ -115,7 +115,7 @@ public class Node implements Linkable, Attributed<Node>, LinkTarget, LinkSource 
     }
 
     @Override
-    public void apply(Map<String, Object> attrs) {
+    public void applyTo(Map<String, Object> attrs) {
         attrs.putAll(attributes);
     }
 
