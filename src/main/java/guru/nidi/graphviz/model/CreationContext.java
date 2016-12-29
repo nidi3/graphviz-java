@@ -15,10 +15,11 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attributed;
+import guru.nidi.graphviz.attribute.MutableAttributed;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -26,10 +27,10 @@ import java.util.function.Consumer;
  */
 public class CreationContext {
     private final static ThreadLocal<CreationContext> context = new ThreadLocal<>();
-    private final Map<Label, Node> nodes = new HashMap<>();
-    private final SimpleAttributed<CreationContext> nodeAttributes = new SimpleAttributed<>(this);
-    private final SimpleAttributed<CreationContext> linkAttributes = new SimpleAttributed<>(this);
-    private final SimpleAttributed<CreationContext> graphAttributes = new SimpleAttributed<>(this);
+    private final Map<Label, ImmutableNode> nodes = new HashMap<>();
+    private final MutableAttributed<CreationContext> nodeAttributes = new SimpleMutableAttributed<>(this);
+    private final MutableAttributed<CreationContext> linkAttributes = new SimpleMutableAttributed<>(this);
+    private final MutableAttributed<CreationContext> graphAttributes = new SimpleMutableAttributed<>(this);
 
     private CreationContext() {
     }
@@ -43,40 +44,35 @@ public class CreationContext {
         }
     }
 
-    public static CreationContext current() {
-        return context.get();
+    public static Optional<CreationContext> current() {
+        return Optional.ofNullable(context.get());
     }
 
     public static CreationContext begin() {
-        CreationContext ctx = current();
-        if (ctx == null) {
-            ctx = new CreationContext();
+        return current().orElseGet(() -> {
+            final CreationContext ctx = new CreationContext();
             context.set(ctx);
-        }
-        return ctx;
+            return ctx;
+        });
     }
 
     public static void end() {
         context.remove();
     }
 
-    public Attributed<CreationContext> nodes() {
+    public MutableAttributed<CreationContext> nodes() {
         return nodeAttributes;
     }
 
-    public Attributed<CreationContext> links() {
+    public MutableAttributed<CreationContext> links() {
         return linkAttributes;
     }
 
-    public Attributed<CreationContext> graphs() {
+    public MutableAttributed<CreationContext> graphs() {
         return graphAttributes;
     }
 
-    Link initLink(Link link) {
-        return link.attr(linkAttributes.attributes);
-    }
-
     Node getOrCreateNode(Label label) {
-        return nodes.computeIfAbsent(label, Node::new).attr(nodeAttributes.attributes);
+        return nodes.computeIfAbsent(label, ImmutableNode::new).attr(nodeAttributes);
     }
 }

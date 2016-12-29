@@ -13,32 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.attribute;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.util.Collections.singletonMap;
+package guru.nidi.graphviz.model;
 
 /**
  *
  */
-public interface Attributed<T> extends Attribute {
-
-    default T attr(String name, Object value) {
-        return attr(singletonMap(name, value));
-    }
-
-    default T attr(Object... keysAndValues) {
-        return attr(Attribute.from(keysAndValues));
-    }
-
-    default T attr(Attribute attribute) {
-        final Map<String, Object> attrs = new HashMap<>();
-        attribute.applyTo(attrs);
-        return attr(attrs);
-    }
-
-    T attr(Map<String, Object> attrs);
-
+public interface MutableLinkSource<T> {
+    T addLink(LinkTarget target);
 }

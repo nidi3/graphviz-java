@@ -26,7 +26,7 @@ import static guru.nidi.graphviz.parse.Lexer.Token.*;
 /**
  *
  */
-public class Lexer {
+class Lexer {
     public static final class Token {
         public static final int
                 EOF = 0,

@@ -23,36 +23,72 @@ public class Factory {
     }
 
     public static Graph graph() {
-        return Graph.nameless();
+        return graph("");
     }
 
     public static Graph graph(String name) {
-        return Graph.named(name);
+        return graph(name(name));
     }
 
     public static Graph graph(Label label) {
-        return Graph.named(label);
+        return new ImmutableGraph().labeled(label);
     }
 
     public static Node node(String name) {
-        return Node.named(name);
+        return node(Label.of(name));
     }
 
     public static Node node(Label label) {
-        return Node.named(label);
+        return CreationContext.current()
+                .map(ctx -> ctx.getOrCreateNode(label))
+                .orElse(new ImmutableNode(label));
     }
 
     public static NodePoint loc(String record) {
-        return NodePoint.ofLoc(record);
+        return loc(record, null);
     }
 
     public static NodePoint loc(Compass compass) {
-        return NodePoint.ofLoc(compass);
+        return loc(null, compass);
     }
 
     public static NodePoint loc(String record, Compass compass) {
-        return NodePoint.ofLoc(record, compass);
+        return new ImmutableNodePoint(null, record, compass);
     }
+
+
+    public static MutableGraph mutGraph() {
+        return new MutableGraph();
+    }
+
+    public static MutableGraph mutGraph(String name) {
+        return new MutableGraph().setLabel(name);
+    }
+
+    public static MutableGraph mutGraph(Label label) {
+        return new MutableGraph().setLabel(label);
+    }
+
+    public static MutableNode mutNode(String name) {
+        return new MutableNode().setLabel(name);
+    }
+
+    public static MutableNode mutNode(Label label) {
+        return new MutableNode().setLabel(label);
+    }
+
+    public static MutableNodePoint mutLoc(String record) {
+        return new MutableNodePoint().setRecord(record);
+    }
+
+    public static MutableNodePoint mutLoc(Compass compass) {
+        return new MutableNodePoint().setCompass(compass);
+    }
+
+    public static MutableNodePoint mutLoc(String record, Compass compass) {
+        return new MutableNodePoint().setRecord(record).setCompass(compass);
+    }
+
 
     public static Label name(String name) {
         return Label.of(name);

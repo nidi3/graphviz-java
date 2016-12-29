@@ -27,7 +27,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     public GraphvizServerEngine(EngineInitListener engineInitListener) {
-        super(false,engineInitListener);
+        super(false, engineInitListener);
     }
 
     @Override

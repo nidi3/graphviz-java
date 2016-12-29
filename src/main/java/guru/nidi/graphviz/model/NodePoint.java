@@ -18,85 +18,10 @@ package guru.nidi.graphviz.model;
 /**
  *
  */
-public class NodePoint implements LinkTarget, LinkSource {
-    public final Node node;
-    public final String record;
-    public final Compass compass;
+public interface NodePoint extends LinkTarget, LinkSource<Node> {
+    NodePoint loc(String record);
 
-    private NodePoint(Node node, String record, Compass compass) {
-        this.node = node;
-        this.record = record;
-        this.compass = compass;
-    }
+    NodePoint loc(Compass compass);
 
-    public static NodePoint ofLoc(String record) {
-        return ofLoc(record, null);
-    }
-
-    public static NodePoint ofLoc(Compass compass) {
-        return ofLoc(null, compass);
-    }
-
-    public static NodePoint ofLoc(String record, Compass compass) {
-        return new NodePoint(null, record, compass);
-    }
-
-    public static NodePoint of(Node node) {
-        return new NodePoint(node, null, null);
-    }
-
-    public NodePoint loc(String record) {
-        return new NodePoint(node, record, compass);
-    }
-
-    public NodePoint loc(Compass compass) {
-        return new NodePoint(node, record, compass);
-    }
-
-    public NodePoint loc(String record, Compass compass) {
-        return new NodePoint(node, record, compass);
-    }
-
-    @Override
-    public Label getName() {
-        return node.label;
-    }
-
-    @Override
-    public LinkSource link(LinkTarget target) {
-        return node.link(target);
-    }
-
-    @Override
-    public Link linkTo() {
-        return Link.to(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        NodePoint nodePoint = (NodePoint) o;
-
-        if (node != null ? !node.equals(nodePoint.node) : nodePoint.node != null) {
-            return false;
-        }
-        if (record != null ? !record.equals(nodePoint.record) : nodePoint.record != null) {
-            return false;
-        }
-        return compass == nodePoint.compass;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = node != null ? node.hashCode() : 0;
-        result = 31 * result + (record != null ? record.hashCode() : 0);
-        result = 31 * result + (compass != null ? compass.hashCode() : 0);
-        return result;
-    }
+    NodePoint loc(String record, Compass compass);
 }

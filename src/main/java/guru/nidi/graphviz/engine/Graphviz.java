@@ -19,6 +19,7 @@ import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGException;
 import com.kitfox.svg.SVGUniverse;
 import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.Serializer;
 
 import javax.imageio.ImageIO;
@@ -70,6 +71,10 @@ public class Graphviz {
     }
 
     public static Graphviz fromGraph(Graph graph) {
+        return fromGraph((MutableGraph) graph);
+    }
+
+    public static Graphviz fromGraph(MutableGraph graph) {
         return fromString(new Serializer(graph).serialize());
     }
 

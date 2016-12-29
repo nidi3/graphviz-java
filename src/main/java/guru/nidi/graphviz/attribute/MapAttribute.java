@@ -24,11 +24,12 @@ public class MapAttribute implements Attribute {
     private final Map<String, Object> attrs;
 
     public MapAttribute(Object... keysAndValues) {
-        attrs = Attributes.from(keysAndValues);
+        attrs = Attribute.from(keysAndValues);
     }
 
     @Override
-    public void applyTo(Map<String, Object> attrs) {
+    public Map<String, Object> applyTo(Map<String, Object> attrs) {
         attrs.putAll(this.attrs);
+        return attrs;
     }
 }

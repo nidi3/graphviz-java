@@ -15,16 +15,18 @@
  */
 package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.attribute.MutableAttributed;
+
 import java.util.*;
 
 /**
  *
  */
 public class Serializer {
-    private final Graph graph;
+    private final MutableGraph graph;
     private final StringBuilder s;
 
-    public Serializer(Graph graph) {
+    public Serializer(MutableGraph graph) {
         this.graph = graph;
         s = new StringBuilder();
     }
@@ -34,7 +36,7 @@ public class Serializer {
         return s.toString();
     }
 
-    private void graph(Graph graph, boolean toplevel) {
+    private void graph(MutableGraph graph, boolean toplevel) {
         if (toplevel) {
             s.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
             if (!graph.label.isEmpty()) {
@@ -47,29 +49,29 @@ public class Serializer {
         }
         s.append("{\n");
 
-        attributes("graph", graph.graphAttributes);
-        attributes("node", graph.nodeAttributes);
-        attributes("edge", graph.linkAttributes);
-        for (final Map.Entry<String, Object> attr : graph.attributes.attributes.entrySet()) {
+        attributes("graph", graph.graphAttrs);
+        attributes("node", graph.nodeAttrs);
+        attributes("edge", graph.linkAttrs);
+        for (final Map.Entry<String, Object> attr : graph.generalAttrs.applyTo(new HashMap<>()).entrySet()) {
             attr(attr.getKey(), attr.getValue());
             s.append("\n");
         }
 
-        final List<Node> nodes = new ArrayList<>();
-        final List<Graph> graphs = new ArrayList<>();
+        final List<MutableNode> nodes = new ArrayList<>();
+        final List<MutableGraph> graphs = new ArrayList<>();
         final Collection<Linkable> linkables = linkedNodes(graph.nodes);
         linkables.addAll(linkedNodes(graph.subgraphs));
         for (final Linkable linkable : linkables) {
-            if (linkable instanceof Node) {
-                final Node node = (Node) linkable;
+            if (linkable instanceof MutableNode) {
+                final MutableNode node = (MutableNode) linkable;
                 final int i = indexOfLabel(nodes, node.label);
                 if (i < 0) {
                     nodes.add(node);
                 } else {
-                    nodes.set(i, node.merged(nodes.get(i)));
+                    nodes.set(i, node.copy().merge(nodes.get(i)));
                 }
             } else {
-                graphs.add((Graph) linkable);
+                graphs.add((MutableGraph) linkable);
             }
         }
 
@@ -82,7 +84,7 @@ public class Serializer {
         s.append("}");
     }
 
-    private int indexOfLabel(List<Node> nodes, Label label) {
+    private int indexOfLabel(List<MutableNode> nodes, Label label) {
         for (int i = 0; i < nodes.size(); i++) {
             if (nodes.get(i).label.equals(label)) {
                 return i;
@@ -91,10 +93,11 @@ public class Serializer {
         return -1;
     }
 
-    private void attributes(String name, SimpleAttributed<?> attributed) {
-        if (!attributed.attributes.isEmpty()) {
+    private void attributes(String name, MutableAttributed<?> attributed) {
+        final Map<String, Object> attrs = attributed.applyTo(new HashMap<>());
+        if (!attrs.isEmpty()) {
             s.append(name);
-            attrs(attributed.attributes);
+            attrs(attrs);
             s.append("\n");
         }
     }
@@ -111,17 +114,17 @@ public class Serializer {
         if (!visited.contains(linkable)) {
             visited.add(linkable);
             for (final Link link : linkable.getLinks()) {
-                if (link.to instanceof NodePoint) {
-                    linkedNodes(((NodePoint) link.to).node, visited);
-                } else if (link.to instanceof Graph) {
-                    linkedNodes((Graph) link.to, visited);
+                if (link.to instanceof MutableNodePoint) {
+                    linkedNodes(((MutableNodePoint) link.to).node, visited);
+                } else if (link.to instanceof MutableGraph) {
+                    linkedNodes((MutableGraph) link.to, visited);
                 }
             }
         }
     }
 
-    private void nodes(Graph graph, List<Node> nodes) {
-        for (final Node node : nodes) {
+    private void nodes(MutableGraph graph, List<MutableNode> nodes) {
+        for (final MutableNode node : nodes) {
             if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty())) {
                 node(node);
                 s.append("\n");
@@ -129,8 +132,8 @@ public class Serializer {
         }
     }
 
-    private void graphs(List<Graph> graphs, List<Node> nodes) {
-        for (final Graph graph : graphs) {
+    private void graphs(List<MutableGraph> graphs, List<MutableNode> nodes) {
+        for (final MutableGraph graph : graphs) {
             if (graph.links.isEmpty() && !isLinked(graph, nodes) && !isLinked(graph, graphs)) {
                 graph(graph, false);
                 s.append("\n");
@@ -138,7 +141,7 @@ public class Serializer {
         }
     }
 
-    private boolean isLinked(Graph graph, List<? extends Linkable> linkables) {
+    private boolean isLinked(MutableGraph graph, List<? extends Linkable> linkables) {
         for (final Linkable linkable : linkables) {
             for (final Link link : linkable.getLinks()) {
                 if (link.to.equals(graph)) {
@@ -162,19 +165,19 @@ public class Serializer {
     }
 
     private void linkTarget(Object linkable) {
-        if (linkable instanceof NodePoint) {
-            point((NodePoint) linkable);
-        } else if (linkable instanceof Graph) {
-            graph((Graph) linkable, false);
+        if (linkable instanceof MutableNodePoint) {
+            point((MutableNodePoint) linkable);
+        } else if (linkable instanceof MutableGraph) {
+            graph((MutableGraph) linkable, false);
         }
     }
 
-    private void node(Node node) {
+    private void node(MutableNode node) {
         s.append(node.label.serialized());
         attrs(node.attributes);
     }
 
-    private void point(NodePoint point) {
+    private void point(MutableNodePoint point) {
         s.append(point.node.label.serialized());
         if (point.record != null) {
             s.append(":");

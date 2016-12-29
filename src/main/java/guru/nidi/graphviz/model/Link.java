@@ -16,7 +16,6 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributed;
-import guru.nidi.graphviz.attribute.Attributes;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,38 +25,39 @@ import java.util.Map;
  *
  */
 public class Link implements Attributed<Link>, LinkTarget {
-    final LinkSource from;
+    final Object from;
     final LinkTarget to;
     final Map<String, Object> attributes;
 
-    public static Link to(Node to) {
-        return to(NodePoint.of(to));
+    public static Link to(Node node) {
+        return to(node.loc());
     }
 
     public static Link to(LinkTarget to) {
-        return between(null, to);
+        return objBetween(null, to);
     }
 
     public static Link between(Node from, Node to) {
-        return between(NodePoint.of(from), NodePoint.of(to));
+        return between(from.loc(), to.loc());
     }
 
     public static Link between(LinkSource from, LinkTarget to) {
-        final Link link = new Link(from, to, Collections.emptyMap());
-        final CreationContext ctx = CreationContext.current();
-        return ctx == null ? link : ctx.initLink(link);
+        return objBetween(from, to);
     }
 
-    private Link(LinkSource from, LinkTarget to, Map<String, Object> attributes) {
+    public static Link between(MutableLinkSource from, LinkTarget to) {
+        return objBetween(from, to);
+    }
+
+    private static Link objBetween(Object from, LinkTarget to) {
+        final Link link = new Link(from, to, Collections.emptyMap());
+        return CreationContext.current().map(ctx -> link.attr(ctx.links())).orElse(link);
+    }
+
+    private Link(Object from, LinkTarget to, Map<String, Object> attributes) {
         this.from = from;
         this.to = to;
         this.attributes = attributes;
-    }
-
-    public Link attr(String name, Object value) {
-        final Map<String, Object> newAttrs = new HashMap<>(this.attributes);
-        newAttrs.put(name, value);
-        return new Link(from, to, newAttrs);
     }
 
     public Link attr(Map<String, Object> attrs) {
@@ -66,13 +66,10 @@ public class Link implements Attributed<Link>, LinkTarget {
         return new Link(from, to, newAttrs);
     }
 
-    public Link attr(Object... keysAndValues) {
-        return attr(Attributes.from(keysAndValues));
-    }
-
     @Override
-    public void applyTo(Map<String, Object> attrs) {
+    public Map<String, Object> applyTo(Map<String, Object> attrs) {
         attrs.putAll(attributes);
+        return attrs;
     }
 
     @Override
@@ -92,7 +89,7 @@ public class Link implements Attributed<Link>, LinkTarget {
         Link link = (Link) o;
 
         //including from could cause circular executions
-//        if (from != null ? !from.equals(link.from) : link.from != null) {
+//        if (from != null ? !from.equals(addLink.from) : addLink.from != null) {
 //            return false;
 //        }
         if (to != null ? !to.equals(link.to) : link.to != null) {

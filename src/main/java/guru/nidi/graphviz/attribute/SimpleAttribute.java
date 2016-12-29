@@ -51,7 +51,8 @@ public class SimpleAttribute<T> implements Attribute {
     }
 
     @Override
-    public void applyTo(Map<String, Object> attrs) {
+    public Map<String, Object> applyTo(Map<String, Object> attrs) {
         attrs.put(key, value);
+        return attrs;
     }
 }

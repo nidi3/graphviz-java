@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <j2v8.version>3.0.2</j2v8.version>
+        <j2v8.version>4.6.0</j2v8.version>
     </properties>
 
     <scm>

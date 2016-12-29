@@ -15,8 +15,8 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attributed;
-import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.Attribute;
+import guru.nidi.graphviz.attribute.MutableAttributed;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,35 +24,31 @@ import java.util.Map;
 /**
  *
  */
-public class SimpleAttributed<E> implements Attributed<E> {
+public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     private final E target;
     final Map<String, Object> attributes = new HashMap<>();
 
-    public SimpleAttributed() {
-        target = (E) this;
-    }
-
-    public SimpleAttributed(E target) {
+    public SimpleMutableAttributed(E target) {
         this.target = target;
     }
 
-    public E attr(String name, Object value) {
-        attributes.put(name, value);
-        return target;
+    public SimpleMutableAttributed(E target, Attribute attribute) {
+        this.target = target;
+        if (attribute != null) {
+            attribute.applyTo(attributes);
+        }
     }
 
-    public E attr(Map<String, Object> attrs) {
+    @Override
+    public E addAttr(Map<String, Object> attrs) {
         attributes.putAll(attrs);
         return target;
     }
 
-    public E attr(Object... keysAndValues) {
-        return attr(Attributes.from(keysAndValues));
-    }
-
     @Override
-    public void applyTo(Map<String, Object> attrs) {
+    public Map<String, Object> applyTo(Map<String, Object> attrs) {
         attrs.putAll(attributes);
+        return attrs;
     }
 
     @Override
@@ -64,7 +60,7 @@ public class SimpleAttributed<E> implements Attributed<E> {
             return false;
         }
 
-        SimpleAttributed<?> that = (SimpleAttributed<?>) o;
+        SimpleMutableAttributed<?> that = (SimpleMutableAttributed<?>) o;
 
         return attributes.equals(that.attributes);
 

@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz.model;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 /**
  *
  */
@@ -29,13 +32,8 @@ public enum Compass {
         this.value = value;
     }
 
-    public static Compass of(String value) {
-        for (final Compass c : values()) {
-            if (c.value.equals(value)) {
-                return c;
-            }
-        }
-        return null;
+    public static Optional<Compass> of(String value) {
+        return Stream.of(values()).filter(c -> c.value.equals(value)).findFirst();
     }
 
 }

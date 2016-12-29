@@ -22,7 +22,8 @@ import java.io.InputStream;
  *
  */
 class IoUtils {
-    private IoUtils(){}
+    private IoUtils() {
+    }
 
     public static String readStream(InputStream in) throws IOException {
         final byte[] buf = new byte[in.available()];
