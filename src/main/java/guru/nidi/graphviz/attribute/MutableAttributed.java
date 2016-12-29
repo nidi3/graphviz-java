@@ -20,9 +20,6 @@ import java.util.Map;
 
 import static java.util.Collections.singletonMap;
 
-/**
- *
- */
 public interface MutableAttributed<T> extends Attribute {
     default T addAttr(String name, Object value) {
         return addAttr(singletonMap(name, value));

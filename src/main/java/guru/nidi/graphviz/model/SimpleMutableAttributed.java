@@ -21,9 +21,6 @@ import guru.nidi.graphviz.attribute.MutableAttributed;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- */
 public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     private final E target;
     final Map<String, Object> attributes = new HashMap<>();

@@ -29,9 +29,6 @@ import static guru.nidi.graphviz.model.Compass.WEST;
 import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.model.Link.to;
 
-/**
- *
- */
 public class ExampleTest {
     @After
     public void closeContext() {

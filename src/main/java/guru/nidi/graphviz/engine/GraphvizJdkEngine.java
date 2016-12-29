@@ -20,9 +20,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.Map;
 
-/**
- *
- */
 public class GraphvizJdkEngine extends AbstractGraphvizEngine {
     private final static ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
 

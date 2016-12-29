@@ -20,9 +20,6 @@ import java.util.Map;
 
 import static java.util.Collections.singletonMap;
 
-/**
- *
- */
 public interface Attributed<T> extends Attribute {
 
     default T attr(String name, Object value) {

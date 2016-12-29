@@ -20,9 +20,6 @@ import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-/**
- *
- */
 public abstract class AbstractGraphvizEngine implements GraphvizEngine {
     private final CountDownLatch state;
     private final EngineInitListener engineInitListener;

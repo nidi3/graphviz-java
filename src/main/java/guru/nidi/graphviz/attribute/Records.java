@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.attribute;
 
-/**
- *
- */
 public class Records {
     private Records() {
     }

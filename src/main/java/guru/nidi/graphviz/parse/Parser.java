@@ -29,9 +29,6 @@ import java.util.List;
 import static guru.nidi.graphviz.model.Factory.between;
 import static guru.nidi.graphviz.parse.Lexer.Token.*;
 
-/**
- *
- */
 public class Parser {
     private final Lexer lexer;
     private Token token;
@@ -158,9 +155,10 @@ public class Parser {
         } while (token.type == MINUS_MINUS || token.type == ARROW);
         final List<Token> attrs = (token.type == BRACKET_OPEN) ? attributeList() : Collections.emptyList();
         for (int i = 0; i < points.size() - 1; i++) {
-            final LinkSource<LinkSource<?>> from = (LinkSource) points.get(i);
+            final MutableLinkSource<LinkSource> from = (MutableLinkSource) points.get(i);
             final LinkTarget to = (LinkTarget) points.get(i + 1);
-            graph.add(from.link(applyAttributes(between(from, to), attrs)));
+            final LinkSource o = from.addLink(applyAttributes(between(from, to), attrs));
+            graph.add(o);
         }
     }
 

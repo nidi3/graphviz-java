@@ -21,9 +21,6 @@ import com.eclipsesource.v8.utils.V8ObjectUtils;
 
 import java.util.regex.Pattern;
 
-/**
- *
- */
 public class GraphvizV8Engine extends AbstractGraphvizEngine {
     private final static Pattern ABORT = Pattern.compile("^undefined:\\d+: abort");
     private V8 v8;

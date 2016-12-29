@@ -17,9 +17,6 @@ package guru.nidi.graphviz.engine;
 
 import java.io.*;
 
-/**
- *
- */
 class Communicator implements Closeable {
     private final BufferedReader in;
     private final BufferedWriter out;

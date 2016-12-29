@@ -18,9 +18,6 @@ package guru.nidi.graphviz.model;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-/**
- *
- */
 public enum Compass {
     NORTH("n"), NORTH_EAST("ne"), EAST("e"), SOUTH_EAST("se"),
     SOUTH("s"), SOUTH_WEST("sw"), WEST("w"), NORTH_WEST("nw"),

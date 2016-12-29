@@ -17,12 +17,9 @@ package guru.nidi.graphviz.model;
 
 import java.util.*;
 
-/**
- *
- */
 class ImmutableNode extends MutableNode implements Node {
     ImmutableNode(Label label) {
-        this(label, new ArrayList<>(), Collections.emptyMap());
+        this(label, new ArrayList<>(), new HashMap<>());
     }
 
     private ImmutableNode(Label label, List<Link> links, Map<String, Object> attributes) {
@@ -46,19 +43,19 @@ class ImmutableNode extends MutableNode implements Node {
     }
 
     public ImmutableNode link(LinkTarget target) {
-        return (ImmutableNode) /*copyOfMut().*/addLink(target);
+        return (ImmutableNode) addLink(target);
     }
 
     public ImmutableNode link(LinkTarget... targets) {
-        return (ImmutableNode) /*copyOfMut().*/addLink(targets);
+        return (ImmutableNode) addLink(targets);
     }
 
     public ImmutableNode link(String node) {
-        return (ImmutableNode) /*copyOfMut().*/addLink(node);
+        return (ImmutableNode) addLink(node);
     }
 
     public ImmutableNode link(String... nodes) {
-        return (ImmutableNode) /*copyOfMut().*/addLink(nodes);
+        return (ImmutableNode) addLink(nodes);
     }
 
     public ImmutableNode attr(Map<String, Object> attrs) {

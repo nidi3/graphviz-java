@@ -20,9 +20,6 @@ import guru.nidi.graphviz.attribute.MutableAttributed;
 
 import java.util.*;
 
-/**
- *
- */
 public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, LinkTarget {
     protected boolean strict;
     protected boolean directed;
@@ -123,7 +120,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return this;
     }
 
-    public MutableGraph add(LinkSource<?> source) {
+    public MutableGraph add(LinkSource source) {
         if (source instanceof MutableNode) {
             return addNode((MutableNode) source);
         } else if (source instanceof MutableNodePoint) {

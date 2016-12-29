@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.model;
 
-/**
- *
- */
 class ImmutableNodePoint extends MutableNodePoint implements NodePoint {
     ImmutableNodePoint(MutableNode node, String record, Compass compass) {
         super(node, record, compass);
@@ -35,9 +32,7 @@ class ImmutableNodePoint extends MutableNodePoint implements NodePoint {
         return new ImmutableNodePoint(node, record, compass);
     }
 
-    @Override
     public Node link(LinkTarget target) {
-        final MutableNodePoint copy = copy();
-        return (Node) /*copy.*/addLink(target);
+        return (Node) addLink(target);
     }
 }

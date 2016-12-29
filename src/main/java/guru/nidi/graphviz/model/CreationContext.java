@@ -22,9 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-/**
- *
- */
 public class CreationContext {
     private final static ThreadLocal<CreationContext> context = new ThreadLocal<>();
     private final Map<Label, ImmutableNode> nodes = new HashMap<>();

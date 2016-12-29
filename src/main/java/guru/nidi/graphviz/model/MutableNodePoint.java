@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.model;
 
-/**
- *
- */
 public class MutableNodePoint implements LinkTarget, MutableLinkSource<MutableNode> {
     protected MutableNode node;
     protected String record;
@@ -51,7 +48,6 @@ public class MutableNodePoint implements LinkTarget, MutableLinkSource<MutableNo
         return this;
     }
 
-    @Override
     public MutableNode addLink(LinkTarget target) {
         return node.addLink(target);
     }

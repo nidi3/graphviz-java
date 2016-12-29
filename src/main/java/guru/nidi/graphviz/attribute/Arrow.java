@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.attribute;
 
-/**
- *
- */
 public class Arrow extends SimpleAttribute<String> {
     private Arrow(String key, String value) {
         super(key, value);

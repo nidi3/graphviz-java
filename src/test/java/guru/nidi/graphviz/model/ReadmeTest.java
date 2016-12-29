@@ -28,9 +28,6 @@ import static guru.nidi.graphviz.model.Compass.*;
 import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.model.Link.to;
 
-/**
- *
- */
 public class ReadmeTest {
     @Test
     public void ex1() {

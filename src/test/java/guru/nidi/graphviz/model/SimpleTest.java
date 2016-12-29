@@ -25,9 +25,6 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-/**
- *
- */
 public class SimpleTest {
     @Test
     public void simple() {

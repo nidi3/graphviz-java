@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.attribute;
 
-/**
- *
- */
 public class RankDir extends SimpleAttribute<String> {
     protected RankDir(String value) {
         super("rankdir", value);

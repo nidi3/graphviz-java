@@ -19,9 +19,6 @@ import guru.nidi.graphviz.attribute.Attribute;
 
 import java.util.Map;
 
-/**
- *
- */
 public class Label implements Attribute {
     final String value;
     final boolean html;

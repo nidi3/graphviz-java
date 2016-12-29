@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.attribute;
 
-/**
- *
- */
 public class Style extends SimpleAttribute<String> {
     private Style(String value) {
         super("style", value);

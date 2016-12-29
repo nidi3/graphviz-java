@@ -2,10 +2,7 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributed;
 
-/**
- *
- */
-public interface Node extends Linkable, Attributed<Node>, LinkTarget, LinkSource<Node> {
+public interface Node extends Linkable, Attributed<Node>, LinkTarget, LinkSource {
     NodePoint loc();
 
     NodePoint loc(String record);

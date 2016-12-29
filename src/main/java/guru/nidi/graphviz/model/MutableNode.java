@@ -21,9 +21,6 @@ import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
-/**
- *
- */
 public class MutableNode implements Linkable, MutableAttributed<MutableNode>, LinkTarget, MutableLinkSource<MutableNode> {
     protected Label label;
     protected final List<Link> links;

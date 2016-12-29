@@ -27,9 +27,6 @@ import java.util.List;
 import static guru.nidi.graphviz.parse.Lexer.Token.*;
 import static org.junit.Assert.assertEquals;
 
-/**
- *
- */
 public class LexerTest {
     @Test
     public void symbols() throws IOException {

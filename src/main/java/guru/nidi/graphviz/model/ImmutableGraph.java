@@ -21,9 +21,6 @@ import guru.nidi.graphviz.attribute.MutableAttributed;
 import java.util.*;
 import java.util.function.Function;
 
-/**
- *
- */
 class ImmutableGraph extends MutableGraph implements Graph {
     ImmutableGraph() {
     }
@@ -77,10 +74,6 @@ class ImmutableGraph extends MutableGraph implements Graph {
             copy.addGraph((MutableGraph) subgraph);
         }
         return copy;
-    }
-
-    public ImmutableGraph with(LinkSource source) {
-        return (ImmutableGraph) copyOfMut().add(source);
     }
 
     public ImmutableGraph link(LinkTarget... targets) {

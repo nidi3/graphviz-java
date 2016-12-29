@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.model;
 
-/**
- *
- */
-public interface MutableLinkSource<T> {
-    T addLink(LinkTarget target);
+public interface MutableLinkSource<T> extends LinkSource{
+   T addLink(LinkTarget target);
 }

@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.engine;
 
-/**
- *
- */
 public class GraphvizException extends RuntimeException {
     public GraphvizException(String message) {
         super(message);

@@ -29,9 +29,6 @@ import static guru.nidi.graphviz.model.Compass.WEST;
 import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.model.Link.to;
 
-/**
- *
- */
 public class PerformanceTest {
     public static void main(String[] args) {
         final long a = System.nanoTime();
@@ -187,19 +184,20 @@ public class PerformanceTest {
                 .general().attr("ranksep", .75, "size", "7.5,7.5")
                 .nodes().attr(Shape.RECTANGLE)
                 .graphs(
-                        graph().nodes().attr(Shape.NONE).with(
-                                node("past").link(
-                                        node("1978").link(
-                                                node("1980").link(
-                                                        node("1982").link(
-                                                                node("1983").link(
-                                                                        node("1985").link(
-                                                                                node("1986").link(
-                                                                                        node("1987").link(
-                                                                                                node("1988").link(
-                                                                                                        node("1989").link(
-                                                                                                                node("1990").link(
-                                                                                                                        node("future")))))))))))))
+                        graph().nodes().attr(Shape.NONE)
+                                .nodes(
+                                        node("past").link(
+                                                node("1978").link(
+                                                        node("1980").link(
+                                                                node("1982").link(
+                                                                        node("1983").link(
+                                                                                node("1985").link(
+                                                                                        node("1986").link(
+                                                                                                node("1987").link(
+                                                                                                        node("1988").link(
+                                                                                                                node("1989").link(
+                                                                                                                        node("1990").link(
+                                                                                                                                node("future")))))))))))))
                                 .nodes(bsh, make, sccs, reiser, csh, yacc, cron, rcs, emacs, build, vi, curses),
                         graph().general().attr(Rank.SAME).nodes().attr(Shape.ELLIPSE).nodes(sis, cfg, archlib, proc),
                         graph().general().attr(Rank.SAME).nodes("past").nodes(sccs, make, bsh, yacc, cron),
@@ -213,7 +211,7 @@ public class PerformanceTest {
                         graph().general().attr(Rank.SAME).nodes("1988").nodes(cia, sbcs, pax, ksh88, pegasus, backtalk),
                         graph().general().attr(Rank.SAME).nodes("1989").nodes(ciapp, app, ship, dataShare, ryacc, mosaic),
                         graph().general().attr(Rank.SAME).nodes("1990").nodes(dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
-                        graph().general().attr(Rank.SAME).nodes("future").with(adv))
+                        graph().general().attr(Rank.SAME).nodes("future").nodes(adv))
                 .nodes(
                         sccs.link(rcs, nmake, d3fs),
                         make.link(build, nmake),
@@ -303,11 +301,11 @@ public class PerformanceTest {
                         graph().cluster()
                                 .nodes().attr(Style.FILLED, Color.WHITE)
                                 .general().attr(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
-                                .with(node("a0").link(node("a1").link(node("a2").link(node("a3"))))),
+                                .nodes(node("a0").link(node("a1").link(node("a2").link(node("a3"))))),
                         graph("x").cluster()
                                 .nodes().attr(Style.FILLED)
                                 .general().attr(Color.BLUE, Label.of("process #2"))
-                                .with(node("b0").link(node("b1").link(node("b2").link(node("b3"))))))
+                                .nodes(node("b0").link(node("b1").link(node("b2").link(node("b3"))))))
                 .nodes(
                         node("start").attr(Shape.mDiamond("", "")).link("a0", "b0"),
                         node("a1").link("b3"),

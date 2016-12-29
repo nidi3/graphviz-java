@@ -17,9 +17,6 @@ package guru.nidi.graphviz.attribute;
 
 import java.util.Map;
 
-/**
- *
- */
 public class MapAttribute implements Attribute {
     private final Map<String, Object> attrs;
 

@@ -26,9 +26,6 @@ import static guru.nidi.graphviz.model.Compass.SOUTH_WEST;
 import static guru.nidi.graphviz.model.Factory.*;
 import static org.junit.Assert.assertEquals;
 
-/**
- *
- */
 public class ParserTest {
     @Test
     public void emptyGraph() throws IOException {
@@ -54,7 +51,7 @@ public class ParserTest {
 
     @Test
     public void nodes() throws IOException {
-        assertEquals(mutGraph().addNodes("simple").add(node("attr").attr("a", "b")),
+        assertEquals(mutGraph().addNodes("simple").addNodes(mutNode("attr").addAttr("a", "b")),
                 Parser.read("graph { simple attr[\"a\"=b]}")); //TODO with port? "d:1 full:1:ne
     }
 

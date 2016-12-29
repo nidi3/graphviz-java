@@ -19,9 +19,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 
-/**
- *
- */
 public class SimpleAttribute<T> implements Attribute {
     protected final String key;
     protected final T value;

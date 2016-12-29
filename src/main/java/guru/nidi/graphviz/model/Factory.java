@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.model;
 
-/**
- *
- */
 public class Factory {
     private Factory() {
     }

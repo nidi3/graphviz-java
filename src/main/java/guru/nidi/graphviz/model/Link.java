@@ -21,11 +21,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- */
 public class Link implements Attributed<Link>, LinkTarget {
-    final Object from;
+    final LinkSource from;
     final LinkTarget to;
     final Map<String, Object> attributes;
 
@@ -45,16 +42,12 @@ public class Link implements Attributed<Link>, LinkTarget {
         return objBetween(from, to);
     }
 
-    public static Link between(MutableLinkSource from, LinkTarget to) {
-        return objBetween(from, to);
-    }
-
-    private static Link objBetween(Object from, LinkTarget to) {
+    private static Link objBetween(LinkSource from, LinkTarget to) {
         final Link link = new Link(from, to, Collections.emptyMap());
         return CreationContext.current().map(ctx -> link.attr(ctx.links())).orElse(link);
     }
 
-    private Link(Object from, LinkTarget to, Map<String, Object> attributes) {
+    private Link(LinkSource from, LinkTarget to, Map<String, Object> attributes) {
         this.from = from;
         this.to = to;
         this.attributes = attributes;
@@ -92,9 +85,9 @@ public class Link implements Attributed<Link>, LinkTarget {
 //        if (from != null ? !from.equals(addLink.from) : addLink.from != null) {
 //            return false;
 //        }
-        if (to != null ? !to.equals(link.to) : link.to != null) {
-            return false;
-        }
+//        if (to != null ? !to.equals(link.to) : link.to != null) {
+//            return false;
+//        }
         return attributes.equals(link.attributes);
     }
 
@@ -102,7 +95,7 @@ public class Link implements Attributed<Link>, LinkTarget {
     public int hashCode() {
         //including from could cause circular executions
         int result = 0;// from != null ? from.hashCode() : 0;
-        result = 31 * result + (to != null ? to.hashCode() : 0);
+//        result = 31 * result + (to != null ? to.hashCode() : 0);
         result = 31 * result + attributes.hashCode();
         return result;
     }

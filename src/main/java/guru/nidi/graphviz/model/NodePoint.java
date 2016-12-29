@@ -15,10 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-/**
- *
- */
-public interface NodePoint extends LinkTarget, LinkSource<Node> {
+public interface NodePoint extends LinkTarget, LinkSource {
     NodePoint loc(String record);
 
     NodePoint loc(Compass compass);

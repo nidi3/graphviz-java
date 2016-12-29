@@ -17,9 +17,6 @@ package guru.nidi.graphviz.model;
 
 import java.util.Collection;
 
-/**
- *
- */
 public interface Linkable {
     Collection<Link> getLinks();
 }

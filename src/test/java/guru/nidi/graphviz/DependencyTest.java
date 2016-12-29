@@ -27,9 +27,6 @@ import java.io.IOException;
 import static jdepend.framework.DependencyMatchers.*;
 import static org.junit.Assert.assertThat;
 
-/**
- *
- */
 public class DependencyTest {
     private static JDepend depend;
 

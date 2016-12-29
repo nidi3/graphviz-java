@@ -23,9 +23,6 @@ import java.util.Map;
 
 import static guru.nidi.graphviz.parse.Lexer.Token.*;
 
-/**
- *
- */
 class Lexer {
     public static final class Token {
         public static final int

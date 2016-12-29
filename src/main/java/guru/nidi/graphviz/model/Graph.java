@@ -2,10 +2,7 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributed;
 
-/**
- *
- */
-public interface Graph extends Linkable, LinkSource<Graph>, LinkTarget {
+public interface Graph extends Linkable, LinkTarget {
     Graph strict();
 
     Graph directed();
@@ -19,8 +16,6 @@ public interface Graph extends Linkable, LinkSource<Graph>, LinkTarget {
     Graph nodes(String... nodes);
 
     Graph graphs(Graph... subgraphs);
-
-    Graph with(LinkSource source);
 
     Graph link(LinkTarget... targets);
 

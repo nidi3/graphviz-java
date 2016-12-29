@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.attribute;
 
-/**
- *
- */
 public class Rank extends SimpleAttribute<String> {
     protected Rank(String value) {
         super("rank", value);

@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.attribute;
 
-/**
- *
- */
 public class Color extends SimpleAttribute<String> {
     private Color(String key, String value) {
         super(key, value);

@@ -18,9 +18,6 @@ package guru.nidi.graphviz.attribute;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- */
 public interface Attribute {
     Map<String, Object> applyTo(Map<String, Object> attrs);
 

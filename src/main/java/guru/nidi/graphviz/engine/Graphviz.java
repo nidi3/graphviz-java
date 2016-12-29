@@ -28,9 +28,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URI;
 
-/**
- *
- */
 public class Graphviz {
     private static GraphvizEngine engine;
     private final String dot;

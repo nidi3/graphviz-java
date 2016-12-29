@@ -15,9 +15,6 @@
  */
 package guru.nidi.graphviz.engine;
 
-/**
- *
- */
 public interface EngineInitListener {
     void engineInitException(Exception e);
 }

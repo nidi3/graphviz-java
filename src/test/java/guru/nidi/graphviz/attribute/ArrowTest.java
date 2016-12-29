@@ -19,9 +19,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- *
- */
 public class ArrowTest {
     @Test
     public void simple() {

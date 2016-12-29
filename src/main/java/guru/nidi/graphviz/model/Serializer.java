@@ -19,9 +19,6 @@ import guru.nidi.graphviz.attribute.MutableAttributed;
 
 import java.util.*;
 
-/**
- *
- */
 public class Serializer {
     private final MutableGraph graph;
     private final StringBuilder s;
@@ -116,6 +113,8 @@ public class Serializer {
             for (final Link link : linkable.getLinks()) {
                 if (link.to instanceof MutableNodePoint) {
                     linkedNodes(((MutableNodePoint) link.to).node, visited);
+                } else if (link.to instanceof MutableNode) {
+                    linkedNodes((MutableNode) link.to, visited);
                 } else if (link.to instanceof MutableGraph) {
                     linkedNodes((MutableGraph) link.to, visited);
                 }
@@ -167,6 +166,8 @@ public class Serializer {
     private void linkTarget(Object linkable) {
         if (linkable instanceof MutableNodePoint) {
             point((MutableNodePoint) linkable);
+        } else if (linkable instanceof MutableNode) {
+            s.append(((MutableNode) linkable).label.serialized());
         } else if (linkable instanceof MutableGraph) {
             graph((MutableGraph) linkable, false);
         }

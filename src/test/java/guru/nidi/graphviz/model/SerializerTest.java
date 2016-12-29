@@ -22,9 +22,6 @@ import static guru.nidi.graphviz.model.Compass.*;
 import static guru.nidi.graphviz.model.Factory.*;
 import static org.junit.Assert.assertEquals;
 
-/**
- *
- */
 public class SerializerTest {
     @After
     public void closeContext() {
