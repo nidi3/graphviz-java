@@ -115,6 +115,8 @@ public class Serializer {
                     linkedNodes(((MutableNodePoint) link.to).node, visited);
                 } else if (link.to instanceof MutableGraph) {
                     linkedNodes((MutableGraph) link.to, visited);
+                } else {
+                    throw new IllegalStateException("unexpected link to " + link.to);
                 }
             }
         }
@@ -166,6 +168,8 @@ public class Serializer {
             point((MutableNodePoint) linkable);
         } else if (linkable instanceof MutableGraph) {
             graph((MutableGraph) linkable, false);
+        }else{
+            throw new IllegalStateException("unexpected link target "+linkable);
         }
     }
 

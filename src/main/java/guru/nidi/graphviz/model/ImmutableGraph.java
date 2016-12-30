@@ -101,7 +101,7 @@ class ImmutableGraph extends MutableGraph implements Graph {
     }
 
     public Graph link(LinkTarget target) {
-        return (ImmutableGraph) addLink(target);
+        return (ImmutableGraph)copyOfMut(). addLink(target);
     }
 
     @Override

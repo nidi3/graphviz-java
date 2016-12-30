@@ -30,6 +30,10 @@ public class Link implements Attributed<Link>, LinkTarget {
         return to(node.withRecord(null));
     }
 
+    public static Link to(Node node) {
+        return to(node.loc());
+    }
+
     public static Link to(LinkTarget to) {
         return objBetween(null, to);
     }

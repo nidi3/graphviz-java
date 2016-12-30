@@ -33,6 +33,6 @@ class ImmutableNodePoint extends MutableNodePoint implements NodePoint {
     }
 
     public Node link(LinkTarget target) {
-        return (Node) addLink(target);
+        return (Node) new ImmutableNodePoint(node.copy(), record, compass).addLink(target);
     }
 }

@@ -43,19 +43,19 @@ class ImmutableNode extends MutableNode implements Node {
     }
 
     public ImmutableNode link(LinkTarget target) {
-        return (ImmutableNode) addLink(target);
+        return (ImmutableNode)copyOfMut(). addLink(target);
     }
 
     public ImmutableNode link(LinkTarget... targets) {
-        return (ImmutableNode) addLink(targets);
+        return (ImmutableNode)copyOfMut(). addLink(targets);
     }
 
     public ImmutableNode link(String node) {
-        return (ImmutableNode) addLink(node);
+        return (ImmutableNode)copyOfMut(). addLink(node);
     }
 
     public ImmutableNode link(String... nodes) {
-        return (ImmutableNode) addLink(nodes);
+        return (ImmutableNode)copyOfMut(). addLink(nodes);
     }
 
     public ImmutableNode attr(Map<String, Object> attrs) {
