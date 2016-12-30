@@ -57,7 +57,10 @@ public class CreationContext {
     }
 
     public static void end() {
-        context.get().pop();
+        final Stack<CreationContext> cs = context.get();
+        if (!cs.empty()) {
+            cs.pop();
+        }
     }
 
     public MutableAttributed<CreationContext> nodes() {

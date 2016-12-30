@@ -138,12 +138,18 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         if (label != null ? !label.equals(node.label) : node.label != null) {
             return false;
         }
-        return true;
+        if (links != null ? !links.equals(node.links) : node.links != null) {
+            return false;
+        }
+        return !(attributes != null ? !attributes.equals(node.attributes) : node.attributes != null);
+
     }
 
     @Override
     public int hashCode() {
         int result = label != null ? label.hashCode() : 0;
+        result = 31 * result + (links != null ? links.hashCode() : 0);
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
         return result;
     }
 

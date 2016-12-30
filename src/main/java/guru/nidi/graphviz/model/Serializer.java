@@ -36,10 +36,10 @@ public class Serializer {
     private void graph(MutableGraph graph, boolean toplevel) {
         if (toplevel) {
             s.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
-            if (!graph.label.isEmpty()) {
+            if (!graph.label.isEmptyLabel()) {
                 s.append(graph.label.serialized()).append(" ");
             }
-        } else if (!graph.label.isEmpty() || graph.cluster) {
+        } else if (!graph.label.isEmptyLabel() || graph.cluster) {
             s.append("subgraph ")
                     .append((graph.cluster ? Label.of("cluster" + graph.label.value) : graph.label).serialized())
                     .append(" ");

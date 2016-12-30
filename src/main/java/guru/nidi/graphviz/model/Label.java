@@ -15,7 +15,11 @@
  */
 package guru.nidi.graphviz.model;
 
-public class Label {
+import guru.nidi.graphviz.attribute.Attribute;
+
+import java.util.Map;
+
+public class Label implements Attribute {
     final String value;
     final boolean html;
 
@@ -32,7 +36,7 @@ public class Label {
         return new Label(value, true);
     }
 
-    public boolean isEmpty() {
+    public boolean isEmptyLabel() {
         return value.length() == 0;
     }
 
@@ -40,6 +44,12 @@ public class Label {
         return html
                 ? ("<" + value + ">")
                 : ("\"" + value.replace("\"", "\\\"").replace("\n", "\\n") + "\"");
+    }
+
+    @Override
+    public Map<String, Object> applyTo(Map<String, Object> attrs) {
+        attrs.put("label", this);
+        return attrs;
     }
 
     @Override
