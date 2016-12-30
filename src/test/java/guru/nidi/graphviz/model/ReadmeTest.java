@@ -87,7 +87,7 @@ public class ReadmeTest {
     @Test
     public void ex4() throws IOException {
         MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
-        Graphviz.fromGraph(g).renderToFile(new File("example/ex41.png"));
+        Graphviz.fromGraph(g).renderToFile(new File("example/ex411.png"));
         g.allNodes().forEach(node -> node.add("color", node.label()).add(Style.lineWidth(8)));
         Graphviz.fromGraph(g).renderToFile(new File("example/ex42.png"));
     }
