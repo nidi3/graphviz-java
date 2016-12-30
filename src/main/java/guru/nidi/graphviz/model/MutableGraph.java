@@ -85,23 +85,6 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return setLabel(Label.of(name));
     }
 
-    MutableGraph addNode(MutableNode node) {
-        nodes.add(node);
-        return this;
-    }
-
-    public MutableGraph addGraphs(MutableGraph... subgraphs) {
-        for (final MutableGraph subgraph : subgraphs) {
-            addGraph(subgraph);
-        }
-        return this;
-    }
-
-    MutableGraph addGraph(MutableGraph subgraph) {
-        subgraphs.add(subgraph);
-        return this;
-    }
-
     public MutableGraph add(LinkSource... sources) {
         for (final LinkSource source : sources) {
             add(source);
@@ -111,11 +94,16 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
 
     public MutableGraph add(LinkSource source) {
         if (source instanceof MutableNode) {
-            return addNode((MutableNode) source);
-        } else if (source instanceof MutableNodePoint) {
-            return addNode(((MutableNodePoint) source).node);
-        } else if (source instanceof MutableGraph) {
-            return addGraph((MutableGraph) source);
+            nodes.add((MutableNode) source);
+            return this;
+        }
+        if (source instanceof MutableNodePoint) {
+            nodes.add(((MutableNodePoint) source).node);
+            return this;
+        }
+        if (source instanceof MutableGraph) {
+            subgraphs.add((MutableGraph) source);
+            return this;
         }
         throw new IllegalArgumentException("Unknown source of type " + source.getClass());
     }

@@ -56,14 +56,6 @@ class ImmutableGraph extends MutableGraph implements Graph {
         return (ImmutableGraph) copyOfMut().setLabel(label);
     }
 
-    public Graph nodes(String... nodes) {
-        final ImmutableGraph copy = copyOfMut();
-        for (final String node : nodes) {
-            copy.addNode(new MutableNode().setLabel(node));
-        }
-        return copy;
-    }
-
     public Graph with(LinkSource... sources) {
         return (ImmutableGraph) copyOfMut().add(sources);
     }

@@ -69,7 +69,7 @@ public class ParserTest {
 
     @Test
     public void subgraph() throws IOException {
-        assertEquals(mutGraph().addGraphs(
+        assertEquals(mutGraph().add(
                 mutGraph("s").getGeneralAttrs().addAttr("a", "b"),
                 mutGraph().getGeneralAttrs().addAttr("c", "d"),
                 mutGraph().getGeneralAttrs().addAttr("e", "f")),
@@ -78,7 +78,7 @@ public class ParserTest {
 
     @Test
     public void leftSubgraphEdge() throws IOException {
-        assertEquals(mutGraph().addGraphs(
+        assertEquals(mutGraph().add(
                 mutGraph().addLink(to(mutNode("x")).attr("a", "b")),
                 mutGraph().addLink(mutNode("y")),
                 mutGraph("a").addLink(mutNode("z"))),
@@ -96,7 +96,7 @@ public class ParserTest {
 
     @Test
     public void subgraphSubgraphEdge() throws IOException {
-        assertEquals(mutGraph().addGraphs(
+        assertEquals(mutGraph().add(
                 mutGraph().addLink(to(mutGraph()).attr("a", "b")),
                 mutGraph().addLink(mutGraph()),
                 mutGraph().addLink(mutGraph("a"))),

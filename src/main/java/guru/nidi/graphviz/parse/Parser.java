@@ -108,7 +108,7 @@ public class Parser {
                 if (token.type == MINUS_MINUS || token.type == ARROW) {
                     edgeStatement(graph, sub);
                 } else {
-                    graph.addGraphs(sub);
+                    graph.add(sub);
                 }
                 return true;
             case GRAPH:

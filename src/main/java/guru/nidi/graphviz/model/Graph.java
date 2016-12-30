@@ -11,8 +11,6 @@ public interface Graph extends Linkable, LinkSource, LinkTarget {
 
     Graph labeled(Label label);
 
-    Graph nodes(String... nodes);
-
     Graph link(LinkTarget... targets);
 
     Graph with(LinkSource... sources);
