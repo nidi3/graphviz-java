@@ -80,7 +80,7 @@ public class ExampleTest {
                         to(init).attr(Style.DOTTED),
                         node("cleanup"),
                         to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
-                execute.link(graph().nodes(make_string, printf), to(compare).attr(Color.RED)),
+                execute.link(graph().with(make_string, printf), to(compare).attr(Color.RED)),
                 init.link(make_string));
         Graphviz.fromGraph(g).renderToFile(new File("target/ex2.png"));
     }
@@ -92,7 +92,7 @@ public class ExampleTest {
                 c = node("c").attr(Shape.polygon(4, .4, 0), Label.html("hello world")),
                 d = node("d").attr(Shape.INV_TRIANGLE),
                 e = node("e").attr(Shape.polygon(4, 0, .7));
-        final Graph g = graph("ex3").directed().nodes(
+        final Graph g = graph("ex3").directed().with(
                 a.link(node("b").link(c, d)),
                 e);
         Graphviz.fromGraph(g).renderToFile(new File("target/ex3.png"));
@@ -104,7 +104,7 @@ public class ExampleTest {
                 struct1 = node("struct1").attr(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
                 struct2 = node("struct2").attr(Records.label("<f0> one|<f1> two")),
                 struct3 = node("struct3").attr(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
-        final Graph g = graph("ex41").directed().nodes(
+        final Graph g = graph("ex41").directed().with(
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
@@ -126,7 +126,7 @@ public class ExampleTest {
                                 turn(rec("c"), rec("here", "d"), rec("e")),
                                 rec("f")),
                         rec("g"), rec("h")));
-        final Graph g = graph("ex42").directed().nodes(
+        final Graph g = graph("ex42").directed().with(
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
@@ -168,8 +168,8 @@ public class ExampleTest {
         final Graph g = graph("ex5").directed()
                 .general().attr("ranksep", .75, "size", "7.5,7.5")
                 .nodes().attr(Shape.RECTANGLE)
-                .graphs(
-                        graph().nodes().attr(Shape.NONE).nodes(
+                .with(
+                        graph().nodes().attr(Shape.NONE).with(
                                 node("past").link(
                                         node("1978").link(
                                                 node("1980").link(
@@ -181,22 +181,21 @@ public class ExampleTest {
                                                                                                 node("1988").link(
                                                                                                         node("1989").link(
                                                                                                                 node("1990").link(
-                                                                                                                        node("future")))))))))))))
-                                .nodes(bsh, make, sccs, reiser, csh, yacc, cron, rcs, emacs, build, vi, curses),
-                        graph().general().attr(Rank.SAME).nodes().attr(Shape.ELLIPSE).nodes(sis, cfg, archlib, proc),
-                        graph().general().attr(Rank.SAME).nodes("past").nodes(sccs, make, bsh, yacc, cron),
-                        graph().general().attr(Rank.SAME).nodes("1978").nodes(reiser, csh),
-                        graph().general().attr(Rank.SAME).nodes("1980").nodes(build, emacs, vi),
-                        graph().general().attr(Rank.SAME).nodes("1982").nodes(rcs, curses, imx, syned),
-                        graph().general().attr(Rank.SAME).nodes("1983").nodes(ksh, ifs, ttu),
-                        graph().general().attr(Rank.SAME).nodes("1985").nodes(nmake, peggy),
-                        graph().general().attr(Rank.SAME).nodes("1986").nodes(cs, ncpp, kshi, cursesi, pg2),
-                        graph().general().attr(Rank.SAME).nodes("1987").nodes(dag, csas, ansiCpp, fdelta, d3fs, nmake2),
-                        graph().general().attr(Rank.SAME).nodes("1988").nodes(cia, sbcs, pax, ksh88, pegasus, backtalk),
-                        graph().general().attr(Rank.SAME).nodes("1989").nodes(ciapp, app, ship, dataShare, ryacc, mosaic),
-                        graph().general().attr(Rank.SAME).nodes("1990").nodes(dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
-                        graph().general().attr(Rank.SAME).nodes("future").nodes(adv))
-                .nodes(
+                                                                                                                        node("future")))))))))))),
+                                bsh, make, sccs, reiser, csh, yacc, cron, rcs, emacs, build, vi, curses),
+                        graph().general().attr(Rank.SAME).nodes().attr(Shape.ELLIPSE).with(sis, cfg, archlib, proc),
+                        graph().general().attr(Rank.SAME).nodes("past").with(sccs, make, bsh, yacc, cron),
+                        graph().general().attr(Rank.SAME).nodes("1978").with(reiser, csh),
+                        graph().general().attr(Rank.SAME).nodes("1980").with(build, emacs, vi),
+                        graph().general().attr(Rank.SAME).nodes("1982").with(rcs, curses, imx, syned),
+                        graph().general().attr(Rank.SAME).nodes("1983").with(ksh, ifs, ttu),
+                        graph().general().attr(Rank.SAME).nodes("1985").with(nmake, peggy),
+                        graph().general().attr(Rank.SAME).nodes("1986").with(cs, ncpp, kshi, cursesi, pg2),
+                        graph().general().attr(Rank.SAME).nodes("1987").with(dag, csas, ansiCpp, fdelta, d3fs, nmake2),
+                        graph().general().attr(Rank.SAME).nodes("1988").with(cia, sbcs, pax, ksh88, pegasus, backtalk),
+                        graph().general().attr(Rank.SAME).nodes("1989").with(ciapp, app, ship, dataShare, ryacc, mosaic),
+                        graph().general().attr(Rank.SAME).nodes("1990").with(dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
+                        graph().general().attr(Rank.SAME).nodes("future").with(adv),
                         sccs.link(rcs, nmake, d3fs),
                         make.link(build, nmake),
                         build.link(nmake2),
@@ -268,7 +267,7 @@ public class ExampleTest {
                 node7 = node("node7").attr(Records.of(turn(rec("n", "s19"), rec("659"), rec("p", ""))));
         final Graph g = graph("ex6").directed()
                 .general().attr(RankDir.LEFT_TO_RIGHT)
-                .nodes(
+                .with(
                         node0.link(
                                 between(loc("f0"), node1.loc(WEST)),
                                 between(loc("f1"), node2.loc(WEST)),
@@ -283,16 +282,15 @@ public class ExampleTest {
     @Test
     public void ex7() {
         final Graph g = graph("ex7").directed()
-                .graphs(
+                .with(
                         graph().cluster()
                                 .nodes().attr(Style.FILLED, Color.WHITE)
                                 .general().attr(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
-                                .nodes(node("a0").link(node("a1").link(node("a2").link(node("a3"))))),
+                                .with(node("a0").link(node("a1").link(node("a2").link(node("a3"))))),
                         graph("x").cluster()
                                 .nodes().attr(Style.FILLED)
                                 .general().attr(Color.BLUE, Label.of("process #2"))
-                                .nodes(node("b0").link(node("b1").link(node("b2").link(node("b3"))))))
-                .nodes(
+                                .with(node("b0").link(node("b1").link(node("b2").link(node("b3"))))),
                         node("start").attr(Shape.mDiamond("", "")).link("a0", "b0"),
                         node("a1").link("b3"),
                         node("b2").link("a3"),

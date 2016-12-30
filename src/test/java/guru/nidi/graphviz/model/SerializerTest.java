@@ -76,7 +76,7 @@ public class SerializerTest {
     @Test
     public void nodes() {
         assertGraph("graph 'x' {\n'x' ['bla'='blu']\n}", graph("x")
-                .nodes(node("x").attr("bla", "blu")));
+                .with(node("x").attr("bla", "blu")));
     }
 
     @Test
@@ -86,78 +86,78 @@ public class SerializerTest {
                 .nodes().addAttr("n", "y")
                 .links().addAttr("l", "z");
         assertGraph("graph 'x' {\n'g'='x'\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
-                .nodes(node("x").attr("bla", "blu").link(node("y"))));
+                .with(node("x").attr("bla", "blu").link(node("y"))));
     }
 
     @Test
     public void subgraph() {
         assertGraph("graph 'x' {\nsubgraph 'x' {\n'x' ['bla'='blu']\n}\n}", graph("x")
-                .graphs(graph("x").nodes(node("x").attr("bla", "blu"))));
+                .with(graph("x").with(node("x").attr("bla", "blu"))));
     }
 
     @Test
     public void namelessSubgraph() {
         assertGraph("graph 'x' {\n{\n'x' ['bla'='blu']\n}\n}", graph("x")
-                .graphs(graph().nodes(node("x").attr("bla", "blu"))));
+                .with(graph().with(node("x").attr("bla", "blu"))));
     }
 
     @Test
     public void simpleEdge() {
         assertGraph("graph 'x' {\n'x' -- 'y'\n}", graph("x")
-                .nodes(node("x").link(node("y"))));
+                .with(node("x").link(node("y"))));
     }
 
     @Test
     public void attrEdge() {
         assertGraph("graph 'x' {\n'x' -- 'y' ['bla'='blu']\n}", graph("x")
-                .nodes(node("x").link(to(node("y")).attr("bla", "blu"))));
+                .with(node("x").link(to(node("y")).attr("bla", "blu"))));
     }
 
     @Test
     public void graphEdgeStart() {
-        assertGraph("graph 'x' {\nsubgraph 'y' {\n'z' -- 'a'\n} -- 'x':n\n}", graph("x").graphs(
-                graph("y").nodes(node("z").link(
+        assertGraph("graph 'x' {\nsubgraph 'y' {\n'z' -- 'a'\n} -- 'x':n\n}", graph("x").with(
+                graph("y").with(node("z").link(
                         node("a"))).link(node("x").loc(NORTH))));
     }
 
     @Test
     public void graphEdgeEnd() {
-        assertGraph("graph 'x' {\n'x':n -- subgraph 'y' {\n'z' -- 'a'\n}\n}", graph("x").nodes(
+        assertGraph("graph 'x' {\n'x':n -- subgraph 'y' {\n'z' -- 'a'\n}\n}", graph("x").with(
                 node("x").link(between(loc(NORTH),
-                        graph("y").nodes(node("z").link(node("a")))))));
+                        graph("y").with(node("z").link(node("a")))))));
     }
 
     @Test
     public void graphEdge() {
-        assertGraph("graph 'x' {\nsubgraph 'y' {\n'z' -- 'a'\n} -- subgraph 'y2' {\n'z2' -- 'a2'\n}\n}", graph("x").graphs(
-                graph("y").nodes(node("z").link(node("a"))).link(
-                        graph("y2").nodes(node("z2").link(node("a2"))))));
+        assertGraph("graph 'x' {\nsubgraph 'y' {\n'z' -- 'a'\n} -- subgraph 'y2' {\n'z2' -- 'a2'\n}\n}", graph("x").with(
+                graph("y").with(node("z").link(node("a"))).link(
+                        graph("y2").with(node("z2").link(node("a2"))))));
     }
 
     @Test
     public void compassEdge() {
         assertGraph("graph 'x' {\n'x':sw -- 'y':ne\n}", graph("x")
-                .nodes(node("x").link(between(loc(SOUTH_WEST), node("y").loc(NORTH_EAST)))));
+                .with(node("x").link(between(loc(SOUTH_WEST), node("y").loc(NORTH_EAST)))));
     }
 
     @Test
     public void recordEdge() {
         assertGraph("graph 'x' {\n'x':'r1' -- 'y':'r2'\n}", graph("x")
-                .nodes(node("x").link(between(loc("r1"), node("y").loc("r2")))));
+                .with(node("x").link(between(loc("r1"), node("y").loc("r2")))));
     }
 
     @Test
     public void compassRecordEdge() {
         assertGraph("graph 'x' {\n'x':'r1':sw -- 'y':'r2':ne\n}", graph("x")
-                .nodes(node("x").link(
+                .with(node("x").link(
                         between(loc("r1", SOUTH_WEST), node("y").loc("r2", NORTH_EAST)))));
     }
 
     @Test
     public void complexEdge() {
         assertGraph("digraph 'x' {\n'x' -> 'y'\n'y' -> 'z'\n'a' -> 'x'\n}", graph("x").directed()
-                .nodes(node("x").link(node("y").link(node("z"))))
-                .nodes(node("a").link(node("x"))));
+                .with(node("x").link(node("y").link(node("z"))))
+                .with(node("a").link(node("x"))));
     }
 
     private void assertGraph(String expected, Graph graph) {

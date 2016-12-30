@@ -51,7 +51,7 @@ public class ParserTest {
 
     @Test
     public void nodes() throws IOException {
-        assertEquals(mutGraph().addNodes("simple").addNodes(mutNode("attr").addAttr("a", "b")),
+        assertEquals(mutGraph().add(mutNode("simple"), mutNode("attr").addAttr("a", "b")),
                 Parser.read("graph { simple attr[\"a\"=b]}")); //TODO with port? "d:1 full:1:ne
     }
 
@@ -61,7 +61,7 @@ public class ParserTest {
                 simple = mutNode("simple"),
                 d = mutNode("d"),
                 full = mutNode("full");
-        assertEquals(mutGraph().addNodes(
+        assertEquals(mutGraph().add(
                 simple.addLink(to(d.withCompass(SOUTH_WEST)).attr("a", "b")),
                 d.addLink(between(loc(SOUTH_WEST), full.withRecord("2").setCompass(NORTH_EAST)).attr("a", "b"))),
                 Parser.read("graph { simple -- d:sw -- full:2:ne [a=b]}"));
@@ -87,7 +87,7 @@ public class ParserTest {
 
     @Test
     public void rightSubgraphEdge() throws IOException {
-        assertEquals(mutGraph().addNodes(
+        assertEquals(mutGraph().add(
                 mutNode("x").addLink(to(mutGraph()).attr("a", "b")),
                 mutNode("y").addLink(mutGraph()),
                 mutNode("z").addLink(mutGraph("a"))),

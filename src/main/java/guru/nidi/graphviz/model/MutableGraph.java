@@ -85,27 +85,9 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return setLabel(Label.of(name));
     }
 
-    public MutableGraph addNodes(MutableNode... nodes) {
-        for (final MutableNode node : nodes) {
-            addNode(node);
-        }
-        return this;
-    }
-
     MutableGraph addNode(MutableNode node) {
         nodes.add(node);
         return this;
-    }
-
-    public MutableGraph addNodes(String... nodes) {
-        for (final String node : nodes) {
-            addNode(node);
-        }
-        return this;
-    }
-
-    MutableGraph addNode(String node) {
-        return addNode(new MutableNode().setLabel(node));
     }
 
     public MutableGraph addGraphs(MutableGraph... subgraphs) {

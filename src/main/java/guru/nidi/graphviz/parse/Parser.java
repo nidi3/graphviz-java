@@ -171,7 +171,7 @@ public class Parser {
         if (token.type == BRACKET_OPEN) {
             applyMutableAttributes(node, attributeList());
         }
-        graph.addNodes(node);
+        graph.add(node);
     }
 
     private MutableNodePoint nodeId(Token base) throws IOException {
