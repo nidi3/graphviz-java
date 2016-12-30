@@ -91,7 +91,7 @@ public class Parser {
             case ID:
                 nextToken();
                 if (token.type == EQUAL) {
-                    applyMutableAttributes(graph.getGeneralAttrs(), Arrays.asList(base, nextToken(ID, "identifier")));
+                    applyMutableAttributes(graph.generalAttrs(), Arrays.asList(base, nextToken(ID, "identifier")));
                     nextToken();
                 } else {
                     final MutableNodePoint nodeId = nodeId(base);
@@ -196,13 +196,13 @@ public class Parser {
 
     private void applyMutableAttributes(MutableAttributed<?> attributed, List<Token> tokens) throws IOException {
         for (int i = 0; i < tokens.size(); i += 2) {
-            attributed.addAttr(tokens.get(i).value, tokens.get(i + 1).value);
+            attributed.add(tokens.get(i).value, tokens.get(i + 1).value);
         }
     }
 
     private <T extends Attributed<T>> T applyAttributes(T attributed, List<Token> tokens) throws IOException {
         for (int i = 0; i < tokens.size(); i += 2) {
-            attributed = attributed.attr(tokens.get(i).value, tokens.get(i + 1).value);
+            attributed = attributed.with(tokens.get(i).value, tokens.get(i + 1).value);
         }
         return attributed;
     }
@@ -210,11 +210,11 @@ public class Parser {
     private MutableAttributed<MutableGraph> attributes(MutableGraph graph, Token token) {
         switch (token.type) {
             case GRAPH:
-                return graph.getGraphAttrs();
+                return graph.graphAttrs();
             case NODE:
-                return graph.getNodeAttrs();
+                return graph.nodeAttrs();
             case EDGE:
-                return graph.getLinkAttrs();
+                return graph.linkAttrs();
             default:
                 return null;
         }

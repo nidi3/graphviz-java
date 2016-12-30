@@ -66,7 +66,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
 
     public MutableNode addLink(LinkTarget target) {
         final Link link = target.linkTo();
-        links.add(Link.between(from(link), link.to).attr(link.attributes));
+        links.add(Link.between(from(link), link.to).with(link.attributes));
         return this;
     }
 
@@ -88,7 +88,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return this;
     }
 
-    public MutableNode addAttr(Map<String, Object> attrs) {
+    public MutableNode add(Map<String, Object> attrs) {
         attributes.putAll(attrs);
         return this;
     }
@@ -151,7 +151,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     }
 
     @Override
-    public Collection<Link> getLinks() {
+    public Collection<Link> links() {
         return links;
     }
 

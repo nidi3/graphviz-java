@@ -42,17 +42,17 @@ public class ParserTest {
     @Test
     public void attributesGraph() throws IOException {
         assertEquals(mutGraph()
-                        .getGeneralAttrs().addAttr("x", "y")
-                        .getGraphAttrs().addAttr("a", "b")
-                        .getNodeAttrs().addAttr("c", "d")
-                        .getLinkAttrs().addAttr("e", "f", "g", "h", "i", "j"),
+                        .generalAttrs().add("x", "y")
+                        .graphAttrs().add("a", "b")
+                        .nodeAttrs().add("c", "d")
+                        .linkAttrs().add("e", "f", "g", "h", "i", "j"),
                 Parser.read("graph { x=y; graph [a=b]; node[c=d] edge[e=f,g=h][i=j] }"));
     }
 
     @Test
     public void nodes() throws IOException {
-        assertEquals(mutGraph().add(mutNode("simple"), mutNode("attr").addAttr("a", "b")),
-                Parser.read("graph { simple attr[\"a\"=b]}")); //TODO with port? "d:1 full:1:ne
+        assertEquals(mutGraph().add(mutNode("simple"), mutNode("with").add("a", "b")),
+                Parser.read("graph { simple with[\"a\"=b]}")); //TODO with port? "d:1 full:1:ne
     }
 
     @Test
@@ -62,24 +62,24 @@ public class ParserTest {
                 d = mutNode("d"),
                 full = mutNode("full");
         assertEquals(mutGraph().add(
-                simple.addLink(to(d.withCompass(SOUTH_WEST)).attr("a", "b")),
-                d.addLink(between(loc(SOUTH_WEST), full.withRecord("2").setCompass(NORTH_EAST)).attr("a", "b"))),
+                simple.addLink(to(d.withCompass(SOUTH_WEST)).with("a", "b")),
+                d.addLink(between(loc(SOUTH_WEST), full.withRecord("2").setCompass(NORTH_EAST)).with("a", "b"))),
                 Parser.read("graph { simple -- d:sw -- full:2:ne [a=b]}"));
     }
 
     @Test
     public void subgraph() throws IOException {
         assertEquals(mutGraph().add(
-                mutGraph("s").getGeneralAttrs().addAttr("a", "b"),
-                mutGraph().getGeneralAttrs().addAttr("c", "d"),
-                mutGraph().getGeneralAttrs().addAttr("e", "f")),
+                mutGraph("s").generalAttrs().add("a", "b"),
+                mutGraph().generalAttrs().add("c", "d"),
+                mutGraph().generalAttrs().add("e", "f")),
                 Parser.read("graph { subgraph s { a=b }; subgraph { c=d }; { e=f } }"));
     }
 
     @Test
     public void leftSubgraphEdge() throws IOException {
         assertEquals(mutGraph().add(
-                mutGraph().addLink(to(mutNode("x")).attr("a", "b")),
+                mutGraph().addLink(to(mutNode("x")).with("a", "b")),
                 mutGraph().addLink(mutNode("y")),
                 mutGraph("a").addLink(mutNode("z"))),
                 Parser.read("graph{ {} -- x [a=b]  subgraph{} -- y  subgraph a{} -- z }"));
@@ -88,7 +88,7 @@ public class ParserTest {
     @Test
     public void rightSubgraphEdge() throws IOException {
         assertEquals(mutGraph().add(
-                mutNode("x").addLink(to(mutGraph()).attr("a", "b")),
+                mutNode("x").addLink(to(mutGraph()).with("a", "b")),
                 mutNode("y").addLink(mutGraph()),
                 mutNode("z").addLink(mutGraph("a"))),
                 Parser.read("graph{ x -- {} [a=b]  y -- subgraph{}  z -- subgraph a{} }"));
@@ -97,7 +97,7 @@ public class ParserTest {
     @Test
     public void subgraphSubgraphEdge() throws IOException {
         assertEquals(mutGraph().add(
-                mutGraph().addLink(to(mutGraph()).attr("a", "b")),
+                mutGraph().addLink(to(mutGraph()).with("a", "b")),
                 mutGraph().addLink(mutGraph()),
                 mutGraph().addLink(mutGraph("a"))),
                 Parser.read("graph{ {} -- {} [a=b]  {} -- subgraph{}  {} -- subgraph a{} }"));

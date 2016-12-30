@@ -110,7 +110,7 @@ public class Serializer {
     private void linkedNodes(Linkable linkable, Set<Linkable> visited) {
         if (!visited.contains(linkable)) {
             visited.add(linkable);
-            for (final Link link : linkable.getLinks()) {
+            for (final Link link : linkable.links()) {
                 if (link.to instanceof MutableNodePoint) {
                     linkedNodes(((MutableNodePoint) link.to).node, visited);
                 } else if (link.to instanceof MutableGraph) {
@@ -142,7 +142,7 @@ public class Serializer {
 
     private boolean isLinked(MutableGraph graph, List<? extends Linkable> linkables) {
         for (final Linkable linkable : linkables) {
-            for (final Link link : linkable.getLinks()) {
+            for (final Link link : linkable.links()) {
                 if (link.to.equals(graph)) {
                     return true;
                 }
@@ -153,7 +153,7 @@ public class Serializer {
 
     private void edges(List<? extends Linkable> linkables) {
         for (final Linkable linkable : linkables) {
-            for (final Link link : linkable.getLinks()) {
+            for (final Link link : linkable.links()) {
                 linkTarget(link.from);
                 s.append(graph.directed ? " -> " : " -- ");
                 linkTarget(link.to);

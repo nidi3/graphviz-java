@@ -48,7 +48,7 @@ public class Link implements Attributed<Link>, LinkTarget {
 
     private static Link objBetween(LinkSource from, LinkTarget to) {
         final Link link = new Link(from, to, Collections.emptyMap());
-        return CreationContext.current().map(ctx -> link.attr(ctx.links())).orElse(link);
+        return CreationContext.current().map(ctx -> link.with(ctx.links())).orElse(link);
     }
 
     private Link(LinkSource from, LinkTarget to, Map<String, Object> attributes) {
@@ -57,7 +57,7 @@ public class Link implements Attributed<Link>, LinkTarget {
         this.attributes = attributes;
     }
 
-    public Link attr(Map<String, Object> attrs) {
+    public Link with(Map<String, Object> attrs) {
         final Map<String, Object> newAttrs = new HashMap<>(this.attributes);
         newAttrs.putAll(attrs);
         return new Link(from, to, newAttrs);

@@ -22,20 +22,20 @@ import static java.util.Collections.singletonMap;
 
 public interface Attributed<T> extends Attribute {
 
-    default T attr(String name, Object value) {
-        return attr(singletonMap(name, value));
+    default T with(String name, Object value) {
+        return with(singletonMap(name, value));
     }
 
-    default T attr(Object... keysAndValues) {
-        return attr(Attribute.from(keysAndValues));
+    default T with(Object... keysAndValues) {
+        return with(Attribute.from(keysAndValues));
     }
 
-    default T attr(Attribute attribute) {
+    default T with(Attribute attribute) {
         final Map<String, Object> attrs = new HashMap<>();
         attribute.applyTo(attrs);
-        return attr(attrs);
+        return with(attrs);
     }
 
-    T attr(Map<String, Object> attrs);
+    T with(Map<String, Object> attrs);
 
 }

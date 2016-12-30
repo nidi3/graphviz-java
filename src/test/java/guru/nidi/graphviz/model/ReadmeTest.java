@@ -40,19 +40,19 @@ public class ReadmeTest {
         Node
                 init = node("init"),
                 execute = node("execute"),
-                compare = node("compare").attr(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
-                mkString = node("mkString").attr(Label.of("make a\nstring")),
+                compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
+                mkString = node("mkString").with(Label.of("make a\nstring")),
                 printf = node("printf");
 
         Graph g = graph("example2").directed().with(
-                node("main").attr(Shape.RECTANGLE).link(
-                        to(node("parse").link(execute)).attr("weight", 8),
-                        to(init).attr(Style.DOTTED),
+                node("main").with(Shape.RECTANGLE).link(
+                        to(node("parse").link(execute)).with("weight", 8),
+                        to(init).with(Style.DOTTED),
                         node("cleanup"),
-                        to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
+                        to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
                 execute.link(
                         graph().with(mkString, printf),
-                        to(compare).attr(Color.RED)),
+                        to(compare).with(Color.RED)),
                 init.link(mkString));
 
         Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"));
@@ -61,16 +61,16 @@ public class ReadmeTest {
     @Test
     public void ex3() throws IOException {
         Node
-                node0 = node("node0").attr(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""))),
-                node1 = node("node1").attr(Records.of(turn(rec("n4"), rec("v", "719"), rec("")))),
-                node2 = node("node2").attr(Records.of(turn(rec("a1"), rec("805"), rec("p", "")))),
-                node3 = node("node3").attr(Records.of(turn(rec("i9"), rec("718"), rec("")))),
-                node4 = node("node4").attr(Records.of(turn(rec("e5"), rec("989"), rec("p", "")))),
-                node5 = node("node5").attr(Records.of(turn(rec("t2"), rec("v", "959"), rec("")))),
-                node6 = node("node6").attr(Records.of(turn(rec("o1"), rec("794"), rec("")))),
-                node7 = node("node7").attr(Records.of(turn(rec("s7"), rec("659"), rec(""))));
+                node0 = node("node0").with(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""))),
+                node1 = node("node1").with(Records.of(turn(rec("n4"), rec("v", "719"), rec("")))),
+                node2 = node("node2").with(Records.of(turn(rec("a1"), rec("805"), rec("p", "")))),
+                node3 = node("node3").with(Records.of(turn(rec("i9"), rec("718"), rec("")))),
+                node4 = node("node4").with(Records.of(turn(rec("e5"), rec("989"), rec("p", "")))),
+                node5 = node("node5").with(Records.of(turn(rec("t2"), rec("v", "959"), rec("")))),
+                node6 = node("node6").with(Records.of(turn(rec("o1"), rec("794"), rec("")))),
+                node7 = node("node7").with(Records.of(turn(rec("s7"), rec("659"), rec(""))));
         Graph g = graph("example3").directed()
-                .general().attr(RankDir.LEFT_TO_RIGHT)
+                .generalAttr().with(RankDir.LEFT_TO_RIGHT)
                 .with(
                         node0.link(
                                 between(loc("f0"), node1.loc("v", SOUTH)),

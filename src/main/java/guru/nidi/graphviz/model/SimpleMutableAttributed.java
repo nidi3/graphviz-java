@@ -37,7 +37,7 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     }
 
     @Override
-    public E addAttr(Map<String, Object> attrs) {
+    public E add(Map<String, Object> attrs) {
         attributes.putAll(attrs);
         return target;
     }

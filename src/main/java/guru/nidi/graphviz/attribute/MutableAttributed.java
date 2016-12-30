@@ -21,20 +21,20 @@ import java.util.Map;
 import static java.util.Collections.singletonMap;
 
 public interface MutableAttributed<T> extends Attribute {
-    default T addAttr(String name, Object value) {
-        return addAttr(singletonMap(name, value));
+    default T add(String name, Object value) {
+        return add(singletonMap(name, value));
     }
 
-    default T addAttr(Object... keysAndValues) {
-        return addAttr(Attribute.from(keysAndValues));
+    default T add(Object... keysAndValues) {
+        return add(Attribute.from(keysAndValues));
     }
 
-    default T addAttr(Attribute attribute) {
+    default T add(Attribute attribute) {
         final Map<String, Object> attrs = new HashMap<>();
         attribute.applyTo(attrs);
-        return addAttr(attrs);
+        return add(attrs);
     }
 
-    T addAttr(Map<String, Object> attrs);
+    T add(Map<String, Object> attrs);
 
 }

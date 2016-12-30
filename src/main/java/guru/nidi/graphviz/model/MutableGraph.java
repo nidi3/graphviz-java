@@ -36,7 +36,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     public MutableGraph() {
         this(false, false, false, Label.of(""), new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
                 null, null, null, null);
-        CreationContext.current().ifPresent(ctx -> getGeneralAttrs().addAttr(ctx.graphs()));
+        CreationContext.current().ifPresent(ctx -> generalAttrs().add(ctx.graphs()));
     }
 
     protected MutableGraph(boolean strict, boolean directed, boolean cluster, Label label,
@@ -117,12 +117,19 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
 
     public MutableGraph addLink(LinkTarget target) {
         final Link link = target.linkTo();
-        links.add(Link.between(this, link.to).attr(link.attributes));
+        links.add(Link.between(this, link.to).with(link.attributes));
         return this;
     }
 
-    @Override
-    public Collection<Link> getLinks() {
+    public Collection<MutableNode> nodes() {
+        return nodes;
+    }
+
+    public Collection<MutableGraph> graphs() {
+        return subgraphs;
+    }
+
+    public Collection<Link> links() {
         return links;
     }
 
@@ -147,19 +154,19 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return label;
     }
 
-    public MutableAttributed<MutableGraph> getGeneralAttrs() {
+    public MutableAttributed<MutableGraph> generalAttrs() {
         return generalAttrs;
     }
 
-    public MutableAttributed<MutableGraph> getNodeAttrs() {
+    public MutableAttributed<MutableGraph> nodeAttrs() {
         return nodeAttrs;
     }
 
-    public MutableAttributed<MutableGraph> getLinkAttrs() {
+    public MutableAttributed<MutableGraph> linkAttrs() {
         return linkAttrs;
     }
 
-    public MutableAttributed<MutableGraph> getGraphAttrs() {
+    public MutableAttributed<MutableGraph> graphAttrs() {
         return graphAttrs;
     }
 

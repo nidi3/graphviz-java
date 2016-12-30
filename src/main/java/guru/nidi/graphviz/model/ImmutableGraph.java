@@ -64,20 +64,20 @@ class ImmutableGraph extends MutableGraph implements Graph {
         return (ImmutableGraph) copyOfMut().addLink(targets);
     }
 
-    public Attributed<Graph> nodes() {
-        return new GraphAttributed(MutableGraph::getNodeAttrs);
+    public Attributed<Graph> nodeAttr() {
+        return new GraphAttributed(MutableGraph::nodeAttrs);
     }
 
-    public Attributed<Graph> links() {
-        return new GraphAttributed(MutableGraph::getLinkAttrs);
+    public Attributed<Graph> linkAttr() {
+        return new GraphAttributed(MutableGraph::linkAttrs);
     }
 
-    public Attributed<Graph> graphs() {
-        return new GraphAttributed(MutableGraph::getGraphAttrs);
+    public Attributed<Graph> graphAttr() {
+        return new GraphAttributed(MutableGraph::graphAttrs);
     }
 
-    public Attributed<Graph> general() {
-        return new GraphAttributed(MutableGraph::getGeneralAttrs);
+    public Attributed<Graph> generalAttr() {
+        return new GraphAttributed(MutableGraph::generalAttrs);
     }
 
     public Graph link(LinkTarget target) {
@@ -158,8 +158,8 @@ class ImmutableGraph extends MutableGraph implements Graph {
         }
 
         @Override
-        public Graph attr(Map<String, Object> attrs) {
-            return (ImmutableGraph) attributeSource.apply(copyOfMut()).addAttr(attrs);
+        public Graph with(Map<String, Object> attrs) {
+            return (ImmutableGraph) attributeSource.apply(copyOfMut()).add(attrs);
         }
 
         @Override

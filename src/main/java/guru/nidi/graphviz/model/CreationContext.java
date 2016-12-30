@@ -70,6 +70,6 @@ public class CreationContext {
     }
 
     Node getOrCreateNode(Label label) {
-        return nodes.computeIfAbsent(label, ImmutableNode::new).attr(nodeAttributes);
+        return nodes.computeIfAbsent(label, ImmutableNode::new).with(nodeAttributes);
     }
 }

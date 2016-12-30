@@ -15,12 +15,12 @@ public interface Graph extends Linkable, LinkSource, LinkTarget {
 
     Graph with(LinkSource... sources);
 
-    Attributed<Graph> nodes();
+    Attributed<Graph> nodeAttr();
 
-    Attributed<Graph> links();
+    Attributed<Graph> linkAttr();
 
-    Attributed<Graph> graphs();
+    Attributed<Graph> graphAttr();
 
-    Attributed<Graph> general();
+    Attributed<Graph> generalAttr();
 
 }

@@ -55,50 +55,50 @@ public class SerializerTest {
 
     @Test
     public void graphAttr() {
-        assertGraph("graph 'x' {\ngraph ['bla'='blu']\n}", graph("x").graphs().attr("bla", "blu"));
+        assertGraph("graph 'x' {\ngraph ['bla'='blu']\n}", graph("x").graphAttr().with("bla", "blu"));
     }
 
     @Test
     public void nodeAttr() {
-        assertGraph("graph 'x' {\nnode ['bla'='blu']\n}", graph("x").nodes().attr("bla", "blu"));
+        assertGraph("graph 'x' {\nnode ['bla'='blu']\n}", graph("x").nodeAttr().with("bla", "blu"));
     }
 
     @Test
     public void linkAttr() {
-        assertGraph("graph 'x' {\nedge ['bla'='blu']\n}", graph("x").links().attr("bla", "blu"));
+        assertGraph("graph 'x' {\nedge ['bla'='blu']\n}", graph("x").linkAttr().with("bla", "blu"));
     }
 
     @Test
     public void generalAttr() {
-        assertGraph("graph 'x' {\n'bla'='blu'\n}", graph("x").general().attr("bla", "blu"));
+        assertGraph("graph 'x' {\n'bla'='blu'\n}", graph("x").generalAttr().with("bla", "blu"));
     }
 
     @Test
     public void nodes() {
         assertGraph("graph 'x' {\n'x' ['bla'='blu']\n}", graph("x")
-                .with(node("x").attr("bla", "blu")));
+                .with(node("x").with("bla", "blu")));
     }
 
     @Test
     public void context() {
         CreationContext.begin()
-                .graphs().addAttr("g", "x")
-                .nodes().addAttr("n", "y")
-                .links().addAttr("l", "z");
+                .graphs().add("g", "x")
+                .nodes().add("n", "y")
+                .links().add("l", "z");
         assertGraph("graph 'x' {\n'g'='x'\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
-                .with(node("x").attr("bla", "blu").link(node("y"))));
+                .with(node("x").with("bla", "blu").link(node("y"))));
     }
 
     @Test
     public void subgraph() {
         assertGraph("graph 'x' {\nsubgraph 'x' {\n'x' ['bla'='blu']\n}\n}", graph("x")
-                .with(graph("x").with(node("x").attr("bla", "blu"))));
+                .with(graph("x").with(node("x").with("bla", "blu"))));
     }
 
     @Test
     public void namelessSubgraph() {
         assertGraph("graph 'x' {\n{\n'x' ['bla'='blu']\n}\n}", graph("x")
-                .with(graph().with(node("x").attr("bla", "blu"))));
+                .with(graph().with(node("x").with("bla", "blu"))));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class SerializerTest {
     @Test
     public void attrEdge() {
         assertGraph("graph 'x' {\n'x' -- 'y' ['bla'='blu']\n}", graph("x")
-                .with(node("x").link(to(node("y")).attr("bla", "blu"))));
+                .with(node("x").link(to(node("y")).with("bla", "blu"))));
     }
 
     @Test
