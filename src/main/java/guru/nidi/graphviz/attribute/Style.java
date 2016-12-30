@@ -27,6 +27,7 @@ public class Style extends SimpleAttribute<String> {
             INVIS = new Style("invis"),
             BOLD = new Style("bold"),
             FILLED = new Style("filled"),
+            RADIAL = new Style("radial"),
             DIAGONALS = new Style("diagonals"),
             ROUNDED = new Style("rounded");
 

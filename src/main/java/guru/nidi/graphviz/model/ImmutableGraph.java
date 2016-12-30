@@ -18,7 +18,10 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.Attributed;
 import guru.nidi.graphviz.attribute.MutableAttributed;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 class ImmutableGraph extends MutableGraph implements Graph {

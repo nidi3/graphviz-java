@@ -40,6 +40,26 @@ public class Color extends SimpleAttribute<String> {
         return key("labelfontcolor");
     }
 
+    public Color gradient(Color c) {
+        return new Color(value + ":" + c.value);
+    }
+
+    public Color gradient(Color c, double at) {
+        return new Color(value + ":" + c.value + ";" + at);
+    }
+
+    public Attribute[] angle(int angle) {
+        return new Attribute[]{this, new SimpleAttribute<>("gradientangle", angle)};
+    }
+
+    public Attribute[] radial() {
+        return radial(0);
+    }
+
+    public Attribute[] radial(int angle) {
+        return new Attribute[]{this, new SimpleAttribute<>("gradientangle", angle), Style.RADIAL};
+    }
+
     public static Color rgb(String rgb) {
         if (rgb.length() != 6) {
             throw new IllegalArgumentException("Must have length 6");

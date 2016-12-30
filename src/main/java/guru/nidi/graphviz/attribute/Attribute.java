@@ -32,6 +32,8 @@ public interface Attribute {
                 ((Attribute) keysAndValues[i]).applyTo(res);
             } else if (keysAndValues[i] instanceof Map) {
                 res.putAll((Map<String, Object>) keysAndValues[i]);
+            } else if (keysAndValues[i].getClass().isArray()) {
+                res.putAll(from(keysAndValues[i]));
             } else if (!(keysAndValues[i] instanceof String)) {
                 throw new IllegalArgumentException(i + "th argument '" + keysAndValues[i] + "' is a key, but not a string");
             } else {

@@ -89,7 +89,7 @@ public class ReadmeTest {
         MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
         Graphviz.fromGraph(g).renderToFile(new File("example/ex4-1.png"));
 
-        g.generalAttrs().add(Color.rgb("dddddd").background())
+        g.generalAttrs().add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
                 .nodeAttrs().add(Color.WHITE.fill())
                 .allNodes().forEach(node -> node.add(
                 Color.named(node.label().toString()),
