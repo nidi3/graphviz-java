@@ -94,7 +94,13 @@ graph {
 
 ```java
 MutableGraph g = Parser.read(new File("color.dot"));
-g.allNodes().forEach(node -> node.add("color", node.label()).add(Style.lineWidth(8)));
+g
+    .generalAttrs().add(Color.rgb("dddddd").background())
+    .nodeAttrs().add(Color.WHITE.fill())
+    .allNodes().forEach(node -> node.add(
+        Color.named(node.label().toString()),
+        Style.lineWidth(4).and(Style.FILLED)
+    ));
 Graphviz.fromGraph(g).renderToFile(new File("example4.png"));
 ```
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4-2.png)

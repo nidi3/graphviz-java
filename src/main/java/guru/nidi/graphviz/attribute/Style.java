@@ -33,4 +33,8 @@ public class Style extends SimpleAttribute<String> {
     public static Style lineWidth(int width) {
         return new Style("setlinewidth(" + width + ")");
     }
+
+    public Style and(Style style) {
+        return new Style(value + "," + style.value);
+    }
 }
