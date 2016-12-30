@@ -95,7 +95,7 @@ graph {
 ```java
 MutableGraph g = Parser.read(new File("color.dot"));
 g
-    .generalAttrs().add(Color.rgb("dddddd").background())
+    .generalAttrs().add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
     .nodeAttrs().add(Color.WHITE.fill())
     .allNodes().forEach(node -> node.add(
         Color.named(node.label().toString()),
