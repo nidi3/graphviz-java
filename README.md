@@ -90,6 +90,7 @@ graph {
     pink -- blue -- black
 }
 ```
+![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex41.png)
 
 ```java
 MutableGraph g = Parser.read(new File("color.dot"));
@@ -97,4 +98,4 @@ g.allNodes().forEach(node -> node.add("color", node.label()).add(Style.lineWidth
 Graphviz.fromGraph(g).renderToFile(new File("example4.png"));
 ```
 
-![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4.png)
+![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex42.png)
