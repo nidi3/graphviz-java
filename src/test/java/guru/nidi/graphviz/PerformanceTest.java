@@ -93,18 +93,16 @@ public class PerformanceTest {
     }
 
     public void ex1() {
-        new CreationContext(cc -> {
-            final Graph g = graph("ex1").directed().with(
-                    node("main").link(
-                            node("parse"), node("init"), node("cleanup"), node("printf")),
-                    node("parse").link(
-                            node("execute")),
-                    node("execute").link(
-                            node("make_string"), node("printf"), node("compare")),
-                    node("init").link(
-                            node("make_string")));
-            Graphviz.fromGraph(g).createSvg();
-        });
+        final Graph g = CreationContext.use(() -> graph("ex1").directed().with(
+                node("main").link(
+                        node("parse"), node("init"), node("cleanup"), node("printf")),
+                node("parse").link(
+                        node("execute")),
+                node("execute").link(
+                        node("make_string"), node("printf"), node("compare")),
+                node("init").link(
+                        node("make_string"))));
+        Graphviz.fromGraph(g).createSvg();
     }
 
     public void ex2() {

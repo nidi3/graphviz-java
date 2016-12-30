@@ -1,0 +1,14 @@
+graph {
+    { rank=same; white}
+    { rank=same; cyan; yellow; pink}
+    { rank=same; red; green; blue}
+    { rank=same; black}
+
+    white -- cyan -- blue
+    white -- yellow -- green
+    white -- pink -- red
+
+    cyan -- green -- black
+    yellow -- red -- black
+    pink -- blue -- black
+}

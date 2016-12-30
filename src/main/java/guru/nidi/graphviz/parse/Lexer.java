@@ -111,9 +111,11 @@ class Lexer {
     private static final char CH_EOF = (char) -1;
     private final PushbackReader in;
     private char ch;
+    Position pos;
 
-    public Lexer(Reader in) throws IOException {
+    public Lexer(Reader in, String name) throws IOException {
         this.in = new PushbackReader(in);
+        pos = new Position(name);
         readChar();
     }
 
@@ -188,7 +190,7 @@ class Lexer {
         if (isIdentStart(ch)) {
             return simpleIdent();
         }
-        throw new ParserException("Found unexpected character '" + ch + "'");
+        throw new ParserException(pos, "Found unexpected character '" + ch + "'");
     }
 
     private boolean isIdentStart(char c) {
@@ -272,6 +274,7 @@ class Lexer {
                     unread('/', next);
                 }
             } else if (ch == '\n') {
+                pos.newLine();
                 char next = readRawChar();
                 if (next == '#') {
                     do {
@@ -286,6 +289,7 @@ class Lexer {
     }
 
     private char readRawChar() throws IOException {
+        pos.newChar();
         return ch = (char) in.read();
     }
 

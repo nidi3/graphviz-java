@@ -26,7 +26,7 @@ class ImmutableGraph extends MutableGraph implements Graph {
     }
 
     ImmutableGraph(boolean strict, boolean directed, boolean cluster, Label label,
-                   Set<MutableNode> nodes, Set<MutableGraph> subgraphs, List<Link> links,
+                   LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
                    MutableAttributed<MutableGraph> attributes,
                    MutableAttributed<MutableGraph> nodeAttributes,
                    MutableAttributed<MutableGraph> linkAttributes,

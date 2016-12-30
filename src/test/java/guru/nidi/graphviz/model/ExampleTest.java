@@ -37,18 +37,16 @@ public class ExampleTest {
 
     @Test
     public void ex11() {
-        new CreationContext(cc -> {
-            final Graph g = graph("ex1").directed().with(
-                    node("main").link(
-                            node("parse"), node("init"), node("cleanup"), node("printf")),
-                    node("parse").link(
-                            node("execute")),
-                    node("execute").link(
-                            node("make_string"), node("printf"), node("compare")),
-                    node("init").link(
-                            node("make_string")));
-            Graphviz.fromGraph(g).renderToFile(new File("target/ex11.png"));
-        });
+        final Graph g = CreationContext.use(() -> graph("ex1").directed().with(
+                node("main").link(
+                        node("parse"), node("init"), node("cleanup"), node("printf")),
+                node("parse").link(
+                        node("execute")),
+                node("execute").link(
+                        node("make_string"), node("printf"), node("compare")),
+                node("init").link(
+                        node("make_string"))));
+        Graphviz.fromGraph(g).renderToFile(new File("target/ex11.png"));
     }
 
     @Test

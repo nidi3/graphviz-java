@@ -16,7 +16,19 @@
 package guru.nidi.graphviz.parse;
 
 public class ParserException extends RuntimeException {
-    public ParserException(String message) {
+    private final Position position;
+
+    public ParserException(Position position, String message) {
         super(message);
+        this.position = position;
+    }
+
+    @Override
+    public String toString() {
+        return position.toString() + " " + getMessage();
+    }
+
+    public Position getPosition() {
+        return position;
     }
 }

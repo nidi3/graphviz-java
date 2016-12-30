@@ -16,7 +16,7 @@
 package guru.nidi.graphviz.attribute;
 
 public class Style extends SimpleAttribute<String> {
-    private Style(String value) {
+    public Style(String value) {
         super("style", value);
     }
 
@@ -29,4 +29,8 @@ public class Style extends SimpleAttribute<String> {
             FILLED = new Style("filled"),
             DIAGONALS = new Style("diagonals"),
             ROUNDED = new Style("rounded");
+
+    public static Style lineWidth(int width) {
+        return new Style("setlinewidth(" + width + ")");
+    }
 }

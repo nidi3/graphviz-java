@@ -24,19 +24,19 @@ Graphviz.fromGraph(g).renderToFile(new File("example1.png"));
 Node
     init = node("init"),
     execute = node("execute"),
-    compare = node("compare").attr(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
-    mkString = node("mkString").attr(Label.of("make a\nstring")),
+    compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
+    mkString = node("mkString").with(Label.of("make a\nstring")),
     printf = node("printf");
 
 Graph g = graph("example2").directed().with(
-    node("main").attr(Shape.RECTANGLE).link(
-        to(node("parse").link(execute)).attr("weight", 8),
-        to(init).attr(Style.DOTTED),
+    node("main").with(Shape.RECTANGLE).link(
+        to(node("parse").link(execute)).width("weight", 8),
+        to(init).with(Style.DOTTED),
         node("cleanup"),
-        to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
+        to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
     execute.link(
         graph().with(mkString, printf),
-        to(compare).attr(Color.RED)),
+        to(compare).with(Color.RED)),
     init.link(mkString));
 
 Graphviz.fromGraph(g).renderToFile(new File("example2.png"));
@@ -47,16 +47,16 @@ Graphviz.fromGraph(g).renderToFile(new File("example2.png"));
 
 ```java
     Node
-        node0 = node("node0").attr(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""))),
-        node1 = node("node1").attr(Records.of(turn(rec("n4"), rec("v", "719"), rec("")))),
-        node2 = node("node2").attr(Records.of(turn(rec("a1"), rec("805"), rec("p", "")))),
-        node3 = node("node3").attr(Records.of(turn(rec("i9"), rec("718"), rec("")))),
-        node4 = node("node4").attr(Records.of(turn(rec("e5"), rec("989"), rec("p", "")))),
-        node5 = node("node5").attr(Records.of(turn(rec("t2"), rec("v", "959"), rec("")))),
-        node6 = node("node6").attr(Records.of(turn(rec("o1"), rec("794"), rec("")))),
-        node7 = node("node7").attr(Records.of(turn(rec("s7"), rec("659"), rec(""))));
+        node0 = node("node0").with(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""))),
+        node1 = node("node1").with(Records.of(turn(rec("n4"), rec("v", "719"), rec("")))),
+        node2 = node("node2").with(Records.of(turn(rec("a1"), rec("805"), rec("p", "")))),
+        node3 = node("node3").with(Records.of(turn(rec("i9"), rec("718"), rec("")))),
+        node4 = node("node4").with(Records.of(turn(rec("e5"), rec("989"), rec("p", "")))),
+        node5 = node("node5").with(Records.of(turn(rec("t2"), rec("v", "959"), rec("")))),
+        node6 = node("node6").with(Records.of(turn(rec("o1"), rec("794"), rec("")))),
+        node7 = node("node7").with(Records.of(turn(rec("s7"), rec("659"), rec(""))));
     Graph g = graph("example3").directed()
-        .general().attr(RankDir.LEFT_TO_RIGHT)
+        .general().with(RankDir.LEFT_TO_RIGHT)
         .with(
             node0.link(
                 between(loc("f0"), node1.loc("v", SOUTH)),
@@ -69,3 +69,32 @@ Graphviz.fromGraph(g).renderToFile(new File("example2.png"));
     Graphviz.fromGraph(g).renderToFile(new File("example3.png"));
 ```
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex3.png)
+
+### Read and manipulate graphs
+
+Dot files can be parsed and thus manipulated:
+
+```
+graph {
+    { rank=same; white}
+    { rank=same; cyan; yellow; pink}
+    { rank=same; red; green; blue}
+    { rank=same; black}
+
+    white -- cyan -- blue
+    white -- yellow -- green
+    white -- pink -- red
+
+    cyan -- green -- black
+    yellow -- red -- black
+    pink -- blue -- black
+}
+```
+
+```java
+    MutableGraph g = Parser.read(new File("color.dot"));
+    g.allNodes().forEach(node -> node.add("color", node.label()).add(Style.lineWidth(8)));
+    Graphviz.fromGraph(g).renderToFile(new File("example4.png"));
+```
+
+![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4.png)

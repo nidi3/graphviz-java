@@ -97,7 +97,7 @@ public class LexerTest {
     }
 
     private List<Token> lexAll(String s) throws IOException {
-        final Lexer lexer = new Lexer(new StringReader(s));
+        final Lexer lexer = new Lexer(new StringReader(s), "");
         final List<Token> tokens = new ArrayList<>();
         Token token;
         while ((token = lexer.token()).type != EOF) {

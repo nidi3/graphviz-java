@@ -27,22 +27,27 @@ import java.util.Collections;
 import java.util.List;
 
 import static guru.nidi.graphviz.model.Factory.between;
+import static guru.nidi.graphviz.model.Factory.mutNode;
 import static guru.nidi.graphviz.parse.Lexer.Token.*;
 
 public class Parser {
     private final Lexer lexer;
     private Token token;
 
-    public static MutableGraph read(InputStream dot) throws IOException {
-        return read(new InputStreamReader(dot, "utf-8"));
+    public static MutableGraph read(File file) throws IOException {
+        return read(new InputStreamReader(new FileInputStream(file), "utf-8"), file.getName());
+    }
+
+    public static MutableGraph read(InputStream is) throws IOException {
+        return read(new InputStreamReader(is, "utf-8"), "<input stream>");
     }
 
     public static MutableGraph read(String dot) throws IOException {
-        return read(new StringReader(dot));
+        return read(new StringReader(dot), "<string>");
     }
 
-    public static MutableGraph read(Reader dot) throws IOException {
-        return new Parser(new Lexer(dot)).parse();
+    public static MutableGraph read(Reader dot, String name) throws IOException {
+        return new Parser(new Lexer(dot, name)).parse();
     }
 
     private Parser(Lexer lexer) throws IOException {
@@ -51,24 +56,26 @@ public class Parser {
     }
 
     private MutableGraph parse() throws IOException {
-        final MutableGraph graph = new MutableGraph();
-        if (token.type == STRICT) {
-            graph.setStrict();
+        return CreationContext.use(() -> {
+            final MutableGraph graph = new MutableGraph();
+            if (token.type == STRICT) {
+                graph.setStrict();
+                nextToken();
+            }
+            if (token.type == DIGRAPH) {
+                graph.setDirected();
+            } else if (token.type != GRAPH) {
+                fail("'graph' or 'digraph' expected");
+            }
             nextToken();
-        }
-        if (token.type == DIGRAPH) {
-            graph.setDirected();
-        } else if (token.type != GRAPH) {
-            throw new ParserException("'graph' or 'digraph' expected");
-        }
-        nextToken();
-        if (token.type == ID) {
-            graph.setLabel(label(token));
-            nextToken();
-        }
-        statementList(graph);
-        assertToken(EOF, "end of file");
-        return graph;
+            if (token.type == ID) {
+                graph.setLabel(label(token));
+                nextToken();
+            }
+            statementList(graph);
+            assertToken(EOF, "end of file");
+            return graph;
+        });
     }
 
     private Label label(Token token) {
@@ -122,16 +129,18 @@ public class Parser {
     }
 
     private MutableGraph subgraph() throws IOException {
-        final MutableGraph sub = new MutableGraph();
-        if (token.type == SUBGRAPH) {
-            nextToken();
-            if (token.type == ID) {
-                sub.setLabel(label(token));
+        return CreationContext.use(() -> {
+            final MutableGraph sub = new MutableGraph();
+            if (token.type == SUBGRAPH) {
                 nextToken();
+                if (token.type == ID) {
+                    sub.setLabel(label(token));
+                    nextToken();
+                }
             }
-        }
-        statementList(sub);
-        return sub;
+            statementList(sub);
+            return sub;
+        });
     }
 
     private void edgeStatement(MutableGraph graph, MutableLinkSource<? extends MutableLinkSource> linkSource) throws IOException {
@@ -139,10 +148,10 @@ public class Parser {
         points.add(linkSource);
         do {
             if (graph.isDirected() && token.type == MINUS_MINUS) {
-                throw new ParserException("-- used in digraph. Use -> instead.");
+                fail("-- used in digraph. Use -> instead.");
             }
             if (!graph.isDirected() && token.type == ARROW) {
-                throw new ParserException("-> used in graph. Use -- instead.");
+                fail("-> used in graph. Use -- instead.");
             }
             nextToken();
             if (token.type == ID) {
@@ -162,11 +171,11 @@ public class Parser {
     }
 
     private Compass compass(String name) {
-        return Compass.of(name).orElseThrow(() -> new ParserException("Invalid compass value '" + name + "'"));
+        return Compass.of(name).orElseThrow(() -> new ParserException(lexer.pos, "Invalid compass value '" + name + "'"));
     }
 
     private void nodeStatement(MutableGraph graph, MutableNodePoint nodeId) throws IOException {
-        final MutableNode node = new MutableNode().setLabel(nodeId.node().label()); //TODO ignore port and compass?
+        final MutableNode node = mutNode(nodeId.node().label()); //TODO ignore port and compass?
         if (token.type == BRACKET_OPEN) {
             applyMutableAttributes(node, attributeList());
         }
@@ -174,7 +183,7 @@ public class Parser {
     }
 
     private MutableNodePoint nodeId(Token base) throws IOException {
-        final MutableNodePoint node = new MutableNodePoint().setNode(new MutableNode().setLabel(label(base)));
+        final MutableNodePoint node = new MutableNodePoint().setNode(mutNode(label(base)));
         if (token.type == COLON) {
             final String second = nextToken(ID, "identifier").value;
             nextToken();
@@ -263,7 +272,11 @@ public class Parser {
 
     private void checkToken(int type, String value) {
         if (token.type != type) {
-            throw new ParserException("'" + value + "' expected");
+            fail("'" + value + "' expected");
         }
+    }
+
+    private void fail(String msg) {
+        throw new ParserException(lexer.pos, msg);
     }
 }

@@ -37,8 +37,8 @@ public class Factory {
 
     public static Node node(Label label) {
         return CreationContext.current()
-                .map(ctx -> ctx.getOrCreateNode(label))
-                .orElse(new ImmutableNode(label));
+                .map(ctx -> ctx.immutableNode(label))
+                .orElseGet(() -> new ImmutableNode(label));
     }
 
     public static NodePoint loc(String record) {
@@ -67,11 +67,13 @@ public class Factory {
     }
 
     public static MutableNode mutNode(String name) {
-        return new MutableNode().setLabel(name);
+        return mutNode(Label.of(name));
     }
 
     public static MutableNode mutNode(Label label) {
-        return new MutableNode().setLabel(label);
+        return CreationContext.current()
+                .map(ctx -> ctx.mutableNode(label))
+                .orElseGet(() -> new MutableNode().setLabel(label));
     }
 
     public static MutableNodePoint mutLoc(String record) {

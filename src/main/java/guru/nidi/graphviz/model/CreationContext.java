@@ -20,11 +20,13 @@ import guru.nidi.graphviz.attribute.MutableAttributed;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Stack;
+import java.util.concurrent.Callable;
 
 public class CreationContext {
-    private final static ThreadLocal<CreationContext> context = new ThreadLocal<>();
-    private final Map<Label, ImmutableNode> nodes = new HashMap<>();
+    private final static ThreadLocal<Stack<CreationContext>> context = ThreadLocal.withInitial(Stack::new);
+    private final Map<Label, ImmutableNode> immutableNodes = new HashMap<>();
+    private final Map<Label, MutableNode> mutableNodes = new HashMap<>();
     private final MutableAttributed<CreationContext> nodeAttributes = new SimpleMutableAttributed<>(this);
     private final MutableAttributed<CreationContext> linkAttributes = new SimpleMutableAttributed<>(this);
     private final MutableAttributed<CreationContext> graphAttributes = new SimpleMutableAttributed<>(this);
@@ -32,29 +34,30 @@ public class CreationContext {
     private CreationContext() {
     }
 
-    public CreationContext(Consumer<CreationContext> consumer) {
-        context.set(this);
+    public static <T> T use(Callable<T> actions) {
+        begin();
         try {
-            consumer.accept(this);
+            return actions.call();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
-            context.remove();
+            end();
         }
     }
 
     public static Optional<CreationContext> current() {
-        return Optional.ofNullable(context.get());
+        final Stack<CreationContext> cs = context.get();
+        return cs.empty() ? Optional.empty() : Optional.of(cs.peek());
     }
 
     public static CreationContext begin() {
-        return current().orElseGet(() -> {
-            final CreationContext ctx = new CreationContext();
-            context.set(ctx);
-            return ctx;
-        });
+        final CreationContext ctx = new CreationContext();
+        context.get().push(ctx);
+        return ctx;
     }
 
     public static void end() {
-        context.remove();
+        context.get().pop();
     }
 
     public MutableAttributed<CreationContext> nodes() {
@@ -69,7 +72,11 @@ public class CreationContext {
         return graphAttributes;
     }
 
-    Node getOrCreateNode(Label label) {
-        return nodes.computeIfAbsent(label, ImmutableNode::new).with(nodeAttributes);
+    Node immutableNode(Label label) {
+        return immutableNodes.computeIfAbsent(label, ImmutableNode::new).with(nodeAttributes);
+    }
+
+    MutableNode mutableNode(Label label) {
+        return mutableNodes.computeIfAbsent(label, l -> new MutableNode().setLabel(l)).add(nodeAttributes);
     }
 }

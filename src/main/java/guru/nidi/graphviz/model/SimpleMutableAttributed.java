@@ -75,4 +75,9 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
         int result = attributes.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return attributes.toString();
+    }
 }

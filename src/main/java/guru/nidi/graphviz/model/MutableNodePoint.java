@@ -99,6 +99,6 @@ public class MutableNodePoint implements LinkTarget, MutableLinkSource<MutableNo
 
     @Override
     public String toString() {
-        return ":" + (record == null ? "" : record) + ":" + (compass == null ? "" : compass) + ":" + node.toString();
+        return (record == null ? "" : record) + ":" + (compass == null ? "" : compass) + ":" + node.toString();
     }
 }

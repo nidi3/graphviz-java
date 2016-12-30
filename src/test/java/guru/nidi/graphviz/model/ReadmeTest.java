@@ -17,6 +17,7 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.parse.Parser;
 import org.junit.Test;
 
 import java.io.File;
@@ -81,6 +82,13 @@ public class ReadmeTest {
                         node2.link(between(loc("p"), node6.loc(NORTH_WEST))),
                         node4.link(between(loc("p"), node7.loc(SOUTH_WEST))));
         Graphviz.fromGraph(g).renderToFile(new File("example/ex3.png"));
+    }
+
+    @Test
+    public void ex4() throws IOException {
+        MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
+        g.allNodes().forEach(node -> node.add("color", node.label()).add(Style.lineWidth(8)));
+        Graphviz.fromGraph(g).renderToFile(new File("example/ex4.png"));
     }
 
 }
