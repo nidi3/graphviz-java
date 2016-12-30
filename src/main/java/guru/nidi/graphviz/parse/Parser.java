@@ -134,8 +134,8 @@ public class Parser {
         return sub;
     }
 
-    private void edgeStatement(MutableGraph graph, Object linkSource) throws IOException {
-        final List<Object> points = new ArrayList<>();
+    private void edgeStatement(MutableGraph graph, MutableLinkSource<? extends MutableLinkSource> linkSource) throws IOException {
+        final List<MutableLinkSource<? extends MutableLinkSource>> points = new ArrayList<>();
         points.add(linkSource);
         do {
             if (graph.isDirected() && token.type == MINUS_MINUS) {
@@ -155,10 +155,9 @@ public class Parser {
         } while (token.type == MINUS_MINUS || token.type == ARROW);
         final List<Token> attrs = (token.type == BRACKET_OPEN) ? attributeList() : Collections.emptyList();
         for (int i = 0; i < points.size() - 1; i++) {
-            final MutableLinkSource<LinkSource> from = (MutableLinkSource) points.get(i);
+            final MutableLinkSource<? extends LinkSource> from = points.get(i);
             final LinkTarget to = (LinkTarget) points.get(i + 1);
-            final LinkSource o = from.addLink(applyAttributes(between(from, to), attrs));
-            graph.add(o);
+            graph.add(from.addLink(applyAttributes(between(from, to), attrs)));
         }
     }
 
