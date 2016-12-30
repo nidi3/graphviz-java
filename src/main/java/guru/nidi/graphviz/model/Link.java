@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributed;
+import guru.nidi.graphviz.attribute.MutableAttributed;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import java.util.Map;
 public class Link implements Attributed<Link>, LinkTarget {
     final LinkSource from;
     final LinkTarget to;
-    final Map<String, Object> attributes;
+    final MutableAttributed<Link> attributes;
 
     public static Link to(MutableNode node) {
         return to(node.withRecord(null));
@@ -54,24 +55,36 @@ public class Link implements Attributed<Link>, LinkTarget {
     private Link(LinkSource from, LinkTarget to, Map<String, Object> attributes) {
         this.from = from;
         this.to = to;
-        this.attributes = attributes;
+        this.attributes = new SimpleMutableAttributed<Link>(this, attributes);
     }
 
     public Link with(Map<String, Object> attrs) {
-        final Map<String, Object> newAttrs = new HashMap<>(this.attributes);
+        final Map<String, Object> newAttrs = this.attributes.applyTo(new HashMap<>());
         newAttrs.putAll(attrs);
         return new Link(from, to, newAttrs);
     }
 
     @Override
     public Map<String, Object> applyTo(Map<String, Object> attrs) {
-        attrs.putAll(attributes);
-        return attrs;
+        return attributes.applyTo(attrs);
     }
 
     @Override
     public Link linkTo() {
         return this;
+    }
+
+    public LinkSource from() {
+        return from;
+    }
+
+    public LinkTarget to() {
+        return to;
+    }
+
+    //TODO differentiate between mutable and immutable
+    public MutableAttributed<Link> attrs() {
+        return attributes;
     }
 
     @Override

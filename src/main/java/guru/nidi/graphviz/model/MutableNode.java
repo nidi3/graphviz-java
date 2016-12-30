@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.joining;
 public class MutableNode implements Linkable, MutableAttributed<MutableNode>, LinkTarget, MutableLinkSource<MutableNode> {
     protected Label label;
     protected final List<Link> links;
-    protected final Map<String, Object> attributes;
+    protected final MutableAttributed<MutableNode> attributes;
 
     public MutableNode() {
         this(null, new ArrayList<>(), new HashMap<>());
@@ -33,12 +33,12 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     protected MutableNode(Label label, List<Link> links, Map<String, Object> attributes) {
         this.label = label;
         this.links = links;
-        this.attributes = attributes;
+        this.attributes = new SimpleMutableAttributed<>(this, attributes);
         CreationContext.current().ifPresent(ctx -> ctx.nodes().applyTo(attributes));
     }
 
     public MutableNode copy() {
-        return new MutableNode(label, new ArrayList<>(links), new HashMap<>(attributes));
+        return new MutableNode(label, new ArrayList<>(links), attributes.applyTo(new HashMap<>()));
     }
 
     public MutableNode setLabel(Label label) {
@@ -52,7 +52,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
 
     public MutableNode merge(MutableNode n) {
         links.addAll(n.links);
-        attributes.putAll(n.attributes);
+        attributes.add(n.attributes);
         return this;
     }
 
@@ -89,14 +89,13 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     }
 
     public MutableNode add(Map<String, Object> attrs) {
-        attributes.putAll(attrs);
+        attributes.add(attrs);
         return this;
     }
 
     @Override
     public Map<String, Object> applyTo(Map<String, Object> attrs) {
-        attrs.putAll(attributes);
-        return attrs;
+        return attributes.applyTo(attrs);
     }
 
     private MutableNodePoint from(Link link) {
@@ -111,7 +110,17 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return label;
     }
 
-    public Map<String, Object> getAttributes() {
+    @Override
+    public Collection<Link> links() {
+        return links;
+    }
+
+    @Override
+    public Link linkTo() {
+        return Link.to(this);
+    }
+
+    public MutableAttributed<MutableNode> attrs() {
         return attributes;
     }
 
@@ -149,15 +158,4 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return label + attributes.toString() + "->" +
                 links.stream().map(l -> l.to.toString()).collect(joining(","));
     }
-
-    @Override
-    public Collection<Link> links() {
-        return links;
-    }
-
-    @Override
-    public Link linkTo() {
-        return Link.to(this);
-    }
-
 }

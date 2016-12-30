@@ -91,10 +91,9 @@ public class Serializer {
     }
 
     private void attributes(String name, MutableAttributed<?> attributed) {
-        final Map<String, Object> attrs = attributed.applyTo(new HashMap<>());
-        if (!attrs.isEmpty()) {
+        if (!attributed.isEmpty()) {
             s.append(name);
-            attrs(attrs);
+            attrs(attributed);
             s.append("\n");
         }
     }
@@ -168,8 +167,8 @@ public class Serializer {
             point((MutableNodePoint) linkable);
         } else if (linkable instanceof MutableGraph) {
             graph((MutableGraph) linkable, false);
-        }else{
-            throw new IllegalStateException("unexpected link target "+linkable);
+        } else {
+            throw new IllegalStateException("unexpected link target " + linkable);
         }
     }
 
@@ -189,11 +188,11 @@ public class Serializer {
         }
     }
 
-    private void attrs(Map<String, Object> attrs) {
+    private void attrs(MutableAttributed<?> attrs) {
         if (!attrs.isEmpty()) {
             s.append(" [");
             boolean first = true;
-            for (final Map.Entry<String, Object> attr : attrs.entrySet()) {
+            for (final Map.Entry<String, Object> attr : attrs.applyTo(new HashMap<>()).entrySet()) {
                 if (first) {
                     first = false;
                 } else {

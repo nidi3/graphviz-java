@@ -21,6 +21,10 @@ import java.util.Map;
 public interface Attribute {
     Map<String, Object> applyTo(Map<String, Object> attrs);
 
+    default boolean isEmpty() {
+        return applyTo(new HashMap<>()).isEmpty();
+    }
+
     static Map<String, Object> from(Object... keysAndValues) {
         final Map<String, Object> res = new HashMap<>();
         for (int i = 0; i < keysAndValues.length; i++) {

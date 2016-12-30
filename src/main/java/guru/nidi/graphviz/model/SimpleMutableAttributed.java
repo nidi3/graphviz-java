@@ -36,6 +36,13 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
         }
     }
 
+    public SimpleMutableAttributed(E target, Map<String, Object> attributes) {
+        this.target = target;
+        if (attributes != null) {
+            this.attributes.putAll(attributes);
+        }
+    }
+
     @Override
     public E add(Map<String, Object> attrs) {
         attributes.putAll(attrs);
