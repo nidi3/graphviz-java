@@ -49,9 +49,9 @@ Graphviz.fromGraph(g).renderToFile(new File("example2.png"));
     Node
         node0 = node("node0").attr(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""))),
         node1 = node("node1").attr(Records.of(turn(rec("n4"), rec("v", "719"), rec("")))),
-        node2 = node("node2").attr(Records.of(turn(rec("a1"), rec("805"), rec("p","")))),
+        node2 = node("node2").attr(Records.of(turn(rec("a1"), rec("805"), rec("p", "")))),
         node3 = node("node3").attr(Records.of(turn(rec("i9"), rec("718"), rec("")))),
-        node4 = node("node4").attr(Records.of(turn(rec("e5"), rec("989"), rec("p","")))),
+        node4 = node("node4").attr(Records.of(turn(rec("e5"), rec("989"), rec("p", "")))),
         node5 = node("node5").attr(Records.of(turn(rec("t2"), rec("v", "959"), rec("")))),
         node6 = node("node6").attr(Records.of(turn(rec("o1"), rec("794"), rec("")))),
         node7 = node("node7").attr(Records.of(turn(rec("s7"), rec("659"), rec(""))));
