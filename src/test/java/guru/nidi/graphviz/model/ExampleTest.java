@@ -38,7 +38,7 @@ public class ExampleTest {
     @Test
     public void ex11() {
         new CreationContext(cc -> {
-            final Graph g = graph("ex1").directed().nodes(
+            final Graph g = graph("ex1").directed().with(
                     node("main").link(
                             node("parse"), node("init"), node("cleanup"), node("printf")),
                     node("parse").link(
@@ -56,7 +56,7 @@ public class ExampleTest {
         final Node
                 printf = node("printf"),
                 make_string = node("make_string");
-        final Graph g = graph("ex1").directed().nodes(
+        final Graph g = graph("ex1").directed().with(
                 node("main").attr(Color.rgb("ffcc00"), Style.FILLED).link(
                         node("parse").link(node("execute")
                                 .link(make_string, printf, node("compare"))),
@@ -74,7 +74,7 @@ public class ExampleTest {
                 compare = node("compare").attr(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
                 make_string = node("make_string").attr(Label.of("make a\nstring")),
                 printf = node("printf");
-        final Graph g = graph("ex2").directed().nodes(
+        final Graph g = graph("ex2").directed().with(
                 node("main").attr(Shape.RECTANGLE).link(
                         to(node("parse").link(execute)).attr("weight", 8),
                         to(init).attr(Style.DOTTED),

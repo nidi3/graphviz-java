@@ -183,7 +183,7 @@ public class PerformanceTest {
         final Graph g = graph("ex5").directed()
                 .general().attr("ranksep", .75, "size", "7.5,7.5")
                 .nodes().attr(Shape.RECTANGLE)
-                .graphs(
+                .with(
                         graph().nodes().attr(Shape.NONE)
                                 .nodes(
                                         node("past").link(

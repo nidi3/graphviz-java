@@ -120,6 +120,13 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return this;
     }
 
+    public MutableGraph add(LinkSource... sources) {
+        for (final LinkSource source : sources) {
+            add(source);
+        }
+        return this;
+    }
+
     public MutableGraph add(LinkSource source) {
         if (source instanceof MutableNode) {
             return addNode((MutableNode) source);
