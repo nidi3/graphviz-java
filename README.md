@@ -13,8 +13,8 @@ The basic usage is as follows:
 ```java
 import static guru.nidi.graphviz.model.Factory.*;
 
-Graph g = graph("example").directed().withNodes(node("a").link(node("b")));
-Graphviz.fromGraph(g).renderToFile(new File("example.png"));
+Graph g = graph("example").directed().with(node("a").link(node("b")));
+Graphviz.fromGraph(g).renderToFile(new File("example1.png"));
 ```
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex1.png)
 
@@ -28,18 +28,18 @@ Node
     mkString = node("mkString").attr(Label.of("make a\nstring")),
     printf = node("printf");
 
-Graph g = graph("example2").directed().withNodes(
+Graph g = graph("example2").directed().with(
     node("main").attr(Shape.RECTANGLE).link(
         to(node("parse").link(execute)).attr("weight", 8),
         to(init).attr(Style.DOTTED),
         node("cleanup"),
         to(printf).attr(Style.BOLD, Label.of("100 times"), Color.RED)),
     execute.link(
-        graph().withNodes(mkString, printf),
+        graph().with(mkString, printf),
         to(compare).attr(Color.RED)),
     init.link(mkString));
 
-Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"));
+Graphviz.fromGraph(g).renderToFile(new File("example2.png"));
 ```
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex2.png)
 
@@ -57,7 +57,7 @@ Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"));
         node7 = node("node7").attr(Records.of(turn(rec("s7"), rec("659"), rec(""))));
     Graph g = graph("example3").directed()
         .general().attr(RankDir.LEFT_TO_RIGHT)
-        .withNodes(
+        .with(
             node0.link(
                 between(loc("f0"), node1.loc("v", SOUTH)),
                 between(loc("f1"), node2.loc(WEST)),
@@ -66,6 +66,6 @@ Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"));
                 between(loc("f4"), node5.loc("v", NORTH))),
             node2.link(between(loc("p"), node6.loc(NORTH_WEST))),
             node4.link(between(loc("p"), node7.loc(SOUTH_WEST))));
-    Graphviz.fromGraph(g).renderToFile(new File("example/ex3.png"));
+    Graphviz.fromGraph(g).renderToFile(new File("example3.png"));
 ```
 ![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex3.png)
