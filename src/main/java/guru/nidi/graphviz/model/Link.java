@@ -26,8 +26,8 @@ public class Link implements Attributed<Link>, LinkTarget {
     final LinkTarget to;
     final Map<String, Object> attributes;
 
-    public static Link to(Node node) {
-        return to(node.loc());
+    public static Link to(MutableNode node) {
+        return to(node.withRecord(null));
     }
 
     public static Link to(LinkTarget to) {
