@@ -28,6 +28,22 @@
         <tag>HEAD</tag>
     </scm>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>guru.nidi</groupId>
+                <artifactId>code-assert-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>assert</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>com.kitfox.svg</groupId>
@@ -54,6 +70,10 @@
             <groupId>guru.nidi</groupId>
             <artifactId>jdepend</artifactId>
             <version>2.9.5</version>
+        </dependency>
+        <dependency>
+            <groupId>guru.nidi</groupId>
+            <artifactId>code-assert</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
