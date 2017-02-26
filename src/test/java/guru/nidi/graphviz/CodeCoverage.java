@@ -35,6 +35,6 @@ public class CodeCoverage {
                 .just(For.packge("*.engine").setMinima(20, 60, 75))
                 .just(For.packge("*.model").setMinima(60, 60, 75))
         );
-        assertThat(analyzer.analyze(), hasEnoughCoverage());
+        assertThat("Enough code coverage", analyzer.analyze(), hasEnoughCoverage());
     }
 }

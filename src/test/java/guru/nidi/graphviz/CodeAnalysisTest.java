@@ -25,6 +25,7 @@ import guru.nidi.codeassert.findbugs.BugCollector;
 import guru.nidi.codeassert.findbugs.FindBugsAnalyzer;
 import guru.nidi.codeassert.findbugs.FindBugsResult;
 import guru.nidi.codeassert.junit.CodeAssertTest;
+import guru.nidi.codeassert.junit.PredefConfig;
 import guru.nidi.codeassert.model.ModelAnalyzer;
 import guru.nidi.codeassert.model.ModelResult;
 import guru.nidi.codeassert.pmd.*;
@@ -40,7 +41,6 @@ import net.sourceforge.pmd.RulePriority;
 import org.junit.Test;
 
 import static guru.nidi.codeassert.junit.CodeAssertMatchers.packagesMatchExactly;
-import static guru.nidi.codeassert.pmd.Rulesets.*;
 import static org.junit.Assert.assertThat;
 
 public class CodeAnalysisTest extends CodeAssertTest {
@@ -69,7 +69,7 @@ public class CodeAnalysisTest extends CodeAssertTest {
     @Override
     protected FindBugsResult analyzeFindBugs() {
         final BugCollector collector = new BugCollector().minPriority(Priorities.NORMAL_PRIORITY)
-                .because("It's magic", In.clazz(CodeAnalysisTest.class).ignore("NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD"))
+                .apply(PredefConfig.dependencyTestIgnore(CodeAnalysisTest.class))
                 .because("It's ok",
                         In.clazz(AbstractGraphvizEngine.class).ignore("SC_START_IN_CTOR"),
                         In.clazz(MutableGraph.class).ignore("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"),
@@ -79,11 +79,12 @@ public class CodeAnalysisTest extends CodeAssertTest {
 
     @Override
     protected PmdResult analyzePmd() {
-        final ViolationCollector collector = new ViolationCollector().minPriority(RulePriority.MEDIUM)
+        final PmdViolationCollector collector = new PmdViolationCollector().minPriority(RulePriority.MEDIUM)
+                .apply(PredefConfig.minimalPmdIgnore())
                 .because("It's examples", In.classes(ExampleTest.class, ReadmeTest.class)
-                        .ignore("JUnitTestsShouldIncludeAssert", "AvoidDuplicateLiterals", "LocalVariableCouldBeFinal"))
+                        .ignore("JUnitTestsShouldIncludeAssert", "LocalVariableCouldBeFinal"))
                 .because("It's a test", In.loc("*Test")
-                        .ignore("AvoidDuplicateLiterals", "ExcessiveMethodLength", "TooManyStaticImports"))
+                        .ignore("ExcessiveMethodLength"))
                 .because("There are a lot of colors", In.clazz(Color.class)
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
@@ -96,32 +97,21 @@ public class CodeAnalysisTest extends CodeAssertTest {
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
                         In.classes(MutableGraph.class, Serializer.class, Parser.class).ignore("GodClass"),
-                        In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveParameterList", "LooseCoupling"))
-                .because("I don't agree", In.everywhere()
-                        .ignore("JUnitAssertionsShouldIncludeMessage", "AvoidFieldNameMatchingMethodName", "MethodArgumentCouldBeFinal",
-                                "EmptyMethodInAbstractClassShouldBeAbstract", "UncommentedEmptyConstructor", "UncommentedEmptyMethodBody"))
+                        In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"))
                 .because("It's command line tool", In.loc("GraphvizServer")
                         .ignore("AvoidCatchingGenericException"))
-                .because("It's equals", In.loc("#equals")
-                        .ignore("NPathComplexity", "ModifiedCyclomaticComplexity", "StdCyclomaticComplexity", "CyclomaticComplexity", "ConfusingTernary"))
-                .because("It's hashCode", In.loc("#hashCode")
-                        .ignore("ConfusingTernary"))
                 .because("It's wrapping an Exception with a RuntimeException", In.clazz(CreationContext.class)
                         .ignore("AvoidCatchingGenericException"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)
-                .withRuleSets(basic(), braces(), design(), exceptions(), imports(), junit(),
-                        optimizations(), strings(), sunSecure(), typeResolution(), unnecessary(), unused(),
-                        codesize().tooManyMethods(35),
-                        empty().allowCommentedEmptyCatch(true),
-                        naming().variableLen(1, 25).methodLen(2))
+                .withRulesets(PredefConfig.defaultPmdRulesets())
                 .analyze();
     }
 
     @Override
     protected CpdResult analyzeCpd() {
-        final MatchCollector collector = new MatchCollector()
+        final CpdMatchCollector collector = new CpdMatchCollector()
+                .apply(PredefConfig.cpdIgnoreEqualsHashCodeToString())
                 .because("It's java",
-                        In.everywhere().ignore("public boolean equals(Object o) {"),
                         In.loc("*Graph").ignore("Graph(strict, directed, cluster, label,", "if (strict != graph.strict) {"));
         return new CpdAnalyzer(AnalyzerConfig.maven().main(), 35, collector).analyze();
     }
