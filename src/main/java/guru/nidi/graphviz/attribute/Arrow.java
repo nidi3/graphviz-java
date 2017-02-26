@@ -15,7 +15,20 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public class Arrow extends SimpleAttribute<String> {
+public final class Arrow extends SimpleAttribute<String> {
+    public static final Arrow
+            BOX = new Arrow("box"),
+            CROW = new Arrow("crow"),
+            CURVE = new Arrow("curve"),
+            DIAMOND = new Arrow("diamond"),
+            DOT = new Arrow("dot"),
+            ICURVE = new Arrow("icurve"),
+            INV = new Arrow("inv"),
+            NONE = new Arrow("none"),
+            NORMAL = new Arrow("normal"),
+            TEE = new Arrow("tee"),
+            VEE = new Arrow("vee");
+
     private Arrow(String key, String value) {
         super(key, value);
     }
@@ -56,18 +69,5 @@ public class Arrow extends SimpleAttribute<String> {
                 return value(dir + value);
         }
     }
-
-    public static final Arrow
-            BOX = new Arrow("box"),
-            CROW = new Arrow("crow"),
-            CURVE = new Arrow("curve"),
-            DIAMOND = new Arrow("diamond"),
-            DOT = new Arrow("dot"),
-            ICURVE = new Arrow("icurve"),
-            INV = new Arrow("inv"),
-            NONE = new Arrow("none"),
-            NORMAL = new Arrow("normal"),
-            TEE = new Arrow("tee"),
-            VEE = new Arrow("vee");
 }
 

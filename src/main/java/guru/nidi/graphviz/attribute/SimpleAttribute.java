@@ -42,8 +42,8 @@ public class SimpleAttribute<T> implements Attribute {
             final Constructor<? extends SimpleAttribute> cons = getClass().getDeclaredConstructor(String.class, type);
             cons.setAccessible(true);
             return (E) cons.newInstance(key, value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError(e);
         }
     }
 

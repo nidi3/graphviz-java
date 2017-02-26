@@ -23,8 +23,8 @@ import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 
-public class CreationContext {
-    private final static ThreadLocal<Stack<CreationContext>> context = ThreadLocal.withInitial(Stack::new);
+public final class CreationContext {
+    private final static ThreadLocal<Stack<CreationContext>> CONTEXT = ThreadLocal.withInitial(Stack::new);
     private final Map<Label, ImmutableNode> immutableNodes = new HashMap<>();
     private final Map<Label, MutableNode> mutableNodes = new HashMap<>();
     private final MutableAttributed<CreationContext> nodeAttributes = new SimpleMutableAttributed<>(this);
@@ -46,18 +46,18 @@ public class CreationContext {
     }
 
     public static Optional<CreationContext> current() {
-        final Stack<CreationContext> cs = context.get();
+        final Stack<CreationContext> cs = CONTEXT.get();
         return cs.empty() ? Optional.empty() : Optional.of(cs.peek());
     }
 
     public static CreationContext begin() {
         final CreationContext ctx = new CreationContext();
-        context.get().push(ctx);
+        CONTEXT.get().push(ctx);
         return ctx;
     }
 
     public static void end() {
-        final Stack<CreationContext> cs = context.get();
+        final Stack<CreationContext> cs = CONTEXT.get();
         if (!cs.empty()) {
             cs.pop();
         }

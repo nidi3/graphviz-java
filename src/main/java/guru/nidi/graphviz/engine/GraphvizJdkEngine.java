@@ -19,6 +19,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GraphvizJdkEngine extends AbstractGraphvizEngine {
     private final static ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
@@ -32,21 +33,17 @@ public class GraphvizJdkEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public void release() {
-    }
-
-    @Override
     protected String doExecute(String dot) {
         try {
             return (String) ENGINE.eval("$$prints=[]; Viz('" + jsEscape(dot) + "');");
         } catch (ScriptException e) {
             if (e.getMessage().startsWith("abort")) {
                 try {
-                    String msgs = "";
-                    for (final Object message : ((Map<Integer, Object>) ENGINE.eval("$$prints")).values()) {
-                        msgs += message + "\n";
-                    }
-                    throw new GraphvizException(msgs);
+                    throw new GraphvizException(((Map<Integer, Object>) ENGINE.eval("$$prints"))
+                            .values()
+                            .stream()
+                            .map(Object::toString)
+                            .collect(Collectors.joining("\n")));
                 } catch (ScriptException e1) {
                     //fall through to general exception
                 }

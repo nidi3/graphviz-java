@@ -28,10 +28,6 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public void release() {
-    }
-
-    @Override
     protected String doExecute(String dot) {
         try {
             return createSvg(dot);
@@ -68,25 +64,37 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     private String createSvg(String dot) throws IOException {
-        try (final Socket socket = new Socket("localhost", GraphvizServer.PORT);
-             final Communicator com = new Communicator(socket.getInputStream(), socket.getOutputStream())) {
+        return communicating(com -> {
             com.writeContent(dot);
             final String status = com.readStatus();
             final int len = com.readLen();
             final String content = com.readContent(len);
-            if (!status.equals("ok")) {
+            if (!"ok".equals(status)) {
                 throw new GraphvizException(content);
             }
             return content;
-        }
+        });
     }
 
     public static void stopServer() {
-        try (final Socket socket = new Socket("localhost", GraphvizServer.PORT);
-             final Communicator com = new Communicator(socket.getInputStream(), socket.getOutputStream())) {
-            com.writeLen(-1);
+        try {
+            communicating(com -> {
+                com.writeLen(-1);
+                return null;
+            });
         } catch (IOException e) {
             //ignore
+        }
+    }
+
+    private interface ComFunc<T> {
+        T apply(Communicator c) throws IOException;
+    }
+
+    private static <T> T communicating(ComFunc<T> action) throws IOException {
+        try (final Socket socket = new Socket("localhost", GraphvizServer.PORT);
+             final Communicator com = new Communicator(socket.getInputStream(), socket.getOutputStream())) {
+            return action.apply(com);
         }
     }
 }

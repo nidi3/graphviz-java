@@ -19,8 +19,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-class GraphvizServer {
+final class GraphvizServer {
     static final int PORT = 10234;
+
+    private GraphvizServer() {
+    }
 
     public static void start() throws IOException {
         final boolean windows = System.getProperty("os.name").contains("windows");

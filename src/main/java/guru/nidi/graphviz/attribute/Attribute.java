@@ -34,11 +34,12 @@ public interface Attribute {
                 res.putAll((Map<String, Object>) keysAndValues[i]);
             } else if (keysAndValues[i].getClass().isArray()) {
                 res.putAll(from(keysAndValues[i]));
-            } else if (!(keysAndValues[i] instanceof String)) {
-                throw new IllegalArgumentException(i + "th argument '" + keysAndValues[i] + "' is a key, but not a string");
             } else {
                 if (i == keysAndValues.length - 1) {
                     throw new IllegalArgumentException("Last key '" + keysAndValues[i] + "' has no value");
+                }
+                if (!(keysAndValues[i] instanceof String)) {
+                    throw new IllegalArgumentException(i + "th argument '" + keysAndValues[i] + "' is a key, but not a string");
                 }
                 res.put((String) keysAndValues[i], keysAndValues[i + 1]);
                 i++;

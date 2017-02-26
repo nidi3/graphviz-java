@@ -34,25 +34,8 @@ public class Serializer {
     }
 
     private void graph(MutableGraph graph, boolean toplevel) {
-        if (toplevel) {
-            s.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
-            if (!graph.label.isEmptyLabel()) {
-                s.append(graph.label.serialized()).append(" ");
-            }
-        } else if (!graph.label.isEmptyLabel() || graph.cluster) {
-            s.append("subgraph ")
-                    .append((graph.cluster ? Label.of("cluster" + graph.label.value) : graph.label).serialized())
-                    .append(" ");
-        }
-        s.append("{\n");
-
-        attributes("graph", graph.graphAttrs);
-        attributes("node", graph.nodeAttrs);
-        attributes("edge", graph.linkAttrs);
-        for (final Map.Entry<String, Object> attr : graph.generalAttrs.applyTo(new HashMap<>()).entrySet()) {
-            attr(attr.getKey(), attr.getValue());
-            s.append("\n");
-        }
+        graphInit(graph, toplevel);
+        graphAttrs(graph);
 
         final List<MutableNode> nodes = new ArrayList<>();
         final List<MutableGraph> graphs = new ArrayList<>();
@@ -78,7 +61,31 @@ public class Serializer {
         edges(nodes);
         edges(graphs);
 
-        s.append("}");
+        s.append('}');
+    }
+
+    private void graphAttrs(MutableGraph graph) {
+        attributes("graph", graph.graphAttrs);
+        attributes("node", graph.nodeAttrs);
+        attributes("edge", graph.linkAttrs);
+        for (final Map.Entry<String, Object> attr : graph.generalAttrs.applyTo(new HashMap<>()).entrySet()) {
+            attr(attr.getKey(), attr.getValue());
+            s.append('\n');
+        }
+    }
+
+    private void graphInit(MutableGraph graph, boolean toplevel) {
+        if (toplevel) {
+            s.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
+            if (!graph.label.isEmptyLabel()) {
+                s.append(graph.label.serialized()).append(' ');
+            }
+        } else if (!graph.label.isEmptyLabel() || graph.cluster) {
+            s.append("subgraph ")
+                    .append((graph.cluster ? Label.of("cluster" + graph.label.value) : graph.label).serialized())
+                    .append(' ');
+        }
+        s.append("{\n");
     }
 
     private int indexOfLabel(List<MutableNode> nodes, Label label) {
@@ -94,7 +101,7 @@ public class Serializer {
         if (!attributed.isEmpty()) {
             s.append(name);
             attrs(attributed);
-            s.append("\n");
+            s.append('\n');
         }
     }
 
@@ -125,7 +132,7 @@ public class Serializer {
         for (final MutableNode node : nodes) {
             if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty())) {
                 node(node);
-                s.append("\n");
+                s.append('\n');
             }
         }
     }
@@ -134,7 +141,7 @@ public class Serializer {
         for (final MutableGraph graph : graphs) {
             if (graph.links.isEmpty() && !isLinked(graph, nodes) && !isLinked(graph, graphs)) {
                 graph(graph, false);
-                s.append("\n");
+                s.append('\n');
             }
         }
     }
@@ -157,7 +164,7 @@ public class Serializer {
                 s.append(graph.directed ? " -> " : " -- ");
                 linkTarget(link.to);
                 attrs(link.attributes);
-                s.append("\n");
+                s.append('\n');
             }
         }
     }
@@ -180,11 +187,11 @@ public class Serializer {
     private void point(MutableNodePoint point) {
         s.append(point.node.label.serialized());
         if (point.record != null) {
-            s.append(":");
+            s.append(':');
             s.append(Label.of(point.record).serialized());
         }
         if (point.compass != null) {
-            s.append(":").append(point.compass.value);
+            s.append(':').append(point.compass.value);
         }
     }
 
@@ -196,17 +203,17 @@ public class Serializer {
                 if (first) {
                     first = false;
                 } else {
-                    s.append(",");
+                    s.append(',');
                 }
                 attr(attr.getKey(), attr.getValue());
             }
-            s.append("]");
+            s.append(']');
         }
     }
 
     private void attr(String key, Object value) {
         s.append(Label.of(key).serialized())
-                .append("=")
+                .append('=')
                 .append((value instanceof Label ? (Label) value : Label.of(value.toString())).serialized());
     }
 }

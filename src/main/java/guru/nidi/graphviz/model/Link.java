@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Link implements Attributed<Link>, LinkTarget {
+public final class Link implements Attributed<Link>, LinkTarget {
     final LinkSource from;
     final LinkTarget to;
     final MutableAttributed<Link> attributes;
@@ -96,7 +96,7 @@ public class Link implements Attributed<Link>, LinkTarget {
             return false;
         }
 
-        Link link = (Link) o;
+        final Link link = (Link) o;
 
         //including from could cause circular executions
 //        if (from != null ? !from.equals(addLink.from) : addLink.from != null) {

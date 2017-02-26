@@ -47,7 +47,7 @@ class Communicator implements Closeable {
     }
 
     public void writeLen(int len) throws IOException {
-        out.write("" + len);
+        out.write(Integer.toString(len));
         out.newLine();
         out.flush();
     }
@@ -64,10 +64,12 @@ class Communicator implements Closeable {
         try {
             in.close();
         } catch (IOException e) {
+            //ignore
         }
         try {
             out.close();
         } catch (IOException e) {
+            //ignore
         }
     }
 }

@@ -198,7 +198,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
             return false;
         }
 
-        MutableGraph graph = (MutableGraph) o;
+        final MutableGraph graph = (MutableGraph) o;
 
         if (strict != graph.strict) {
             return false;

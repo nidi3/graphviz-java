@@ -28,7 +28,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URI;
 
-public class Graphviz {
+public final class Graphviz {
     private static GraphvizEngine engine;
     private final String dot;
     private final String format;

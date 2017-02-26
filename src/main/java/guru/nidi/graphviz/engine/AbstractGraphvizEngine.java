@@ -63,6 +63,10 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         }
     }
 
+    @Override
+    public void release() {
+    }
+
     protected abstract void doInit() throws Exception;
 
     protected abstract String doExecute(String dot);

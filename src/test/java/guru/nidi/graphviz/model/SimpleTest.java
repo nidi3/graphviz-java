@@ -22,15 +22,14 @@ import org.junit.Test;
 import java.io.File;
 
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class SimpleTest {
     @Test
     public void simple() {
         final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");
         viz.renderToFile(new File("target/g2.png"));
-        System.out.println(viz.createSvg());
+        assertNotNull(viz.createSvg());
     }
 
     @Test

@@ -15,10 +15,6 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.GraphvizJdkEngine;
-import guru.nidi.graphviz.engine.GraphvizServerEngine;
-import guru.nidi.graphviz.engine.GraphvizV8Engine;
 import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,7 +37,6 @@ public class EngineTest {
     }
 
     @Test
-    @Ignore("Does not work with new JDK 8")
     public void jdk() {
         Graphviz.useEngine(new GraphvizJdkEngine());
         assertThat(Graphviz.fromString("graph g {a--b}").createSvg(), startsWith(START));

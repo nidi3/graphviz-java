@@ -133,7 +133,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
             return false;
         }
 
-        MutableNode node = (MutableNode) o;
+        final MutableNode node = (MutableNode) o;
 
         if (label != null ? !label.equals(node.label) : node.label != null) {
             return false;

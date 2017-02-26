@@ -18,7 +18,6 @@ package guru.nidi.graphviz.parse;
 import guru.nidi.graphviz.attribute.Attributed;
 import guru.nidi.graphviz.attribute.MutableAttributed;
 import guru.nidi.graphviz.model.*;
-import guru.nidi.graphviz.parse.Lexer.Token;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -28,9 +27,9 @@ import java.util.List;
 
 import static guru.nidi.graphviz.model.Factory.between;
 import static guru.nidi.graphviz.model.Factory.mutNode;
-import static guru.nidi.graphviz.parse.Lexer.Token.*;
+import static guru.nidi.graphviz.parse.Token.*;
 
-public class Parser {
+public final class Parser {
     private final Lexer lexer;
     private Token token;
 
@@ -73,7 +72,7 @@ public class Parser {
                 nextToken();
             }
             statementList(graph);
-            assertToken(EOF, "end of file");
+            assertToken(EOF);
             return graph;
         });
     }
@@ -83,13 +82,13 @@ public class Parser {
     }
 
     private void statementList(MutableGraph graph) throws IOException {
-        assertToken(BRACE_OPEN, "{");
+        assertToken(BRACE_OPEN);
         while (statement(graph)) {
             if (token.type == SEMICOLON) {
                 nextToken();
             }
         }
-        assertToken(BRACE_CLOSE, "}");
+        assertToken(BRACE_CLOSE);
     }
 
     private boolean statement(MutableGraph graph) throws IOException {
@@ -98,7 +97,7 @@ public class Parser {
             case ID:
                 nextToken();
                 if (token.type == EQUAL) {
-                    applyMutableAttributes(graph.generalAttrs(), Arrays.asList(base, nextToken(ID, "identifier")));
+                    applyMutableAttributes(graph.generalAttrs(), Arrays.asList(base, nextToken(ID)));
                     nextToken();
                 } else {
                     final MutableNodePoint nodeId = nodeId(base);
@@ -185,10 +184,10 @@ public class Parser {
     private MutableNodePoint nodeId(Token base) throws IOException {
         final MutableNodePoint node = new MutableNodePoint().setNode(mutNode(label(base)));
         if (token.type == COLON) {
-            final String second = nextToken(ID, "identifier").value;
+            final String second = nextToken(ID).value;
             nextToken();
             if (token.type == COLON) {
-                node.setRecord(second).setCompass(compass(nextToken(ID, "identifier").value));
+                node.setRecord(second).setCompass(compass(nextToken(ID).value));
                 nextToken();
             } else {
                 node.setCompass(compass(second));
@@ -210,10 +209,11 @@ public class Parser {
     }
 
     private <T extends Attributed<T>> T applyAttributes(T attributed, List<Token> tokens) throws IOException {
+        T res = attributed;
         for (int i = 0; i < tokens.size(); i += 2) {
-            attributed = attributed.with(tokens.get(i).value, tokens.get(i + 1).value);
+            res = res.with(tokens.get(i).value, tokens.get(i + 1).value);
         }
-        return attributed;
+        return res;
     }
 
     private MutableAttributed<MutableGraph> attributes(MutableGraph graph, Token token) {
@@ -232,11 +232,11 @@ public class Parser {
     private List<Token> attributeList() throws IOException {
         final List<Token> res = new ArrayList<>();
         do {
-            assertToken(BRACKET_OPEN, "[");
+            assertToken(BRACKET_OPEN);
             if (token.type == ID) {
                 res.addAll(aList());
             }
-            assertToken(BRACKET_CLOSE, "]");
+            assertToken(BRACKET_CLOSE);
         } while (token.type == BRACKET_OPEN);
         return res;
     }
@@ -245,8 +245,8 @@ public class Parser {
         final List<Token> res = new ArrayList<>();
         do {
             res.add(token);
-            nextToken(EQUAL, "=");
-            res.add(nextToken(ID, "identifier"));
+            nextToken(EQUAL);
+            res.add(nextToken(ID));
             nextToken();
             if (token.type == SEMICOLON || token.type == COMMA) {
                 nextToken();
@@ -259,20 +259,20 @@ public class Parser {
         return token = lexer.token();
     }
 
-    private Token nextToken(int type, String value) throws IOException {
+    private Token nextToken(int type) throws IOException {
         nextToken();
-        checkToken(type, value);
+        checkToken(type);
         return token;
     }
 
-    private Token assertToken(int type, String value) throws IOException {
-        checkToken(type, value);
+    private Token assertToken(int type) throws IOException {
+        checkToken(type);
         return nextToken();
     }
 
-    private void checkToken(int type, String value) {
+    private void checkToken(int type) {
         if (token.type != type) {
-            fail("'" + value + "' expected");
+            fail("'" + Token.desc(type) + "' expected");
         }
     }
 

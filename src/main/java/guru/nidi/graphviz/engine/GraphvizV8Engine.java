@@ -17,9 +17,12 @@ package guru.nidi.graphviz.engine;
 
 import com.eclipsesource.v8.V8;
 import com.eclipsesource.v8.V8Array;
+import com.eclipsesource.v8.V8RuntimeException;
 import com.eclipsesource.v8.utils.V8ObjectUtils;
 
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class GraphvizV8Engine extends AbstractGraphvizEngine {
     private final static Pattern ABORT = Pattern.compile("^undefined:\\d+: abort");
@@ -52,13 +55,11 @@ public class GraphvizV8Engine extends AbstractGraphvizEngine {
     protected String doExecute(String dot) {
         try {
             return v8.executeStringScript("$$prints.splice(0,100); Viz('" + jsEscape(dot) + "');");
-        } catch (Exception e) {
+        } catch (V8RuntimeException e) {
             if (ABORT.matcher(e.getMessage()).find()) {
-                String msgs = "";
-                for (int i = 0; i < messages.length(); i++) {
-                    msgs += V8ObjectUtils.getValue(messages, i) + "\n";
-                }
-                throw new GraphvizException(msgs);
+                throw new GraphvizException(IntStream.range(0, messages.length())
+                        .mapToObj(i -> V8ObjectUtils.getValue(messages, i).toString())
+                        .collect(Collectors.joining("\n")));
             }
             throw new GraphvizException("Problem executing graphviz", e);
         }

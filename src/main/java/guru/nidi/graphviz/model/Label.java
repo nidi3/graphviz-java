@@ -19,7 +19,7 @@ import guru.nidi.graphviz.attribute.Attribute;
 
 import java.util.Map;
 
-public class Label implements Attribute {
+public final class Label implements Attribute {
     final String value;
     final boolean html;
 
@@ -61,7 +61,7 @@ public class Label implements Attribute {
             return false;
         }
 
-        Label label = (Label) o;
+        final Label label = (Label) o;
 
         return !(value != null ? !value.equals(label.value) : label.value != null);
     }

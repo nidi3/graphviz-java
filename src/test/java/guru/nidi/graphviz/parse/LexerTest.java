@@ -15,7 +15,6 @@
  */
 package guru.nidi.graphviz.parse;
 
-import guru.nidi.graphviz.parse.Lexer.Token;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static guru.nidi.graphviz.parse.Lexer.Token.*;
+import static guru.nidi.graphviz.parse.Token.*;
 import static org.junit.Assert.assertEquals;
 
 public class LexerTest {

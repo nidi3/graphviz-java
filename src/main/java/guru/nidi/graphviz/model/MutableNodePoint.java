@@ -78,7 +78,7 @@ public class MutableNodePoint implements LinkTarget, MutableLinkSource<MutableNo
             return false;
         }
 
-        MutableNodePoint nodePoint = (MutableNodePoint) o;
+        final MutableNodePoint nodePoint = (MutableNodePoint) o;
 
         if (node != null ? !node.equals(nodePoint.node) : nodePoint.node != null) {
             return false;

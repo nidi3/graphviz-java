@@ -16,14 +16,14 @@
 package guru.nidi.graphviz.attribute;
 
 public class Rank extends SimpleAttribute<String> {
-    protected Rank(String value) {
-        super("rank", value);
-    }
-
     public static final Rank
             SAME = new Rank("same"),
             MIN = new Rank("min"),
             MAX = new Rank("max"),
             SOURCE = new Rank("source"),
             SINK = new Rank("sink");
+
+    protected Rank(String value) {
+        super("rank", value);
+    }
 }

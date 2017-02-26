@@ -21,91 +21,18 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static guru.nidi.graphviz.parse.Lexer.Token.*;
+import static guru.nidi.graphviz.parse.Token.*;
 
 class Lexer {
-    public static final class Token {
-        public static final int
-                EOF = 0,
-                SEMICOLON = 1,
-                COMMA = 2,
-                BRACE_OPEN = 3,
-                BRACE_CLOSE = 4,
-                EQUAL = 5,
-                BRACKET_OPEN = 6,
-                BRACKET_CLOSE = 7,
-                COLON = 8,
-                STRICT = 9,
-                GRAPH = 10,
-                DIGRAPH = 11,
-                NODE = 12,
-                EDGE = 13,
-                SUBGRAPH = 14,
-                ID = 16,
-                MINUS_MINUS = 18,
-                ARROW = 19,
-                SUB_SIMPLE = 1,
-                SUB_NUMERAL = 2,
-                SUB_QUOTED = 3,
-                SUB_HTML = 4;
-        public final int type;
-        public final int subtype;
-        public final String value;
-
-        public Token(int type, String value) {
-            this(type, -1, value);
-        }
-
-        public Token(int type, int subtype, String value) {
-            this.type = type;
-            this.subtype = subtype;
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            Token token = (Token) o;
-
-            if (type != token.type) {
-                return false;
-            }
-            if (subtype != token.subtype) {
-                return false;
-            }
-            return value.equals(token.value);
-
-        }
-
-        @Override
-        public int hashCode() {
-            int result = type;
-            result = 31 * result + subtype;
-            result = 31 * result + value.hashCode();
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return type + (subtype >= 0 ? "(" + subtype + ")" : "") + "`" + value + "`";
-        }
-    }
-
-    private static final Map<String, Integer> keywords = new HashMap<>();
+    private static final Map<String, Integer> KEYWORDS = new HashMap<>();
 
     static {
-        keywords.put("strict", Token.STRICT);
-        keywords.put("graph", Token.GRAPH);
-        keywords.put("digraph", Token.DIGRAPH);
-        keywords.put("node", Token.NODE);
-        keywords.put("edge", Token.EDGE);
-        keywords.put("subgraph", Token.SUBGRAPH);
+        KEYWORDS.put("strict", Token.STRICT);
+        KEYWORDS.put("graph", Token.GRAPH);
+        KEYWORDS.put("digraph", Token.DIGRAPH);
+        KEYWORDS.put("node", Token.NODE);
+        KEYWORDS.put("edge", Token.EDGE);
+        KEYWORDS.put("subgraph", Token.SUBGRAPH);
     }
 
     private static final char CH_EOF = (char) -1;
@@ -131,25 +58,25 @@ class Lexer {
     private Token symbol() throws IOException {
         switch (ch) {
             case CH_EOF:
-                return new Token(EOF, "" + ch);
+                return new Token(EOF, ch);
             case ';':
-                return new Token(SEMICOLON, "" + ch);
+                return new Token(SEMICOLON, ch);
             case ',':
-                return new Token(COMMA, "" + ch);
+                return new Token(COMMA, ch);
             case '{':
-                return new Token(BRACE_OPEN, "" + ch);
+                return new Token(BRACE_OPEN, ch);
             case '}':
-                return new Token(BRACE_CLOSE, "" + ch);
+                return new Token(BRACE_CLOSE, ch);
             case '=':
-                return new Token(EQUAL, "" + ch);
+                return new Token(EQUAL, ch);
             case '[':
-                return new Token(BRACKET_OPEN, "" + ch);
+                return new Token(BRACKET_OPEN, ch);
             case ']':
-                return new Token(BRACKET_CLOSE, "" + ch);
+                return new Token(BRACKET_CLOSE, ch);
             case ':':
-                return new Token(COLON, "" + ch);
+                return new Token(COLON, ch);
             case '-':
-                char next = readRawChar();
+                final char next = readRawChar();
                 if (next == '-') {
                     return new Token(MINUS_MINUS, "--");
                 }
@@ -187,13 +114,13 @@ class Lexer {
         if (ch == '<') {
             return htmlIdent();
         }
-        if (isIdentStart(ch)) {
+        if (isIdentStart()) {
             return simpleIdent();
         }
         throw new ParserException(pos, "Found unexpected character '" + ch + "'");
     }
 
-    private boolean isIdentStart(char c) {
+    private boolean isIdentStart() {
         return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= 128 && ch <= 255) || ch == '_';
     }
 
@@ -241,9 +168,9 @@ class Lexer {
         do {
             s.append(ch);
             readRawChar();
-        } while ((isIdentStart(ch) || (ch >= '0' && ch <= '9')) && ch != CH_EOF);
+        } while ((isIdentStart() || (ch >= '0' && ch <= '9')) && ch != CH_EOF);
         sync();
-        final Integer key = keywords.get(s.toString().toLowerCase());
+        final Integer key = KEYWORDS.get(s.toString().toLowerCase());
         return key == null ? new Token(ID, SUB_SIMPLE, s.toString()) : new Token(key, s.toString());
     }
 
@@ -257,25 +184,10 @@ class Lexer {
         do {
             readRawChar();
             if (ch == '/') {
-                char next = readRawChar();
-                if (next == '/') {
-                    do {
-                        readRawChar();
-                    } while (ch != '\n' && ch != CH_EOF);
-                } else if (next == '*') {
-                    do {
-                        do {
-                            readRawChar();
-                        } while (ch != '*' && ch != CH_EOF);
-                        readRawChar();
-                    } while (ch != '/' && ch != CH_EOF);
-                    readRawChar();
-                } else {
-                    unread('/', next);
-                }
+                readComment();
             } else if (ch == '\n') {
                 pos.newLine();
-                char next = readRawChar();
+                final char next = readRawChar();
                 if (next == '#') {
                     do {
                         readRawChar();
@@ -286,6 +198,25 @@ class Lexer {
             }
         } while (ch <= ' ' && ch != CH_EOF);
         return ch;
+    }
+
+    private void readComment() throws IOException {
+        final char next = readRawChar();
+        if (next == '/') {
+            do {
+                readRawChar();
+            } while (ch != '\n' && ch != CH_EOF);
+        } else if (next == '*') {
+            do {
+                do {
+                    readRawChar();
+                } while (ch != '*' && ch != CH_EOF);
+                readRawChar();
+            } while (ch != '/' && ch != CH_EOF);
+            readRawChar();
+        } else {
+            unread('/', next);
+        }
     }
 
     private char readRawChar() throws IOException {

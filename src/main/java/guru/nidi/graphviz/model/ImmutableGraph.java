@@ -96,7 +96,7 @@ class ImmutableGraph extends MutableGraph implements Graph {
             return false;
         }
 
-        ImmutableGraph graph = (ImmutableGraph) o;
+        final ImmutableGraph graph = (ImmutableGraph) o;
 
         if (strict != graph.strict) {
             return false;
@@ -156,7 +156,7 @@ class ImmutableGraph extends MutableGraph implements Graph {
     private class GraphAttributed implements Attributed<Graph> {
         private final Function<ImmutableGraph, MutableAttributed<MutableGraph>> attributeSource;
 
-        private GraphAttributed(Function<ImmutableGraph, MutableAttributed<MutableGraph>> attributeSource) {
+        public GraphAttributed(Function<ImmutableGraph, MutableAttributed<MutableGraph>> attributeSource) {
             this.attributeSource = attributeSource;
         }
 

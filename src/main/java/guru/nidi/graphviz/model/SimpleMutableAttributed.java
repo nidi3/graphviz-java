@@ -64,7 +64,7 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
             return false;
         }
 
-        SimpleMutableAttributed<?> that = (SimpleMutableAttributed<?>) o;
+        final SimpleMutableAttributed<?> that = (SimpleMutableAttributed<?>) o;
 
         return attributes.equals(that.attributes);
 
@@ -72,8 +72,7 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
 
     @Override
     public int hashCode() {
-        int result = attributes.hashCode();
-        return result;
+        return attributes.hashCode();
     }
 
     @Override

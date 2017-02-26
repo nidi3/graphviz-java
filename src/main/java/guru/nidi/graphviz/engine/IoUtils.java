@@ -18,7 +18,7 @@ package guru.nidi.graphviz.engine;
 import java.io.IOException;
 import java.io.InputStream;
 
-class IoUtils {
+final class IoUtils {
     private IoUtils() {
     }
 

@@ -15,24 +15,32 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public class Records {
+import java.util.Arrays;
+
+import static java.util.stream.Collectors.joining;
+
+public final class Records {
+    private static final String SHAPE = "shape";
+    private static final String RECORD = "record";
+    private static final String LABEL = "label";
+
     private Records() {
     }
 
     public static Attribute label(String label) {
-        return new MapAttribute("shape", "record", "label", label);
+        return new MapAttribute(SHAPE, RECORD, LABEL, label);
     }
 
     public static Attribute mLabel(String label) {
-        return new MapAttribute("shape", "Mrecord", "label", label);
+        return new MapAttribute(SHAPE, "Mrecord", LABEL, label);
     }
 
     public static Attribute of(String... recs) {
-        return new MapAttribute("shape", "record", "label", join(recs, "|"));
+        return new MapAttribute(SHAPE, RECORD, LABEL, Arrays.stream(recs).collect(joining("|")));
     }
 
     public static Attribute mOf(String... recs) {
-        return new MapAttribute("shape", "Mrecord", "label", join(recs, "|"));
+        return new MapAttribute(SHAPE, "Mrecord", LABEL, Arrays.stream(recs).collect(joining("|")));
     }
 
     public static String rec(String tag, String label) {
@@ -44,20 +52,7 @@ public class Records {
     }
 
     public static String turn(String... records) {
-        return "{" + join(records, "|") + "}";
+        return "{" + Arrays.stream(records).collect(joining("|")) + "}";
     }
 
-    private static String join(String[] ss, String delim) {
-        String res = "";
-        boolean first = true;
-        for (final String s : ss) {
-            if (first) {
-                first = false;
-            } else {
-                res += delim;
-            }
-            res += s;
-        }
-        return res;
-    }
 }
