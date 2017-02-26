@@ -72,6 +72,10 @@
             <artifactId>code-assert</artifactId>
         </dependency>
         <dependency>
+            <groupId>guru.nidi</groupId>
+            <artifactId>code-assert</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
