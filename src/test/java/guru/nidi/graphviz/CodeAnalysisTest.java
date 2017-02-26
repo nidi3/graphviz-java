@@ -39,15 +39,11 @@ import guru.nidi.graphviz.parse.Parser;
 import net.sourceforge.pmd.RulePriority;
 import org.junit.Test;
 
-import java.util.EnumSet;
-
 import static guru.nidi.codeassert.junit.CodeAssertMatchers.packagesMatchExactly;
 import static guru.nidi.codeassert.pmd.Rulesets.*;
 import static org.junit.Assert.assertThat;
 
 public class CodeAnalysisTest extends CodeAssertTest {
-    //TODO use snippets
-
     @Test
     public void dependencies() {
         class GuruNidiGraphviz extends DependencyRuler {

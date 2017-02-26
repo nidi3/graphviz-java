@@ -42,6 +42,31 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>guru.nidi.maven.plugins</groupId>
+                <artifactId>snippets-maven-plugin</artifactId>
+                <version>0.0.2</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>snippets</goal>
+                        </goals>
+                        <configuration>
+                            <inputs>
+                                <input>
+                                    src/test/java/guru/nidi/graphviz/model
+                                </input>
+                            </inputs>
+                            <outputs>
+                                <output>README.md</output>
+                            </outputs>
+                            <prefix>\n```java</prefix>
+                            <postfix>```\n</postfix>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -67,10 +92,6 @@
             <version>${j2v8.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>guru.nidi</groupId>
-            <artifactId>code-assert</artifactId>
-        </dependency>
         <dependency>
             <groupId>guru.nidi</groupId>
             <artifactId>code-assert</artifactId>

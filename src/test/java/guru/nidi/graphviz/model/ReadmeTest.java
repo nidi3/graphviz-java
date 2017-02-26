@@ -32,12 +32,15 @@ import static guru.nidi.graphviz.model.Link.to;
 public class ReadmeTest {
     @Test
     public void ex1() {
+        //## basic
         Graph g = graph("example1").directed().with(node("a").link(node("b")));
         Graphviz.fromGraph(g).renderToFile(new File("example/ex1.png"));
+        //## end
     }
 
     @Test
     public void ex2() {
+        //## complex
         Node
                 init = node("init"),
                 execute = node("execute"),
@@ -57,10 +60,12 @@ public class ReadmeTest {
                 init.link(mkString));
 
         Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"));
+        //## end
     }
 
     @Test
     public void ex3() throws IOException {
+        //## records
         Node
                 node0 = node("node0").with(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""))),
                 node1 = node("node1").with(Records.of(turn(rec("n4"), rec("v", "719"), rec("")))),
@@ -82,19 +87,24 @@ public class ReadmeTest {
                         node2.link(between(loc("p"), node6.loc(NORTH_WEST))),
                         node4.link(between(loc("p"), node7.loc(SOUTH_WEST))));
         Graphviz.fromGraph(g).renderToFile(new File("example/ex3.png"));
+        //## end
     }
 
     @Test
     public void ex4() throws IOException {
+        //## manipulate
         MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
         Graphviz.fromGraph(g).renderToFile(new File("example/ex4-1.png"));
 
-        g.generalAttrs().add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
+        g.generalAttrs()
+                .add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
                 .nodeAttrs().add(Color.WHITE.fill())
-                .allNodes().forEach(node -> node.add(
-                Color.named(node.label().toString()),
-                Style.lineWidth(4).and(Style.FILLED)));
+                .allNodes().forEach(node ->
+                node.add(
+                        Color.named(node.label().toString()),
+                        Style.lineWidth(4).and(Style.FILLED)));
         Graphviz.fromGraph(g).renderToFile(new File("example/ex4-2.png"));
+        //## end
     }
 
 }
