@@ -97,7 +97,7 @@ graph {
     pink -- blue -- black
 }
 ```
-<img src="https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4-1.png" width="500">
+<img src="https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4-1.png" width="400">
 
 [//]: # (manipulate)
 ```java
@@ -114,4 +114,4 @@ g.generalAttrs()
 Graphviz.fromGraph(g).renderToFile(new File("example/ex4-2.png"));
 ```
 [//]: # (end)
-<img src="https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4-2.png" width="500">
+<img src="https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4-2.png" width="400">
