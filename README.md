@@ -20,7 +20,7 @@ Graph g = graph("example1").directed().with(node("a").link(node("b")));
 Graphviz.fromGraph(g).renderToFile(new File("example/ex1.png"));
 ```
 [//]: # (end)
-![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex1.png)
+![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex1.png | width=100)
 
 ### Complex example
 
@@ -47,7 +47,7 @@ Graph g = graph("example2").directed().with(
 Graphviz.fromGraph(g).renderToFile(new File("example/ex2.png"));
 ```
 [//]: # (end)
-![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex2.png)
+![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex2.png | width=500)
 
 ### Example with records
 [//]: # (records)
@@ -75,7 +75,7 @@ Graph g = graph("example3").directed()
 Graphviz.fromGraph(g).renderToFile(new File("example/ex3.png"));
 ```
 [//]: # (end)
-![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex3.png)
+![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex3.png | width=500)
 
 ### Read and manipulate graphs
 
@@ -97,7 +97,7 @@ graph {
     pink -- blue -- black
 }
 ```
-![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4-1.png)
+![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4-1.png | width=500)
 
 [//]: # (manipulate)
 ```java
@@ -114,4 +114,4 @@ g.generalAttrs()
 Graphviz.fromGraph(g).renderToFile(new File("example/ex4-2.png"));
 ```
 [//]: # (end)
-![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4-2.png)
+![](https://raw.githubusercontent.com/nidi3/graphviz-java/master/example/ex4-2.png | width=500)
