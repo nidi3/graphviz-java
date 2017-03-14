@@ -31,14 +31,14 @@ import java.net.URI;
 public final class Graphviz {
     private static GraphvizEngine engine;
     private final String dot;
-    private final String format;
-    private final int targetWidth, targetHeight;
+    private final int width, height;
+    private final double scale;
 
-    private Graphviz(String dot, String format, int targetWidth, int targetHeight) {
+    private Graphviz(String dot, int width, int height, double scale) {
         this.dot = dot;
-        this.format = format;
-        this.targetWidth = targetWidth;
-        this.targetHeight = targetHeight;
+        this.width = width;
+        this.height = height;
+        this.scale = scale;
     }
 
     public static void useEngine(GraphvizEngine engine) {
@@ -58,7 +58,7 @@ public final class Graphviz {
     }
 
     public static Graphviz fromString(String dot) {
-        return new Graphviz(dot, null, Integer.MAX_VALUE, Integer.MAX_VALUE);
+        return new Graphviz(dot, 0, 0, 4);
     }
 
     public static Graphviz fromFile(File dot) throws IOException {
@@ -75,12 +75,16 @@ public final class Graphviz {
         return fromString(new Serializer(graph).serialize());
     }
 
-    public Graphviz targetSize(int targetWidth, int targetHeight) {
-        return new Graphviz(dot, format, targetWidth, targetHeight);
+    public Graphviz width(int width) {
+        return new Graphviz(dot, width, height, 0);
     }
 
-    public Graphviz format(String format) {
-        return new Graphviz(dot, format, targetWidth, targetHeight);
+    public Graphviz height(int height) {
+        return new Graphviz(dot, width, height, 0);
+    }
+
+    public Graphviz scale(double scale) {
+        return new Graphviz(dot, 0, 0, scale);
     }
 
     public String createSvg() {
@@ -95,16 +99,26 @@ public final class Graphviz {
     }
 
     public void renderToFile(File output) {
+        renderToFile(output, null);
+    }
+
+    public void renderToFile(File output, String format) {
         final SVGDiagram diagram = createDiagram();
-        double scale = Math.min(targetWidth / diagram.getWidth(), targetHeight / diagram.getHeight());
-        if (scale > 1000) {
-            scale = 1;
+        double scaleX = scale;
+        double scaleY = scale;
+        if (width != 0 || height != 0) {
+            scaleX = 1D * width / diagram.getWidth();
+            scaleY = 1D * height / diagram.getHeight();
+            if (scaleX == 0) {
+                scaleX = scaleY;
+            }
+            if (scaleY == 0) {
+                scaleY = scaleX;
+            }
         }
-        final BufferedImage img = new BufferedImage((int) Math.ceil(scale * diagram.getWidth()), (int) Math.ceil(scale * diagram.getHeight()), BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage img = new BufferedImage((int) Math.ceil(scaleX * diagram.getWidth()), (int) Math.ceil(scaleY * diagram.getHeight()), BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g = img.createGraphics();
-        if (scale != 1) {
-            g.scale(scale, scale);
-        }
+        g.scale(scaleX, scaleY);
         renderToGraphics(diagram, g);
         final String f = format == null
                 ? output.getName().substring(output.getName().lastIndexOf('.') + 1)
@@ -121,7 +135,11 @@ public final class Graphviz {
     }
 
     private void renderToGraphics(SVGDiagram diagram, Graphics2D graphics) {
+        graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         try {
             diagram.render(graphics);
         } catch (SVGException e) {
