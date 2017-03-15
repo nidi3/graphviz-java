@@ -36,7 +36,7 @@ BufferedImage image = viz.render().toImage();
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5.png" width="200">
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5.svg" width="200">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5.svg" width="100">
 
 ### Complex example
 

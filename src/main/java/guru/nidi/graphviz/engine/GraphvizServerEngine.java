@@ -28,9 +28,9 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    protected String doExecute(String dot) {
+    protected String doExecute(String src) {
         try {
-            return createSvg(dot);
+            return createSvg(src);
         } catch (IOException e) {
             throw new GraphvizException("Problem in communication with server", e);
         }
@@ -63,9 +63,9 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         }
     }
 
-    private String createSvg(String dot) throws IOException {
+    private String createSvg(String src) throws IOException {
         return communicating(com -> {
-            com.writeContent(dot);
+            com.writeContent(src);
             final String status = com.readStatus();
             final int len = com.readLen();
             final String content = com.readContent(len);

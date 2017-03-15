@@ -28,15 +28,14 @@ public class SimpleTest {
     @Test
     public void simple() {
         final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");
-        viz.renderToFile(new File("target/g2.png"));
-        assertNotNull(viz.createSvg());
+        assertNotNull(viz.render().toString());
     }
 
     @Test
     public void dotError() {
         try {
             System.out.println("Try error...");
-            Graphviz.fromString("g { a -> b; }").createSvg();
+            Graphviz.fromString("g { a -> b; }").render().toString();
             fail();
         } catch (GraphvizException e) {
             assertThat(e.getMessage(), startsWith("Error: syntax error in line 1 near 'g'"));

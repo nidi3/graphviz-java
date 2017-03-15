@@ -37,7 +37,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         }
     }
 
-    public String execute(String dot) {
+    public String execute(String src, Engine engine, Format format) {
         if (initException != null) {
             throw new GraphvizException("Could not start graphviz engine", initException);
         }
@@ -48,7 +48,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         } catch (InterruptedException e) {
             //ignore
         }
-        return doExecute(dot);
+        return doExecute(vizExec(src, engine, format));
     }
 
     private void init() {
@@ -69,12 +69,20 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
 
     protected abstract void doInit() throws Exception;
 
-    protected abstract String doExecute(String dot);
+    protected abstract String doExecute(String call);
 
     protected String vizCode() throws IOException {
-        try (final InputStream in = getClass().getResourceAsStream("/viz-1.0.1.js")) {
+        try (final InputStream in = getClass().getResourceAsStream("/viz-1.7.1.js")) {
             return IoUtils.readStream(in);
         }
+    }
+
+    protected String initEnv(){
+        return "var $$prints=[], print=function(s){$$prints.push(s);};";
+    }
+
+    protected String vizExec(String src, Engine engine, Format format) {
+        return "Viz('" + jsEscape(src) + "',{format:'" + format.toString().toLowerCase() + "',engine:'" + engine.toString().toLowerCase() + "'});";
     }
 
     protected String jsEscape(String js) {

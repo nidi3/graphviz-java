@@ -48,7 +48,7 @@ final class GraphvizServer {
                         }
                         final String s = com.readContent(len);
                         try {
-                            final String svg = Graphviz.fromString(s).createSvg();
+                            final String svg = Graphviz.fromString(s).render().toString();
                             com.writeStatus("ok");
                             com.writeContent(svg);
                         } catch (GraphvizException e) {

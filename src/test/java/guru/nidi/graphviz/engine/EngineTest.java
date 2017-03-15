@@ -39,7 +39,7 @@ public class EngineTest {
     @Test
     public void jdk() {
         Graphviz.useEngine(new GraphvizJdkEngine());
-        assertThat(Graphviz.fromString("graph g {a--b}").createSvg(), startsWith(START));
+        assertThat(Graphviz.fromString("graph g {a--b}").render().toString(), startsWith(START));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class EngineTest {
         GraphvizServerEngine.stopServer();
         try {
             Graphviz.useEngine(new GraphvizServerEngine());
-            assertThat(Graphviz.fromString("graph g {a--b}").createSvg(), startsWith(START));
+            assertThat(Graphviz.fromString("graph g {a--b}").render().toString(), startsWith(START));
         } finally {
             GraphvizServerEngine.stopServer();
         }
@@ -56,6 +56,6 @@ public class EngineTest {
     @Test
     public void v8() {
         Graphviz.useEngine(new GraphvizV8Engine());
-        assertThat(Graphviz.fromString("graph g {a--b}").createSvg(), startsWith(START));
+        assertThat(Graphviz.fromString("graph g {a--b}").render().toString(), startsWith(START));
     }
 }

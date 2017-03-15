@@ -16,15 +16,21 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
+import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.Font;
+import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.engine.Engine;
 import guru.nidi.graphviz.engine.Graphviz;
 import org.junit.After;
 import org.junit.Test;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
+import static guru.nidi.graphviz.engine.Format.*;
 import static guru.nidi.graphviz.model.Compass.WEST;
 import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.model.Link.to;
@@ -36,7 +42,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex11() {
+    public void ex11() throws IOException {
         final Graph g = CreationContext.use(() -> graph("ex1").directed().with(
                 node("main").link(
                         node("parse"), node("init"), node("cleanup"), node("printf")),
@@ -46,11 +52,11 @@ public class ExampleTest {
                         node("make_string"), node("printf"), node("compare")),
                 node("init").link(
                         node("make_string"))));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex11.png"));
+        Graphviz.fromGraph(g).render().toFile(new File("target/ex11.png"));
     }
 
     @Test
-    public void ex12() {
+    public void ex12() throws IOException {
         final Node
                 printf = node("printf"),
                 make_string = node("make_string");
@@ -61,18 +67,18 @@ public class ExampleTest {
                         node("init").link(make_string),
                         node("cleanup"),
                         printf));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex12.png"));
+        Graphviz.fromGraph(g).render().toFile(new File("target/ex12.png"));
     }
 
     @Test
-    public void ex2() {
+    public void ex2() throws IOException {
         final Node
                 init = node("init"),
                 execute = node("execute"),
                 compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
                 make_string = node("make_string").with(Label.of("make a\nstring")),
                 printf = node("printf");
-        final Graph g = graph("ex2").directed().with(
+        final Graph g = graph("ex2").directed().nodeAttr().with(Font.def("sans-serif", 14)).with(
                 node("main").with(Shape.RECTANGLE).link(
                         to(node("parse").link(execute)).with("weight", 8),
                         to(init).with(Style.DOTTED),
@@ -80,11 +86,34 @@ public class ExampleTest {
                         to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
                 execute.link(graph().with(make_string, printf), to(compare).with(Color.RED)),
                 init.link(make_string));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex2.png"));
+        final Graphviz graphviz = Graphviz.fromGraph(g);
+        graphviz.render().toFile(new File("target/ex2.png"));
+        graphviz.render().withGraphics(gr -> {
+            gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        }).toFile(new File("target/ex2-anti-all-on.png"));
+        graphviz.render().withGraphics(gr -> {
+            gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+            gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        }).toFile(new File("target/ex2-anti-off.png"));
+        graphviz.render().withGraphics(gr -> {
+            gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+            gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        }).toFile(new File("target/ex2-anti-gasp.png"));
+        graphviz.render().withGraphics(gr -> {
+            gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        }).toFile(new File("target/ex2-anti-on.png"));
+        graphviz.engine(Engine.CIRCO).render().toFile(new File("target/ex2-ci.png"));
+        graphviz.engine(Engine.NEATO).render().toFile(new File("target/ex2-ne.png"));
+        graphviz.engine(Engine.OSAGE).render().toFile(new File("target/ex2-os.png"));
+        graphviz.engine(Engine.TWOPI).render().toFile(new File("target/ex2-tp.png"));
+        graphviz.render(SVG).toFile(new File("target/ex2.svg"));
+        graphviz.render(JSON).toFile(new File("target/ex2.json"));
+        graphviz.render(PS).toFile(new File("target/ex2.ps"));
     }
 
     @Test
-    public void ex3() {
+    public void ex3() throws IOException {
         final Node
                 a = node("a").with(Shape.polygon(5, 0, 0), "peripheries", 3, Color.LIGHTBLUE, Style.FILLED),
                 c = node("c").with(Shape.polygon(4, .4, 0), Label.html("hello world")),
@@ -93,11 +122,11 @@ public class ExampleTest {
         final Graph g = graph("ex3").directed().with(
                 a.link(node("b").link(c, d)),
                 e);
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex3.png"));
+        Graphviz.fromGraph(g).render().toFile(new File("target/ex3.png"));
     }
 
     @Test
-    public void ex41() {
+    public void ex41() throws IOException {
         final Node
                 struct1 = node("struct1").with(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
                 struct2 = node("struct2").with(Records.label("<f0> one|<f1> two")),
@@ -106,7 +135,7 @@ public class ExampleTest {
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex41.png"));
+        Graphviz.fromGraph(g).render().toFile(new File("target/ex41.png"));
     }
 
     @Test
@@ -128,11 +157,11 @@ public class ExampleTest {
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex42.png"));
+        Graphviz.fromGraph(g).render().toFile(new File("target/ex42.png"));
     }
 
     @Test
-    public void ex5() {
+    public void ex5() throws IOException {
         final Node
                 reiser = node("Reiser cpp"), csh = node("Cshell"),
                 ksh = node("ksh"), emacs = node("emacs"),
@@ -249,11 +278,11 @@ public class ExampleTest {
                         archlib.link(adv),
                         proc.link(adv)
                 );
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex5.png"));
+        Graphviz.fromGraph(g).render().toFile(new File("target/ex5.png"));
     }
 
     @Test
-    public void ex6() {
+    public void ex6() throws IOException {
         final Node
                 node0 = node("node0").with(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""), rec("f5", ""), rec("f6", ""))),
                 node1 = node("node1").with(Records.of(turn(rec("n", "n14"), rec("719"), rec("p", "")))),
@@ -274,11 +303,11 @@ public class ExampleTest {
                                 between(loc("f6"), node5.loc(WEST))),
                         node2.link(between(loc("p"), node6.loc(WEST))),
                         node4.link(between(loc("p"), node7.loc(WEST))));
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex6.png"));
+        Graphviz.fromGraph(g).render().toFile(new File("target/ex6.png"));
     }
 
     @Test
-    public void ex7() {
+    public void ex7() throws IOException {
         final Graph g = graph("ex7").directed()
                 .with(
                         graph().cluster()
@@ -297,7 +326,7 @@ public class ExampleTest {
                         node("b3").link("end"),
                         node("end").with(Shape.mSquare("", ""))
                 );
-        Graphviz.fromGraph(g).renderToFile(new File("target/ex7.png"));
+        Graphviz.fromGraph(g).render().toFile(new File("target/ex7.png"));
     }
 
 }

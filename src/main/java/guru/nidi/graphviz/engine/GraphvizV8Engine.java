@@ -46,15 +46,15 @@ public class GraphvizV8Engine extends AbstractGraphvizEngine {
     @Override
     protected void doInit() throws Exception {
         v8 = V8.createV8Runtime();
-        v8.executeVoidScript("var $$prints=[]; print=function(s){$$prints.push(s);};");
+        v8.executeVoidScript(initEnv());
         messages = v8.getArray("$$prints");
         v8.executeVoidScript(vizCode());
     }
 
     @Override
-    protected String doExecute(String dot) {
+    protected String doExecute(String call) {
         try {
-            return v8.executeStringScript("$$prints.splice(0,100); Viz('" + jsEscape(dot) + "');");
+            return v8.executeStringScript("$$prints.splice(0,100); " + call);
         } catch (V8RuntimeException e) {
             if (ABORT.matcher(e.getMessage()).find()) {
                 throw new GraphvizException(IntStream.range(0, messages.length())

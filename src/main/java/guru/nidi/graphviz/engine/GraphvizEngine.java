@@ -16,7 +16,7 @@
 package guru.nidi.graphviz.engine;
 
 public interface GraphvizEngine {
-    String execute(String dot);
+    String execute(String src, Engine engine, Format format);
 
     void release();
 }

@@ -33,9 +33,9 @@ public class GraphvizJdkEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    protected String doExecute(String dot) {
+    protected String doExecute(String call) {
         try {
-            return (String) ENGINE.eval("$$prints=[]; Viz('" + jsEscape(dot) + "');");
+            return (String) ENGINE.eval("$$prints=[]; " + call);
         } catch (ScriptException e) {
             if (e.getMessage().startsWith("abort")) {
                 try {
@@ -54,7 +54,7 @@ public class GraphvizJdkEngine extends AbstractGraphvizEngine {
 
     @Override
     protected void doInit() throws Exception {
-        ENGINE.eval("var $$prints=[], print=function(s){$$prints.push(s);};");
+        ENGINE.eval(initEnv());
         ENGINE.eval(vizCode());
         ENGINE.eval("Viz('digraph g { a -> b; }');");
     }
