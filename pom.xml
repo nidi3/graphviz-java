@@ -71,10 +71,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.kitfox.svg</groupId>
-            <artifactId>svg-salamander</artifactId>
-            <version>1.0</version>
+            <groupId>com.kitfox</groupId>
+            <artifactId>svgSalamander</artifactId>
+            <version>1.1.2</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.kitfox.svg</groupId>-->
+            <!--<artifactId>svg-salamander</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_macosx_x86_64</artifactId>
