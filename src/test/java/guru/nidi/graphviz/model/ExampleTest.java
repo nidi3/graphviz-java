@@ -78,7 +78,7 @@ public class ExampleTest {
                 compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
                 make_string = node("make_string").with(Label.of("make a\nstring")),
                 printf = node("printf");
-        final Graph g = graph("ex2").directed().nodeAttr().with(Font.def("sans-serif", 14)).with(
+        final Graph g = graph("ex2").directed().graphAttr().with(Color.rgb("222222").background()).nodeAttr().with(Font.def("sans-serif", 14),Color.rgb("bbbbbb").fill(),Style.FILLED).with(
                 node("main").with(Shape.RECTANGLE).link(
                         to(node("parse").link(execute)).with("weight", 8),
                         to(init).with(Style.DOTTED),

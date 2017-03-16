@@ -70,11 +70,13 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>com.kitfox</groupId>
-            <artifactId>svgSalamander</artifactId>
-            <version>1.1.2</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.kitfox</groupId>-->
+            <!--<artifactId>svgSalamander</artifactId>-->
+            <!--<version>1.1.2</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${basedir}/src/main/resources/svgSalamander-1.1.2.jar</systemPath>-->
+        <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>com.kitfox.svg</groupId>-->
             <!--<artifactId>svg-salamander</artifactId>-->

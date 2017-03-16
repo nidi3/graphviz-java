@@ -33,7 +33,7 @@ public interface Attribute {
             } else if (keysAndValues[i] instanceof Map) {
                 res.putAll((Map<String, Object>) keysAndValues[i]);
             } else if (keysAndValues[i].getClass().isArray()) {
-                res.putAll(from(keysAndValues[i]));
+                res.putAll(from((Object[])keysAndValues[i]));
             } else {
                 if (i == keysAndValues.length - 1) {
                     throw new IllegalArgumentException("Last key '" + keysAndValues[i] + "' has no value");
