@@ -34,6 +34,7 @@ public class CodeCoverage {
                 .just(For.packge("*.attribute").setMinima(60, 75, 75))
                 .just(For.packge("*.engine").setMinima(20, 60, 75))
                 .just(For.packge("*.model").setMinima(60, 60, 75))
+                .just(For.packge("com.kitfox.svg*").setMinima(0,0,0)) //TODO remove
         );
         assertThat("Enough code coverage", analyzer.analyze(), hasEnoughCoverage());
     }
