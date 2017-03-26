@@ -12,8 +12,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
-import static guru.nidi.graphviz.engine.Format.SVG;
-import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
+import static guru.nidi.graphviz.engine.Format.*;
 
 public class Renderer {
     private final Graphviz graphviz;
@@ -31,16 +30,16 @@ public class Renderer {
     }
 
     public String toString() {
-        final String result = graphviz.execute(format == null || format == SVG_STANDALONE ? SVG : format);
-        if (format == null || format == SVG) {
+        final String result = graphviz.execute(format == PNG || format == SVG_STANDALONE ? SVG : format);
+        if (format == PNG || format == SVG) {
             return result.substring(result.indexOf("<svg "));
         }
         return result;
     }
 
     public void toFile(File file) throws IOException {
-        if (format == null) {
-            toFile(file, null);
+        if (format == PNG) {
+            toPngFile(file);
         } else {
             try (final Writer out = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
                 out.write(toString());
@@ -48,17 +47,13 @@ public class Renderer {
         }
     }
 
-    public void toFile(File file, String format) {
-        BufferedImage image = toImage();
-        final String f = format == null
-                ? file.getName().substring(file.getName().lastIndexOf('.') + 1)
-                : format;
-        writeToFile(file, f, image);
+    public void toPngFile(File file) {
+        writeToFile(file, "png", toImage());
     }
 
     public BufferedImage toImage() {
-        if (format != null && format != SVG && format != SVG_STANDALONE) {
-            throw new IllegalStateException("Images can only be rendered from SVG format.");
+        if (format != PNG && format != SVG && format != SVG_STANDALONE) {
+            throw new IllegalStateException("Images can only be rendered from PNG and SVG formats.");
         }
         final SVGDiagram diagram = createDiagram(graphviz.execute(SVG));
         double scaleX = graphviz.scale;

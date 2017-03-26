@@ -52,7 +52,7 @@ public class ExampleTest {
                         node("make_string"), node("printf"), node("compare")),
                 node("init").link(
                         node("make_string"))));
-        Graphviz.fromGraph(g).render().toFile(new File("target/ex11.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex11.png"));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ExampleTest {
                         node("init").link(make_string),
                         node("cleanup"),
                         printf));
-        Graphviz.fromGraph(g).render().toFile(new File("target/ex12.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex12.png"));
     }
 
     @Test
@@ -87,26 +87,26 @@ public class ExampleTest {
                 execute.link(graph().with(make_string, printf), to(compare).with(Color.RED)),
                 init.link(make_string));
         final Graphviz graphviz = Graphviz.fromGraph(g);
-        graphviz.render().toFile(new File("target/ex2.png"));
-        graphviz.render().withGraphics(gr -> {
+        graphviz.render(PNG).toFile(new File("target/ex2.png"));
+        graphviz.render(PNG).withGraphics(gr -> {
             gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }).toFile(new File("target/ex2-anti-all-on.png"));
-        graphviz.render().withGraphics(gr -> {
+        graphviz.render(PNG).withGraphics(gr -> {
             gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
             gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         }).toFile(new File("target/ex2-anti-off.png"));
-        graphviz.render().withGraphics(gr -> {
+        graphviz.render(PNG).withGraphics(gr -> {
             gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
             gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         }).toFile(new File("target/ex2-anti-gasp.png"));
-        graphviz.render().withGraphics(gr -> {
+        graphviz.render(PNG).withGraphics(gr -> {
             gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         }).toFile(new File("target/ex2-anti-on.png"));
-        graphviz.engine(Engine.CIRCO).render().toFile(new File("target/ex2-ci.png"));
-        graphviz.engine(Engine.NEATO).render().toFile(new File("target/ex2-ne.png"));
-        graphviz.engine(Engine.OSAGE).render().toFile(new File("target/ex2-os.png"));
-        graphviz.engine(Engine.TWOPI).render().toFile(new File("target/ex2-tp.png"));
+        graphviz.engine(Engine.CIRCO).render(PNG).toFile(new File("target/ex2-ci.png"));
+        graphviz.engine(Engine.NEATO).render(PNG).toFile(new File("target/ex2-ne.png"));
+        graphviz.engine(Engine.OSAGE).render(PNG).toFile(new File("target/ex2-os.png"));
+        graphviz.engine(Engine.TWOPI).render(PNG).toFile(new File("target/ex2-tp.png"));
         graphviz.render(SVG).toFile(new File("target/ex2.svg"));
         graphviz.render(JSON).toFile(new File("target/ex2.json"));
         graphviz.render(PS).toFile(new File("target/ex2.ps"));
@@ -122,7 +122,7 @@ public class ExampleTest {
         final Graph g = graph("ex3").directed().with(
                 a.link(node("b").link(c, d)),
                 e);
-        Graphviz.fromGraph(g).render().toFile(new File("target/ex3.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex3.png"));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class ExampleTest {
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
-        Graphviz.fromGraph(g).render().toFile(new File("target/ex41.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex41.png"));
     }
 
     @Test
@@ -157,7 +157,7 @@ public class ExampleTest {
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
-        Graphviz.fromGraph(g).render().toFile(new File("target/ex42.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex42.png"));
     }
 
     @Test
@@ -278,7 +278,7 @@ public class ExampleTest {
                         archlib.link(adv),
                         proc.link(adv)
                 );
-        Graphviz.fromGraph(g).render().toFile(new File("target/ex5.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex5.png"));
     }
 
     @Test
@@ -303,7 +303,7 @@ public class ExampleTest {
                                 between(loc("f6"), node5.loc(WEST))),
                         node2.link(between(loc("p"), node6.loc(WEST))),
                         node4.link(between(loc("p"), node7.loc(WEST))));
-        Graphviz.fromGraph(g).render().toFile(new File("target/ex6.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex6.png"));
     }
 
     @Test
@@ -326,7 +326,7 @@ public class ExampleTest {
                         node("b3").link("end"),
                         node("end").with(Shape.mSquare("", ""))
                 );
-        Graphviz.fromGraph(g).render().toFile(new File("target/ex7.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex7.png"));
     }
 
 }

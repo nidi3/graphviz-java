@@ -90,10 +90,6 @@ public final class Graphviz {
         return new Graphviz(src, engineImpl, 0, 0, scale);
     }
 
-    public Renderer render() {
-        return render(null);
-    }
-
     public Renderer render(Format format) {
         if (engine == null) {
             initEngine();
