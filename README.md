@@ -35,7 +35,8 @@ String json = viz.render(JSON).toString();
 BufferedImage image = viz.render(PNG).toImage();
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5.png" width="200">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5b.png" width="100">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5s.png" width="100">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5.svg" width="100">
 
 ### Complex example
