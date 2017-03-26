@@ -32,6 +32,8 @@ import java.io.IOException;
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
 import static guru.nidi.graphviz.engine.Format.*;
+import static guru.nidi.graphviz.engine.Rasterizer.BATIK;
+import static guru.nidi.graphviz.engine.Rasterizer.SALAMANDER;
 import static guru.nidi.graphviz.model.Compass.WEST;
 import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.model.Link.to;
@@ -79,14 +81,17 @@ public class ExampleTest {
                 compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
                 make_string = node("make_string").with(Label.of("make a\nstring")),
                 printf = node("printf");
-        final Graph g = graph("ex2").directed().graphAttr().with(Color.rgb("222222").background()).nodeAttr().with(Font.def("Arial", 14),Color.rgb("bbbbbb").fill(),Style.FILLED).with(
-                node("main").with(Shape.RECTANGLE).link(
-                        to(node("parse").link(execute)).with("weight", 8),
-                        to(init).with(Style.DOTTED),
-                        node("cleanup"),
-                        to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
-                execute.link(graph().with(make_string, printf), to(compare).with(Color.RED)),
-                init.link(make_string));
+        final Graph g = graph("ex2").directed()
+                .graphAttr().with(Color.rgb("222222").background())
+                .nodeAttr().with(Font.def("Arial", 14), Color.rgb("bbbbbb").fill(), Style.FILLED)
+                .with(
+                        node("main").with(Shape.RECTANGLE).link(
+                                to(node("parse").link(execute)).with("weight", 8),
+                                to(init).with(Style.DOTTED),
+                                node("cleanup"),
+                                to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
+                        execute.link(graph().with(make_string, printf), to(compare).with(Color.RED)),
+                        init.link(make_string));
         final Graphviz graphviz = Graphviz.fromGraph(g);
         graphviz.render(PNG).toFile(new File("target/ex2.png"));
         graphviz.render(PNG).withGraphics(gr -> {
@@ -136,8 +141,8 @@ public class ExampleTest {
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
-        Graphviz.fromGraph(g).height(500).rasterizer(Rasterizer.SALAMANDER).render(PNG).toFile(new File("target/ex41-s.png"));
-        Graphviz.fromGraph(g).height(500).rasterizer(Rasterizer.BATIK).render(PNG).toFile(new File("target/ex41-b.png"));
+        Graphviz.fromGraph(g).height(500).rasterizer(SALAMANDER).render(PNG).toFile(new File("target/ex41-s.png"));
+        Graphviz.fromGraph(g).height(500).rasterizer(BATIK).render(PNG).toFile(new File("target/ex41-b.png"));
     }
 
     @Test
@@ -329,6 +334,36 @@ public class ExampleTest {
                         node("end").with(Shape.mSquare("", ""))
                 );
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex7.png"));
+    }
+
+    @Test
+    public void ex8() throws IOException {
+        final Node split = node("split types"),
+                redString = node("reduce 'string' line"),
+                redNum = node("reduce 'numbers' line"),
+                succString = node("doOnSuccess print1"),
+                succNum = node("doOnSuccess print2"),
+                end = node("");
+        final Attribute[] attr = new Attribute[]{Color.rgb("bbbbbb"), Color.rgb("bbbbbb").font(), Font.name("Arial Rounded MT Bold")};
+        final Graph g = graph("ex7").directed()
+                .graphAttr().with(Color.rgb("444444").background())
+                .nodeAttr().with(Style.FILLED.and(Style.ROUNDED), attr, Color.BLACK.font(), Color.rgb("bbbbbb").fill(), Shape.RECTANGLE)
+                .linkAttr().with(Color.rgb("888888"), Style.lineWidth(2))
+                .with(
+                        node("input").link(split.link(redString, redNum)),
+                        graph().cluster()
+                                .generalAttr().with(attr, Label.of("stringPrint"))
+                                .with(redString.link(succString)),
+                        graph("x").cluster()
+                                .generalAttr().with(attr, Label.of("numberPrint"))
+                                .with(redNum.link(succNum)),
+                        succString.link(end),
+                        succNum.link(end)
+                );
+        final Graphviz viz = Graphviz.fromGraph(g).width(320);
+        viz.rasterizer(SALAMANDER).render(PNG).toFile(new File("target/ex8s.png"));
+        viz.rasterizer(BATIK).render(PNG).toFile(new File("target/ex8b.png"));
+        viz.render(SVG).toFile(new File("target/ex8.svg"));
     }
 
 }

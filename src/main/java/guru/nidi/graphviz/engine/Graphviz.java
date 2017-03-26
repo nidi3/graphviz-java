@@ -19,6 +19,7 @@ import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.Serializer;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -54,6 +55,12 @@ public final class Graphviz {
     public static void releaseEngine() {
         if (engine != null) {
             engine.release();
+        }
+    }
+
+    public static void printFontNames() {
+        for (String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
+            System.out.println(name);
         }
     }
 
@@ -105,4 +112,5 @@ public final class Graphviz {
         }
         return new Renderer(this, format, null);
     }
+
 }
