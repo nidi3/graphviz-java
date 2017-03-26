@@ -59,7 +59,7 @@ public final class Graphviz {
     }
 
     public static void printFontNames() {
-        for (String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
+        for (final String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
             System.out.println(name);
         }
     }
