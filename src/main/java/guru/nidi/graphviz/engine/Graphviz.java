@@ -19,18 +19,23 @@ import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.Serializer;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public final class Graphviz {
     private static GraphvizEngine engine;
-    final String src;
-    final Engine engineImpl;
+    private final String src;
+    private final Engine engineImpl;
+    final Rasterizer rasterizer;
     final int width, height;
     final double scale;
 
-    private Graphviz(String src, Engine engine, int width, int height, double scale) {
+    private Graphviz(String src, Engine engine, Rasterizer rasterizer, int width, int height, double scale) {
         this.src = src;
         this.engineImpl = engine;
+        this.rasterizer = rasterizer;
         this.width = width;
         this.height = height;
         this.scale = scale;
@@ -57,7 +62,7 @@ public final class Graphviz {
     }
 
     public static Graphviz fromString(String src) {
-        return new Graphviz(src, Engine.DOT, 0, 0, 2);
+        return new Graphviz(src, Engine.DOT, Rasterizer.BATIK, 0, 0, 1);
     }
 
     public static Graphviz fromFile(File src) throws IOException {
@@ -75,19 +80,23 @@ public final class Graphviz {
     }
 
     public Graphviz engine(Engine engine) {
-        return new Graphviz(src, engine, width, height, scale);
+        return new Graphviz(src, engine, rasterizer, width, height, scale);
+    }
+
+    public Graphviz rasterizer(Rasterizer rasterizer) {
+        return new Graphviz(src, engineImpl, rasterizer, width, height, scale);
     }
 
     public Graphviz width(int width) {
-        return new Graphviz(src, engineImpl, width, height, 0);
+        return new Graphviz(src, engineImpl, rasterizer, width, height, 0);
     }
 
     public Graphviz height(int height) {
-        return new Graphviz(src, engineImpl, width, height, 0);
+        return new Graphviz(src, engineImpl, rasterizer, width, height, 0);
     }
 
     public Graphviz scale(double scale) {
-        return new Graphviz(src, engineImpl, 0, 0, scale);
+        return new Graphviz(src, engineImpl, rasterizer, 0, 0, scale);
     }
 
     public Renderer render(Format format) {

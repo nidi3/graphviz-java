@@ -21,6 +21,7 @@ import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.engine.Engine;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.engine.Rasterizer;
 import org.junit.After;
 import org.junit.Test;
 
@@ -135,7 +136,8 @@ public class ExampleTest {
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
-        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex41.png"));
+        Graphviz.fromGraph(g).height(500).rasterizer(Rasterizer.SALAMANDER).render(PNG).toFile(new File("target/ex41-s.png"));
+        Graphviz.fromGraph(g).height(500).rasterizer(Rasterizer.BATIK).render(PNG).toFile(new File("target/ex41-b.png"));
     }
 
     @Test

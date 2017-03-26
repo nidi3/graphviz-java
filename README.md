@@ -27,11 +27,12 @@ The size of the resulting image, the rendering engine and the output format can 
 
 [//]: # (config)
 ```java
-Graph g = graph("example5").directed().with(node("a").link(node("b")));
+Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
 Graphviz viz = Graphviz.fromGraph(g);
-viz.width(200).engine(NEATO).render(PNG).toFile(new File("example/ex5.png"));
-viz.render(SVG).toFile(new File("example/ex5.svg"));
-String json = viz.render(JSON).toString();
+viz.width(400).render(SVG).toFile(new File("example/ex5.svg"));
+viz.width(400).rasterizer(BATIK).render(PNG).toFile(new File("example/ex5b.png"));
+viz.width(400).rasterizer(SALAMANDER).render(PNG).toFile(new File("example/ex5s.png"));
+String json = viz.engine(NEATO).render(JSON).toString();
 BufferedImage image = viz.render(PNG).toImage();
 ```
 [//]: # (end)

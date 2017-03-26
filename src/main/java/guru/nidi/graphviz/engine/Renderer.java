@@ -15,15 +15,10 @@
  */
 package guru.nidi.graphviz.engine;
 
-import com.kitfox.svg.*;
-import com.kitfox.svg.animation.AnimationElement;
-import com.kitfox.svg.xml.StyleAttribute;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
@@ -66,62 +61,8 @@ public class Renderer {
         if (format != PNG && format != SVG && format != SVG_STANDALONE) {
             throw new IllegalStateException("Images can only be rendered from PNG and SVG formats.");
         }
-        final SVGDiagram diagram = createDiagram(graphviz.execute(SVG));
-        double scaleX = graphviz.scale;
-        double scaleY = graphviz.scale;
-        if (graphviz.width != 0 || graphviz.height != 0) {
-            scaleX = 1D * graphviz.width / diagram.getWidth();
-            scaleY = 1D * graphviz.height / diagram.getHeight();
-            if (scaleX == 0) {
-                scaleX = scaleY;
-            }
-            if (scaleY == 0) {
-                scaleY = scaleX;
-            }
-        }
-        final BufferedImage image = new BufferedImage((int) Math.ceil(scaleX * diagram.getWidth()), (int) Math.ceil(scaleY * diagram.getHeight()), BufferedImage.TYPE_INT_ARGB);
-        final Graphics2D graphics = image.createGraphics();
-        configGraphics(graphics);
-        if (graphicsConfigurer != null) {
-            graphicsConfigurer.accept(graphics);
-        }
-        graphics.scale(scaleX, scaleY);
-        renderDiagram(diagram, graphics);
-        return image;
-    }
-
-    private SVGDiagram createDiagram(String svg) {
-        final SVGUniverse universe = new SVGUniverse();
-        final URI uri = universe.loadSVG(new StringReader(svg), "//graph/");
-        final SVGDiagram diagram = universe.getDiagram(uri);
-        replaceTransparent(diagram.getRoot());
-        diagram.setIgnoringClipHeuristic(true);
-        return diagram;
-    }
-
-    private void replaceTransparent(SVGElement element) {
-        final StyleAttribute stroke = element.getPresAbsolute("stroke");
-        if (stroke != null && "transparent".equals(stroke.getStringValue())) {
-            try {
-                element.setAttribute("stroke", AnimationElement.AT_XML, "#fff");
-                if (!element.hasAttribute("stroke-opacity", AnimationElement.AT_XML)) {
-                    element.addAttribute("stroke-opacity", AnimationElement.AT_XML, "0.0");
-                }
-            } catch (SVGElementException e) {
-                e.printStackTrace();
-            }
-        }
-        for (int i = 0; i < element.getNumChildren(); i++) {
-            replaceTransparent(element.getChild(i));
-        }
-    }
-
-    private void renderDiagram(SVGDiagram diagram, Graphics2D graphics) {
-        try {
-            diagram.render(graphics);
-        } catch (SVGException e) {
-            throw new GraphvizException("Problem rendering SVG", e);
-        }
+        final String svg = graphviz.execute(SVG).replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
+        return graphviz.rasterizer.render(graphviz, graphicsConfigurer, svg);
     }
 
     private void writeToFile(File output, String format, BufferedImage img) {
@@ -131,14 +72,4 @@ public class Renderer {
             throw new GraphvizException("Problem writing to file", e);
         }
     }
-
-    private void configGraphics(Graphics2D graphics) {
-        graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    }
-
 }
