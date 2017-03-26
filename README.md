@@ -17,7 +17,7 @@ The basic usage is as follows (assuming `import static guru.nidi.graphviz.model.
 [//]: # (basic)
 ```java
 Graph g = graph("example1").directed().with(node("a").link(node("b")));
-Graphviz.fromGraph(g).render(PNG).toFile(new File("example/ex1.png"));
+Graphviz.fromGraph(g).width(200).render(PNG).toFile(new File("example/ex1.png"));
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex1.png" width="100">
@@ -29,9 +29,9 @@ The size of the resulting image, the rendering engine and the output format can 
 ```java
 Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
 Graphviz viz = Graphviz.fromGraph(g);
-viz.width(400).render(SVG).toFile(new File("example/ex5.svg"));
-viz.width(400).rasterizer(BATIK).render(PNG).toFile(new File("example/ex5b.png"));
-viz.width(400).rasterizer(SALAMANDER).render(PNG).toFile(new File("example/ex5s.png"));
+viz.width(200).render(SVG).toFile(new File("example/ex5.svg"));
+viz.width(200).rasterizer(BATIK).render(PNG).toFile(new File("example/ex5b.png"));
+viz.width(200).rasterizer(SALAMANDER).render(PNG).toFile(new File("example/ex5s.png"));
 String json = viz.engine(NEATO).render(JSON).toString();
 BufferedImage image = viz.render(PNG).toImage();
 ```
@@ -62,7 +62,7 @@ Graph g = graph("example2").directed().with(
                 to(compare).with(Color.RED)),
         init.link(mkString));
 
-Graphviz.fromGraph(g).render(PNG).toFile(new File("example/ex2.png"));
+Graphviz.fromGraph(g).width(900).render(PNG).toFile(new File("example/ex2.png"));
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex2.png" width="500">
@@ -90,7 +90,7 @@ Graph g = graph("example3").directed()
                         between(loc("f4"), node5.loc("v", NORTH))),
                 node2.link(between(loc("p"), node6.loc(NORTH_WEST))),
                 node4.link(between(loc("p"), node7.loc(SOUTH_WEST))));
-Graphviz.fromGraph(g).render(PNG).toFile(new File("example/ex3.png"));
+Graphviz.fromGraph(g).width(900).render(PNG).toFile(new File("example/ex3.png"));
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex3.png" width="500">
@@ -120,7 +120,7 @@ graph {
 [//]: # (manipulate)
 ```java
 MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
-Graphviz.fromGraph(g).render(PNG).toFile(new File("example/ex4-1.png"));
+Graphviz.fromGraph(g).width(700).render(PNG).toFile(new File("example/ex4-1.png"));
 
 g.generalAttrs()
         .add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
@@ -129,7 +129,7 @@ g.generalAttrs()
         node.add(
                 Color.named(node.label().toString()),
                 Style.lineWidth(4).and(Style.FILLED)));
-Graphviz.fromGraph(g).render(PNG).toFile(new File("example/ex4-2.png"));
+Graphviz.fromGraph(g).width(700).render(PNG).toFile(new File("example/ex4-2.png"));
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex4-2.png" width="400">
