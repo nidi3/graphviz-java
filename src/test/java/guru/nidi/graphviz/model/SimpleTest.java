@@ -15,12 +15,14 @@
  */
 package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizException;
 import org.junit.Test;
 
 import java.io.File;
 
+import static guru.nidi.graphviz.engine.Format.SVG;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.*;
 
@@ -28,14 +30,14 @@ public class SimpleTest {
     @Test
     public void simple() {
         final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");
-        assertNotNull(viz.render().toString());
+        assertNotNull(viz.render(SVG).toString());
     }
 
     @Test
     public void dotError() {
         try {
             System.out.println("Try error...");
-            Graphviz.fromString("g { a -> b; }").render().toString();
+            Graphviz.fromString("g { a -> b; }").render(SVG).toString();
             fail();
         } catch (GraphvizException e) {
             assertThat(e.getMessage(), startsWith("Error: syntax error in line 1 near 'g'"));

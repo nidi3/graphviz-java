@@ -20,12 +20,14 @@ import com.eclipsesource.v8.V8Array;
 import com.eclipsesource.v8.V8RuntimeException;
 import com.eclipsesource.v8.utils.V8ObjectUtils;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class GraphvizV8Engine extends AbstractGraphvizEngine {
     private final static Pattern ABORT = Pattern.compile("^undefined:\\d+: abort");
+    private final static Pattern ERROR = Pattern.compile("^undefined:\\d+: (.*?)\n");
     private V8 v8;
     private V8Array messages;
 
@@ -48,18 +50,22 @@ public class GraphvizV8Engine extends AbstractGraphvizEngine {
         v8 = V8.createV8Runtime();
         v8.executeVoidScript(initEnv());
         messages = v8.getArray("$$prints");
-        v8.executeVoidScript(vizCode());
+        v8.executeVoidScript(vizCode("1.7.1"));
     }
 
     @Override
     protected String doExecute(String call) {
         try {
-            return v8.executeStringScript("$$prints.splice(0,100); " + call);
+            return v8.executeStringScript(call);
         } catch (V8RuntimeException e) {
             if (ABORT.matcher(e.getMessage()).find()) {
                 throw new GraphvizException(IntStream.range(0, messages.length())
                         .mapToObj(i -> V8ObjectUtils.getValue(messages, i).toString())
                         .collect(Collectors.joining("\n")));
+            }
+            final Matcher em = ERROR.matcher(e.getMessage());
+            if (em.find()) {
+                throw new GraphvizException(em.group(1));
             }
             throw new GraphvizException("Problem executing graphviz", e);
         }

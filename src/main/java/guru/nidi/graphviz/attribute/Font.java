@@ -16,6 +16,9 @@
 package guru.nidi.graphviz.attribute;
 
 public final class Font {
+    private Font() {
+    }
+
     public static Attribute[] def(String name, int size) {
         return new Attribute[]{name(name), size(size)};
     }

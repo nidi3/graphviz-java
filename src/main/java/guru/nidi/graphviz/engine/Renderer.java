@@ -1,8 +1,23 @@
+/*
+ * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package guru.nidi.graphviz.engine;
 
-import com.kitfox.svg.SVGDiagram;
-import com.kitfox.svg.SVGException;
-import com.kitfox.svg.SVGUniverse;
+import com.kitfox.svg.*;
+import com.kitfox.svg.animation.AnimationElement;
+import com.kitfox.svg.xml.StyleAttribute;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -39,16 +54,12 @@ public class Renderer {
 
     public void toFile(File file) throws IOException {
         if (format == PNG) {
-            toPngFile(file);
+            writeToFile(file, "png", toImage());
         } else {
             try (final Writer out = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
                 out.write(toString());
             }
         }
-    }
-
-    public void toPngFile(File file) {
-        writeToFile(file, "png", toImage());
     }
 
     public BufferedImage toImage() {
@@ -81,10 +92,28 @@ public class Renderer {
 
     private SVGDiagram createDiagram(String svg) {
         final SVGUniverse universe = new SVGUniverse();
-        final URI uri = universe.loadSVG(new StringReader(svg), "graph");
+        final URI uri = universe.loadSVG(new StringReader(svg), "//graph/");
         final SVGDiagram diagram = universe.getDiagram(uri);
+        replaceTransparent(diagram.getRoot());
         diagram.setIgnoringClipHeuristic(true);
         return diagram;
+    }
+
+    private void replaceTransparent(SVGElement element) {
+        final StyleAttribute stroke = element.getPresAbsolute("stroke");
+        if (stroke != null && "transparent".equals(stroke.getStringValue())) {
+            try {
+                element.setAttribute("stroke", AnimationElement.AT_XML, "#fff");
+                if (!element.hasAttribute("stroke-opacity", AnimationElement.AT_XML)) {
+                    element.addAttribute("stroke-opacity", AnimationElement.AT_XML, "0.0");
+                }
+            } catch (SVGElementException e) {
+                e.printStackTrace();
+            }
+        }
+        for (int i = 0; i < element.getNumChildren(); i++) {
+            replaceTransparent(element.getChild(i));
+        }
     }
 
     private void renderDiagram(SVGDiagram diagram, Graphics2D graphics) {

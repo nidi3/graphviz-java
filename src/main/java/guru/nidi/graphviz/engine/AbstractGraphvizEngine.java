@@ -48,7 +48,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         } catch (InterruptedException e) {
             //ignore
         }
-        return doExecute(vizExec(src, engine, format));
+        return doExecute(src.startsWith("Viz(") ? src : vizExec(src, engine, format));
     }
 
     private void init() {
@@ -71,13 +71,13 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
 
     protected abstract String doExecute(String call);
 
-    protected String vizCode() throws IOException {
-        try (final InputStream in = getClass().getResourceAsStream("/viz-1.7.1.js")) {
+    protected String vizCode(String version) throws IOException {
+        try (final InputStream in = getClass().getResourceAsStream("/viz-" + version + ".js")) {
             return IoUtils.readStream(in);
         }
     }
 
-    protected String initEnv(){
+    protected String initEnv() {
         return "var $$prints=[], print=function(s){$$prints.push(s);};";
     }
 

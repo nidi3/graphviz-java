@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
+
 final class GraphvizServer {
     static final int PORT = 10234;
 
@@ -37,6 +39,8 @@ final class GraphvizServer {
         System.out.println("starting graphviz server...");
         Graphviz.useEngine(new GraphvizV8Engine(e -> new GraphvizJdkEngine()));
         System.out.println("started.");
+        Graphviz.initEngine();
+        System.out.println("inited.");
         try (final ServerSocket ss = new ServerSocket(PORT)) {
             while (true) {
                 try (final Socket socket = ss.accept();
@@ -48,7 +52,7 @@ final class GraphvizServer {
                         }
                         final String s = com.readContent(len);
                         try {
-                            final String svg = Graphviz.fromString(s).render().toString();
+                            final String svg = Graphviz.fromString(s).render(SVG_STANDALONE).toString();
                             com.writeStatus("ok");
                             com.writeContent(svg);
                         } catch (GraphvizException e) {
