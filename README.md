@@ -69,7 +69,7 @@ Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex2
 
 ### Example with records
 ```java
-import static guru.nidi.graphviz.attribute.Records.turn;
+import static guru.nidi.graphviz.attribute.Records.*;
 import static guru.nidi.graphviz.model.Compass.*;
 ```
 [//]: # (records)
