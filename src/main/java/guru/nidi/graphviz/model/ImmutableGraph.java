@@ -16,12 +16,13 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributed;
+import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.MapAttributes;
 import guru.nidi.graphviz.attribute.MutableAttributed;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 class ImmutableGraph extends MutableGraph implements Graph {
@@ -161,12 +162,12 @@ class ImmutableGraph extends MutableGraph implements Graph {
         }
 
         @Override
-        public Graph with(Map<String, Object> attrs) {
+        public Graph with(Attributes attrs) {
             return (ImmutableGraph) attributeSource.apply(copyOfMut()).add(attrs);
         }
 
         @Override
-        public Map<String, Object> applyTo(Map<String, Object> attrs) {
+        public Attributes applyTo(MapAttributes attrs) {
             return attributeSource.apply(ImmutableGraph.this).applyTo(attrs);
         }
     }

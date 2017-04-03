@@ -15,26 +15,19 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Collections.singletonMap;
+import static guru.nidi.graphviz.attribute.Attributes.attr;
+import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
-public interface MutableAttributed<T> extends Attribute {
+public interface MutableAttributed<T> extends Attributes, Iterable<Map.Entry<String, Object>> {
     default T add(String name, Object value) {
-        return add(singletonMap(name, value));
+        return add(attr(name, value));
     }
 
-    default T add(Object... keysAndValues) {
-        return add(Attribute.from(keysAndValues));
+    default T add(Attributes... attributes) {
+        return add(attrs(attributes));
     }
 
-    default T add(Attribute attribute) {
-        final Map<String, Object> attrs = new HashMap<>();
-        attribute.applyTo(attrs);
-        return add(attrs);
-    }
-
-    T add(Map<String, Object> attrs);
-
+    T add(Attributes attributes);
 }

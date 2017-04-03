@@ -68,7 +68,7 @@ public class Serializer {
         attributes("graph", graph.graphAttrs);
         attributes("node", graph.nodeAttrs);
         attributes("edge", graph.linkAttrs);
-        for (final Map.Entry<String, Object> attr : graph.generalAttrs.applyTo(new HashMap<>()).entrySet()) {
+        for (final Map.Entry<String, Object> attr : graph.generalAttrs) {
             attr(attr.getKey(), attr.getValue());
             s.append('\n');
         }
@@ -199,7 +199,7 @@ public class Serializer {
         if (!attrs.isEmpty()) {
             s.append(" [");
             boolean first = true;
-            for (final Map.Entry<String, Object> attr : attrs.applyTo(new HashMap<>()).entrySet()) {
+            for (final Map.Entry<String, Object> attr : attrs) {
                 if (first) {
                     first = false;
                 } else {

@@ -15,7 +15,10 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public final class Shape extends SimpleAttribute<String> {
+import static guru.nidi.graphviz.attribute.Attributes.attr;
+import static guru.nidi.graphviz.attribute.Attributes.attrs;
+
+public final class Shape extends SingleAttributes<String> {
     private static final String SHAPE = "shape";
 
     public static final Shape
@@ -45,20 +48,20 @@ public final class Shape extends SimpleAttribute<String> {
         super(SHAPE, value);
     }
 
-    public static Attribute mDiamond(String topLabel, String bottomLabel) {
-        return new MapAttribute(SHAPE, "Mdiamond", "toplabel", topLabel, "bottomlabel", bottomLabel);
+    public static Attributes mDiamond(String topLabel, String bottomLabel) {
+        return attrs(attr(SHAPE, "Mdiamond"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
     }
 
-    public static Attribute mSquare(String topLabel, String bottomLabel) {
-        return new MapAttribute(SHAPE, "Msquare", "toplabel", topLabel, "bottomlabel", bottomLabel);
+    public static Attributes mSquare(String topLabel, String bottomLabel) {
+        return attrs(attr(SHAPE, "Msquare"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
     }
 
-    public static Attribute mCircle(String topLabel, String bottomLabel) {
-        return new MapAttribute(SHAPE, "Mcircle", "toplabel", topLabel, "bottomlabel", bottomLabel);
+    public static Attributes mCircle(String topLabel, String bottomLabel) {
+        return attrs(attr(SHAPE, "Mcircle"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
     }
 
-    public static Attribute polygon(int sides, double skew, double distortion) {
-        return new MapAttribute(SHAPE, "polygon", "sides", sides, "skew", skew, "distortion", distortion);
+    public static Attributes polygon(int sides, double skew, double distortion) {
+        return attrs(attr(SHAPE, "polygon"), attr("sides", sides), attr("skew", skew), attr("distortion", distortion));
     }
 }
 

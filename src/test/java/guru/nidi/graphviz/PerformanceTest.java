@@ -16,7 +16,6 @@
 package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.*;
-import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizV8Engine;
 import guru.nidi.graphviz.model.CreationContext;
@@ -24,6 +23,7 @@ import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.Node;
 
+import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
 import static guru.nidi.graphviz.engine.Format.SVG;
@@ -127,7 +127,7 @@ public class PerformanceTest {
 
     public void ex3() {
         final Node
-                a = node("a").with(Shape.polygon(5, 0, 0), "peripheries", 3, Color.LIGHTBLUE, Style.FILLED),
+                a = node("a").with(Shape.polygon(5, 0, 0), attr("peripheries", 3), Color.LIGHTBLUE, Style.FILLED),
                 c = node("c").with(Shape.polygon(4, .4, 0), Label.of("hello world")),
                 d = node("d").with(Shape.INV_TRIANGLE),
                 e = node("e").with(Shape.polygon(4, 0, .7));
@@ -181,7 +181,7 @@ public class PerformanceTest {
                 proc = node("Process"), adv = node("Adv. Software Technology");
 
         final Graph g = graph("ex5").directed()
-                .generalAttr().with("ranksep", .75, "size", "7.5,7.5")
+                .generalAttr().with(attr("ranksep", .75), attr("size", "7.5,7.5"))
                 .nodeAttr().with(Shape.RECTANGLE)
                 .with(
                         graph().nodeAttr().with(Shape.NONE)

@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public class Rank extends SimpleAttribute<String> {
+public class Rank extends SingleAttributes<String> {
     public static final Rank
             SAME = new Rank("same"),
             MIN = new Rank("min"),

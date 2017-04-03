@@ -15,20 +15,23 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import static guru.nidi.graphviz.attribute.Attributes.attr;
+import static guru.nidi.graphviz.attribute.Attributes.attrs;
+
 public final class Font {
     private Font() {
     }
 
-    public static Attribute[] def(String name, int size) {
-        return new Attribute[]{name(name), size(size)};
+    public static Attributes def(String name, int size) {
+        return attrs(name(name), size(size));
     }
 
-    public static Attribute name(String name) {
-        return new MapAttribute("fontname", name);
+    public static Attributes name(String name) {
+        return attr("fontname", name);
     }
 
-    public static Attribute size(int size) {
-        return new MapAttribute("fontsize", size);
+    public static Attributes size(int size) {
+        return attr("fontsize", size);
     }
 }
 

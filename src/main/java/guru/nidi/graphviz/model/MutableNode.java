@@ -15,7 +15,10 @@
  */
 package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.MapAttributes;
 import guru.nidi.graphviz.attribute.MutableAttributed;
+import guru.nidi.graphviz.attribute.SimpleMutableAttributed;
 
 import java.util.*;
 
@@ -27,10 +30,10 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     protected final MutableAttributed<MutableNode> attributes;
 
     MutableNode() {
-        this(null, new ArrayList<>(), new HashMap<>());
+        this(null, new ArrayList<>(), Attributes.attrs());
     }
 
-    protected MutableNode(Label label, List<Link> links, Map<String, Object> attributes) {
+    protected MutableNode(Label label, List<Link> links, Attributes attributes) {
         this.label = label;
         this.links = links;
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
@@ -38,7 +41,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     }
 
     public MutableNode copy() {
-        return new MutableNode(label, new ArrayList<>(links), attributes.applyTo(new HashMap<>()));
+        return new MutableNode(label, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
     }
 
     public MutableNode setLabel(Label label) {
@@ -88,13 +91,18 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return this;
     }
 
-    public MutableNode add(Map<String, Object> attrs) {
+    public MutableNode add(Attributes attrs) {
         attributes.add(attrs);
         return this;
     }
 
     @Override
-    public Map<String, Object> applyTo(Map<String, Object> attrs) {
+    public Iterator<Map.Entry<String, Object>> iterator() {
+        return attributes.iterator();
+    }
+
+    @Override
+    public Attributes applyTo(MapAttributes attrs) {
         return attributes.applyTo(attrs);
     }
 

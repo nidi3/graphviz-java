@@ -15,27 +15,17 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import java.util.HashMap;
-import java.util.Map;
+import static guru.nidi.graphviz.attribute.Attributes.attr;
+import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
-import static java.util.Collections.singletonMap;
-
-public interface Attributed<T> extends Attribute {
-
+public interface Attributed<T> extends Attributes {
     default T with(String name, Object value) {
-        return with(singletonMap(name, value));
+        return with(attr(name, value));
     }
 
-    default T with(Object... keysAndValues) {
-        return with(Attribute.from(keysAndValues));
+    default T with(Attributes... attributes) {
+        return with(attrs(attributes));
     }
 
-    default T with(Attribute attribute) {
-        final Map<String, Object> attrs = new HashMap<>();
-        attribute.applyTo(attrs);
-        return with(attrs);
-    }
-
-    T with(Map<String, Object> attrs);
-
+    T with(Attributes attribute);
 }

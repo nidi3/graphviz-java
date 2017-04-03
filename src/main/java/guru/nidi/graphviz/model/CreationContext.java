@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.MutableAttributed;
+import guru.nidi.graphviz.attribute.SimpleMutableAttributed;
 
 import java.util.HashMap;
 import java.util.Map;

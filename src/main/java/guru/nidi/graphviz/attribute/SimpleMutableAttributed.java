@@ -13,46 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model;
+package guru.nidi.graphviz.attribute;
 
-import guru.nidi.graphviz.attribute.Attribute;
-import guru.nidi.graphviz.attribute.MutableAttributed;
-
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     private final E target;
-    final Map<String, Object> attributes = new HashMap<>();
+    final MapAttributes attributes = new MapAttributes();
 
     public SimpleMutableAttributed(E target) {
         this.target = target;
     }
 
-    public SimpleMutableAttributed(E target, Attribute attribute) {
-        this.target = target;
-        if (attribute != null) {
-            attribute.applyTo(attributes);
-        }
-    }
-
-    public SimpleMutableAttributed(E target, Map<String, Object> attributes) {
+    public SimpleMutableAttributed(E target, Attributes attributes) {
         this.target = target;
         if (attributes != null) {
-            this.attributes.putAll(attributes);
+            attributes.applyTo(this.attributes);
         }
     }
 
     @Override
-    public E add(Map<String, Object> attrs) {
-        attributes.putAll(attrs);
-        return target;
+    public Attributes applyTo(MapAttributes attrs) {
+        return attrs.add(attributes);
     }
 
     @Override
-    public Map<String, Object> applyTo(Map<String, Object> attrs) {
-        attrs.putAll(attributes);
-        return attrs;
+    public Iterator<Map.Entry<String, Object>> iterator() {
+        return attributes.iterator();
+    }
+
+    @Override
+    public E add(Attributes attributes) {
+        attributes.applyTo(this.attributes);
+        return target;
     }
 
     @Override

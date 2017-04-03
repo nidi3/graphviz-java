@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.model.Compass.NORTH_EAST;
 import static guru.nidi.graphviz.model.Compass.SOUTH_WEST;
 import static guru.nidi.graphviz.model.Factory.*;
@@ -29,8 +30,7 @@ import static org.junit.Assert.assertEquals;
 public class ParserTest {
     @Test
     public void emptyGraph() throws IOException {
-        assertEquals(mutGraph("bla"),
-                Parser.read("graph bla{}"));
+        assertEquals(mutGraph("bla"), Parser.read("graph bla{}"));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ParserTest {
                         .generalAttrs().add("x", "y")
                         .graphAttrs().add("a", "b")
                         .nodeAttrs().add("c", "d")
-                        .linkAttrs().add("e", "f", "g", "h", "i", "j"),
+                        .linkAttrs().add(attr("e", "f"), attr("g", "h"), attr("i", "j")),
                 Parser.read("graph { x=y; graph [a=b]; node[c=d] edge[e=f,g=h][i=j] }"));
     }
 

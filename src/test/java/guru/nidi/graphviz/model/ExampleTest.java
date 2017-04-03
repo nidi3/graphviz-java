@@ -21,7 +21,6 @@ import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.engine.Engine;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.Rasterizer;
 import org.junit.After;
 import org.junit.Test;
 
@@ -29,6 +28,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
+import static guru.nidi.graphviz.attribute.Attributes.attr;
+import static guru.nidi.graphviz.attribute.Attributes.attrs;
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
 import static guru.nidi.graphviz.engine.Format.*;
@@ -121,7 +122,7 @@ public class ExampleTest {
     @Test
     public void ex3() throws IOException {
         final Node
-                a = node("a").with(Shape.polygon(5, 0, 0), "peripheries", 3, Color.LIGHTBLUE, Style.FILLED),
+                a = node("a").with(Shape.polygon(5, 0, 0), attr("peripheries", 3), Color.LIGHTBLUE, Style.FILLED),
                 c = node("c").with(Shape.polygon(4, .4, 0), Label.html("hello world")),
                 d = node("d").with(Shape.INV_TRIANGLE),
                 e = node("e").with(Shape.polygon(4, 0, .7));
@@ -200,7 +201,7 @@ public class ExampleTest {
                 proc = node("Process"), adv = node("Adv. Software Technology");
 
         final Graph g = graph("ex5").directed()
-                .generalAttr().with("ranksep", .75, "size", "7.5,7.5")
+                .generalAttr().with(attr("ranksep", .75), attr("size", "7.5,7.5"))
                 .nodeAttr().with(Shape.RECTANGLE)
                 .with(
                         graph().nodeAttr().with(Shape.NONE).with(
@@ -344,8 +345,8 @@ public class ExampleTest {
                 succString = node("doOnSuccess print1"),
                 succNum = node("doOnSuccess print2"),
                 end = node("");
-        final Attribute[] attr = new Attribute[]{Color.rgb("bbbbbb"), Color.rgb("bbbbbb").font(), Font.name("Arial")};
-        final Graph g = graph("ex7").directed()
+        final Attributes attr = attrs(Color.rgb("bbbbbb"), Color.rgb("bbbbbb").font(), Font.name("Arial"));
+        final Graph g = graph("ex8").directed()
                 .graphAttr().with(Color.rgb("444444").background())
                 .nodeAttr().with(Style.FILLED.and(Style.ROUNDED), attr, Color.BLACK.font(), Color.rgb("bbbbbb").fill(), Shape.RECTANGLE)
                 .linkAttr().with(Color.rgb("888888"), Style.lineWidth(2))
@@ -364,6 +365,13 @@ public class ExampleTest {
         viz.rasterizer(SALAMANDER).render(PNG).toFile(new File("target/ex8s.png"));
         viz.rasterizer(BATIK).render(PNG).toFile(new File("target/ex8b.png"));
         viz.render(SVG).toFile(new File("target/ex8.svg"));
+    }
+
+    @Test
+    public void ex9() throws IOException {
+        final Graph g = graph("ex9").directed()
+                .with(node("first").link(to(node("second")).with(Arrow.DOT.open())));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex9.png"));
     }
 
 }

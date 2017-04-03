@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public class Style extends SimpleAttribute<String> {
+public class Style extends SingleAttributes<String> {
     public static final Style
             DASHED = new Style("dashed"),
             DOTTED = new Style("dotted"),

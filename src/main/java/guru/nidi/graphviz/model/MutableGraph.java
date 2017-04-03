@@ -15,8 +15,9 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attribute;
+import guru.nidi.graphviz.attribute.Attributes;
 import guru.nidi.graphviz.attribute.MutableAttributed;
+import guru.nidi.graphviz.attribute.SimpleMutableAttributed;
 
 import java.util.*;
 
@@ -41,7 +42,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
 
     protected MutableGraph(boolean strict, boolean directed, boolean cluster, Label label,
                            LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
-                           Attribute generalAttrs, Attribute nodeAttrs, Attribute linkAttrs, Attribute graphAttrs) {
+                           Attributes generalAttrs, Attributes nodeAttrs, Attributes linkAttrs, Attributes graphAttrs) {
         this.strict = strict;
         this.directed = directed;
         this.cluster = cluster;

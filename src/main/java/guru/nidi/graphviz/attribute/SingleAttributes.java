@@ -17,13 +17,12 @@ package guru.nidi.graphviz.attribute;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
-import java.util.Map;
 
-public class SimpleAttribute<T> implements Attribute {
+public class SingleAttributes<T> implements Attributes {
     protected final String key;
     protected final T value;
 
-    protected SimpleAttribute(String key, T value) {
+    protected SingleAttributes(String key, T value) {
         this.key = key;
         this.value = value;
     }
@@ -39,7 +38,7 @@ public class SimpleAttribute<T> implements Attribute {
     private <E> E newInstance(String key, T value) {
         try {
             final Class<?> type = (Class<?>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-            final Constructor<? extends SimpleAttribute> cons = getClass().getDeclaredConstructor(String.class, type);
+            final Constructor<? extends SingleAttributes> cons = getClass().getDeclaredConstructor(String.class, type);
             cons.setAccessible(true);
             return (E) cons.newInstance(key, value);
         } catch (ReflectiveOperationException e) {
@@ -48,8 +47,8 @@ public class SimpleAttribute<T> implements Attribute {
     }
 
     @Override
-    public Map<String, Object> applyTo(Map<String, Object> attrs) {
-        attrs.put(key, value);
+    public Attributes applyTo(MapAttributes attrs) {
+        attrs.add(key, value);
         return attrs;
     }
 }

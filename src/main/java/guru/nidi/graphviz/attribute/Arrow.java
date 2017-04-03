@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public final class Arrow extends SimpleAttribute<String> {
+public final class Arrow extends SingleAttributes<String> {
     public static final Arrow
             BOX = new Arrow("box"),
             CROW = new Arrow("crow"),

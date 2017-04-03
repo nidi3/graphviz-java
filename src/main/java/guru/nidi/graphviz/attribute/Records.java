@@ -17,6 +17,8 @@ package guru.nidi.graphviz.attribute;
 
 import java.util.Arrays;
 
+import static guru.nidi.graphviz.attribute.Attributes.attr;
+import static guru.nidi.graphviz.attribute.Attributes.attrs;
 import static java.util.stream.Collectors.joining;
 
 public final class Records {
@@ -27,20 +29,20 @@ public final class Records {
     private Records() {
     }
 
-    public static Attribute label(String label) {
-        return new MapAttribute(SHAPE, RECORD, LABEL, label);
+    public static Attributes label(String label) {
+        return attrs(attr(SHAPE, RECORD), attr(LABEL, label));
     }
 
-    public static Attribute mLabel(String label) {
-        return new MapAttribute(SHAPE, "Mrecord", LABEL, label);
+    public static Attributes mLabel(String label) {
+        return attrs(attr(SHAPE, "Mrecord"), attr(LABEL, label));
     }
 
-    public static Attribute of(String... recs) {
-        return new MapAttribute(SHAPE, RECORD, LABEL, Arrays.stream(recs).collect(joining("|")));
+    public static Attributes of(String... recs) {
+        return attrs(attr(SHAPE, RECORD), attr(LABEL, Arrays.stream(recs).collect(joining("|"))));
     }
 
-    public static Attribute mOf(String... recs) {
-        return new MapAttribute(SHAPE, "Mrecord", LABEL, Arrays.stream(recs).collect(joining("|")));
+    public static Attributes mOf(String... recs) {
+        return attrs(attr(SHAPE, "Mrecord"), attr(LABEL, Arrays.stream(recs).collect(joining("|"))));
     }
 
     public static String rec(String tag, String label) {

@@ -15,12 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attributed;
-import guru.nidi.graphviz.attribute.MutableAttributed;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import guru.nidi.graphviz.attribute.*;
 
 public final class Link implements Attributed<Link>, LinkTarget {
     final LinkSource from;
@@ -48,24 +43,22 @@ public final class Link implements Attributed<Link>, LinkTarget {
     }
 
     private static Link objBetween(LinkSource from, LinkTarget to) {
-        final Link link = new Link(from, to, Collections.emptyMap());
+        final Link link = new Link(from, to, Attributes.attrs());
         return CreationContext.current().map(ctx -> link.with(ctx.links())).orElse(link);
     }
 
-    private Link(LinkSource from, LinkTarget to, Map<String, Object> attributes) {
+    private Link(LinkSource from, LinkTarget to, Attributes attributes) {
         this.from = from;
         this.to = to;
-        this.attributes = new SimpleMutableAttributed<Link>(this, attributes);
+        this.attributes = new SimpleMutableAttributed<>(this, attributes);
     }
 
-    public Link with(Map<String, Object> attrs) {
-        final Map<String, Object> newAttrs = this.attributes.applyTo(new HashMap<>());
-        newAttrs.putAll(attrs);
-        return new Link(from, to, newAttrs);
+    public Link with(Attributes attrs) {
+        return new Link(from, to, attrs.applyTo(attributes.applyTo(Attributes.attrs())));
     }
 
     @Override
-    public Map<String, Object> applyTo(Map<String, Object> attrs) {
+    public Attributes applyTo(MapAttributes attrs) {
         return attributes.applyTo(attrs);
     }
 
