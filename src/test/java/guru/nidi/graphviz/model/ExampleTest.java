@@ -370,7 +370,7 @@ public class ExampleTest {
     @Test
     public void ex9() throws IOException {
         final Graph g = graph("ex9").directed()
-                .with(node("first").link(to(node("second")).with(Arrow.DOT.open())));
+                .with(node("first").link(to(node("second")).with(Arrow.DOT.open().size(2))));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex9.png"));
     }
 

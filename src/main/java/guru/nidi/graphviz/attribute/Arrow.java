@@ -15,7 +15,14 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import static guru.nidi.graphviz.attribute.Attributes.attr;
+import static guru.nidi.graphviz.attribute.Attributes.attrs;
+
 public final class Arrow extends SingleAttributes<String> {
+    public enum DirType {
+        FORWARD, BACK, BOTH, NONE
+    }
+
     public static final Arrow
             BOX = new Arrow("box"),
             CROW = new Arrow("crow"),
@@ -55,6 +62,25 @@ public final class Arrow extends SingleAttributes<String> {
 
     public Arrow and(Arrow arrow) {
         return value(arrow.value + value);
+    }
+
+    public Attributes size(double size) {
+        return config(size, null);
+    }
+
+    public Attributes dir(DirType type) {
+        return config(0, type);
+    }
+
+    public Attributes config(double size, DirType type) {
+        Attributes a = this;
+        if (size > 0) {
+            a = attrs(a, attr("arrowsize", size));
+        }
+        if (type != null) {
+            a = attrs(a, attr("dir", type.name().toLowerCase()));
+        }
+        return a;
     }
 
     private Arrow arrowDir(String dir) {
