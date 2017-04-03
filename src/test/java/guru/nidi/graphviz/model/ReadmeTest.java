@@ -104,7 +104,7 @@ public class ReadmeTest {
         g.generalAttrs()
                 .add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
                 .nodeAttrs().add(Color.WHITE.fill())
-                .allNodes().forEach(node ->
+                .nodes().forEach(node ->
                 node.add(
                         Color.named(node.label().toString()),
                         Style.lineWidth(4).and(Style.FILLED)));

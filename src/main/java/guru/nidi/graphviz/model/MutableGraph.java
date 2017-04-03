@@ -122,11 +122,11 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return this;
     }
 
-    public Collection<MutableNode> nodes() {
+    public Collection<MutableNode> rootNodes() {
         return nodes;
     }
 
-    public Collection<MutableNode> allNodes() {
+    public Collection<MutableNode> nodes() {
         final HashSet<MutableNode> ns = new HashSet<>();
         for (final MutableNode node : nodes) {
             collectNodes(node, ns);
