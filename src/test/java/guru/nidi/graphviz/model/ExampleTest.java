@@ -84,7 +84,7 @@ public class ExampleTest {
                 printf = node("printf");
         final Graph g = graph("ex2").directed()
                 .graphAttr().with(Color.rgb("222222").background())
-                .nodeAttr().with(Font.def("Arial", 14), Color.rgb("bbbbbb").fill(), Style.FILLED)
+                .nodeAttr().with(Font.config("Arial", 14), Color.rgb("bbbbbb").fill(), Style.FILLED)
                 .with(
                         node("main").with(Shape.RECTANGLE).link(
                                 to(node("parse").link(execute)).with("weight", 8),

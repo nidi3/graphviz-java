@@ -67,4 +67,9 @@ public class MapAttributes implements Attributes, Iterable<Map.Entry<String, Obj
     public int hashCode() {
         return attributes.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return attributes.toString();
+    }
 }

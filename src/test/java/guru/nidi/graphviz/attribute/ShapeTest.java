@@ -1,0 +1,54 @@
+/*
+ * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package guru.nidi.graphviz.attribute;
+
+import org.junit.Test;
+
+import static guru.nidi.graphviz.attribute.Attributes.attr;
+import static guru.nidi.graphviz.attribute.Attributes.attrs;
+import static org.junit.Assert.assertEquals;
+
+public class ShapeTest {
+    @Test
+    public void simple() {
+        assertEquals(attr("shape", "house"), attrs(Shape.HOUSE));
+    }
+
+    @Test
+    public void mDiamond() {
+        assertEquals(attrs(attr("shape", "Mdiamond"), attr("toplabel", "top"), attr("bottomlabel", "bottom")),
+                Shape.mDiamond("top", "bottom"));
+    }
+
+    @Test
+    public void mSquare() {
+        assertEquals(attrs(attr("shape", "Msquare"), attr("toplabel", "top"), attr("bottomlabel", "bottom")),
+                Shape.mSquare("top", "bottom"));
+    }
+
+    @Test
+    public void mCircle() {
+        assertEquals(attrs(attr("shape", "Mcircle"), attr("toplabel", "top"), attr("bottomlabel", "bottom")),
+                Shape.mCircle("top", "bottom"));
+    }
+
+    @Test
+    public void polygon() {
+        assertEquals(attrs(attr("sides", 4), attr("shape", "polygon"), attr("skew", 2.5), attr("distortion", .66)),
+                Shape.polygon(4, 2.5, .66));
+    }
+
+}

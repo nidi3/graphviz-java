@@ -17,6 +17,8 @@ package guru.nidi.graphviz.attribute;
 
 import org.junit.Test;
 
+import static guru.nidi.graphviz.attribute.Attributes.attr;
+import static guru.nidi.graphviz.attribute.Attributes.attrs;
 import static org.junit.Assert.assertEquals;
 
 public class ArrowTest {
@@ -73,6 +75,24 @@ public class ArrowTest {
     @Test
     public void tail() {
         assertEquals("arrowtail", Arrow.BOX.tail().key);
+    }
+
+    @Test
+    public void size() {
+        assertEquals(attrs(attr("arrowhead", "box"), attr("arrowsize", 2d)),
+                Arrow.BOX.size(2));
+    }
+
+    @Test
+    public void dir() {
+        assertEquals(attrs(attr("arrowhead", "box"), attr("dir", "back")),
+                Arrow.BOX.dir(Arrow.DirType.BACK));
+    }
+
+    @Test
+    public void config() {
+        assertEquals(attrs(attr("arrowhead", "box"), attr("arrowsize", 2d), attr("dir", "back")),
+                Arrow.BOX.config(2, Arrow.DirType.BACK));
     }
 
     private void assertArrow(String value, Arrow arrow) {
