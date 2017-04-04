@@ -48,6 +48,7 @@ public class Renderer {
     }
 
     public void toFile(File file) throws IOException {
+        file.mkdirs();
         if (format == PNG) {
             writeToFile(file, "png", toImage());
         } else {
