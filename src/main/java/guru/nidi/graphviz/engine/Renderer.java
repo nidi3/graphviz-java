@@ -15,14 +15,21 @@
  */
 package guru.nidi.graphviz.engine;
 
+import static guru.nidi.graphviz.engine.Format.PNG;
+import static guru.nidi.graphviz.engine.Format.SVG;
+import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.function.Consumer;
-
-import static guru.nidi.graphviz.engine.Format.*;
 
 public class Renderer {
     private final Graphviz graphviz;
@@ -48,6 +55,7 @@ public class Renderer {
     }
 
     public void toFile(File file) throws IOException {
+        Files.createDirectories(file.getParentFile().toPath());
         if (format == PNG) {
             writeToFile(file, "png", toImage());
         } else {
