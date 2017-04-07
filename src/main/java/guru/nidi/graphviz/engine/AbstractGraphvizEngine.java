@@ -48,7 +48,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         } catch (InterruptedException e) {
             //ignore
         }
-        return doExecute(src.startsWith("Viz(") ? src : vizExec(src, engine, format));
+        return doExecute(src.startsWith("Viz(") ? src : vizExec(src, engine, format, new VizjsOptions()));
     }
 
     private void init() {
@@ -81,8 +81,9 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         return "var $$prints=[], print=function(s){$$prints.push(s);};";
     }
 
-    protected String vizExec(String src, Engine engine, Format format) {
-        return "Viz('" + jsEscape(src) + "',{format:'" + format.toString().toLowerCase() + "',engine:'" + engine.toString().toLowerCase() + "'});";
+    protected String vizExec(String src, Engine engine, Format format, VizjsOptions vizjsOptions) {
+        String totalMemory = vizjsOptions!= null && vizjsOptions.totalMemory != null ? ",totalMemory:'" + vizjsOptions.totalMemory.toString() + "'" : "";
+        return "Viz('" + jsEscape(src) + "',{format:'" + format.toString().toLowerCase() + "',engine:'" + engine.toString().toLowerCase() +"'"+ totalMemory +"});";
     }
 
     protected String jsEscape(String js) {
