@@ -95,15 +95,15 @@ public final class Graphviz {
     }
 
     public Graphviz width(int width) {
-        return new Graphviz(src, engineImpl, rasterizer, width, height, 0);
+        return new Graphviz(src, engineImpl, rasterizer, width, height, scale);
     }
 
     public Graphviz height(int height) {
-        return new Graphviz(src, engineImpl, rasterizer, width, height, 0);
+        return new Graphviz(src, engineImpl, rasterizer, width, height, scale);
     }
 
     public Graphviz scale(double scale) {
-        return new Graphviz(src, engineImpl, rasterizer, 0, 0, scale);
+        return new Graphviz(src, engineImpl, rasterizer, width, height, scale);
     }
 
     public Renderer render(Format format) {

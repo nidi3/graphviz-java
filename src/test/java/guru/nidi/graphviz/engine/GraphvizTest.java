@@ -8,9 +8,7 @@ import static guru.nidi.graphviz.model.Factory.node;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-/**
- * Created by 10520312 on 07.04.2017.
- */
+
 public class GraphvizTest {
 
     @Test
