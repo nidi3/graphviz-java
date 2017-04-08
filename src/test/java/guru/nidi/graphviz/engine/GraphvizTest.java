@@ -15,15 +15,16 @@
  */
 package guru.nidi.graphviz.engine;
 
+import static guru.nidi.graphviz.model.Factory.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import guru.nidi.graphviz.model.Graph;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.Is;
+import org.junit.Assert;
 import org.junit.Test;
-
-import static guru.nidi.graphviz.model.Factory.graph;
-import static guru.nidi.graphviz.model.Factory.node;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class GraphvizTest {
 
@@ -60,9 +61,33 @@ public class GraphvizTest {
         MatcherAssert.assertThat(graphviz.totalMemory, CoreMatchers.is(32000));
     }
 
-    private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {
-        assertThat(graphviz.width, is(expectedWidth));
-        assertThat(graphviz.height, is(expectedHeight));
-        assertThat(graphviz.scale, is(expectedScale));
+    @Test
+    public void executeWithTotalMemory() {
+        final Graph graph = graph().with(node("a").link("b"));
+
+        Graphviz.useEngine(new AbstractGraphvizEngineTest.GraphvizEngineDummmy());
+        String result = Graphviz.fromGraph(graph).totalMemory(32000).execute(Format.SVG);
+
+        assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot',totalMemory:'32000'});"));
     }
+
+    @Test
+    public void executeWithoutTotalMemory() {
+        final Graph graph = graph().with(node("a").link("b"));
+
+        Graphviz.useEngine(new AbstractGraphvizEngineTest.GraphvizEngineDummmy());
+        String result = Graphviz.fromGraph(graph).execute(Format.SVG);
+
+        assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot'});"));
+    }
+
+    private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {
+        Assert.assertThat(graphviz.width, Is.is(expectedWidth));
+        Assert.assertThat(graphviz.height, Is.is(expectedHeight));
+        Assert.assertThat(graphviz.scale, Is.is(expectedScale));
+    }
+
+
+
+
 }

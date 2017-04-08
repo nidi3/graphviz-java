@@ -17,6 +17,7 @@ package guru.nidi.graphviz.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -82,7 +83,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
     }
 
     protected String vizExec(String src, Engine engine, Format format, VizjsOptions vizjsOptions) {
-        String totalMemory = vizjsOptions!= null && vizjsOptions.totalMemory != null ? ",totalMemory:'" + vizjsOptions.totalMemory.toString() + "'" : "";
+        final String totalMemory = Objects.nonNull(vizjsOptions) && Objects.nonNull(vizjsOptions.totalMemory) ? ",totalMemory:'" + vizjsOptions.totalMemory.toString() + "'" : "";
         return "Viz('" + jsEscape(src) + "',{format:'" + format.toString().toLowerCase() + "',engine:'" + engine.toString().toLowerCase() +"'"+ totalMemory +"});";
     }
 

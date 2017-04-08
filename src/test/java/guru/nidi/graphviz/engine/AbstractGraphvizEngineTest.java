@@ -45,8 +45,8 @@ public class AbstractGraphvizEngineTest {
 
     @Test
     public void vizExecTotalMemoryIsSet() {
-        GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
-        VizjsOptions vizjsOptions = new VizjsOptions();
+        final GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
+        final VizjsOptions vizjsOptions = new VizjsOptions();
         vizjsOptions.totalMemory=320000;
 
         final String vizResult = engineUnderTest.vizExec("digraph{ a -> b}", Engine.DOT, Format.SVG, vizjsOptions);
@@ -56,8 +56,8 @@ public class AbstractGraphvizEngineTest {
 
     @Test
     public void vizExecTotalMemoryIsNotSet() {
-        GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
-        VizjsOptions vizjsOptions = new VizjsOptions();
+        final GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
+        final VizjsOptions vizjsOptions = new VizjsOptions();
 
         final String vizResult = engineUnderTest.vizExec("digraph{ a -> b}", Engine.DOT, Format.SVG, vizjsOptions);
 
@@ -66,7 +66,7 @@ public class AbstractGraphvizEngineTest {
 
     @Test
     public void vizExecVizjsVizJsOptionIsNull() {
-        GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
+        final GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
 
         final String vizResult = engineUnderTest.vizExec("digraph{ a -> b}", Engine.DOT, Format.SVG, null);
 
@@ -75,18 +75,18 @@ public class AbstractGraphvizEngineTest {
 
     @Test
     public void executeTotalMemoryIsNull(){
-        GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
+        final GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
 
-        String result = engineUnderTest.execute("digraph{ a -> b}", Engine.DOT, Format.SVG, new VizjsOptions());
+        final String result = engineUnderTest.execute("digraph{ a -> b}", Engine.DOT, Format.SVG, new VizjsOptions());
 
         assertThat(result, is("Viz('digraph{ a -> b}',{format:'svg',engine:'dot'});"));
     }
 
     @Test
     public void executeTotalMemoryIsSet(){
-        GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
+        final GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
 
-        String result = engineUnderTest.execute("digraph{ a -> b}", Engine.DOT, Format.SVG, new VizjsOptions(32000));
+        final String result = engineUnderTest.execute("digraph{ a -> b}", Engine.DOT, Format.SVG, new VizjsOptions(32000));
 
         assertThat(result, is("Viz('digraph{ a -> b}',{format:'svg',engine:'dot',totalMemory:'32000'});"));
     }
