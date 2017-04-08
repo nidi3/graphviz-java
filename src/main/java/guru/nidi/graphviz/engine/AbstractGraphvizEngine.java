@@ -37,7 +37,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         }
     }
 
-    public String execute(String src, Engine engine, Format format) {
+    public String execute(String src, Engine engine, Format format, VizjsOptions vizjsOptions) {
         if (initException != null) {
             throw new GraphvizException("Could not start graphviz engine", initException);
         }
@@ -48,7 +48,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         } catch (InterruptedException e) {
             //ignore
         }
-        return doExecute(src.startsWith("Viz(") ? src : vizExec(src, engine, format, new VizjsOptions()));
+        return doExecute(src.startsWith("Viz(") ? src : vizExec(src, engine, format, vizjsOptions));
     }
 
     private void init() {

@@ -36,7 +36,7 @@ public class AbstractGraphvizEngineTest {
 
         @Override
         protected String doExecute(String call) {
-            return null;
+            return call;
         }
     }
 
@@ -62,12 +62,30 @@ public class AbstractGraphvizEngineTest {
     }
 
     @Test
-    public void vizExecVizjsIsNull() {
+    public void vizExecVizjsVizJsOptionIsNull() {
         GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
 
         final String vizResult = engineUnderTest.vizExec("digraph{ a -> b}", Engine.DOT, Format.SVG, null);
 
         assertThat(vizResult , is("Viz('digraph{ a -> b}',{format:'svg',engine:'dot'});"));
+    }
+
+    @Test
+    public void executeTotalMemoryIsNull(){
+        GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
+
+        String result = engineUnderTest.execute("digraph{ a -> b}", Engine.DOT, Format.SVG, new VizjsOptions());
+
+        assertThat(result, is("Viz('digraph{ a -> b}',{format:'svg',engine:'dot'});"));
+    }
+
+    @Test
+    public void executeTotalMemoryIsSet(){
+        GraphvizEngineDummmy engineUnderTest = new GraphvizEngineDummmy(true, null);
+
+        String result = engineUnderTest.execute("digraph{ a -> b}", Engine.DOT, Format.SVG, new VizjsOptions(32000));
+
+        assertThat(result, is("Viz('digraph{ a -> b}',{format:'svg',engine:'dot',totalMemory:'32000'});"));
     }
 
 }
