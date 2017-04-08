@@ -16,6 +16,8 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static guru.nidi.graphviz.model.Factory.graph;
@@ -47,6 +49,15 @@ public class GraphvizTest {
         final Graphviz graphviz = Graphviz.fromGraph(graph).scale(3).height(20).width(30);
 
         assertThatGraphvizHasFields(graphviz, 20, 30, 3d);
+    }
+
+    @Test
+    public void totalMemoryMethodChainCheck() {
+        final Graph graph = graph().with(node("a").link("b"));
+
+        final Graphviz graphviz = Graphviz.fromGraph(graph).height(20).width(30).scale(3).totalMemory(32000);
+
+        MatcherAssert.assertThat(graphviz.totalMemory, CoreMatchers.is(32000));
     }
 
     private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {
