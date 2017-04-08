@@ -23,10 +23,13 @@ import org.junit.Test;
 
 public class AbstractGraphvizEngineTest {
 
-    private class GraphvizEngineDummmy extends AbstractGraphvizEngine {
+    public static class GraphvizEngineDummmy extends AbstractGraphvizEngine {
 
         public GraphvizEngineDummmy(boolean sync, EngineInitListener engineInitListener) {
             super(sync, engineInitListener);
+        }
+        public GraphvizEngineDummmy() {
+            super(true, null);
         }
 
         @Override

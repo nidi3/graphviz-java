@@ -7,7 +7,7 @@ class VizjsOptions {
     VizjsOptions() {
     }
 
-    VizjsOptions(int totalMemory) {
+    VizjsOptions(Integer totalMemory) {
         this.totalMemory = totalMemory;
     }
 }

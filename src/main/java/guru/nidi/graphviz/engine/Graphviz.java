@@ -67,7 +67,7 @@ public final class Graphviz {
     }
 
     String execute(Format format) {
-        return engine.execute(src, engineImpl, format, new VizjsOptions());
+        return engine.execute(src, engineImpl, format, new VizjsOptions(totalMemory));
     }
 
     public static Graphviz fromString(String src) {
