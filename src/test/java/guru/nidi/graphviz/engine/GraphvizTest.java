@@ -69,6 +69,8 @@ public class GraphvizTest {
         String result = Graphviz.fromGraph(graph).totalMemory(32000).execute(Format.SVG);
 
         assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot',totalMemory:'32000'});"));
+
+        Graphviz.useEngine(null);
     }
 
     @Test
@@ -79,6 +81,8 @@ public class GraphvizTest {
         String result = Graphviz.fromGraph(graph).execute(Format.SVG);
 
         assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot'});"));
+
+        Graphviz.useEngine(null);
     }
 
     private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {
