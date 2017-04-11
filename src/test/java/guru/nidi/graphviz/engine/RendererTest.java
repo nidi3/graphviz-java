@@ -15,30 +15,29 @@
  */
 package guru.nidi.graphviz.engine;
 
-import static guru.nidi.graphviz.model.Factory.graph;
-import static guru.nidi.graphviz.model.Factory.node;
-import static org.junit.Assert.assertTrue;
+import guru.nidi.graphviz.model.Graph;
+import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Files;
 
-import guru.nidi.graphviz.model.Graph;
-import org.junit.Test;
+import static guru.nidi.graphviz.model.Factory.graph;
+import static guru.nidi.graphviz.model.Factory.node;
+import static org.junit.Assert.assertTrue;
 
 
 public class RendererTest {
 
     @Test
     public void toFileParentFolderNotExists() throws Exception {
-        final Graph graph = graph("example1").directed().with(node("a").link(node("b")));
-
         final File expectedFile = new File("target/testFolder/ex1.png");
+        Files.deleteIfExists(expectedFile.toPath());
+        Files.deleteIfExists(expectedFile.getParentFile().toPath());
+
+        final Graph graph = graph("example1").directed().with(node("a").link(node("b")));
         Graphviz.fromGraph(graph).width(200).render(Format.PNG).toFile(expectedFile);
 
         assertTrue(expectedFile.exists() && expectedFile.isFile());
-
-        Files.deleteIfExists(expectedFile.toPath());
-        Files.deleteIfExists(expectedFile.getParentFile().toPath());
     }
 
 }

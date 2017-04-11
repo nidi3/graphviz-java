@@ -15,46 +15,43 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.model.Graph;
+import org.junit.Test;
+
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import guru.nidi.graphviz.model.Graph;
-import org.junit.Test;
-
 public class GraphvizTest {
 
     @Test
-    public void scaleMethodChainCheck(){
+    public void scaleMethodChainCheck() {
         final Graph graph = graph().with(node("a").link("b"));
-
         final Graphviz graphviz = Graphviz.fromGraph(graph).height(20).width(30).scale(3);
 
         assertThatGraphvizHasFields(graphviz, 20, 30, 3d);
     }
 
     @Test
-    public void heightMethodChainCheck(){
+    public void heightMethodChainCheck() {
         final Graph graph = graph().with(node("a").link("b"));
-
         final Graphviz graphviz = Graphviz.fromGraph(graph).scale(3).width(30).height(20);
 
         assertThatGraphvizHasFields(graphviz, 20, 30, 3d);
     }
 
     @Test
-    public void widthMethodChainCheck(){
+    public void widthMethodChainCheck() {
         final Graph graph = graph().with(node("a").link("b"));
-
         final Graphviz graphviz = Graphviz.fromGraph(graph).scale(3).height(20).width(30);
 
         assertThatGraphvizHasFields(graphviz, 20, 30, 3d);
     }
 
-    private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale ) {
-        assertThat(graphviz.width, is(expectedWidth) );
-        assertThat(graphviz.height, is(expectedHeight) );
-        assertThat(graphviz.scale, is(expectedScale ));
+    private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {
+        assertThat(graphviz.width, is(expectedWidth));
+        assertThat(graphviz.height, is(expectedHeight));
+        assertThat(graphviz.scale, is(expectedScale));
     }
 }

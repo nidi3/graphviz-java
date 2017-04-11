@@ -41,8 +41,8 @@ public enum Rasterizer {
             double scaleX = graphviz.scale;
             double scaleY = graphviz.scale;
             if (graphviz.width != 0 || graphviz.height != 0) {
-                scaleX = 1D * graphviz.width / diagram.getWidth();
-                scaleY = 1D * graphviz.height / diagram.getHeight();
+                scaleX = graphviz.scale * graphviz.width / diagram.getWidth();
+                scaleY = graphviz.scale * graphviz.height / diagram.getHeight();
                 if (scaleX == 0) {
                     scaleX = scaleY;
                 }
@@ -105,10 +105,10 @@ public enum Rasterizer {
                 };
                 final TranscodingHints hints = new TranscodingHints(t.getTranscodingHints());
                 if (graphviz.width != 0) {
-                    hints.put(ImageTranscoder.KEY_WIDTH, (float) graphviz.width);
+                    hints.put(ImageTranscoder.KEY_WIDTH, graphviz.scale * graphviz.width);
                 }
                 if (graphviz.height != 0) {
-                    hints.put(ImageTranscoder.KEY_HEIGHT, (float) graphviz.height);
+                    hints.put(ImageTranscoder.KEY_HEIGHT, graphviz.scale * graphviz.height);
                 }
                 t.setTranscodingHints(hints);
 
