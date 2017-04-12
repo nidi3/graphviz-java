@@ -58,7 +58,7 @@ public class GraphvizTest {
 
         final Graphviz graphviz = Graphviz.fromGraph(graph).height(20).width(30).scale(3).totalMemory(32000);
 
-        MatcherAssert.assertThat(graphviz.totalMemory, CoreMatchers.is(32000));
+       assertThat(graphviz.totalMemory, CoreMatchers.is(32000));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class GraphvizTest {
         final Graph graph = graph().with(node("a").link("b"));
 
         Graphviz.useEngine(new AbstractGraphvizEngineTest.GraphvizEngineDummmy());
-        String result = Graphviz.fromGraph(graph).totalMemory(32000).execute(Format.SVG);
+        final String result = Graphviz.fromGraph(graph).totalMemory(32000).execute(Format.SVG);
 
         assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot',totalMemory:'32000'});"));
 
@@ -78,7 +78,7 @@ public class GraphvizTest {
         final Graph graph = graph().with(node("a").link("b"));
 
         Graphviz.useEngine(new AbstractGraphvizEngineTest.GraphvizEngineDummmy());
-        String result = Graphviz.fromGraph(graph).execute(Format.SVG);
+        final String result = Graphviz.fromGraph(graph).execute(Format.SVG);
 
         assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot'});"));
 
