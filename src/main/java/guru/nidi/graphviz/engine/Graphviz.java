@@ -32,14 +32,16 @@ public final class Graphviz {
     final Rasterizer rasterizer;
     final int width, height;
     final double scale;
+    Integer totalMemory;
 
-    private Graphviz(String src, Engine engine, Rasterizer rasterizer, int width, int height, double scale) {
+    private Graphviz(String src, Engine engine, Rasterizer rasterizer, int width, int height, double scale, Integer totalMemory) {
         this.src = src;
         this.engineImpl = engine;
         this.rasterizer = rasterizer;
         this.width = width;
         this.height = height;
         this.scale = scale;
+        this.totalMemory = totalMemory;
     }
 
     public static void useEngine(GraphvizEngine engine) {
@@ -65,11 +67,11 @@ public final class Graphviz {
     }
 
     String execute(Format format) {
-        return engine.execute(src, engineImpl, format);
+        return engine.execute(src, engineImpl, format, new VizjsOptions(totalMemory));
     }
 
     public static Graphviz fromString(String src) {
-        return new Graphviz(src, Engine.DOT, Rasterizer.BATIK, 0, 0, 1);
+        return new Graphviz(src, Engine.DOT, Rasterizer.BATIK, 0, 0, 1, null);
     }
 
     public static Graphviz fromFile(File src) throws IOException {
@@ -87,23 +89,23 @@ public final class Graphviz {
     }
 
     public Graphviz engine(Engine engine) {
-        return new Graphviz(src, engine, rasterizer, width, height, scale);
+        return new Graphviz(src, engine, rasterizer, width, height, scale, totalMemory);
     }
 
     public Graphviz rasterizer(Rasterizer rasterizer) {
-        return new Graphviz(src, engineImpl, rasterizer, width, height, scale);
+        return new Graphviz(src, engineImpl, rasterizer, width, height, scale, totalMemory);
     }
 
     public Graphviz width(int width) {
-        return new Graphviz(src, engineImpl, rasterizer, width, height, scale);
+        return new Graphviz(src, engineImpl, rasterizer, width, height, scale, totalMemory);
     }
 
     public Graphviz height(int height) {
-        return new Graphviz(src, engineImpl, rasterizer, width, height, scale);
+        return new Graphviz(src, engineImpl, rasterizer, width, height, scale, totalMemory);
     }
 
     public Graphviz scale(double scale) {
-        return new Graphviz(src, engineImpl, rasterizer, width, height, scale);
+        return new Graphviz(src, engineImpl, rasterizer, width, height, scale, totalMemory);
     }
 
     public Renderer render(Format format) {
@@ -113,4 +115,7 @@ public final class Graphviz {
         return new Renderer(this, format, null);
     }
 
+    public Graphviz totalMemory(int totalMemory) {
+        return new Graphviz(src, engineImpl, rasterizer, width, height, scale, totalMemory);
+    }
 }

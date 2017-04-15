@@ -1,3 +1,5 @@
+package guru.nidi.graphviz.engine;
+
 /*
  * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
@@ -13,10 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.engine;
+class VizjsOptions {
+    Integer totalMemory;
 
-public interface GraphvizEngine {
-    String execute(String src, Engine engine, Format format, VizjsOptions vizjsOptions);
+    VizjsOptions() {
+    }
 
-    void release();
+    VizjsOptions(Integer totalMemory) {
+        this.totalMemory = totalMemory;
+    }
 }
