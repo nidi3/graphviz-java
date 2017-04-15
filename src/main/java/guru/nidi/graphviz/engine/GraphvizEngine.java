@@ -16,7 +16,7 @@
 package guru.nidi.graphviz.engine;
 
 public interface GraphvizEngine {
-    String execute(String src, Engine engine, Format format, VizjsOptions vizjsOptions);
+    String execute(String src, VizjsOptions vizjsOptions);
 
     void release();
 }

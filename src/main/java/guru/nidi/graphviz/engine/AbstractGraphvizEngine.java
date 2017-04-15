@@ -17,7 +17,6 @@ package guru.nidi.graphviz.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +37,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         }
     }
 
-    public String execute(String src, Engine engine, Format format, VizjsOptions vizjsOptions) {
+    public String execute(String src, VizjsOptions vizjsOptions) {
         if (initException != null) {
             throw new GraphvizException("Could not start graphviz engine", initException);
         }
@@ -49,7 +48,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         } catch (InterruptedException e) {
             //ignore
         }
-        return doExecute(src.startsWith("Viz(") ? src : vizExec(src, engine, format, vizjsOptions));
+        return doExecute(src.startsWith("Viz(") ? src : vizExec(src, vizjsOptions));
     }
 
     private void init() {
@@ -82,9 +81,8 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         return "var $$prints=[], print=function(s){$$prints.push(s);};";
     }
 
-    protected String vizExec(String src, Engine engine, Format format, VizjsOptions vizjsOptions) {
-        final String totalMemory = Objects.nonNull(vizjsOptions) && Objects.nonNull(vizjsOptions.totalMemory) ? ",totalMemory:'" + vizjsOptions.totalMemory.toString() + "'" : "";
-        return "Viz('" + jsEscape(src) + "',{format:'" + format.toString().toLowerCase() + "',engine:'" + engine.toString().toLowerCase() +"'"+ totalMemory +"});";
+    protected String vizExec(String src, VizjsOptions vizjsOptions) {
+        return "Viz('" + jsEscape(src) + "'," + vizjsOptions.toJson() + ");";
     }
 
     protected String jsEscape(String js) {

@@ -15,49 +15,35 @@
  */
 package guru.nidi.graphviz.engine;
 
-import static guru.nidi.graphviz.engine.Format.PNG;
-import static guru.nidi.graphviz.engine.Format.SVG;
-import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.function.Consumer;
 
 public class Renderer {
     private final Graphviz graphviz;
-    private final Format format;
     private final Consumer<Graphics2D> graphicsConfigurer;
 
-    Renderer(Graphviz graphviz, Format format, Consumer<Graphics2D> graphicsConfigurer) {
+    Renderer(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer) {
         this.graphviz = graphviz;
-        this.format = format;
         this.graphicsConfigurer = graphicsConfigurer;
     }
 
     public Renderer withGraphics(Consumer<Graphics2D> graphicsConfigurer) {
-        return new Renderer(graphviz, format, graphicsConfigurer);
+        return new Renderer(graphviz, graphicsConfigurer);
     }
 
     public String toString() {
-        final String result = graphviz.execute(format == PNG || format == SVG_STANDALONE ? SVG : format);
-        if (format == PNG || format == SVG) {
-            return result.substring(result.indexOf("<svg "));
-        }
-        return result;
+        return graphviz.execute();
     }
 
     public void toFile(File file) throws IOException {
         Files.createDirectories(file.getParentFile().toPath());
-        if (format == PNG) {
-            writeToFile(file, "png", toImage());
+        if (graphviz.format().image) {
+            writeToFile(file, graphviz.format().name().toLowerCase(), toImage());
         } else {
             try (final Writer out = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
                 out.write(toString());
@@ -66,10 +52,10 @@ public class Renderer {
     }
 
     public BufferedImage toImage() {
-        if (format != PNG && format != SVG && format != SVG_STANDALONE) {
+        if (!graphviz.format().svg) {
             throw new IllegalStateException("Images can only be rendered from PNG and SVG formats.");
         }
-        final String svg = graphviz.execute(SVG).replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
+        final String svg = graphviz.execute().replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
         return graphviz.rasterizer.render(graphviz, graphicsConfigurer, svg);
     }
 

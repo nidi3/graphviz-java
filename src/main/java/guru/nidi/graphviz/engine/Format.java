@@ -16,5 +16,40 @@
 package guru.nidi.graphviz.engine;
 
 public enum Format {
-    PNG, SVG, SVG_STANDALONE, XDOT, PLAIN, PS, JSON
+    PNG("svg", true, true) {
+        String postProcess(String result) {
+            return postProcessSvg(result);
+        }
+    },
+
+    SVG("svg", false, true) {
+        String postProcess(String result) {
+            return postProcessSvg(result);
+        }
+    },
+
+    SVG_STANDALONE("svg", false, true),
+    XDOT("xdot", false, false),
+    PLAIN("plain", false, false),
+    PS("ps", false, false),
+    JSON("json", false, false);
+
+    final String vizName;
+    final boolean image;
+    final boolean svg;
+
+    Format(String vizName, boolean image, boolean svg) {
+        this.vizName = vizName;
+        this.image = image;
+        this.svg = svg;
+    }
+
+    String postProcess(String result) {
+        return result;
+    }
+
+    private static String postProcessSvg(String result) {
+        final int pos = result.indexOf("<svg ");
+        return pos < 0 ? result : result.substring(pos);
+    }
 }
