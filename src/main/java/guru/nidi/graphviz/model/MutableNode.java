@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,8 @@ import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
-public class MutableNode implements Linkable, MutableAttributed<MutableNode>, LinkTarget, MutableLinkSource<MutableNode> {
+public class MutableNode implements Linkable, MutableAttributed<MutableNode>, LinkTarget,
+        MutableLinkSource<MutableNode> {
     protected Label label;
     protected final List<Link> links;
     protected final MutableAttributed<MutableNode> attributes;
@@ -163,7 +164,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
 
     @Override
     public String toString() {
-        return label + attributes.toString() + "->" +
-                links.stream().map(l -> l.to.toString()).collect(joining(","));
+        return label + attributes.toString() + "->"
+                + links.stream().map(l -> l.to.toString()).collect(joining(","));
     }
 }

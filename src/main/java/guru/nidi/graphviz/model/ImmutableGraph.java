@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,8 @@ class ImmutableGraph extends MutableGraph implements Graph {
                    MutableAttributed<MutableGraph> nodeAttributes,
                    MutableAttributed<MutableGraph> linkAttributes,
                    MutableAttributed<MutableGraph> graphAttributes) {
-        super(strict, directed, cluster, label, nodes, subgraphs, links, attributes, nodeAttributes, linkAttributes, graphAttributes);
+        super(strict, directed, cluster, label, nodes, subgraphs, links, attributes,
+                nodeAttributes, linkAttributes, graphAttributes);
     }
 
     public ImmutableGraph copyOfMut() {
@@ -68,6 +69,10 @@ class ImmutableGraph extends MutableGraph implements Graph {
         return (ImmutableGraph) copyOfMut().addLink(targets);
     }
 
+    public Graph link(LinkTarget target) {
+        return (ImmutableGraph) copyOfMut().addLink(target);
+    }
+
     public Attributed<Graph> nodeAttr() {
         return new GraphAttributed(MutableGraph::nodeAttrs);
     }
@@ -82,10 +87,6 @@ class ImmutableGraph extends MutableGraph implements Graph {
 
     public Attributed<Graph> generalAttr() {
         return new GraphAttributed(MutableGraph::generalAttrs);
-    }
-
-    public Graph link(LinkTarget target) {
-        return (ImmutableGraph) copyOfMut().addLink(target);
     }
 
     @Override

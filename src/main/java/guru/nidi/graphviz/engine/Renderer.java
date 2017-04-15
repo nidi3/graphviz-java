@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -55,7 +55,8 @@ public class Renderer {
         if (!graphviz.format().svg) {
             throw new IllegalStateException("Images can only be rendered from PNG and SVG formats.");
         }
-        final String svg = graphviz.execute().replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
+        final String svg = graphviz.execute()
+                .replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
         return graphviz.rasterizer.render(graphviz, graphicsConfigurer, svg);
     }
 

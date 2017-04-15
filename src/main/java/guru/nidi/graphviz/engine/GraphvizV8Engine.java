@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class GraphvizV8Engine extends AbstractGraphvizEngine {
-    private final static Pattern ABORT = Pattern.compile("^undefined:\\d+: abort");
-    private final static Pattern ERROR = Pattern.compile("^undefined:\\d+: (.*?)\n");
+    private static final Pattern ABORT = Pattern.compile("^undefined:\\d+: abort");
+    private static final Pattern ERROR = Pattern.compile("^undefined:\\d+: (.*?)\n");
     private V8 v8;
     private V8Array messages;
 

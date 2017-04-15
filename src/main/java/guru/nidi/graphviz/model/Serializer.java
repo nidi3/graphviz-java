@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,16 +21,16 @@ import java.util.*;
 
 public class Serializer {
     private final MutableGraph graph;
-    private final StringBuilder s;
+    private final StringBuilder str;
 
     public Serializer(MutableGraph graph) {
         this.graph = graph;
-        s = new StringBuilder();
+        str = new StringBuilder();
     }
 
     public String serialize() {
         graph(graph, true);
-        return s.toString();
+        return str.toString();
     }
 
     private void graph(MutableGraph graph, boolean toplevel) {
@@ -61,7 +61,7 @@ public class Serializer {
         edges(nodes);
         edges(graphs);
 
-        s.append('}');
+        str.append('}');
     }
 
     private void graphAttrs(MutableGraph graph) {
@@ -70,22 +70,22 @@ public class Serializer {
         attributes("edge", graph.linkAttrs);
         for (final Map.Entry<String, Object> attr : graph.generalAttrs) {
             attr(attr.getKey(), attr.getValue());
-            s.append('\n');
+            str.append('\n');
         }
     }
 
     private void graphInit(MutableGraph graph, boolean toplevel) {
         if (toplevel) {
-            s.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
+            str.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
             if (!graph.label.isEmptyLabel()) {
-                s.append(graph.label.serialized()).append(' ');
+                str.append(graph.label.serialized()).append(' ');
             }
         } else if (!graph.label.isEmptyLabel() || graph.cluster) {
-            s.append("subgraph ")
+            str.append("subgraph ")
                     .append((graph.cluster ? Label.of("cluster" + graph.label.value) : graph.label).serialized())
                     .append(' ');
         }
-        s.append("{\n");
+        str.append("{\n");
     }
 
     private int indexOfLabel(List<MutableNode> nodes, Label label) {
@@ -99,9 +99,9 @@ public class Serializer {
 
     private void attributes(String name, MutableAttributed<?> attributed) {
         if (!attributed.isEmpty()) {
-            s.append(name);
+            str.append(name);
             attrs(attributed);
-            s.append('\n');
+            str.append('\n');
         }
     }
 
@@ -132,7 +132,7 @@ public class Serializer {
         for (final MutableNode node : nodes) {
             if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty())) {
                 node(node);
-                s.append('\n');
+                str.append('\n');
             }
         }
     }
@@ -141,7 +141,7 @@ public class Serializer {
         for (final MutableGraph graph : graphs) {
             if (graph.links.isEmpty() && !isLinked(graph, nodes) && !isLinked(graph, graphs)) {
                 graph(graph, false);
-                s.append('\n');
+                str.append('\n');
             }
         }
     }
@@ -161,10 +161,10 @@ public class Serializer {
         for (final Linkable linkable : linkables) {
             for (final Link link : linkable.links()) {
                 linkTarget(link.from);
-                s.append(graph.directed ? " -> " : " -- ");
+                str.append(graph.directed ? " -> " : " -- ");
                 linkTarget(link.to);
                 attrs(link.attributes);
-                s.append('\n');
+                str.append('\n');
             }
         }
     }
@@ -180,39 +180,39 @@ public class Serializer {
     }
 
     private void node(MutableNode node) {
-        s.append(node.label.serialized());
+        str.append(node.label.serialized());
         attrs(node.attributes);
     }
 
     private void point(MutableNodePoint point) {
-        s.append(point.node.label.serialized());
+        str.append(point.node.label.serialized());
         if (point.record != null) {
-            s.append(':');
-            s.append(Label.of(point.record).serialized());
+            str.append(':');
+            str.append(Label.of(point.record).serialized());
         }
         if (point.compass != null) {
-            s.append(':').append(point.compass.value);
+            str.append(':').append(point.compass.value);
         }
     }
 
     private void attrs(MutableAttributed<?> attrs) {
         if (!attrs.isEmpty()) {
-            s.append(" [");
+            str.append(" [");
             boolean first = true;
             for (final Map.Entry<String, Object> attr : attrs) {
                 if (first) {
                     first = false;
                 } else {
-                    s.append(',');
+                    str.append(',');
                 }
                 attr(attr.getKey(), attr.getValue());
             }
-            s.append(']');
+            str.append(']');
         }
     }
 
     private void attr(String key, Object value) {
-        s.append(Label.of(key).serialized())
+        str.append(Label.of(key).serialized())
                 .append('=')
                 .append((value instanceof Label ? (Label) value : Label.of(value.toString())).serialized());
     }

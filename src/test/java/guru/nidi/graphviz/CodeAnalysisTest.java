@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,10 @@
 package guru.nidi.graphviz;
 
 import edu.umd.cs.findbugs.Priorities;
+import guru.nidi.codeassert.checkstyle.CheckstyleAnalyzer;
+import guru.nidi.codeassert.checkstyle.CheckstyleResult;
+import guru.nidi.codeassert.checkstyle.StyleChecks;
+import guru.nidi.codeassert.checkstyle.StyleEventCollector;
 import guru.nidi.codeassert.config.AnalyzerConfig;
 import guru.nidi.codeassert.config.In;
 import guru.nidi.codeassert.dependency.DependencyRule;
@@ -121,5 +125,15 @@ public class CodeAnalysisTest extends CodeAssertTest {
                 .because("It's java",
                         In.loc("*Graph").ignore("Graph(strict, directed, cluster, label,", "if (strict != graph.strict) {"));
         return new CpdAnalyzer(AnalyzerConfig.maven().main(), 35, collector).analyze();
+    }
+
+    @Override
+    protected CheckstyleResult analyzeCheckstyle() {
+        final StyleEventCollector collector = new StyleEventCollector()
+                .apply(PredefConfig.minimalCheckstyleIgnore())
+                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token","Style").ignore("empty.line.separator"))
+                .just(In.locs("Records", "Shape").ignore("name.invalidPattern"));
+        final StyleChecks checks = PredefConfig.adjustedGoogleStyleChecks();
+        return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }
 }

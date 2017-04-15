@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,6 +32,10 @@ public final class Link implements Attributed<Link>, LinkTarget {
 
     public static Link to(LinkTarget to) {
         return objBetween(null, to);
+    }
+
+    public LinkTarget to() {
+        return to;
     }
 
     public static Link between(Node from, Node to) {
@@ -71,10 +75,6 @@ public final class Link implements Attributed<Link>, LinkTarget {
         return from;
     }
 
-    public LinkTarget to() {
-        return to;
-    }
-
     //TODO differentiate between mutable and immutable
     public MutableAttributed<Link> attrs() {
         return attributes;
@@ -91,6 +91,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
 
         final Link link = (Link) o;
 
+        /*
         //including from could cause circular executions
 //        if (from != null ? !from.equals(addLink.from) : addLink.from != null) {
 //            return false;
@@ -98,6 +99,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
 //        if (to != null ? !to.equals(link.to) : link.to != null) {
 //            return false;
 //        }
+        */
         return attributes.equals(link.attributes);
     }
 
@@ -105,7 +107,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
     public int hashCode() {
         //including from could cause circular executions
         int result = 0;// from != null ? from.hashCode() : 0;
-//        result = 31 * result + (to != null ? to.hashCode() : 0);
+        //result = 31 * result + (to != null ? to.hashCode() : 0);
         result = 31 * result + attributes.hashCode();
         return result;
     }

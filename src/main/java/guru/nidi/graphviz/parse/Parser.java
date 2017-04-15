@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -142,7 +142,8 @@ public final class Parser {
         });
     }
 
-    private void edgeStatement(MutableGraph graph, MutableLinkSource<? extends MutableLinkSource> linkSource) throws IOException {
+    private void edgeStatement(MutableGraph graph, MutableLinkSource<? extends MutableLinkSource> linkSource)
+            throws IOException {
         final List<MutableLinkSource<? extends MutableLinkSource>> points = new ArrayList<>();
         points.add(linkSource);
         do {
@@ -170,7 +171,8 @@ public final class Parser {
     }
 
     private Compass compass(String name) {
-        return Compass.of(name).orElseThrow(() -> new ParserException(lexer.pos, "Invalid compass value '" + name + "'"));
+        return Compass.of(name).orElseThrow(() ->
+                new ParserException(lexer.pos, "Invalid compass value '" + name + "'"));
     }
 
     private void nodeStatement(MutableGraph graph, MutableNodePoint nodeId) throws IOException {
@@ -234,14 +236,14 @@ public final class Parser {
         do {
             assertToken(BRACKET_OPEN);
             if (token.type == ID) {
-                res.addAll(aList());
+                res.addAll(attrListElement());
             }
             assertToken(BRACKET_CLOSE);
         } while (token.type == BRACKET_OPEN);
         return res;
     }
 
-    private List<Token> aList() throws IOException {
+    private List<Token> attrListElement() throws IOException {
         final List<Token> res = new ArrayList<>();
         do {
             res.add(token);
