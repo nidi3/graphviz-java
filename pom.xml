@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>graphviz-java</artifactId>
-    <version>0.1.5-SNAPSHOT</version>
+    <version>0.1.5</version>
 
     <name>${project.artifactId}</name>
     <description>Use graphviz in a pure java environment.</description>
@@ -25,7 +25,7 @@
         <connection>scm:git:https://github.com/nidi3/graphviz-java</connection>
         <developerConnection>scm:git:https://github.com/nidi3/graphviz-java</developerConnection>
         <url>https://github.com/nidi3/graphviz-java</url>
-        <tag>HEAD</tag>
+        <tag>graphviz-java-0.1.5</tag>
     </scm>
 
     <build>
