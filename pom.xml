@@ -129,6 +129,12 @@
             <artifactId>j2v8_win32_x86_64</artifactId>
             <version>${j2v8.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.eclipsesource.j2v8</groupId>
+            <artifactId>j2v8_win32_x86</artifactId>
+            <version>${j2v8.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>guru.nidi</groupId>
