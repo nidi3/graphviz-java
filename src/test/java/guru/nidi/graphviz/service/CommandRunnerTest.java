@@ -50,9 +50,12 @@ public class CommandRunnerTest {
 
     @Test
     public void testRunEchoHelloWorld() throws IOException, InterruptedException {
-        final String expected = SystemUtils.IS_OS_WINDOWS
-                ? CommandLine.parse("cmd /C echo hello world").toString()
-                : CommandLine.parse("/bin/sh -c").addArgument("echo hello world", false).toString();
+        final String expected;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            expected = CommandLine.parse("cmd /C echo hello world").toString();
+        } else {
+            expected = CommandLine.parse("/bin/sh -c").addArgument("echo hello world", false).toString();
+        }
 
         final DefaultExecutor cmdExecMock = Mockito.mock(DefaultExecutor.class);
         final CommandRunner cmdRunner = new CommandBuilder()

@@ -69,7 +69,7 @@ public class CommandRunner {
 
 
     public int exec(String cmd, File workingDirectory, List<String> args) {
-        return exec(cmd, workingDirectory, args.toArray(new String[0]));
+        return exec(cmd, workingDirectory, args.toArray(new String[args.size()]));
     }
 
     public int exec(String cmd, List<String> args) {
