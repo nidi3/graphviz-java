@@ -15,11 +15,9 @@
  */
 package guru.nidi.graphviz.service;
 
-import guru.nidi.graphviz.engine.GraphvizException;
 import guru.nidi.graphviz.executor.DefaultExecutor;
 import guru.nidi.graphviz.executor.ICommandExecutor;
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.lang3.SystemUtils;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -71,7 +69,7 @@ public class CommandBuilder {
         if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC) {
             return getLinuxShellWrapperFunc();
         } else {
-            throw new GraphvizException("Unsupported OS");
+            throw new IllegalStateException("Unsupported OS");
         }
     }
 

@@ -57,7 +57,7 @@ public class CodeAnalysisTest extends CodeAssertTest {
                 engine.mayUse(model, service, executor);
                 parse.mayUse(model, attribute);
                 model.mayUse(attribute);
-                service.mayUse(engine, executor);
+                service.mayUse(executor);
             }
         }
         final DependencyRules rules = DependencyRules.denyAll()

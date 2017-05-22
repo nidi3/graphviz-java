@@ -17,7 +17,6 @@ package guru.nidi.graphviz.service;
 
 import guru.nidi.graphviz.executor.DefaultExecutor;
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -29,9 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeThat;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 
@@ -85,19 +82,6 @@ public class CommandRunnerTest {
                 .build();
 
         final int result = cmdRunner.exec("env");
-        assertEquals(0, result);
-    }
-
-    @Test
-    public void testDockerCompose() throws IOException, InterruptedException {
-        assumeThat("docker-compose not found in PATH - skipping test",
-                CommandRunner.isExecutableFound("docker-compose"), is(true));
-
-        final CommandRunner cmdRunner = new CommandBuilder()
-                .withShellWrapper(true)
-                .build();
-
-        final int result = cmdRunner.exec("docker-compose", Arrays.asList("-h"));
         assertEquals(0, result);
     }
 

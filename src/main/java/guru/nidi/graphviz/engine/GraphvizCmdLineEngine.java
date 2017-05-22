@@ -18,7 +18,7 @@ package guru.nidi.graphviz.engine;
 import guru.nidi.graphviz.service.CommandBuilder;
 import guru.nidi.graphviz.service.CommandRunner;
 import guru.nidi.graphviz.executor.DefaultExecutor;
-import org.apache.commons.lang3.SystemUtils;
+import guru.nidi.graphviz.service.SystemUtils;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -56,8 +56,6 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         if (!CommandRunner.isExecutableFound(CMD_DOT)) {
             throw new GraphvizException(CMD_DOT + " command not found");
         }
-
-
     }
 
     @Override

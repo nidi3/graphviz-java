@@ -15,7 +15,6 @@
  */
 package guru.nidi.graphviz.service;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
 import java.nio.file.Path;
