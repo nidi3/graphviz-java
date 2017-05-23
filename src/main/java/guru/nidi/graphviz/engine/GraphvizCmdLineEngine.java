@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.executor.ICommandExecutor;
 import guru.nidi.graphviz.service.CommandBuilder;
 import guru.nidi.graphviz.service.CommandRunner;
 import guru.nidi.graphviz.executor.DefaultExecutor;
@@ -24,22 +25,34 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  * Created by daank on 16-May-17.
  */
 public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
+    public static final String CMD_DOT = SystemUtils.IS_OS_WINDOWS ? "dot.exe" : "dot";
+
     private CommandRunner cmdRunner;
-    private static final String CMD_DOT = SystemUtils.IS_OS_WINDOWS ? "dot.exe" : "dot";
+    private String envPath;
+    private ICommandExecutor executor;
 
     public GraphvizCmdLineEngine() {
         this(null);
     }
 
     public GraphvizCmdLineEngine(EngineInitListener engineInitListener) {
-        super(true, engineInitListener);
+
+        this(engineInitListener, Optional.ofNullable(System.getenv("PATH")).orElse(""), new DefaultExecutor());
     }
+
+    public GraphvizCmdLineEngine(EngineInitListener engineInitListener, String envPath, ICommandExecutor executor) {
+        super(false, engineInitListener);
+        this.envPath = envPath;
+        this.executor = executor;
+    }
+
 
     @Override
     protected String vizExec(String src, VizjsOptions vizjsOptions) {
@@ -50,19 +63,20 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     protected void doInit() throws GraphvizException {
         this.cmdRunner = new CommandBuilder()
                 .withShellWrapper(true)
-                .withCommandExecutor(new DefaultExecutor())
+                .withCommandExecutor(this.executor)
                 .build();
-
-        if (!CommandRunner.isExecutableFound(CMD_DOT)) {
-            throw new GraphvizException(CMD_DOT + " command not found");
-        }
     }
 
     @Override
     protected String doExecute(String call) {
+
+        if (!CommandRunner.isExecutableFound(CMD_DOT, this.envPath)) {
+            throw new GraphvizException(CMD_DOT + " command not found");
+        }
+        
         try {
             // Write dot file to temp folder
-            final Path tempDirPath = Files.createTempDirectory("temp");
+            final Path tempDirPath = Files.createTempDirectory("GraphVizJava");
             final File dotfile = new File(tempDirPath.toString() + "/dotfile.dot");
             final BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(

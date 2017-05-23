@@ -15,8 +15,14 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.executor.MockDotExecutor;
 import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.File;
+import java.io.IOException;
 
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -37,6 +43,9 @@ public class EngineTest {
             " -->\n" +
             "<!-- Title: g Pages: 1 -->\n" +
             "<svg";
+
+    @Rule
+    public TemporaryFolder dotFolder = new TemporaryFolder();
 
     @AfterClass
     public static void end() {
@@ -67,8 +76,14 @@ public class EngineTest {
     }
 
     @Test
-    public void cmdLine() {
-        Graphviz.useEngine(new GraphvizCmdLineEngine());
+    public void cmdLine() throws IOException {
+        // Setup fake 'dot' command in env-path
+        final File dotFile = this.dotFolder.newFile(GraphvizCmdLineEngine.CMD_DOT);
+
+        final String envPath = dotFile.getParent();
+        // Use MockDotExecutor
+        Graphviz.useEngine(new GraphvizCmdLineEngine(null, envPath, new MockDotExecutor()));
+
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_4));
 
     }

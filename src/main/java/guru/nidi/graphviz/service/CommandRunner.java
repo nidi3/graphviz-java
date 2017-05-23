@@ -82,12 +82,18 @@ public class CommandRunner {
 
     // Cross-platform way of finding an executable in the $PATH.
     public static Stream<Path> which(String program) {
-        if (program == null || "".equals(program.trim())) {
+        return which(program, Optional.ofNullable(System.getenv("PATH")).orElse(""));
+    }
+
+
+    public static Stream<Path> which(String program, String pathEnvVar) {
+        System.out.println("which called, pathEnvVar: " + pathEnvVar);
+        if (program == null || "".equals(program.trim()) || pathEnvVar == null || "".equalsIgnoreCase(pathEnvVar)) {
             return Stream.empty();
         }
 
         return Arrays
-                .stream(Optional.ofNullable(System.getenv("PATH")).orElse("").split(File.pathSeparator))
+                .stream(pathEnvVar.split(File.pathSeparator))
                 .map(path -> Paths.get(path))
 
                 // Env PATH could contain paths that do not exist
@@ -121,6 +127,10 @@ public class CommandRunner {
 
     public static boolean isExecutableFound(String program) {
         return CommandRunner.which(program).anyMatch(path -> true);
+    }
+
+    public static boolean isExecutableFound(String program, String envPath) {
+        return CommandRunner.which(program, envPath).anyMatch(path -> true);
     }
 
 }
