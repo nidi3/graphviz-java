@@ -87,7 +87,6 @@ public class CommandRunner {
 
 
     public static Stream<Path> which(String program, String pathEnvVar) {
-        System.out.println("which called, pathEnvVar: " + pathEnvVar);
         if (program == null || "".equals(program.trim()) || pathEnvVar == null || "".equalsIgnoreCase(pathEnvVar)) {
             return Stream.empty();
         }

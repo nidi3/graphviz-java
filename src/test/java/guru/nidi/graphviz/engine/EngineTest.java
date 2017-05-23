@@ -15,7 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.executor.MockDotExecutor;
+import guru.nidi.graphviz.executor.ICommandExecutor;
+import org.apache.commons.exec.CommandLine;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,10 +24,14 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class EngineTest {
     private static final String START1_4 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" + System.getProperty("line.separator") +
@@ -76,13 +81,27 @@ public class EngineTest {
     }
 
     @Test
-    public void cmdLine() throws IOException {
+    public void cmdLine() throws IOException, InterruptedException {
         // Setup fake 'dot' command in env-path
         final File dotFile = this.dotFolder.newFile(GraphvizCmdLineEngine.CMD_DOT);
+        dotFile.setExecutable(true);
+
+        // Setup CommandExecutor Mocks
+        final ICommandExecutor cmdExecutor = mock(ICommandExecutor.class);
+        when(cmdExecutor.execute(any(CommandLine.class), any(File.class)))
+                .thenAnswer(invocationOnMock -> {
+                    final File workingDirectory = invocationOnMock.getArgumentAt(1, File.class);
+
+                    final File svgInput = new File(getClass().getClassLoader().getResource("outfile1.svg").getFile());
+                    final File svgOutputFile = new File(workingDirectory.getAbsolutePath() + "/outfile.svg");
+                    Files.copy(svgInput.toPath(), svgOutputFile.toPath());
+
+                    return 0;
+                });
 
         final String envPath = dotFile.getParent();
-        // Use MockDotExecutor
-        Graphviz.useEngine(new GraphvizCmdLineEngine(null, envPath, new MockDotExecutor()));
+
+        Graphviz.useEngine(new GraphvizCmdLineEngine(null, envPath, cmdExecutor));
 
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_4));
 
