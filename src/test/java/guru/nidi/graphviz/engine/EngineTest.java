@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -83,10 +84,53 @@ public class EngineTest {
     @Test
     public void cmdLine() throws IOException, InterruptedException {
         // Setup fake 'dot' command in env-path
+        final File dotFile = this.setUpFakeDotFile();
+        // Setup CommandExecutor Mocks
+        final ICommandExecutor cmdExecutor = this.setUpFakeStubCommandExecutor();
+
+        final String envPath = dotFile.getParent();
+        Graphviz.useEngine(new GraphvizCmdLineEngine(null, envPath, cmdExecutor));
+
+        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_4));
+
+    }
+
+    /**
+     * Test to check if we can set the output path and name of the dot file
+     */
+    @Test
+    public void cmdLineOutputDotFile() throws IOException, InterruptedException {
+        // Setup fake 'dot' command in env-path
+        final File dotFile = this.setUpFakeDotFile();
+        // Setup CommandExecutor Mocks
+        final ICommandExecutor cmdExecutor = this.setUpFakeStubCommandExecutor();
+
+        final String envPath = dotFile.getParent();
+
+        final File dotOutputFolder = dotFolder.newFolder();
+        final String dotOutputName = "test123";
+
+        // Configure engine to output the dotFile to dotOutputFolder
+        final GraphvizCmdLineEngine engine = new GraphvizCmdLineEngine(null, envPath, cmdExecutor);
+        engine.setDotOutputFile(dotOutputFolder.getAbsolutePath(), dotOutputName);
+
+        Graphviz.useEngine(engine);
+
+        // Do execution
+        Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
+
+        assertTrue(new File(dotOutputFolder.getAbsolutePath(), dotOutputName + ".dot").exists());
+
+    }
+
+    private File setUpFakeDotFile() throws IOException {
+        // Add a fake dot executable to the temporary dotFolder
         final File dotFile = this.dotFolder.newFile(GraphvizCmdLineEngine.CMD_DOT);
         dotFile.setExecutable(true);
+        return dotFile;
+    }
 
-        // Setup CommandExecutor Mocks
+    private ICommandExecutor setUpFakeStubCommandExecutor() throws IOException, InterruptedException {
         final ICommandExecutor cmdExecutor = mock(ICommandExecutor.class);
         when(cmdExecutor.execute(any(CommandLine.class), any(File.class)))
                 .thenAnswer(invocationOnMock -> {
@@ -98,12 +142,8 @@ public class EngineTest {
 
                     return 0;
                 });
-
-        final String envPath = dotFile.getParent();
-
-        Graphviz.useEngine(new GraphvizCmdLineEngine(null, envPath, cmdExecutor));
-
-        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_4));
-
+        return cmdExecutor;
     }
+
+
 }

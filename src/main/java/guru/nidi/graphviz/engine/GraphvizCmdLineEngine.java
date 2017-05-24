@@ -20,6 +20,7 @@ import guru.nidi.graphviz.service.CommandBuilder;
 import guru.nidi.graphviz.service.CommandRunner;
 import guru.nidi.graphviz.executor.DefaultExecutor;
 import guru.nidi.graphviz.service.SystemUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -37,6 +38,9 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private CommandRunner cmdRunner;
     private String envPath;
     private ICommandExecutor executor;
+
+    private String dotOutputFilePath;
+    private String dotOutputFileName;
 
     public GraphvizCmdLineEngine() {
         this(null);
@@ -75,15 +79,19 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         }
 
         try {
-            // Write dot file to temp folder
+            // Create a temporary file to save the svg file to.
             final Path tempDirPath = Files.createTempDirectory(getOrCreateTempDirectory().toPath(), "DotEngine");
-            final File dotfile = new File(tempDirPath.toString() + "/dotfile.dot");
+
+            // Write the dot file to the output path or the temporary directory
+            final File dotfile = this.getDotFile(tempDirPath.toString());
             final BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(
                             new FileOutputStream(dotfile), "UTF-8"));
             bw.write(call);
             bw.close();
-            final int status = this.cmdRunner.exec(CMD_DOT + " -Tsvg dotfile.dot -ooutfile.svg",
+
+            // Run the command
+            final int status = this.cmdRunner.exec(CMD_DOT + " -Tsvg " + dotfile.getAbsolutePath() + " -ooutfile.svg",
                     new File(tempDirPath.toString()));
             if (status != 0) {
                 throw new GraphvizException("Dot command didn't succeed");
@@ -91,6 +99,8 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
             // Read output file from temp folder
             final byte[] encoded = Files.readAllBytes(Paths.get(tempDirPath.toString() + "/outfile.svg"));
+
+            FileUtils.deleteDirectory(tempDirPath.toFile());
 
             return new String(encoded, "UTF-8");
 
@@ -107,5 +117,25 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
             System.out.println("Created GraphvizJava temporary directory");
         }
         return tempDir;
+    }
+
+    private File getDotFile(String tempDirPath) {
+        String dotFileName;
+        if (this.dotOutputFileName == null) {
+            dotFileName = "dotfile.dot";
+        } else {
+            dotFileName = this.dotOutputFileName + ".dot";
+        }
+
+        if (this.dotOutputFilePath == null) {
+            return new File(tempDirPath + "/" + dotFileName);
+        } else {
+            return new File(dotOutputFilePath + "/" + dotFileName);
+        }
+    }
+
+    public void setDotOutputFile(String path, String name) {
+        this.dotOutputFilePath = path;
+        this.dotOutputFileName = name;
     }
 }
