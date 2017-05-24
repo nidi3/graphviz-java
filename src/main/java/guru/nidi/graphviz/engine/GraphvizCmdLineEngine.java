@@ -73,10 +73,10 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         if (!CommandRunner.isExecutableFound(CMD_DOT, this.envPath)) {
             throw new GraphvizException(CMD_DOT + " command not found");
         }
-        
+
         try {
             // Write dot file to temp folder
-            final Path tempDirPath = Files.createTempDirectory("GraphVizJava");
+            final Path tempDirPath = Files.createTempDirectory(getOrCreateTempDirectory().toPath(), "DotEngine");
             final File dotfile = new File(tempDirPath.toString() + "/dotfile.dot");
             final BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(
@@ -86,7 +86,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
             final int status = this.cmdRunner.exec(CMD_DOT + " -Tsvg dotfile.dot -ooutfile.svg",
                     new File(tempDirPath.toString()));
             if (status != 0) {
-                throw new GraphvizException("Unable to parse dot request from command line");
+                throw new GraphvizException("Dot command didn't succeed");
             }
 
             // Read output file from temp folder
@@ -98,5 +98,14 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
             throw new GraphvizException("Failed to execute dot command", e);
         }
 
+    }
+
+    private File getOrCreateTempDirectory() {
+        File tempDir;
+        tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "GraphvizJava");
+        if (!tempDir.exists() && tempDir.mkdir()) {
+            System.out.println("Created GraphvizJava temporary directory");
+        }
+        return tempDir;
     }
 }

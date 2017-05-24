@@ -41,52 +41,45 @@ public class CommandRunner {
     }
 
 
-    public int exec(CommandLine cmd, File workingDirectory) {
+    int exec(CommandLine cmd, File workingDirectory) {
         try {
             final CommandLine wrappedCmd = this.wrapperFunc.apply(cmd);
             return this.cmdExec.execute(wrappedCmd, workingDirectory);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
         return -1;
     }
 
-    public int exec(CommandLine cmd) {
-        return this.exec(cmd, null);
-    }
-
-
     public int exec(String cmd, File workingDirectory, String... args) {
         return this.exec(cmd, workingDirectory, args, true);
     }
 
-    public int exec(String cmd, File workingDirectory, String[] args, boolean handleQuoting) {
+    private int exec(String cmd, File workingDirectory, String[] args, boolean handleQuoting) {
         return this.exec(new CommandLine(cmd).addArguments(args, handleQuoting), workingDirectory);
     }
 
 
-    public int exec(String cmd, File workingDirectory, List<String> args) {
+    private int exec(String cmd, File workingDirectory, List<String> args) {
         return exec(cmd, workingDirectory, args.toArray(new String[args.size()]));
     }
 
-    public int exec(String cmd, List<String> args) {
+    int exec(String cmd, List<String> args) {
         return exec(cmd, null, args);
     }
 
-    public int exec(String cmd) {
+    int exec(String cmd) {
         return exec(cmd, null, new String[0]);
     }
 
     // Cross-platform way of finding an executable in the $PATH.
-    public static Stream<Path> which(String program) {
+    static Stream<Path> which(String program) {
         return which(program, Optional.ofNullable(System.getenv("PATH")).orElse(""));
     }
 
 
-    public static Stream<Path> which(String program, String pathEnvVar) {
+    private static Stream<Path> which(String program, String pathEnvVar) {
         if (program == null || "".equals(program.trim()) || pathEnvVar == null || "".equalsIgnoreCase(pathEnvVar)) {
             return Stream.empty();
         }
@@ -110,7 +103,7 @@ public class CommandRunner {
 
                                 // Check if the file is executable
                                 // Does this check work on Windows this way ?
-                                .filter(filePath -> Files.isExecutable(filePath))
+                                .filter(Files::isExecutable)
 
                                 // Consume the stream here - we're inside a try-with-resources
                                 .collect(Collectors.toList())
@@ -124,7 +117,7 @@ public class CommandRunner {
                 .flatMap(stream -> stream);
     }
 
-    public static boolean isExecutableFound(String program) {
+    static boolean isExecutableFound(String program) {
         return CommandRunner.which(program).anyMatch(path -> true);
     }
 
