@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>graphviz-java</artifactId>
-    <version>0.1.6-SNAPSHOT</version>
+    <version>0.1.7-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>Use graphviz in a pure java environment.</description>
