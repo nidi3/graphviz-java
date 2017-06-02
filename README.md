@@ -12,6 +12,32 @@ The javascript code is executed either with [J2V8](https://github.com/eclipsesou
 as a fallback with Java 8's Nashorn engine.
 
 ## Usage
+
+### Logging
+Graphviz-java uses the [SLF4J](https://www.slf4j.org/) facade to log. 
+Users must therefore provide a logging implementation like [LOGBack](https://logback.qos.ch/)
+```xml
+<dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>1.2.3</version>
+</dependency>
+```
+or [Log4j](https://logging.apache.org/log4j/2.x/)
+```xml
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.8.2</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-slf4j-impl</artifactId>
+    <version>2.8.2</version>
+</dependency>
+```
+
+### Simple example
 The basic usage is as follows (assuming `import static guru.nidi.graphviz.model.Factory.*`):
 
 [//]: # (basic)

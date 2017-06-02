@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz.engine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,6 +25,7 @@ import java.net.Socket;
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 
 final class GraphvizServer {
+    private static final Logger LOG = LoggerFactory.getLogger(GraphvizServer.class);
     static final int PORT = 10234;
 
     private GraphvizServer() {
@@ -36,11 +40,11 @@ final class GraphvizServer {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("starting graphviz server...");
+        LOG.info("starting graphviz server...");
         Graphviz.useEngine(new GraphvizV8Engine(e -> new GraphvizJdkEngine()));
-        System.out.println("started.");
+        LOG.info("started.");
         Graphviz.initEngine();
-        System.out.println("inited.");
+        LOG.info("inited.");
         try (final ServerSocket ss = new ServerSocket(PORT)) {
             while (true) {
                 try (final Socket socket = ss.accept();
@@ -65,7 +69,7 @@ final class GraphvizServer {
                 }
             }
         }
-        System.out.println("graphviz server stopped.");
+        LOG.info("graphviz server stopped.");
     }
 
 }
