@@ -18,7 +18,7 @@ package guru.nidi.graphviz.engine;
 import java.io.IOException;
 import java.net.Socket;
 
-public class GraphvizServerEngine extends AbstractGraphvizEngine {
+public class GraphvizServerEngine extends AbstractJsGraphvizEngine {
     public GraphvizServerEngine() {
         this(null);
     }
@@ -28,9 +28,9 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    protected String doExecute(String src) {
+    protected String jsExecute(String call) {
         try {
-            return createSvg(src);
+            return createSvg(call);
         } catch (IOException e) {
             throw new GraphvizException("Problem in communication with server", e);
         }
@@ -63,9 +63,9 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         }
     }
 
-    private String createSvg(String src) throws IOException {
+    private String createSvg(String call) throws IOException {
         return communicating(com -> {
-            com.writeContent(src);
+            com.writeContent(call);
             final String status = com.readStatus();
             final int len = com.readLen();
             final String content = com.readContent(len);

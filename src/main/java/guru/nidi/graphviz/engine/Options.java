@@ -30,31 +30,31 @@ package guru.nidi.graphviz.engine;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-final class VizjsOptions {
+final class Options {
     final Engine engine;
     final Format format;
     final Integer totalMemory;
 
-    private VizjsOptions(Engine engine, Format format, Integer totalMemory) {
+    private Options(Engine engine, Format format, Integer totalMemory) {
         this.engine = engine;
         this.format = format;
         this.totalMemory = totalMemory;
     }
 
-    public static VizjsOptions create() {
-        return new VizjsOptions(Engine.DOT, null, null);
+    public static Options create() {
+        return new Options(Engine.DOT, null, null);
     }
 
-    public VizjsOptions engine(Engine engine) {
-        return new VizjsOptions(engine, format, totalMemory);
+    public Options engine(Engine engine) {
+        return new Options(engine, format, totalMemory);
     }
 
-    public VizjsOptions format(Format format) {
-        return new VizjsOptions(engine, format, totalMemory);
+    public Options format(Format format) {
+        return new Options(engine, format, totalMemory);
     }
 
-    public VizjsOptions totalMemory(int totalMemory) {
-        return new VizjsOptions(engine, format, totalMemory);
+    public Options totalMemory(int totalMemory) {
+        return new Options(engine, format, totalMemory);
     }
 
     public String toJson() {

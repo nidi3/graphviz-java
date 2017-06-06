@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class GraphvizV8Engine extends AbstractGraphvizEngine {
+public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
     private static final Pattern ABORT = Pattern.compile("^undefined:\\d+: abort");
     private static final Pattern ERROR = Pattern.compile("^undefined:\\d+: (.*?)\n");
     private V8 v8;
@@ -48,13 +48,13 @@ public class GraphvizV8Engine extends AbstractGraphvizEngine {
     @Override
     protected void doInit() throws Exception {
         v8 = V8.createV8Runtime();
-        v8.executeVoidScript(initEnv());
+        v8.executeVoidScript(jsInitEnv());
         messages = v8.getArray("$$prints");
-        v8.executeVoidScript(vizCode("1.7.1"));
+        v8.executeVoidScript(jsVizCode("1.7.1"));
     }
 
     @Override
-    protected String doExecute(String call) {
+    protected String jsExecute(String call) {
         try {
             return v8.executeStringScript(call);
         } catch (V8RuntimeException e) {

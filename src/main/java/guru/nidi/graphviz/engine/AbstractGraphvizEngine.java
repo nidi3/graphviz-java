@@ -15,8 +15,6 @@
  */
 package guru.nidi.graphviz.engine;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +35,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         }
     }
 
-    public String execute(String src, VizjsOptions vizjsOptions) {
+    public String execute(String src, Options options) {
         if (initException != null) {
             throw new GraphvizException("Could not start graphviz engine", initException);
         }
@@ -48,7 +46,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         } catch (InterruptedException e) {
             //ignore
         }
-        return doExecute(src.startsWith("Viz(") ? src : vizExec(src, vizjsOptions));
+        return doExecute(src, options);
     }
 
     private void init() {
@@ -69,23 +67,5 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
 
     protected abstract void doInit() throws Exception;
 
-    protected abstract String doExecute(String call);
-
-    protected String vizCode(String version) throws IOException {
-        try (final InputStream in = getClass().getResourceAsStream("/viz-" + version + ".js")) {
-            return IoUtils.readStream(in);
-        }
-    }
-
-    protected String initEnv() {
-        return "var $$prints=[], print=function(s){$$prints.push(s);};";
-    }
-
-    protected String vizExec(String src, VizjsOptions vizjsOptions) {
-        return "Viz('" + jsEscape(src) + "'," + vizjsOptions.toJson() + ");";
-    }
-
-    protected String jsEscape(String js) {
-        return js.replace("\n", " ").replace("\\", "\\\\").replace("'", "\\'");
-    }
+    protected abstract String doExecute(String src, Options options);
 }

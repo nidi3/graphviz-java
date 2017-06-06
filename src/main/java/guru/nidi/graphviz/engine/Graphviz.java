@@ -28,20 +28,19 @@ import java.io.InputStream;
 public final class Graphviz {
     private static GraphvizEngine engine;
     private final String src;
-    private final VizjsOptions vizjsOptions;
+    private final Options options;
     final Rasterizer rasterizer;
     final int width;
     final int height;
     final double scale;
 
-    private Graphviz(String src, Rasterizer rasterizer, int width, int height, double scale,
-                     VizjsOptions vizjsOptions) {
+    private Graphviz(String src, Rasterizer rasterizer, int width, int height, double scale,                     Options options) {
         this.src = src;
         this.rasterizer = rasterizer;
         this.width = width;
         this.height = height;
         this.scale = scale;
-        this.vizjsOptions = vizjsOptions;
+        this.options = options;
     }
 
     public static void useEngine(GraphvizEngine engine) {
@@ -67,7 +66,7 @@ public final class Graphviz {
     }
 
     public static Graphviz fromString(String src) {
-        return new Graphviz(src, Rasterizer.BATIK, 0, 0, 1, VizjsOptions.create());
+        return new Graphviz(src, Rasterizer.BATIK, 0, 0, 1, Options.create());
     }
 
     public static Graphviz fromFile(File src) throws IOException {
@@ -85,43 +84,43 @@ public final class Graphviz {
     }
 
     public Graphviz engine(Engine engine) {
-        return new Graphviz(src, rasterizer, width, height, scale, vizjsOptions.engine(engine));
+        return new Graphviz(src, rasterizer, width, height, scale, options.engine(engine));
     }
 
     public Graphviz totalMemory(int totalMemory) {
-        return new Graphviz(src, rasterizer, width, height, scale, vizjsOptions.totalMemory(totalMemory));
+        return new Graphviz(src, rasterizer, width, height, scale, options.totalMemory(totalMemory));
     }
 
     public Graphviz rasterizer(Rasterizer rasterizer) {
-        return new Graphviz(src, rasterizer, width, height, scale, vizjsOptions);
+        return new Graphviz(src, rasterizer, width, height, scale, options);
     }
 
     public Graphviz width(int width) {
-        return new Graphviz(src, rasterizer, width, height, scale, vizjsOptions);
+        return new Graphviz(src, rasterizer, width, height, scale, options);
     }
 
     public Graphviz height(int height) {
-        return new Graphviz(src, rasterizer, width, height, scale, vizjsOptions);
+        return new Graphviz(src, rasterizer, width, height, scale, options);
     }
 
     public Graphviz scale(double scale) {
-        return new Graphviz(src, rasterizer, width, height, scale, vizjsOptions);
+        return new Graphviz(src, rasterizer, width, height, scale, options);
     }
 
     public Renderer render(Format format) {
         if (engine == null) {
             initEngine();
         }
-        final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, vizjsOptions.format(format));
+        final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, options.format(format));
         return new Renderer(graphviz, null);
     }
 
     String execute() {
-        return vizjsOptions.format.postProcess(engine.execute(src, vizjsOptions));
+        return options.format.postProcess(engine.execute(src, options));
     }
 
     Format format() {
-        return vizjsOptions.format;
+        return options.format;
     }
 
 }

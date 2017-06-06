@@ -21,7 +21,7 @@ import javax.script.ScriptException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class GraphvizJdkEngine extends AbstractGraphvizEngine {
+public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
     private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
 
     public GraphvizJdkEngine() {
@@ -39,9 +39,9 @@ public class GraphvizJdkEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    protected String doExecute(String call) {
+    protected String jsExecute(String jsCall) {
         try {
-            return (String) ENGINE.eval("$$prints=[]; " + call);
+            return (String) ENGINE.eval("$$prints=[]; " + jsCall);
         } catch (ScriptException e) {
             if (e.getMessage().startsWith("abort")) {
                 try {
@@ -60,8 +60,8 @@ public class GraphvizJdkEngine extends AbstractGraphvizEngine {
 
     @Override
     protected void doInit() throws Exception {
-        ENGINE.eval(initEnv());
-        ENGINE.eval(vizCode("1.4.1"));
+        ENGINE.eval(jsInitEnv());
+        ENGINE.eval(jsVizCode("1.4.1"));
         ENGINE.eval("Viz('digraph g { a -> b; }');");
     }
 }

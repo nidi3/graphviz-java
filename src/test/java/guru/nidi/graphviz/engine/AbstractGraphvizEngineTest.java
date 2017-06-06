@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 
 public class AbstractGraphvizEngineTest {
 
-    public static class GraphvizEngineDummy extends AbstractGraphvizEngine {
+    public static class GraphvizEngineDummy extends AbstractJsGraphvizEngine {
 
         public GraphvizEngineDummy(boolean sync, EngineInitListener engineInitListener) {
             super(sync, engineInitListener);
@@ -39,7 +39,7 @@ public class AbstractGraphvizEngineTest {
         }
 
         @Override
-        protected String doExecute(String call) {
+        protected String jsExecute(String call) {
             return call;
         }
     }
@@ -47,9 +47,9 @@ public class AbstractGraphvizEngineTest {
     @Test
     public void vizExecTotalMemoryIsSet() {
         final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy(true, null);
-        final VizjsOptions vizjsOptions = VizjsOptions.create().format(Format.SVG).totalMemory(320000);
+        final Options options = Options.create().format(Format.SVG).totalMemory(320000);
 
-        final String vizResult = engineUnderTest.vizExec("digraph{ a -> b}", vizjsOptions);
+        final String vizResult = engineUnderTest.jsVizExec("digraph{ a -> b}", options);
 
         assertThat(vizResult, is("Viz('digraph{ a -> b}',{format:'svg',engine:'dot',totalMemory:'320000'});"));
     }
@@ -57,9 +57,9 @@ public class AbstractGraphvizEngineTest {
     @Test
     public void vizExecTotalMemoryIsNotSet() {
         final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy(true, null);
-        final VizjsOptions vizjsOptions = VizjsOptions.create().format(Format.SVG);
+        final Options options = Options.create().format(Format.SVG);
 
-        final String vizResult = engineUnderTest.vizExec("digraph{ a -> b}", vizjsOptions);
+        final String vizResult = engineUnderTest.jsVizExec("digraph{ a -> b}", options);
 
         assertThat(vizResult, is("Viz('digraph{ a -> b}',{format:'svg',engine:'dot'});"));
     }
