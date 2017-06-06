@@ -51,13 +51,12 @@ public class CodeAnalysisTest extends CodeAssertTest {
     @Test
     public void dependencies() {
         class GuruNidiGraphviz extends DependencyRuler {
-            DependencyRule model, attribute, engine, parse, service, executor;
+            DependencyRule model, attribute, engine, parse, service;
 
             public void defineRules() {
-                engine.mayUse(model, service, executor);
+                engine.mayUse(model, service);
                 parse.mayUse(model, attribute);
                 model.mayUse(attribute);
-                service.mayUse(executor);
             }
         }
         final DependencyRules rules = DependencyRules.denyAll()

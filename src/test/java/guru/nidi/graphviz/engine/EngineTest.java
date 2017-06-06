@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.executor.ICommandExecutor;
+import guru.nidi.graphviz.service.DefaultExecutor;
 import org.apache.commons.exec.CommandLine;
 import org.junit.AfterClass;
 import org.junit.Rule;
@@ -86,7 +86,7 @@ public class EngineTest {
         // Setup fake 'dot' command in env-path
         final File dotFile = this.setUpFakeDotFile();
         // Setup CommandExecutor Mocks
-        final ICommandExecutor cmdExecutor = this.setUpFakeStubCommandExecutor();
+        final DefaultExecutor cmdExecutor = this.setUpFakeStubCommandExecutor();
 
         final String envPath = dotFile.getParent();
         Graphviz.useEngine(new GraphvizCmdLineEngine(null, envPath, cmdExecutor));
@@ -103,7 +103,7 @@ public class EngineTest {
         // Setup fake 'dot' command in env-path
         final File dotFile = this.setUpFakeDotFile();
         // Setup CommandExecutor Mocks
-        final ICommandExecutor cmdExecutor = this.setUpFakeStubCommandExecutor();
+        final DefaultExecutor cmdExecutor = this.setUpFakeStubCommandExecutor();
 
         final String envPath = dotFile.getParent();
 
@@ -130,8 +130,8 @@ public class EngineTest {
         return dotFile;
     }
 
-    private ICommandExecutor setUpFakeStubCommandExecutor() throws IOException, InterruptedException {
-        final ICommandExecutor cmdExecutor = mock(ICommandExecutor.class);
+    private DefaultExecutor setUpFakeStubCommandExecutor() throws IOException, InterruptedException {
+        final DefaultExecutor cmdExecutor = mock(DefaultExecutor.class);
         when(cmdExecutor.execute(any(CommandLine.class), any(File.class)))
                 .thenAnswer(invocationOnMock -> {
                     final File workingDirectory = invocationOnMock.getArgumentAt(1, File.class);

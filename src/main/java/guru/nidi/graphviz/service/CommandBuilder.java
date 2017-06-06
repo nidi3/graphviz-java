@@ -15,8 +15,6 @@
  */
 package guru.nidi.graphviz.service;
 
-import guru.nidi.graphviz.executor.DefaultExecutor;
-import guru.nidi.graphviz.executor.ICommandExecutor;
 import org.apache.commons.exec.CommandLine;
 
 import java.util.Arrays;
@@ -31,14 +29,14 @@ public class CommandBuilder {
 
 
     private boolean shellWrapper;
-    private ICommandExecutor cmdExec;
+    private DefaultExecutor cmdExec;
 
     public CommandBuilder withShellWrapper(boolean shellWrapper) {
         this.shellWrapper = shellWrapper;
         return this;
     }
 
-    public CommandBuilder withCommandExecutor(ICommandExecutor cmdExec) {
+    public CommandBuilder withCommandExecutor(DefaultExecutor cmdExec) {
         this.cmdExec = cmdExec;
         return this;
     }
@@ -49,7 +47,7 @@ public class CommandBuilder {
                 this.getCmdExecutorOrDefault(this.cmdExec));
     }
 
-    public static ICommandExecutor getCmdExecutorOrDefault(ICommandExecutor cmdExec) {
+    public static DefaultExecutor getCmdExecutorOrDefault(DefaultExecutor cmdExec) {
         if (cmdExec != null) {
             return cmdExec;
         }

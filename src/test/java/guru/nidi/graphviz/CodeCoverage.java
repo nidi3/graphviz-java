@@ -35,7 +35,6 @@ public class CodeCoverage {
                 .just(For.packge("*.attribute").setMinima(70, 75, 75))
                 .just(For.packge("*.engine").setMinima(30, 70, 70))
                 .just(For.packge("*.model").setMinima(60, 75, 75))
-                .just(For.packge("*.executor").setMinima(50, 75, 75))
                 .just(For.packge("*.service").setMinima(40, 65, 75))
                 .just(For.packge("com.kitfox.svg*").setMinima(0,0,0)) //TODO remove
         );

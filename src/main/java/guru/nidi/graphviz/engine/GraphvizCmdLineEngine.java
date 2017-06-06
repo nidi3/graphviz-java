@@ -15,12 +15,13 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.executor.ICommandExecutor;
 import guru.nidi.graphviz.service.CommandBuilder;
 import guru.nidi.graphviz.service.CommandRunner;
-import guru.nidi.graphviz.executor.DefaultExecutor;
+import guru.nidi.graphviz.service.DefaultExecutor;
 import guru.nidi.graphviz.service.SystemUtils;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -33,11 +34,13 @@ import java.util.Optional;
  */
 public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
+
     public static final String CMD_DOT = SystemUtils.IS_OS_WINDOWS ? "dot.exe" : "dot";
 
     private CommandRunner cmdRunner;
     private String envPath;
-    private ICommandExecutor executor;
+    private DefaultExecutor executor;
 
     private String dotOutputFilePath;
     private String dotOutputFileName;
@@ -51,7 +54,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         this(engineInitListener, Optional.ofNullable(System.getenv("PATH")).orElse(""), new DefaultExecutor());
     }
 
-    public GraphvizCmdLineEngine(EngineInitListener engineInitListener, String envPath, ICommandExecutor executor) {
+    public GraphvizCmdLineEngine(EngineInitListener engineInitListener, String envPath, DefaultExecutor executor) {
         super(false, engineInitListener);
         this.envPath = envPath;
         this.executor = executor;
@@ -114,7 +117,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         File tempDir;
         tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "GraphvizJava");
         if (!tempDir.exists() && tempDir.mkdir()) {
-            System.out.println("Created GraphvizJava temporary directory");
+            LOGGER.debug("Created GraphvizJava temporary directory");
         }
         return tempDir;
     }

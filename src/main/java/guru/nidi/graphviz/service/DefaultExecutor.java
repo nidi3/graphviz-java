@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.executor;
+package guru.nidi.graphviz.service;
 
 import org.apache.commons.exec.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,9 +25,12 @@ import java.io.IOException;
 /**
  * Created by toon on 07/02/17.
  */
-public class DefaultExecutor implements ICommandExecutor {
+public class DefaultExecutor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultExecutor.class);
+
     public int execute(CommandLine cmd, File workingDirectory) throws InterruptedException, IOException {
-        System.out.println("STARTING COMMAND: " + cmd.toString());
+        LOGGER.info("STARTING COMMAND: " + cmd.toString());
 
         final ExecuteWatchdog watchdog = new ExecuteWatchdog(60 * 1000);
         final Executor executor = new org.apache.commons.exec.DefaultExecutor();
@@ -34,7 +39,7 @@ public class DefaultExecutor implements ICommandExecutor {
         if (workingDirectory != null) {
             executor.setWorkingDirectory(workingDirectory);
         }
-        System.out.println("WORKING: " + executor.getWorkingDirectory());
+        LOGGER.debug("WORKING: " + executor.getWorkingDirectory());
 
         final DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
 
@@ -43,7 +48,7 @@ public class DefaultExecutor implements ICommandExecutor {
         resultHandler.waitFor();
 
         final int exitCode = resultHandler.getExitValue();
-        System.out.println("END COMMAND: " + cmd.toString() + " - EXIT CODE " + exitCode);
+        LOGGER.info("END COMMAND: " + cmd.toString() + " - EXIT CODE " + exitCode);
 
         return exitCode;
 

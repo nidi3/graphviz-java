@@ -15,7 +15,6 @@
  */
 package guru.nidi.graphviz.service;
 
-import guru.nidi.graphviz.executor.ICommandExecutor;
 import org.apache.commons.exec.CommandLine;
 
 import java.io.File;
@@ -33,9 +32,9 @@ import java.util.stream.Stream;
 public class CommandRunner {
 
     private final Function<CommandLine, CommandLine> wrapperFunc;
-    private final ICommandExecutor cmdExec;
+    private final DefaultExecutor cmdExec;
 
-    CommandRunner(Function<CommandLine, CommandLine> wrapperFunc, ICommandExecutor cmdExec) {
+    CommandRunner(Function<CommandLine, CommandLine> wrapperFunc, DefaultExecutor cmdExec) {
         this.wrapperFunc = wrapperFunc;
         this.cmdExec = cmdExec;
     }

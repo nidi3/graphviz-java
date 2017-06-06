@@ -15,7 +15,6 @@
  */
 package guru.nidi.graphviz.service;
 
-import guru.nidi.graphviz.executor.DefaultExecutor;
 import org.apache.commons.exec.CommandLine;
 import org.junit.Before;
 import org.junit.Test;
