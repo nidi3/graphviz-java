@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.service.DefaultExecutor;
+import guru.nidi.graphviz.service.SystemUtils;
 import org.apache.commons.exec.CommandLine;
 import org.junit.AfterClass;
 import org.junit.Rule;
@@ -124,8 +125,13 @@ public class EngineTest {
     }
 
     private File setUpFakeDotFile() throws IOException {
+        String filename = "dot";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            filename = filename + ".exe";
+        }
+
         // Add a fake dot executable to the temporary dotFolder
-        final File dotFile = this.dotFolder.newFile(GraphvizCmdLineEngine.CMD_DOT);
+        final File dotFile = this.dotFolder.newFile(filename);
         dotFile.setExecutable(true);
         return dotFile;
     }
