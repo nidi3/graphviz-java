@@ -25,10 +25,9 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
- * Created by toon on 08/02/17.
+ * @author toon
  */
 public class CommandRunnerWhichTest {
-
     private final static String CMD_EXISTS = SystemUtils.IS_OS_WINDOWS ? "notepad.exe" : "ls";
     private final static String CMD_NOT_EXISTS = "foobeebaabeloo"; // <me> crosses fingers
 

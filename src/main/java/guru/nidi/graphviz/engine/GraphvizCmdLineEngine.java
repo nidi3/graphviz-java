@@ -24,18 +24,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
- * Engine that tries to parse the dot file using the GraphvizEngine installed on the host
- * Created by daank on 16-May-17.
+ * Engine that tries to parse the dot file using the GraphvizEngine installed on the host.
+ *
+ * @author daank
  */
 public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
 
     private CommandRunner cmdRunner;
     private String envPath;
@@ -60,17 +60,17 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
     @Override
     protected void doInit() throws GraphvizException {
-        this.cmdRunner = new CommandBuilder()
+        cmdRunner = new CommandBuilder()
                 .withShellWrapper(true)
-                .withCommandExecutor(this.executor)
+                .withCommandExecutor(executor)
                 .build();
     }
 
     @Override
     protected String doExecute(String src, Options options) {
-        final String engine = this.getEngineFromOptions(options);
+        final String engine = getEngineFromOptions(options);
 
-        if (!CommandRunner.isExecutableFound(engine, this.envPath)) {
+        if (!CommandRunner.isExecutableFound(engine, envPath)) {
             throw new GraphvizException(engine + " command not found");
         }
 
@@ -79,32 +79,29 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
             final Path tempDirPath = Files.createTempDirectory(getOrCreateTempDirectory().toPath(), "DotEngine");
 
             // Write the dot file to the output path or the temporary directory
-            final File dotfile = this.getDotFile(tempDirPath.toString());
-            final BufferedWriter bw = new BufferedWriter(
-                    new OutputStreamWriter(
-                            new FileOutputStream(dotfile), "UTF-8"));
-            bw.write(src);
-            bw.close();
+            final File dotfile = getDotFile(tempDirPath.toString());
+            try (final BufferedWriter bw = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(dotfile), StandardCharsets.UTF_8))) {
+                bw.write(src);
+            }
 
             // Run the command
-            final String command = engine + " -T" + this.getFormatFromOptions(options)
+            final String command = engine + " -T" + getFormatFromOptions(options)
                     + " " + dotfile.getAbsolutePath() + " -ooutfile.svg";
-            final int status = this.cmdRunner.exec(command, new File(tempDirPath.toString()));
+            final int status = cmdRunner.exec(command, tempDirPath.toFile());
             if (status != 0) {
                 throw new GraphvizException("Dot command didn't succeed");
             }
 
             // Read output file from temp folder
-            final byte[] encoded = Files.readAllBytes(Paths.get(tempDirPath.toString() + "/outfile.svg"));
+            final byte[] encoded = Files.readAllBytes(tempDirPath.resolve("outfile.svg"));
 
             FileUtils.deleteDirectory(tempDirPath.toFile());
 
-            return new String(encoded, "UTF-8");
-
+            return new String(encoded, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new GraphvizException("Failed to execute dot command", e);
         }
-
     }
 
     private String getEngineFromOptions(Options options) {
@@ -127,31 +124,21 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     private File getOrCreateTempDirectory() {
-        File tempDir;
-        tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "GraphvizJava");
+        final File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "GraphvizJava");
         if (!tempDir.exists() && tempDir.mkdir()) {
-            LOGGER.debug("Created GraphvizJava temporary directory");
+            LOG.debug("Created GraphvizJava temporary directory");
         }
         return tempDir;
     }
 
     private File getDotFile(String tempDirPath) {
-        String dotFileName;
-        if (this.dotOutputFileName == null) {
-            dotFileName = "dotfile.dot";
-        } else {
-            dotFileName = this.dotOutputFileName + ".dot";
-        }
-
-        if (this.dotOutputFilePath == null) {
-            return new File(tempDirPath + "/" + dotFileName);
-        } else {
-            return new File(dotOutputFilePath + "/" + dotFileName);
-        }
+        final String dotFileName = dotOutputFileName == null ? "dotfile.dot" : dotOutputFileName + ".dot";
+        final String baseDir = dotOutputFilePath == null ? tempDirPath : dotOutputFilePath;
+        return new File(baseDir, dotFileName);
     }
 
     public void setDotOutputFile(String path, String name) {
-        this.dotOutputFilePath = path;
-        this.dotOutputFileName = name;
+        dotOutputFilePath = path;
+        dotOutputFileName = name;
     }
 }

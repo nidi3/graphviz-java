@@ -17,6 +17,7 @@ package guru.nidi.graphviz.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 final class IoUtils {
     private IoUtils() {
@@ -28,7 +29,7 @@ final class IoUtils {
         while ((read = in.read(buf, total, Math.min(100000, buf.length - total))) > 0) {
             total += read;
         }
-        return new String(buf, "utf-8");
+        return new String(buf, StandardCharsets.UTF_8);
     }
 
 }

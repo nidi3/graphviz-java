@@ -20,6 +20,7 @@ import guru.nidi.graphviz.attribute.MutableAttributed;
 import guru.nidi.graphviz.model.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,11 +35,11 @@ public final class Parser {
     private Token token;
 
     public static MutableGraph read(File file) throws IOException {
-        return read(new InputStreamReader(new FileInputStream(file), "utf-8"), file.getName());
+        return read(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8), file.getName());
     }
 
     public static MutableGraph read(InputStream is) throws IOException {
-        return read(new InputStreamReader(is, "utf-8"), "<input stream>");
+        return read(new InputStreamReader(is, StandardCharsets.UTF_8), "<input stream>");
     }
 
     public static MutableGraph read(String dot) throws IOException {

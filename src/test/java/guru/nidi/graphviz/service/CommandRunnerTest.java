@@ -32,7 +32,7 @@ import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 
 /**
- * Created by mhgam on 22/07/2016.
+ * @author mhgam
  */
 public class CommandRunnerTest {
 
@@ -40,18 +40,15 @@ public class CommandRunnerTest {
     private ArgumentCaptor<CommandLine> runEchoCaptor;
 
     @Before
-    public void init(){
+    public void init() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
     public void testRunEchoHelloWorld() throws IOException, InterruptedException {
-        final String expected;
-        if (SystemUtils.IS_OS_WINDOWS) {
-            expected = CommandLine.parse("cmd /C echo hello world").toString();
-        } else {
-            expected = CommandLine.parse("/bin/sh -c").addArgument("echo hello world", false).toString();
-        }
+        final CommandLine expected = SystemUtils.IS_OS_WINDOWS
+                ? CommandLine.parse("cmd /C echo hello world")
+                : CommandLine.parse("/bin/sh -c").addArgument("echo hello world", false);
 
         final DefaultExecutor cmdExecMock = Mockito.mock(DefaultExecutor.class);
         final CommandRunner cmdRunner = new CommandBuilder()
@@ -59,9 +56,10 @@ public class CommandRunnerTest {
                 .withCommandExecutor(cmdExecMock)
                 .build();
 
-        cmdRunner.exec(CommandLine.parse("echo hello world"),null);
+        cmdRunner.exec(CommandLine.parse("echo hello world"), null);
+
         verify(cmdExecMock).execute(runEchoCaptor.capture(), (File) isNull());
-        assertEquals(expected, runEchoCaptor.getValue().toString());
+        assertEquals(expected.toString(), runEchoCaptor.getValue().toString());
     }
 
     @Test
@@ -83,6 +81,4 @@ public class CommandRunnerTest {
         final int result = cmdRunner.exec("env");
         assertEquals(0, result);
     }
-
-
 }

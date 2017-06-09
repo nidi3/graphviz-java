@@ -16,14 +16,15 @@
 package guru.nidi.graphviz.engine;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 class Communicator implements Closeable {
     private final BufferedReader in;
     private final BufferedWriter out;
 
     public Communicator(InputStream in, OutputStream out) throws UnsupportedEncodingException {
-        this.in = new BufferedReader(new InputStreamReader(in, "utf-8"));
-        this.out = new BufferedWriter(new OutputStreamWriter(out, "utf-8"));
+        this.in = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        this.out = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
     }
 
     public int readLen() throws IOException {

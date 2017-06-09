@@ -16,6 +16,8 @@
 package guru.nidi.graphviz.service;
 
 import org.apache.commons.exec.CommandLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CommandRunner {
+    private static final Logger LOG = LoggerFactory.getLogger(CommandRunner.class);
 
     private final Function<CommandLine, CommandLine> wrapperFunc;
     private final DefaultExecutor cmdExec;
@@ -39,26 +42,23 @@ public class CommandRunner {
         this.cmdExec = cmdExec;
     }
 
-
     int exec(CommandLine cmd, File workingDirectory) {
         try {
-            final CommandLine wrappedCmd = this.wrapperFunc.apply(cmd);
-            return this.cmdExec.execute(wrappedCmd, workingDirectory);
+            final CommandLine wrappedCmd = wrapperFunc.apply(cmd);
+            return cmdExec.execute(wrappedCmd, workingDirectory);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            LOG.error("Problem executing {}", cmd, e);
         }
-
         return -1;
     }
 
     public int exec(String cmd, File workingDirectory, String... args) {
-        return this.exec(cmd, workingDirectory, args, true);
+        return exec(cmd, workingDirectory, args, true);
     }
 
     private int exec(String cmd, File workingDirectory, String[] args, boolean handleQuoting) {
-        return this.exec(new CommandLine(cmd).addArguments(args, handleQuoting), workingDirectory);
+        return exec(new CommandLine(cmd).addArguments(args, handleQuoting), workingDirectory);
     }
-
 
     private int exec(String cmd, File workingDirectory, List<String> args) {
         return exec(cmd, workingDirectory, args.toArray(new String[args.size()]));
@@ -77,7 +77,6 @@ public class CommandRunner {
         return which(program, Optional.ofNullable(System.getenv("PATH")).orElse(""));
     }
 
-
     private static Stream<Path> which(String program, String pathEnvVar) {
         if (program == null || "".equals(program.trim()) || pathEnvVar == null || "".equalsIgnoreCase(pathEnvVar)) {
             return Stream.empty();
@@ -91,7 +90,6 @@ public class CommandRunner {
                 .filter(path -> Files.exists(path))
                 .map(path -> {
                     try (Stream<Path> entries = Files.list(path)) {
-
                         return entries
                                 // Filter on the filename
                                 // Doing a case-senstive compare here, thats not correct on windows ?
@@ -108,8 +106,7 @@ public class CommandRunner {
                                 .collect(Collectors.toList())
                                 .stream();
                     } catch (IOException e) {
-                        e.printStackTrace();
-                        // Skip
+                        LOG.error("Problem finding path for {}", program, e);
                         return Stream.<Path>empty();
                     }
                 })
@@ -117,11 +114,11 @@ public class CommandRunner {
     }
 
     static boolean isExecutableFound(String program) {
-        return CommandRunner.which(program).anyMatch(path -> true);
+        return which(program).anyMatch(path -> true);
     }
 
     public static boolean isExecutableFound(String program, String envPath) {
-        return CommandRunner.which(program, envPath).anyMatch(path -> true);
+        return which(program, envPath).anyMatch(path -> true);
     }
 
 }

@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Created by toon on 07/02/17.
+ * Build a CommandRunner.
+ *
+ * @author toon
  */
 public class CommandBuilder {
-
-
     private boolean shellWrapper;
     private DefaultExecutor cmdExec;
 
@@ -43,57 +43,43 @@ public class CommandBuilder {
 
     public CommandRunner build() {
         return new CommandRunner(
-                this.getShellWrapperOrDefault(this.shellWrapper),
-                this.getCmdExecutorOrDefault(this.cmdExec));
+                getShellWrapperOrDefault(shellWrapper),
+                getCmdExecutorOrDefault(cmdExec));
     }
 
-    public static DefaultExecutor getCmdExecutorOrDefault(DefaultExecutor cmdExec) {
-        if (cmdExec != null) {
-            return cmdExec;
-        }
-        return new DefaultExecutor();
+    private static DefaultExecutor getCmdExecutorOrDefault(DefaultExecutor cmdExec) {
+        return cmdExec == null ? new DefaultExecutor() : cmdExec;
     }
 
-
-    public static Function<CommandLine, CommandLine> getShellWrapperOrDefault(boolean shellWrapper) {
-
+    private static Function<CommandLine, CommandLine> getShellWrapperOrDefault(boolean shellWrapper) {
         if (!shellWrapper) {
             return Function.identity();
         }
-
         if (SystemUtils.IS_OS_WINDOWS) {
             return getWindowsShellWrapperFunc();
         }
         if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC) {
             return getLinuxShellWrapperFunc();
-        } else {
-            throw new IllegalStateException("Unsupported OS");
         }
+        throw new IllegalStateException("Unsupported OS");
     }
 
-    static Function<CommandLine, CommandLine> getWindowsShellWrapperFunc() {
-        return (cmd) -> {
-            final CommandLine res = new CommandLine("cmd")
-                    .addArgument("/C")
-                    .addArguments(cmd.toStrings(), false);
-
-            return res;
-        };
+    private static Function<CommandLine, CommandLine> getWindowsShellWrapperFunc() {
+        return (cmd) -> new CommandLine("cmd")
+                .addArgument("/C")
+                .addArguments(cmd.toStrings(), false);
     }
 
-    static Function<CommandLine, CommandLine> getLinuxShellWrapperFunc() {
+    private static Function<CommandLine, CommandLine> getLinuxShellWrapperFunc() {
         return (cmd) -> {
             final String originalCmd = Stream.concat(
                     Arrays.stream(new String[]{cmd.getExecutable()}),
                     Arrays.stream(cmd.getArguments())
             ).collect(Collectors.joining(" "));
 
-            final CommandLine ret = new CommandLine("/bin/sh")
+            return new CommandLine("/bin/sh")
                     .addArgument("-c")
                     .addArgument(originalCmd, false);
-            return ret;
         };
     }
-
-
 }

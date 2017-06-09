@@ -15,7 +15,10 @@
  */
 package guru.nidi.graphviz.service;
 
-import org.apache.commons.exec.*;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,14 +26,15 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by toon on 07/02/17.
+ * Execute a CommandLine.
+ *
+ * @author toon
  */
 public class DefaultExecutor {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutor.class);
 
     public int execute(CommandLine cmd, File workingDirectory) throws InterruptedException, IOException {
-        LOGGER.info("STARTING COMMAND: " + cmd.toString());
+        LOG.info("STARTING COMMAND: " + cmd.toString());
 
         final ExecuteWatchdog watchdog = new ExecuteWatchdog(60 * 1000);
         final Executor executor = new org.apache.commons.exec.DefaultExecutor();
@@ -39,18 +43,14 @@ public class DefaultExecutor {
         if (workingDirectory != null) {
             executor.setWorkingDirectory(workingDirectory);
         }
-        LOGGER.debug("WORKING: " + executor.getWorkingDirectory());
+        LOG.debug("WORKING: " + executor.getWorkingDirectory());
 
         final DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
-
         executor.execute(cmd, resultHandler);
-
         resultHandler.waitFor();
 
         final int exitCode = resultHandler.getExitValue();
-        LOGGER.info("END COMMAND: " + cmd.toString() + " - EXIT CODE " + exitCode);
-
+        LOG.info("END COMMAND: " + cmd.toString() + " - EXIT CODE " + exitCode);
         return exitCode;
-
     }
 }

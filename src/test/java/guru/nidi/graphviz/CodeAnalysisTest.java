@@ -111,6 +111,8 @@ public class CodeAnalysisTest extends CodeAssertTest {
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"))
                 .because("It's command line tool", In.loc("GraphvizServer")
                         .ignore("AvoidCatchingGenericException"))
+                .because("I don't understand the message", In.loc("CommandRunnerTest")
+                        .ignore("SimplifiedTernary"))
                 .because("It's wrapping an Exception with a RuntimeException", In.clazz(CreationContext.class)
                         .ignore("AvoidCatchingGenericException"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)

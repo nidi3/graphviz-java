@@ -16,7 +16,11 @@
 
 package guru.nidi.graphviz.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SystemUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(SystemUtils.class);
 
     public static final String OS_NAME;
     public static final boolean IS_OS_WINDOWS;
@@ -26,9 +30,9 @@ public class SystemUtils {
     private static String getSystemProperty(String property) {
         try {
             return System.getProperty(property);
-        } catch (SecurityException var2) {
-            System.err.println("Caught a SecurityException reading the system property '"
-                    + property + "'; the SystemUtils property value will default to null.");
+        } catch (SecurityException e) {
+            LOG.error("Caught a SecurityException reading the system property '{}'."
+                    + "The SystemUtils property value will default to null.", property);
             return null;
         }
     }
