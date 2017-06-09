@@ -30,12 +30,6 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
 
     public GraphvizJdkEngine(EngineInitListener engineInitListener) {
         super(false, engineInitListener);
-        final String[] version = System.getProperty("java.version").split("\\.");
-        if (version[1].equals("8") && Integer.parseInt(version[2].substring(2)) > 31) {
-            throw new IllegalStateException(
-                    "JDK 1.8 javascript engines of versions greater than 1.8.0_31 do not run viz.js, sorry!\n"
-                            + "Downgrade the JDK, use V8 engine or try with a 1.9 version.");
-        }
     }
 
     @Override
@@ -60,8 +54,16 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
 
     @Override
     protected void doInit() throws Exception {
-        ENGINE.eval(jsInitEnv());
-        ENGINE.eval(jsVizCode("1.4.1"));
-        ENGINE.eval("Viz('digraph g { a -> b; }');");
+        try {
+            ENGINE.eval(jsInitEnv());
+            ENGINE.eval(jsVizCode("1.4.1"));
+            ENGINE.eval("Viz('digraph g { a -> b; }');");
+        } catch (AssertionError e) {
+            throw new IllegalStateException(
+                    "Not all versions of JDK 1.8's javascript engines support viz.js, sorry! You can try to\n"
+                            + "- use the V8 engine\n"
+                            + "- try a JDK 1.9 version\n"
+                            + "- downgrade the JDK (1.8.0_31 seems to be a good guess)\n", e);
+        }
     }
 }

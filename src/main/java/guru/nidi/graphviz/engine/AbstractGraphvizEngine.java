@@ -36,9 +36,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
     }
 
     public String execute(String src, Options options) {
-        if (initException != null) {
-            throw new GraphvizException("Could not start graphviz engine", initException);
-        }
+        checkInited();
         try {
             if (!state.await(60, TimeUnit.SECONDS)) {
                 throw new GraphvizException("Initializing graphviz engine took too long");
@@ -46,18 +44,26 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
         } catch (InterruptedException e) {
             //ignore
         }
+        checkInited();
         return doExecute(src, options);
+    }
+
+    private void checkInited() {
+        if (initException != null) {
+            throw new GraphvizException("Could not start graphviz engine", initException);
+        }
     }
 
     private void init() {
         try {
             doInit();
-            state.countDown();
         } catch (Exception e) {
             initException = e;
             if (engineInitListener != null) {
                 engineInitListener.engineInitException(e);
             }
+        } finally {
+            state.countDown();
         }
     }
 
