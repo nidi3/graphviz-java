@@ -22,6 +22,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
+    static {
+        try {
+            //viz.js causes AssertionErrors in nashorn engine, so disable them
+            final Class<?> label = Class.forName("jdk.nashorn.internal.codegen.Label");
+            label.getClassLoader().setClassAssertionStatus(label.getName(), false);
+        } catch (ClassNotFoundException e) {
+            //no nashorn, no cry
+        }
+    }
+
     private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
 
     public GraphvizJdkEngine() {
@@ -54,16 +64,8 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
 
     @Override
     protected void doInit() throws Exception {
-        try {
-            ENGINE.eval(jsInitEnv());
-            ENGINE.eval(jsVizCode("1.4.1"));
-            ENGINE.eval("Viz('digraph g { a -> b; }');");
-        } catch (AssertionError e) {
-            throw new IllegalStateException(
-                    "Not all versions of JDK 1.8's javascript engines support viz.js, sorry! You can try to\n"
-                            + "- use the V8 engine\n"
-                            + "- try a JDK 1.9 version\n"
-                            + "- downgrade the JDK (1.8.0_31 seems to be a good guess)\n", e);
-        }
+        ENGINE.eval(jsInitEnv());
+        ENGINE.eval(jsVizCode("1.4.1"));
+        ENGINE.eval("Viz('digraph g { a -> b; }');");
     }
 }
