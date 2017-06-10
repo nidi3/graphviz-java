@@ -61,7 +61,7 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
     @Override
     protected void doInit() throws Exception {
         ENGINE.eval(jsInitEnv());
-        ENGINE.eval(jsVizCode("1.4.1"));
+        ENGINE.eval(jsVizCode("1.7.1"));
         ENGINE.eval("Viz('digraph g { a -> b; }');");
     }
 }
