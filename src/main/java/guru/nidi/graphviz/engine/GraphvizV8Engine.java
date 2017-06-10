@@ -46,7 +46,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
         v8 = V8.createV8Runtime();
         v8.executeVoidScript(jsInitEnv());
         messages = v8.getArray("$$prints");
-        v8.executeVoidScript(jsVizCode("1.7.1"));
+        v8.executeVoidScript(jsVizCode("1.8.0"));
     }
 
     @Override
