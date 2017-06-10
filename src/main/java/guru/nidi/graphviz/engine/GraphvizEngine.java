@@ -15,7 +15,11 @@
  */
 package guru.nidi.graphviz.engine;
 
+import java.util.function.Consumer;
+
 public interface GraphvizEngine {
+    void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError);
+
     String execute(String src, Options options);
 
     void release();

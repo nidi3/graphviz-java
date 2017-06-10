@@ -35,11 +35,7 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
     private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
 
     public GraphvizJdkEngine() {
-        this(null);
-    }
-
-    public GraphvizJdkEngine(EngineInitListener engineInitListener) {
-        super(false, engineInitListener);
+        super(false);
     }
 
     @Override

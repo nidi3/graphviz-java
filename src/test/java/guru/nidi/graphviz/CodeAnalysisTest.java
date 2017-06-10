@@ -35,10 +35,7 @@ import guru.nidi.codeassert.model.ModelResult;
 import guru.nidi.codeassert.pmd.*;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
-import guru.nidi.graphviz.engine.AbstractGraphvizEngine;
-import guru.nidi.graphviz.engine.GraphvizJdkEngine;
-import guru.nidi.graphviz.engine.GraphvizServerEngine;
-import guru.nidi.graphviz.engine.GraphvizV8Engine;
+import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.*;
 import guru.nidi.graphviz.parse.Parser;
 import guru.nidi.graphviz.service.CommandRunnerTest;
@@ -83,7 +80,6 @@ public class CodeAnalysisTest extends CodeAssertTest {
                 .because("It's SVG salamander", In.loc("com.kitfox.svg*").ignoreAll())
                 .because("It's examples", In.clazz(ReadmeTest.class).ignore("DLS_DEAD_LOCAL_STORE"))
                 .because("It's ok",
-                        In.clazz(AbstractGraphvizEngine.class).ignore("SC_START_IN_CTOR"),
                         In.clazz(MutableGraph.class).ignore("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"),
                         In.loc("DefaultExecutor").ignore("DM_DEFAULT_ENCODING"),
                         In.loc("Communicator").ignore("RR_NOT_CHECKED"));

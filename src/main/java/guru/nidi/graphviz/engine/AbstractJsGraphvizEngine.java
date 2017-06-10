@@ -19,12 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
-    public AbstractJsGraphvizEngine(boolean sync, EngineInitListener engineInitListener) {
-        super(sync, engineInitListener);
+    public AbstractJsGraphvizEngine(boolean sync) {
+        super(sync);
     }
 
     @Override
-    protected String doExecute(String src, Options options) {
+    public String execute(String src, Options options) {
         return jsExecute(jsVizExec(src,options));
     }
 

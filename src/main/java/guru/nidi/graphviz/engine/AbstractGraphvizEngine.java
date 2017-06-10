@@ -15,55 +15,36 @@
  */
 package guru.nidi.graphviz.engine;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
 
 public abstract class AbstractGraphvizEngine implements GraphvizEngine {
-    private final CountDownLatch state;
-    private final EngineInitListener engineInitListener;
-    private Exception initException;
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
 
-    public AbstractGraphvizEngine(boolean sync, EngineInitListener engineInitListener) {
-        state = new CountDownLatch(1);
-        this.engineInitListener = engineInitListener;
+    private final boolean sync;
+
+    public AbstractGraphvizEngine(boolean sync) {
+        this.sync = sync;
+    }
+
+    public void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError) {
         if (sync) {
-            init();
+            initTask(onOk, onError);
         } else {
-            final Thread starter = new Thread(this::init);
-            starter.setDaemon(true);
-            starter.start();
+            new Thread(() -> initTask(onOk, onError)).start();
         }
     }
 
-    public String execute(String src, Options options) {
-        checkInited();
-        try {
-            if (!state.await(60, TimeUnit.SECONDS)) {
-                throw new GraphvizException("Initializing graphviz engine took too long");
-            }
-        } catch (InterruptedException e) {
-            //ignore
-        }
-        checkInited();
-        return doExecute(src, options);
-    }
-
-    private void checkInited() {
-        if (initException != null) {
-            throw new GraphvizException("Could not start graphviz engine", initException);
-        }
-    }
-
-    private void init() {
+    private void initTask(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError) {
         try {
             doInit();
+            onOk.accept(this);
         } catch (Exception e) {
-            initException = e;
-            if (engineInitListener != null) {
-                engineInitListener.engineInitException(e);
-            }
-        } finally {
-            state.countDown();
+            LOG.info("Could not initialize {}", this, e);
+            release();
+            onError.accept(this);
         }
     }
 
@@ -73,5 +54,8 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
 
     protected abstract void doInit() throws Exception;
 
-    protected abstract String doExecute(String src, Options options);
+    @Override
+    public String toString() {
+        return getClass().getName();
+    }
 }

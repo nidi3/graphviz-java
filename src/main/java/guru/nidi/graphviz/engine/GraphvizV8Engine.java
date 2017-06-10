@@ -32,11 +32,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
     private V8Array messages;
 
     public GraphvizV8Engine() {
-        this(null);
-    }
-
-    public GraphvizV8Engine(EngineInitListener engineInitListener) {
-        super(true, engineInitListener);
+        super(true);
     }
 
     @Override

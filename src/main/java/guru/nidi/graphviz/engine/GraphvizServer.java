@@ -41,7 +41,7 @@ final class GraphvizServer {
 
     public static void main(String[] args) throws IOException {
         LOG.info("starting graphviz server...");
-        Graphviz.useEngine(new GraphvizV8Engine(e -> new GraphvizJdkEngine()));
+        Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
         LOG.info("started.");
         Graphviz.initEngine();
         LOG.info("inited.");

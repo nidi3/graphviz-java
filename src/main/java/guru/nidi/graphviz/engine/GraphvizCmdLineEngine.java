@@ -44,15 +44,11 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private String dotOutputFileName;
 
     public GraphvizCmdLineEngine() {
-        this(null);
+        this(Optional.ofNullable(System.getenv("PATH")).orElse(""), new DefaultExecutor());
     }
 
-    public GraphvizCmdLineEngine(EngineInitListener engineInitListener) {
-        this(engineInitListener, Optional.ofNullable(System.getenv("PATH")).orElse(""), new DefaultExecutor());
-    }
-
-    public GraphvizCmdLineEngine(EngineInitListener engineInitListener, String envPath, DefaultExecutor executor) {
-        super(false, engineInitListener);
+    public GraphvizCmdLineEngine(String envPath, DefaultExecutor executor) {
+        super(true);
         this.envPath = envPath;
         cmdRunner = new CommandBuilder()
                 .withShellWrapper(true)
@@ -68,7 +64,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    protected String doExecute(String src, Options options) {
+    public String execute(String src, Options options) {
         final String engine = getEngineFromOptions(options);
         if (!CommandRunner.isExecutableFound(engine, envPath)) {
             throw new GraphvizException(engine + " command not found");

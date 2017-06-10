@@ -24,8 +24,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public final class Graphviz {
+    private static volatile BlockingQueue<GraphvizEngine> engineQueue;
     private static GraphvizEngine engine;
     private final String src;
     private final Options options;
@@ -43,21 +50,63 @@ public final class Graphviz {
         this.options = options;
     }
 
-    public static void useEngine(GraphvizEngine engine) {
-        Graphviz.engine = engine;
+    public static void useEngine(GraphvizEngine first, GraphvizEngine... engines) {
+        synchronized (Graphviz.class) {
+            if (engineQueue == null) {
+                engineQueue = new ArrayBlockingQueue<>(1);
+            } else {
+                try {
+                    getEngine().release();
+                } catch (GraphvizException e) {
+                    //ignore
+                }
+            }
+        }
+        engine = null;
+        first.init(e -> engineQueue.add(e), e -> useEngine(Arrays.asList(engines)));
+    }
+
+    private static void useEngine(List<GraphvizEngine> engines) {
+        if (engines.isEmpty()) {
+            engineQueue.add(new ErrorGraphvizEngine());
+        } else {
+            engines.get(0).init(e -> engineQueue.add(e), e -> useEngine(engines.subList(1, engines.size())));
+        }
     }
 
     public static void initEngine() {
-        engine = new GraphvizCmdLineEngine(e1 ->
-                engine = new GraphvizV8Engine(e2 ->
-                        engine = new GraphvizServerEngine(e3 ->
-                                engine = new GraphvizJdkEngine())));
+        useEngine(new GraphvizCmdLineEngine(), new GraphvizV8Engine(),
+                new GraphvizServerEngine(), new GraphvizJdkEngine());
+    }
+
+    private static GraphvizEngine getEngine() {
+        if (engineQueue == null) {
+            initEngine();
+        }
+        synchronized (Graphviz.class) {
+            if (engine == null) {
+                try {
+                    engine = engineQueue.poll(60, TimeUnit.SECONDS);
+                    if (engine == null) {
+                        throw new GraphvizException("Initializing graphviz engine took too long.");
+                    }
+                    if (engine instanceof ErrorGraphvizEngine) {
+                        throw new GraphvizException("None of the provided engines could be initialized.");
+                    }
+                } catch (InterruptedException e) {
+                    //ignore
+                }
+            }
+        }
+        return engine;
     }
 
     public static void releaseEngine() {
         if (engine != null) {
             engine.release();
         }
+        engine = null;
+        engineQueue = null;
     }
 
     public static void printFontNames() {
@@ -109,19 +158,28 @@ public final class Graphviz {
     }
 
     public Renderer render(Format format) {
-        if (engine == null) {
-            initEngine();
-        }
         final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, options.format(format));
         return new Renderer(graphviz, null);
     }
 
     String execute() {
-        return options.format.postProcess(engine.execute(src, options));
+        return options.format.postProcess(getEngine().execute(src, options));
     }
 
     Format format() {
         return options.format;
     }
 
+
+    private static class ErrorGraphvizEngine implements GraphvizEngine {
+        public void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError) {
+        }
+
+        public String execute(String src, Options options) {
+            return null;
+        }
+
+        public void release() {
+        }
+    }
 }

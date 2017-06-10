@@ -24,13 +24,8 @@ import static org.junit.Assert.assertThat;
 public class AbstractGraphvizEngineTest {
 
     public static class GraphvizEngineDummy extends AbstractJsGraphvizEngine {
-
-        public GraphvizEngineDummy(boolean sync, EngineInitListener engineInitListener) {
-            super(sync, engineInitListener);
-        }
-
         public GraphvizEngineDummy() {
-            super(true, null);
+            super(true);
         }
 
         @Override
@@ -46,7 +41,7 @@ public class AbstractGraphvizEngineTest {
 
     @Test
     public void vizExecTotalMemoryIsSet() {
-        final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy(true, null);
+        final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy();
         final Options options = Options.create().format(Format.SVG).totalMemory(320000);
 
         final String vizResult = engineUnderTest.jsVizExec("digraph{ a -> b}", options);
@@ -56,7 +51,7 @@ public class AbstractGraphvizEngineTest {
 
     @Test
     public void vizExecTotalMemoryIsNotSet() {
-        final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy(true, null);
+        final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy();
         final Options options = Options.create().format(Format.SVG);
 
         final String vizResult = engineUnderTest.jsVizExec("digraph{ a -> b}", options);

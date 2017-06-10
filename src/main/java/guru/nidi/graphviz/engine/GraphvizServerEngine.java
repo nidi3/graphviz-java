@@ -20,15 +20,11 @@ import java.net.Socket;
 
 public class GraphvizServerEngine extends AbstractGraphvizEngine {
     public GraphvizServerEngine() {
-        this(null);
-    }
-
-    public GraphvizServerEngine(EngineInitListener engineInitListener) {
-        super(false, engineInitListener);
+        super(false);
     }
 
     @Override
-    protected String doExecute(String src, Options options) {
+    public String execute(String src, Options options) {
         try {
             return createSvg(src); //TODO handle options
         } catch (IOException e) {

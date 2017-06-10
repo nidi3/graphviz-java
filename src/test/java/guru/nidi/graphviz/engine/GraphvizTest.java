@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
+import org.junit.After;
 import org.junit.Test;
 
 import static guru.nidi.graphviz.model.Factory.graph;
@@ -57,8 +58,6 @@ public class GraphvizTest {
         final String result = Graphviz.fromGraph(graph).totalMemory(32000).render(Format.SVG).toString();
 
         assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot',totalMemory:'32000'});"));
-
-        Graphviz.useEngine(null);
     }
 
     @Test
@@ -69,8 +68,11 @@ public class GraphvizTest {
         final String result = Graphviz.fromGraph(graph).render(Format.SVG).toString();
 
         assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot'});"));
+    }
 
-        Graphviz.useEngine(null);
+    @After
+    public void end(){
+        Graphviz.releaseEngine();
     }
 
     private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {

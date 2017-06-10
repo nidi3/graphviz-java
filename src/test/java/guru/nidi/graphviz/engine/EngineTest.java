@@ -18,6 +18,7 @@ package guru.nidi.graphviz.engine;
 import guru.nidi.graphviz.service.DefaultExecutor;
 import guru.nidi.graphviz.service.SystemUtils;
 import org.apache.commons.exec.CommandLine;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,9 +58,9 @@ public class EngineTest {
     @Rule
     public TemporaryFolder dotFolder = new TemporaryFolder();
 
-    @AfterClass
-    public static void end() {
-        Graphviz.useEngine(null);
+    @After
+    public void end() {
+        Graphviz.releaseEngine();
     }
 
     @Test
@@ -91,7 +92,7 @@ public class EngineTest {
         final DefaultExecutor cmdExecutor = setUpFakeStubCommandExecutor();
 
         final String envPath = dotFile.getParent();
-        Graphviz.useEngine(new GraphvizCmdLineEngine(null, envPath, cmdExecutor));
+        Graphviz.useEngine(new GraphvizCmdLineEngine(envPath, cmdExecutor));
 
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_4));
     }
@@ -110,7 +111,7 @@ public class EngineTest {
         final String dotOutputName = "test123";
 
         // Configure engine to output the dotFile to dotOutputFolder
-        final GraphvizCmdLineEngine engine = new GraphvizCmdLineEngine(null, envPath, cmdExecutor);
+        final GraphvizCmdLineEngine engine = new GraphvizCmdLineEngine(envPath, cmdExecutor);
         engine.setDotOutputFile(dotOutputFolder.getAbsolutePath(), dotOutputName);
 
         Graphviz.useEngine(engine);
