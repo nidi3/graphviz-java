@@ -20,6 +20,7 @@ import guru.nidi.graphviz.engine.GraphvizException;
 import org.junit.Test;
 
 import static guru.nidi.graphviz.engine.Format.SVG;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.*;
 
@@ -37,7 +38,7 @@ public class SimpleTest {
             Graphviz.fromString("g { a -> b; }").render(SVG).toString();
             fail();
         } catch (GraphvizException e) {
-            assertThat(e.getMessage(), startsWith("Error: syntax error in line 1 near 'g'"));
+            assertThat(e.getMessage(), containsString("syntax error in line 1 near 'g'"));
         }
     }
 }

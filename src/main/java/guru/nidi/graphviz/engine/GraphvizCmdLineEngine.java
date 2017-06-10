@@ -37,9 +37,8 @@ import java.util.Optional;
 public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
 
-    private CommandRunner cmdRunner;
-    private String envPath;
-    private DefaultExecutor executor;
+    private final String envPath;
+    private final CommandRunner cmdRunner;
 
     private String dotOutputFilePath;
     private String dotOutputFileName;
@@ -55,11 +54,6 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     public GraphvizCmdLineEngine(EngineInitListener engineInitListener, String envPath, DefaultExecutor executor) {
         super(false, engineInitListener);
         this.envPath = envPath;
-        this.executor = executor;
-    }
-
-    @Override
-    protected void doInit() throws GraphvizException {
         cmdRunner = new CommandBuilder()
                 .withShellWrapper(true)
                 .withCommandExecutor(executor)
@@ -67,9 +61,15 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     @Override
+    protected void doInit() throws GraphvizException {
+        if (!CommandRunner.isExecutableFound("dot", envPath)) {
+            throw new GraphvizException("'dot' command not found");
+        }
+    }
+
+    @Override
     protected String doExecute(String src, Options options) {
         final String engine = getEngineFromOptions(options);
-
         if (!CommandRunner.isExecutableFound(engine, envPath)) {
             throw new GraphvizException(engine + " command not found");
         }
@@ -88,10 +88,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
             // Run the command
             final String command = engine + " -T" + getFormatFromOptions(options)
                     + " " + dotfile.getAbsolutePath() + " -ooutfile.svg";
-            final int status = cmdRunner.exec(command, tempDirPath.toFile());
-            if (status != 0) {
-                throw new GraphvizException("Dot command didn't succeed");
-            }
+            cmdRunner.exec(command, tempDirPath.toFile());
 
             // Read output file from temp folder
             final byte[] encoded = Files.readAllBytes(tempDirPath.resolve("outfile.svg"));
@@ -99,8 +96,8 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
             FileUtils.deleteDirectory(tempDirPath.toFile());
 
             return new String(encoded, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new GraphvizException("Failed to execute dot command", e);
+        } catch (IOException | InterruptedException e) {
+            throw new GraphvizException(e.getMessage(), e);
         }
     }
 

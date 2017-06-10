@@ -68,8 +68,7 @@ public class CommandRunnerTest {
                 .withShellWrapper(true)
                 .build();
 
-        final int result = cmdRunner.exec("echo", Arrays.asList("hello", "world"));
-        assertEquals(0, result);
+        cmdRunner.exec("echo", Arrays.asList("hello", "world"));
     }
 
     @Test
@@ -78,7 +77,6 @@ public class CommandRunnerTest {
                 .withShellWrapper(true)
                 .build();
 
-        final int result = cmdRunner.exec("env");
-        assertEquals(0, result);
+        cmdRunner.exec("env");
     }
 }

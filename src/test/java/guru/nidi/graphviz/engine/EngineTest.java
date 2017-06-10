@@ -32,8 +32,8 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class EngineTest {
     private static final String START1_4 =
@@ -135,16 +135,14 @@ public class EngineTest {
 
     private DefaultExecutor setUpFakeStubCommandExecutor() throws IOException, InterruptedException {
         final DefaultExecutor cmdExecutor = mock(DefaultExecutor.class);
-        when(cmdExecutor.execute(any(CommandLine.class), any(File.class)))
-                .thenAnswer(invocationOnMock -> {
-                    final File workingDirectory = invocationOnMock.getArgumentAt(1, File.class);
+        doAnswer(invocationOnMock -> {
+            final File workingDirectory = invocationOnMock.getArgumentAt(1, File.class);
 
-                    final File svgInput = new File(getClass().getClassLoader().getResource("outfile1.svg").getFile());
-                    final File svgOutputFile = new File(workingDirectory.getAbsolutePath() + "/outfile.svg");
-                    Files.copy(svgInput.toPath(), svgOutputFile.toPath());
-
-                    return 0;
-                });
+            final File svgInput = new File(getClass().getClassLoader().getResource("outfile1.svg").getFile());
+            final File svgOutputFile = new File(workingDirectory.getAbsolutePath() + "/outfile.svg");
+            Files.copy(svgInput.toPath(), svgOutputFile.toPath());
+            return null;
+        }).when(cmdExecutor).execute(any(CommandLine.class), any(File.class));
         return cmdExecutor;
     }
 

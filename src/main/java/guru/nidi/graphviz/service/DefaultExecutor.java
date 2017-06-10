@@ -15,13 +15,11 @@
  */
 package guru.nidi.graphviz.service;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecuteResultHandler;
-import org.apache.commons.exec.ExecuteWatchdog;
-import org.apache.commons.exec.Executor;
+import org.apache.commons.exec.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -33,8 +31,8 @@ import java.io.IOException;
 public class DefaultExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutor.class);
 
-    public int execute(CommandLine cmd, File workingDirectory) throws InterruptedException, IOException {
-        LOG.info("STARTING COMMAND: " + cmd.toString());
+    public void execute(CommandLine cmd, File workingDirectory) throws InterruptedException, IOException {
+        LOG.info("executing command {}", cmd.toString());
 
         final ExecuteWatchdog watchdog = new ExecuteWatchdog(60 * 1000);
         final Executor executor = new org.apache.commons.exec.DefaultExecutor();
@@ -43,14 +41,21 @@ public class DefaultExecutor {
         if (workingDirectory != null) {
             executor.setWorkingDirectory(workingDirectory);
         }
-        LOG.debug("WORKING: " + executor.getWorkingDirectory());
+        LOG.debug("workdir: {}", executor.getWorkingDirectory());
 
         final DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final ByteArrayOutputStream err = new ByteArrayOutputStream();
+        executor.setStreamHandler(new PumpStreamHandler(out, err));
         executor.execute(cmd, resultHandler);
         resultHandler.waitFor();
 
         final int exitCode = resultHandler.getExitValue();
-        LOG.info("END COMMAND: " + cmd.toString() + " - EXIT CODE " + exitCode);
-        return exitCode;
+        if (out.size() > 0) {
+            LOG.info(out.toString());
+        }
+        if (exitCode != 0) {
+            throw new IOException(err.size() == 0 ? "command '" + cmd + "' didn't succeed" : err.toString());
+        }
     }
 }

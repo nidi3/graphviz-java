@@ -42,34 +42,29 @@ public class CommandRunner {
         this.cmdExec = cmdExec;
     }
 
-    int exec(CommandLine cmd, File workingDirectory) {
-        try {
-            final CommandLine wrappedCmd = wrapperFunc.apply(cmd);
-            return cmdExec.execute(wrappedCmd, workingDirectory);
-        } catch (IOException | InterruptedException e) {
-            LOG.error("Problem executing {}", cmd, e);
-        }
-        return -1;
+    void exec(CommandLine cmd, File workDir) throws IOException, InterruptedException {
+        final CommandLine wrappedCmd = wrapperFunc.apply(cmd);
+        cmdExec.execute(wrappedCmd, workDir);
     }
 
-    public int exec(String cmd, File workingDirectory, String... args) {
-        return exec(cmd, workingDirectory, args, true);
+    public void exec(String cmd, File workDir, String... args) throws IOException, InterruptedException {
+        exec(cmd, workDir, args, true);
     }
 
-    private int exec(String cmd, File workingDirectory, String[] args, boolean handleQuoting) {
-        return exec(new CommandLine(cmd).addArguments(args, handleQuoting), workingDirectory);
+    private void exec(String cmd, File workDir, String[] args, boolean quote) throws IOException, InterruptedException {
+        exec(new CommandLine(cmd).addArguments(args, quote), workDir);
     }
 
-    private int exec(String cmd, File workingDirectory, List<String> args) {
-        return exec(cmd, workingDirectory, args.toArray(new String[args.size()]));
+    private void exec(String cmd, File workDir, List<String> args) throws IOException, InterruptedException {
+        exec(cmd, workDir, args.toArray(new String[args.size()]));
     }
 
-    int exec(String cmd, List<String> args) {
-        return exec(cmd, null, args);
+    void exec(String cmd, List<String> args) throws IOException, InterruptedException {
+        exec(cmd, null, args);
     }
 
-    int exec(String cmd) {
-        return exec(cmd, null, new String[0]);
+    void exec(String cmd) throws IOException, InterruptedException {
+        exec(cmd, null, new String[0]);
     }
 
     // Cross-platform way of finding an executable in the $PATH.

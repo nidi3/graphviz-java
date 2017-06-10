@@ -48,9 +48,10 @@ public final class Graphviz {
     }
 
     public static void initEngine() {
-        engine = new GraphvizV8Engine(e ->
-                engine = new GraphvizServerEngine(e1 ->
-                        engine = new GraphvizJdkEngine()));
+        engine = new GraphvizCmdLineEngine(e1 ->
+                engine = new GraphvizV8Engine(e2 ->
+                        engine = new GraphvizServerEngine(e3 ->
+                                engine = new GraphvizJdkEngine())));
     }
 
     public static void releaseEngine() {
