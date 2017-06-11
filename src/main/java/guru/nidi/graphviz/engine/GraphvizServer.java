@@ -38,7 +38,6 @@ final class GraphvizServer {
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName())
                 .inheritIO()
                 .start();
-        System.out.println(process.isAlive());
     }
 
     public static void main(String... args) throws IOException {
