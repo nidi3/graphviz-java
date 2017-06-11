@@ -31,19 +31,16 @@ final class GraphvizServer {
     private GraphvizServer() {
     }
 
-    public static void start() throws IOException, InterruptedException {
+    public static void start() throws IOException {
         final boolean windows = System.getProperty("os.name").contains("windows");
         final String executable = windows ? "java.exe" : "java";
-        final ProcessBuilder builder = new ProcessBuilder(System.getProperty("java.home") + "/bin/" + executable,
-                "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()).inheritIO();
-        System.out.println(builder.command());
-        final Process process = builder.start();
-        System.out.println(process.isAlive());
-        Thread.sleep(2000);
-        System.out.println(process.isAlive());
+        new ProcessBuilder(System.getProperty("java.home") + "/bin/" + executable,
+                "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName())
+                .inheritIO()
+                .start();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String... args) throws IOException {
         LOG.info("starting graphviz server...");
         Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
         LOG.info("started.");
@@ -58,9 +55,21 @@ final class GraphvizServer {
                         if (len == -1) {
                             break;
                         }
-                        final String s = com.readContent(len);
+                        final String raw = com.readContent(len);
+                        final int pos = raw.indexOf("@@@");
+                        final Options options;
+                        final String src;
+                        if (pos < 0) {
+                            options = Options.create().format(SVG_STANDALONE);
+                            src = raw;
+                        } else {
+                            options = Options.fromJson(raw.substring(0, pos));
+                            src = raw.substring(pos + 3);
+                        }
                         try {
-                            final String svg = Graphviz.fromString(s).render(SVG_STANDALONE).toString();
+                            final String svg = Graphviz.fromString(src)
+                                    .engine(options.engine).totalMemory(options.totalMemory)
+                                    .render(options.format).toString();
                             com.writeStatus("ok");
                             com.writeContent(svg);
                         } catch (GraphvizException e) {
@@ -69,7 +78,7 @@ final class GraphvizServer {
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOG.warn("Problem in communication", e);
                 }
             }
         }

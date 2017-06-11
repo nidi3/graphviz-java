@@ -26,7 +26,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     @Override
     public String execute(String src, Options options) {
         try {
-            return createSvg(src); //TODO handle options
+            return createSvg(src, options);
         } catch (IOException e) {
             throw new GraphvizException("Problem in communication with server", e);
         }
@@ -36,9 +36,9 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     protected void doInit() throws Exception {
         if (!canConnect()) {
             GraphvizServer.start();
-            for (int i = 0; i < 50 && !canConnect(); i++) {
+            for (int i = 0; i < 100 && !canConnect(); i++) {
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(40);
                 } catch (InterruptedException e) {
                     //ignore
                 }
@@ -59,9 +59,9 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         }
     }
 
-    private String createSvg(String src) throws IOException {
+    private String createSvg(String src, Options options) throws IOException {
         return communicating(com -> {
-            com.writeContent(src);
+            com.writeContent(options.toJson(true) + "@@@" + src);
             final String status = com.readStatus();
             final int len = com.readLen();
             final String content = com.readContent(len);

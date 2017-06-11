@@ -137,7 +137,7 @@ public final class Graphviz {
         return new Graphviz(src, rasterizer, width, height, scale, options.engine(engine));
     }
 
-    public Graphviz totalMemory(int totalMemory) {
+    public Graphviz totalMemory(Integer totalMemory) {
         return new Graphviz(src, rasterizer, width, height, scale, options.totalMemory(totalMemory));
     }
 

@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz.engine;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*
  * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
@@ -31,6 +34,10 @@ package guru.nidi.graphviz.engine;
  * limitations under the License.
  */
 final class Options {
+    private static final Pattern FORMAT = Pattern.compile("format:'(.*?)'");
+    private static final Pattern ENGINE = Pattern.compile("engine:'(.*?)'");
+    private static final Pattern MEMORY = Pattern.compile("totalMemory:'(.*?)'");
+
     final Engine engine;
     final Format format;
     final Integer totalMemory;
@@ -45,6 +52,19 @@ final class Options {
         return new Options(Engine.DOT, null, null);
     }
 
+    public static Options fromJson(String json) {
+        final Matcher format = FORMAT.matcher(json);
+        format.find();
+        final Matcher engine = ENGINE.matcher(json);
+        engine.find();
+        final Matcher memory = MEMORY.matcher(json);
+        final boolean hasMemory = memory.find();
+        return new Options(
+                Engine.valueOf(engine.group(1)),
+                Format.valueOf(format.group(1)),
+                hasMemory ? Integer.parseInt(memory.group(1)) : null);
+    }
+
     public Options engine(Engine engine) {
         return new Options(engine, format, totalMemory);
     }
@@ -53,13 +73,13 @@ final class Options {
         return new Options(engine, format, totalMemory);
     }
 
-    public Options totalMemory(int totalMemory) {
+    public Options totalMemory(Integer totalMemory) {
         return new Options(engine, format, totalMemory);
     }
 
-    public String toJson() {
-        final String form = "format:'" + format.vizName + "'";
-        final String eng = ",engine:'" + engine.toString().toLowerCase() + "'";
+    public String toJson(boolean raw) {
+        final String form = "format:'" + (raw ? format : format.vizName) + "'";
+        final String eng = ",engine:'" + (raw ? engine : engine.toString().toLowerCase()) + "'";
         final String mem = totalMemory == null ? "" : (",totalMemory:'" + totalMemory + "'");
         return "{" + form + eng + mem + "}";
     }

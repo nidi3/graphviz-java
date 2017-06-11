@@ -31,7 +31,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     protected abstract String jsExecute(String jsCall);
 
     protected String jsVizExec(String src, Options options) {
-        return src.startsWith("Viz(") ? src : ("Viz('" + jsEscape(src) + "'," + options.toJson() + ");");
+        return src.startsWith("Viz(") ? src : ("Viz('" + jsEscape(src) + "'," + options.toJson(false) + ");");
     }
 
     protected String jsEscape(String js) {
