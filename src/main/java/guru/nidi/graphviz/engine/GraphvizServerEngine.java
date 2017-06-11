@@ -38,7 +38,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
             GraphvizServer.start();
             for (int i = 0; i < 100 && !canConnect(); i++) {
                 try {
-                    Thread.sleep(40);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     //ignore
                 }
