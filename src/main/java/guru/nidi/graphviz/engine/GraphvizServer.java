@@ -34,14 +34,13 @@ final class GraphvizServer {
     public static void start() throws IOException {
         final boolean windows = System.getProperty("os.name").contains("windows");
         final String executable = windows ? "java.exe" : "java";
-        final Process process = new ProcessBuilder(System.getProperty("java.home") + "/bin/" + executable,
+        new ProcessBuilder(System.getProperty("java.home") + "/bin/" + executable,
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName())
                 .inheritIO()
                 .start();
     }
 
     public static void main(String... args) throws IOException {
-        System.out.println("WWWWWWWWWW");
         LOG.info("starting graphviz server...");
         Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
         LOG.info("started.");
