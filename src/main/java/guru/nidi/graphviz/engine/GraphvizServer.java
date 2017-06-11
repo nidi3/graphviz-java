@@ -42,6 +42,7 @@ final class GraphvizServer {
     }
 
     public static void main(String... args) throws IOException {
+        System.out.println("WWWWWWWWWW");
         LOG.info("starting graphviz server...");
         Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
         LOG.info("started.");
@@ -56,21 +57,9 @@ final class GraphvizServer {
                         if (len == -1) {
                             break;
                         }
-                        final String raw = com.readContent(len);
-                        final int pos = raw.indexOf("@@@");
-                        final Options options;
-                        final String src;
-                        if (pos < 0) {
-                            options = Options.create().format(SVG_STANDALONE);
-                            src = raw;
-                        } else {
-                            options = Options.fromJson(raw.substring(0, pos));
-                            src = raw.substring(pos + 3);
-                        }
+                        final String s = com.readContent(len);
                         try {
-                            final String svg = Graphviz.fromString(src)
-                                    .engine(options.engine).totalMemory(options.totalMemory)
-                                    .render(options.format).toString();
+                            final String svg = render(s);
                             com.writeStatus("ok");
                             com.writeContent(svg);
                         } catch (GraphvizException e) {
@@ -84,6 +73,22 @@ final class GraphvizServer {
             }
         }
         LOG.info("graphviz server stopped.");
+    }
+
+    private static String render(String raw) {
+        final int pos = raw.indexOf("@@@");
+        final Options options;
+        final String src;
+        if (pos < 0) {
+            options = Options.create().format(SVG_STANDALONE);
+            src = raw;
+        } else {
+            options = Options.fromJson(raw.substring(0, pos));
+            src = raw.substring(pos + 3);
+        }
+        return Graphviz.fromString(src)
+                .engine(options.engine).totalMemory(options.totalMemory)
+                .render(options.format).toString();
     }
 
 }
