@@ -31,12 +31,16 @@ final class GraphvizServer {
     private GraphvizServer() {
     }
 
-    public static void start() throws IOException {
+    public static void start() throws IOException, InterruptedException {
         final boolean windows = System.getProperty("os.name").contains("windows");
         final String executable = windows ? "java.exe" : "java";
         final ProcessBuilder builder = new ProcessBuilder(System.getProperty("java.home") + "/bin/" + executable,
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()).inheritIO();
-        builder.start();
+        System.out.println(builder.command());
+        final Process process = builder.start();
+        System.out.println(process.isAlive());
+        Thread.sleep(2000);
+        System.out.println(process.isAlive());
     }
 
     public static void main(String[] args) throws IOException {
