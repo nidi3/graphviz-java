@@ -16,7 +16,8 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
-import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static guru.nidi.graphviz.model.Factory.graph;
@@ -25,6 +26,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class GraphvizTest {
+    @BeforeClass
+    public static void init() {
+        Graphviz.useEngine(new AbstractGraphvizEngineTest.GraphvizEngineDummy());
+    }
+
+    @AfterClass
+    public static void end() {
+        Graphviz.releaseEngine();
+    }
 
     @Test
     public void scaleMethodChainCheck() {
@@ -53,8 +63,6 @@ public class GraphvizTest {
     @Test
     public void executeWithTotalMemory() {
         final Graph graph = graph().with(node("a").link("b"));
-
-        Graphviz.useEngine(new AbstractGraphvizEngineTest.GraphvizEngineDummy());
         final String result = Graphviz.fromGraph(graph).totalMemory(32000).render(Format.SVG).toString();
 
         assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot',totalMemory:'32000'});"));
@@ -63,16 +71,9 @@ public class GraphvizTest {
     @Test
     public void executeWithoutTotalMemory() {
         final Graph graph = graph().with(node("a").link("b"));
-
-        Graphviz.useEngine(new AbstractGraphvizEngineTest.GraphvizEngineDummy());
         final String result = Graphviz.fromGraph(graph).render(Format.SVG).toString();
 
         assertThat(result, is("Viz('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot'});"));
-    }
-
-    @After
-    public void end(){
-        Graphviz.releaseEngine();
     }
 
     private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {
@@ -80,5 +81,4 @@ public class GraphvizTest {
         assertThat(graphviz.height, is(expectedHeight));
         assertThat(graphviz.scale, is(expectedScale));
     }
-
 }

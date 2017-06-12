@@ -17,14 +17,27 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizException;
+import guru.nidi.graphviz.engine.GraphvizJdkEngine;
+import guru.nidi.graphviz.engine.GraphvizV8Engine;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.*;
 
 public class SimpleTest {
+    @BeforeClass
+    public static void init() {
+        Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
+    }
+
+    @AfterClass
+    public static void end() {
+        Graphviz.releaseEngine();
+    }
+
     @Test
     public void simple() {
         final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");

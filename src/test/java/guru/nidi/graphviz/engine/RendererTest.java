@@ -16,6 +16,8 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,8 +27,17 @@ import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static org.junit.Assert.assertTrue;
 
-
 public class RendererTest {
+
+    @BeforeClass
+    public static void init() {
+        Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
+    }
+
+    @AfterClass
+    public static void end() {
+        Graphviz.releaseEngine();
+    }
 
     @Test
     public void toFileParentFolderNotExists() throws Exception {

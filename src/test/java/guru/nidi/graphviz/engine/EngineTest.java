@@ -19,7 +19,6 @@ import guru.nidi.graphviz.service.DefaultExecutor;
 import guru.nidi.graphviz.service.SystemUtils;
 import org.apache.commons.exec.CommandLine;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

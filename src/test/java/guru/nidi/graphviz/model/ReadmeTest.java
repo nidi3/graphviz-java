@@ -16,11 +16,10 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
-import guru.nidi.graphviz.engine.Engine;
-import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.Rasterizer;
+import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.parse.Parser;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.awt.image.BufferedImage;
@@ -33,6 +32,16 @@ import static guru.nidi.graphviz.model.Compass.*;
 import static guru.nidi.graphviz.model.Factory.*;
 
 public class ReadmeTest {
+    @BeforeClass
+    public static void init() {
+        Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
+    }
+
+    @AfterClass
+    public static void end() {
+        Graphviz.releaseEngine();
+    }
+
     @Test
     public void ex1() throws IOException {
         //## basic

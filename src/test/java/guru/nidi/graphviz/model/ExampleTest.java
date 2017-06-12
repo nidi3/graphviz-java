@@ -21,7 +21,11 @@ import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.engine.Engine;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.engine.GraphvizJdkEngine;
+import guru.nidi.graphviz.engine.GraphvizV8Engine;
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.awt.*;
@@ -40,6 +44,16 @@ import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.model.Link.to;
 
 public class ExampleTest {
+    @BeforeClass
+    public static void init() {
+        Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
+    }
+
+    @AfterClass
+    public static void end() {
+        Graphviz.releaseEngine();
+    }
+
     @After
     public void closeContext() {
         CreationContext.end();
