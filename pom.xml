@@ -89,6 +89,12 @@
     </build>
 
     <dependencies>
+        <!-- this must come before batik because code-assert->bcel-findbugs
+        conflicts with batik->xalan which inlines another version of bcel-->
+        <dependency>
+            <groupId>guru.nidi</groupId>
+            <artifactId>code-assert</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-rasterizer</artifactId>
@@ -164,10 +170,6 @@
             <artifactId>jul-to-slf4j</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>guru.nidi</groupId>
-            <artifactId>code-assert</artifactId>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
