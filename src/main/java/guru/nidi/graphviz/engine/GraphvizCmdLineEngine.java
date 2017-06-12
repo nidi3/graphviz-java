@@ -58,22 +58,12 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
     @Override
     protected void doInit() throws GraphvizException {
-        String engine = "dot";
-        if (SystemUtils.IS_OS_WINDOWS) {
-            engine = engine + ".exe";
-        }
-        if (!CommandRunner.isExecutableFound(engine, envPath)) {
-            throw new GraphvizException(engine + " executable not found");
-        }
+        getEngineExecutable(Engine.DOT);
     }
 
     @Override
     public String execute(String src, Options options) {
-        final String engine = getEngineFromOptions(options);
-        if (!CommandRunner.isExecutableFound(engine, envPath)) {
-            throw new GraphvizException(engine + " command not found");
-        }
-
+        final String engine = getEngineExecutable(options.engine);
         try {
             // Create a temporary file to save the svg file to.
             final Path tempDirPath = Files.createTempDirectory(getOrCreateTempDirectory().toPath(), "DotEngine");
@@ -85,8 +75,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
                 bw.write(src);
             }
 
-            // Run the command
-            final String command = engine + " -T" + getFormatFromOptions(options)
+            final String command = engine + " -T" + getFormatName(options.format)
                     + " " + dotfile.getAbsolutePath() + " -ooutfile.svg";
             cmdRunner.exec(command, tempDirPath.toFile());
 
@@ -101,23 +90,17 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         }
     }
 
-    private String getEngineFromOptions(Options options) {
-        String engine = "dot";
-        if (options.engine != null) {
-            engine = options.engine.toString().toLowerCase();
+    private String getEngineExecutable(Engine engine) {
+        final String base = engine == null ? "dot" : engine.toString().toLowerCase();
+        final String exe = SystemUtils.IS_OS_WINDOWS ? base + ".exe" : base;
+        if (!CommandRunner.isExecutableFound(exe, envPath)) {
+            throw new GraphvizException(exe + " command not found");
         }
-        if (SystemUtils.IS_OS_WINDOWS) {
-            engine = engine + ".exe";
-        }
-        return engine;
+        return exe;
     }
 
-    private String getFormatFromOptions(Options options) {
-        String format = "svg";
-        if (options.format != null && options.format.vizName != null) {
-            format = options.format.vizName;
-        }
-        return format;
+    private String getFormatName(Format format) {
+        return format == null || format.vizName == null ? "svg" : format.vizName;
     }
 
     private File getOrCreateTempDirectory() {
