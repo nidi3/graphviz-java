@@ -6,7 +6,7 @@
     <parent>
         <groupId>guru.nidi</groupId>
         <artifactId>guru-nidi-parent-pom</artifactId>
-        <version>1.0.15</version>
+        <version>1.0.17</version>
         <relativePath />
     </parent>
 
@@ -21,7 +21,6 @@
     <properties>
         <java.version>1.8</java.version>
         <j2v8.version>4.6.0</j2v8.version>
-        <slf4j.version>1.7.25</slf4j.version>
     </properties>
 
     <scm>
@@ -33,18 +32,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
-                <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>release</releaseProfiles>
-                    <goals>deploy</goals>
-                    <checkModificationExcludeList>workspace.xml</checkModificationExcludeList>
-                    <arguments>-Prelease-all</arguments>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>guru.nidi</groupId>
                 <artifactId>code-assert-maven-plugin</artifactId>
@@ -101,42 +88,16 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.owasp</groupId>
-                        <artifactId>dependency-check-maven</artifactId>
-                        <version>1.4.5</version>
-                        <executions>
-                            <execution>
-                                <phase>validate</phase>
-                                <goals>
-                                    <goal>aggregate</goal>
-                                </goals>
-                                <configuration>
-                                    <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-rasterizer</artifactId>
-            <version>1.8</version>
+            <version>1.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-codec</artifactId>
-            <version>1.8</version>
+            <version>1.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
@@ -193,12 +154,14 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
         </dependency>
 
         <dependency>
