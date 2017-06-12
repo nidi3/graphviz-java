@@ -58,8 +58,12 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
     @Override
     protected void doInit() throws GraphvizException {
-        if (!CommandRunner.isExecutableFound("dot", envPath)) {
-            throw new GraphvizException("'dot' command not found");
+        String engine = "dot";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            engine = engine + ".exe";
+        }
+        if (!CommandRunner.isExecutableFound(engine, envPath)) {
+            throw new GraphvizException(engine + " executable not found");
         }
     }
 
