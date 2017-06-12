@@ -103,7 +103,7 @@
 
     <profiles>
         <profile>
-            <id>release-all</id>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
