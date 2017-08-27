@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-final class Options {
+public final class Options {
     private static final Pattern FORMAT = Pattern.compile("format:'(.*?)'");
     private static final Pattern ENGINE = Pattern.compile("engine:'(.*?)'");
     private static final Pattern MEMORY = Pattern.compile("totalMemory:'(.*?)'");
