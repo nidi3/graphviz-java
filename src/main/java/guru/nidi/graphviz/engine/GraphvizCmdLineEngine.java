@@ -94,7 +94,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         final String base = engine == null ? "dot" : engine.toString().toLowerCase();
         final String exe = SystemUtils.IS_OS_WINDOWS ? base + ".exe" : base;
         if (!CommandRunner.isExecutableFound(exe, envPath)) {
-            GraphvizException e = new GraphvizException(exe + " command not found");
+            final GraphvizException e = new GraphvizException(exe + " command not found");
             e.setStackTrace(new StackTraceElement[0]);
             throw e;
         }
