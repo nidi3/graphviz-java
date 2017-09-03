@@ -125,10 +125,9 @@ class Lexer {
     private Token quotedIdent() throws IOException {
         final StringBuilder s = new StringBuilder();
         readRawChar();
-        do {
+        while (ch != '"' && ch != CH_EOF) {
             s.append(ch);
             readRawChar();
-            if (s.length() > 0) {
                 if (ch == '"' && s.charAt(s.length() - 1) == '\\') {
                     s.replace(s.length() - 1, s.length(), "\"");
                     readRawChar();
@@ -137,8 +136,7 @@ class Lexer {
                     s.delete(s.length() - 1, s.length());
                     readRawChar();
                 }
-            }
-        } while (ch != '"' && ch != CH_EOF);
+        }
         readChar();
         return new Token(ID, SUB_QUOTED, s.toString());
     }
