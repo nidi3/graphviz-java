@@ -19,14 +19,8 @@ import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.attribute.Shape;
-import guru.nidi.graphviz.engine.Engine;
-import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.GraphvizJdkEngine;
-import guru.nidi.graphviz.engine.GraphvizV8Engine;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import guru.nidi.graphviz.engine.*;
+import org.junit.*;
 
 import java.awt.*;
 import java.io.File;

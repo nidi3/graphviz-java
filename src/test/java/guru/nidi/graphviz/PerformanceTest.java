@@ -18,10 +18,7 @@ package guru.nidi.graphviz;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizV8Engine;
-import guru.nidi.graphviz.model.CreationContext;
-import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.model.Label;
-import guru.nidi.graphviz.model.Node;
+import guru.nidi.graphviz.model.*;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Records.rec;

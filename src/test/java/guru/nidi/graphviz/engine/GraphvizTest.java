@@ -16,9 +16,7 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;

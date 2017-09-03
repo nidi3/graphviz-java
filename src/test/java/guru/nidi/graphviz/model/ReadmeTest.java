@@ -18,9 +18,7 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.parse.Parser;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

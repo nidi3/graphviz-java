@@ -15,9 +15,7 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class MapAttributes implements Attributes, Iterable<Map.Entry<String, Object>> {
     protected final Map<String, Object> attributes;

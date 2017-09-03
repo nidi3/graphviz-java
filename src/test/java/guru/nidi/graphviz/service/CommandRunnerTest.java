@@ -18,10 +18,7 @@ package guru.nidi.graphviz.service;
 import org.apache.commons.exec.CommandLine;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 import java.io.File;
 import java.io.IOException;

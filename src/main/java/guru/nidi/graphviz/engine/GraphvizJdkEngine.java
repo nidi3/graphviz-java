@@ -15,9 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import javax.script.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 

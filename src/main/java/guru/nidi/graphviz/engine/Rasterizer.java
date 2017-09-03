@@ -15,21 +15,14 @@
  */
 package guru.nidi.graphviz.engine;
 
-import com.kitfox.svg.SVGDiagram;
-import com.kitfox.svg.SVGException;
-import com.kitfox.svg.SVGUniverse;
-import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.TranscodingHints;
+import com.kitfox.svg.*;
+import org.apache.batik.transcoder.*;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URI;
 import java.util.function.Consumer;
 
