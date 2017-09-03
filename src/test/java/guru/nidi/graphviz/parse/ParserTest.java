@@ -35,7 +35,7 @@ public class ParserTest {
 
     @Test
     public void emptyStrictDigraph() throws IOException {
-        assertEquals(mutGraph(Label.html("bla")).setStrict().setDirected(),
+        assertEquals(mutGraph(Label.html("bla")).setStrict(true).setDirected(true),
                 Parser.read("strict digraph <bla>{}"));
     }
 
@@ -103,4 +103,8 @@ public class ParserTest {
                 Parser.read("graph{ {} -- {} [a=b]  {} -- subgraph{}  {} -- subgraph a{} }"));
     }
 
+    @Test
+    public void inheritDirected() throws IOException {
+        Parser.read("digraph { subgraph { a -> b } }");
+    }
 }

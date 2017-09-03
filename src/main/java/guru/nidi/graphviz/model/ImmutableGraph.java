@@ -15,14 +15,9 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attributed;
-import guru.nidi.graphviz.attribute.Attributes;
-import guru.nidi.graphviz.attribute.MapAttributes;
-import guru.nidi.graphviz.attribute.MutableAttributed;
+import guru.nidi.graphviz.attribute.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 class ImmutableGraph extends MutableGraph implements Graph {
@@ -46,15 +41,15 @@ class ImmutableGraph extends MutableGraph implements Graph {
     }
 
     public Graph strict() {
-        return (ImmutableGraph) copyOfMut().setStrict();
+        return (ImmutableGraph) copyOfMut().setStrict(true);
     }
 
     public Graph directed() {
-        return (ImmutableGraph) copyOfMut().setDirected();
+        return (ImmutableGraph) copyOfMut().setDirected(true);
     }
 
     public Graph cluster() {
-        return (ImmutableGraph) copyOfMut().setCluster();
+        return (ImmutableGraph) copyOfMut().setCluster(true);
     }
 
     public Graph labeled(Label label) {

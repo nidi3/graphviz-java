@@ -21,10 +21,7 @@ import guru.nidi.graphviz.model.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static guru.nidi.graphviz.model.Factory.between;
 import static guru.nidi.graphviz.model.Factory.mutNode;
@@ -59,11 +56,11 @@ public final class Parser {
         return CreationContext.use(() -> {
             final MutableGraph graph = new MutableGraph();
             if (token.type == STRICT) {
-                graph.setStrict();
+                graph.setStrict(true);
                 nextToken();
             }
             if (token.type == DIGRAPH) {
-                graph.setDirected();
+                graph.setDirected(true);
             } else if (token.type != GRAPH) {
                 fail("'graph' or 'digraph' expected");
             }
@@ -111,7 +108,7 @@ public final class Parser {
                 return true;
             case SUBGRAPH:
             case BRACE_OPEN:
-                final MutableGraph sub = subgraph();
+                final MutableGraph sub = subgraph(graph.isDirected());
                 if (token.type == MINUS_MINUS || token.type == ARROW) {
                     edgeStatement(graph, sub);
                 } else {
@@ -128,9 +125,9 @@ public final class Parser {
         }
     }
 
-    private MutableGraph subgraph() throws IOException {
+    private MutableGraph subgraph(boolean directed) throws IOException {
         return CreationContext.use(() -> {
-            final MutableGraph sub = new MutableGraph();
+            final MutableGraph sub = new MutableGraph().setDirected(directed);
             if (token.type == SUBGRAPH) {
                 nextToken();
                 if (token.type == ID) {
@@ -160,7 +157,7 @@ public final class Parser {
                 nextToken();
                 points.add(nodeId(id));
             } else if (token.type == SUBGRAPH || token.type == BRACE_OPEN) {
-                points.add(subgraph());
+                points.add(subgraph(graph.isDirected()));
             }
         } while (token.type == MINUS_MINUS || token.type == ARROW);
         final List<Token> attrs = (token.type == BRACKET_OPEN) ? attributeList() : Collections.emptyList();
