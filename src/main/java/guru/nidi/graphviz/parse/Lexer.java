@@ -128,14 +128,14 @@ class Lexer {
         while (ch != '"' && ch != CH_EOF) {
             s.append(ch);
             readRawChar();
-                if (ch == '"' && s.charAt(s.length() - 1) == '\\') {
-                    s.replace(s.length() - 1, s.length(), "\"");
-                    readRawChar();
-                }
-                if (ch == '\n' && s.charAt(s.length() - 1) == '\\') {
-                    s.delete(s.length() - 1, s.length());
-                    readRawChar();
-                }
+            if (ch == '"' && s.charAt(s.length() - 1) == '\\') {
+                s.replace(s.length() - 1, s.length(), "\"");
+                readRawChar();
+            }
+            if (ch == '\n' && s.charAt(s.length() - 1) == '\\') {
+                s.delete(s.length() - 1, s.length());
+                readRawChar();
+            }
         }
         readChar();
         return new Token(ID, SUB_QUOTED, s.toString());

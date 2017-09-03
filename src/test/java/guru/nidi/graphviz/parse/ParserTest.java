@@ -105,7 +105,9 @@ public class ParserTest {
 
     @Test
     public void inheritDirected() throws IOException {
-        Parser.read("digraph { subgraph { a -> b } }");
+        assertEquals(mutGraph().setDirected(true).add(
+                mutGraph().setDirected(true).add(mutNode("a").addLink("b"))),
+                Parser.read("digraph { subgraph { a -> b } }"));
     }
 
     @Test
