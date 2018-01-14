@@ -79,8 +79,8 @@ public class Renderer {
     }
 
     private void writeToOutputStream(OutputStream outputStream, String format, BufferedImage img) {
-        try {
-            ImageIO.write(img, format, outputStream);
+        try (final OutputStream closing = outputStream) {
+            ImageIO.write(img, format, closing);
         } catch (IOException e) {
             throw new GraphvizException("Problem writing to output stream", e);
         }
