@@ -51,6 +51,16 @@ public class Renderer {
         }
     }
 
+    public void toOutputStream(OutputStream outputStream) throws IOException {
+        if (graphviz.format().image) {
+            writeToOutputStream(outputStream, graphviz.format().name().toLowerCase(), toImage());
+        } else {
+            try (final Writer out = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+                out.write(toString());
+            }
+        }
+    }
+
     public BufferedImage toImage() {
         if (!graphviz.format().svg) {
             throw new IllegalStateException("Images can only be rendered from PNG and SVG formats.");
@@ -65,6 +75,14 @@ public class Renderer {
             ImageIO.write(img, format, output);
         } catch (IOException e) {
             throw new GraphvizException("Problem writing to file", e);
+        }
+    }
+
+    private void writeToOutputStream(OutputStream outputStream, String format, BufferedImage img) {
+        try {
+            ImageIO.write(img, format, outputStream);
+        } catch (IOException e) {
+            throw new GraphvizException("Problem writing to output stream", e);
         }
     }
 }
