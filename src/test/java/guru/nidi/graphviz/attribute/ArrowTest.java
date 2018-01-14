@@ -15,82 +15,82 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ArrowTest {
+class ArrowTest {
     @Test
-    public void simple() {
+    void simple() {
         assertArrow("dot", Arrow.DOT);
     }
 
     @Test
-    public void and() {
+    void and() {
         assertArrow("boxdot", Arrow.DOT.and(Arrow.BOX));
     }
 
     @Test
-    public void left() {
+    void left() {
         assertArrow("lbox", Arrow.BOX.left());
     }
 
     @Test
-    public void right() {
+    void right() {
         assertArrow("rbox", Arrow.BOX.right());
     }
 
     @Test
-    public void rightAfterLeft() {
+    void rightAfterLeft() {
         assertArrow("rbox", Arrow.BOX.left().right());
     }
 
     @Test
-    public void open() {
+    void open() {
         assertArrow("obox", Arrow.BOX.open());
     }
 
     @Test
-    public void openAfterOpen() {
+    void openAfterOpen() {
         assertArrow("obox", Arrow.BOX.open().open());
     }
 
     @Test
-    public void openAfterLeft() {
+    void openAfterLeft() {
         assertArrow("olbox", Arrow.BOX.left().open());
     }
 
     @Test
-    public void leftAfterOpen() {
+    void leftAfterOpen() {
         assertArrow("olbox", Arrow.BOX.open().left());
     }
 
     @Test
-    public void leftAfterOpenRight() {
+    void leftAfterOpenRight() {
         assertArrow("olbox", Arrow.BOX.open().right().left());
     }
 
     @Test
-    public void tail() {
+    void tail() {
         assertEquals("arrowtail", Arrow.BOX.tail().key);
     }
 
     @Test
-    public void size() {
+    void size() {
         assertEquals(attrs(attr("arrowhead", "box"), attr("arrowsize", 2d)),
                 Arrow.BOX.size(2));
     }
 
     @Test
-    public void dir() {
+    void dir() {
         assertEquals(attrs(attr("arrowhead", "box"), attr("dir", "back")),
                 Arrow.BOX.dir(Arrow.DirType.BACK));
     }
 
     @Test
-    public void config() {
+    void config() {
         assertEquals(attrs(attr("arrowhead", "box"), attr("arrowsize", 2d), attr("dir", "back")),
                 Arrow.BOX.config(2, Arrow.DirType.BACK));
     }

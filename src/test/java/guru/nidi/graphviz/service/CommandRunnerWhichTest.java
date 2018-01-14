@@ -15,41 +15,41 @@
  */
 package guru.nidi.graphviz.service;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 /**
  * @author toon
  */
-public class CommandRunnerWhichTest {
+class CommandRunnerWhichTest {
     private final static String CMD_EXISTS = SystemUtils.IS_OS_WINDOWS ? "notepad.exe" : "ls";
     private final static String CMD_NOT_EXISTS = "foobeebaabeloo"; // <me> crosses fingers
 
     @Test
-    public void whichTest() {
+    void whichTest() {
         final List<Path> paths = CommandRunner.which(CMD_EXISTS).collect(Collectors.toList());
         assertThat(paths, is(not(empty())));
     }
 
     @Test
-    public void whichTestEmpty() {
+    void whichTestEmpty() {
         final List<Path> paths = CommandRunner.which(CMD_NOT_EXISTS).collect(Collectors.toList());
         assertThat(paths, is(empty()));
     }
 
     @Test
-    public void isExecutableFound() throws Exception {
+    void isExecutableFound() throws Exception {
         assertThat(CommandRunner.isExecutableFound(CMD_EXISTS), is(true));
     }
 
     @Test
-    public void isExecutableNotFound() {
+    void isExecutableNotFound() {
         assertThat(CommandRunner.isExecutableFound(CMD_NOT_EXISTS), is(false));
     }
 

@@ -15,45 +15,45 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RecordsTest {
+class RecordsTest {
     @Test
-    public void label() {
+    void label() {
         assertEquals(attrs(attr("shape", "record"), attr("label", "label")), Records.label("label"));
     }
 
     @Test
-    public void mlabel() {
+    void mlabel() {
         assertEquals(attrs(attr("shape", "Mrecord"), attr("label", "label")), Records.mLabel("label"));
     }
 
     @Test
-    public void of() {
+    void of() {
         assertEquals(attrs(attr("shape", "record"), attr("label", "a|b|c")), Records.of("a", "b", "c"));
     }
 
     @Test
-    public void mof() {
+    void mof() {
         assertEquals(attrs(attr("shape", "Mrecord"), attr("label", "a|b|c")), Records.mOf("a", "b", "c"));
     }
 
     @Test
-    public void rec() {
+    void rec() {
         assertEquals("l\\<a\\>\\ \\{b\\}\\ \\|\\ el", Records.rec("l<a> {b} | el"));
     }
 
     @Test
-    public void tagRec() {
+    void tagRec() {
         assertEquals("<tag>label", Records.rec("tag", "label"));
     }
 
     @Test
-    public void turn() {
+    void turn() {
         assertEquals("{<tag>label|hula}", Records.turn(Records.rec("tag", "label"), "hula"));
     }
 

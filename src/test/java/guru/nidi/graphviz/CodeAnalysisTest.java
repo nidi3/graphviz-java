@@ -21,26 +21,38 @@ import guru.nidi.codeassert.config.AnalyzerConfig;
 import guru.nidi.codeassert.config.In;
 import guru.nidi.codeassert.dependency.*;
 import guru.nidi.codeassert.findbugs.*;
-import guru.nidi.codeassert.junit.CodeAssertTest;
-import guru.nidi.codeassert.junit.PredefConfig;
-import guru.nidi.codeassert.model.ModelAnalyzer;
-import guru.nidi.codeassert.model.ModelResult;
+import guru.nidi.codeassert.junit.*;
 import guru.nidi.codeassert.pmd.*;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.*;
 import guru.nidi.graphviz.parse.Parser;
-import guru.nidi.graphviz.service.CommandRunnerTest;
 import net.sourceforge.pmd.RulePriority;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static guru.nidi.codeassert.junit.CodeAssertMatchers.packagesMatchExactly;
-import static org.junit.Assert.assertThat;
+import java.util.EnumSet;
 
-public class CodeAnalysisTest extends CodeAssertTest {
+import static guru.nidi.codeassert.junit.CodeAssertMatchers.matchesRulesExactly;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+class CodeAnalysisTest extends CodeAssertJunit5Test {
+
+    //TODO un-overwrite as soon as svg salamander is available from maven
+    @Override
+    protected EnumSet<CodeAssertTestType> defaultTests() {
+        final EnumSet<CodeAssertTestType> types = super.defaultTests();
+        types.remove(CodeAssertTestType.CIRCULAR_DEPENDENCIES);
+        return types;
+    }
+
     @Test
-    public void dependencies() {
+    void dependencies() {
+        assertThat(dependencyResult(), matchesRulesExactly());
+    }
+
+    @Override
+    protected DependencyResult analyzeDependencies() {
         class GuruNidiGraphviz extends DependencyRuler {
             DependencyRule model, attribute, engine, parse, service;
 
@@ -53,17 +65,7 @@ public class CodeAnalysisTest extends CodeAssertTest {
         final DependencyRules rules = DependencyRules.denyAll()
                 .withExternals("java*", "com.*", "org.*")
                 .withRelativeRules(new GuruNidiGraphviz());
-        assertThat(modelResult(), packagesMatchExactly(rules));
-    }
-
-    @Override
-    protected ModelResult analyzeModel() {
-        return new ModelAnalyzer(AnalyzerConfig.maven().main()).analyze();
-    }
-
-    @Override
-    public void circularDependencies() {
-        //TODO un-overwrite as soon as svg salamander is available from maven
+        return new DependencyAnalyzer(AnalyzerConfig.maven().main()).rules(rules).analyze();
     }
 
     @Override
@@ -71,10 +73,18 @@ public class CodeAnalysisTest extends CodeAssertTest {
         final BugCollector collector = new BugCollector().minPriority(Priorities.NORMAL_PRIORITY)
                 .apply(PredefConfig.dependencyTestIgnore(CodeAnalysisTest.class))
                 .because("It's SVG salamander", In.loc("com.kitfox.svg*").ignoreAll())
-                .because("It's examples", In.clazz(ReadmeTest.class).ignore("DLS_DEAD_LOCAL_STORE"))
+                .because("It's examples", In.loc("ReadmeTest").ignore("DLS_DEAD_LOCAL_STORE"))
+                .because("GraphvizServer is on localhost",
+                        In.locs("GraphvizServer", "GraphvizServerEngine")
+                                .ignore("UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"))
+                .because("We don't execute user submitted JS code",
+                        In.clazz(GraphvizJdkEngine.class).ignore("SCRIPT_ENGINE_INJECTION"))
                 .because("It's ok",
                         In.clazz(MutableGraph.class).ignore("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"),
                         In.loc("DefaultExecutor").ignore("DM_DEFAULT_ENCODING"),
+                        In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
+                        In.locs("GraphvizCmdLineEngine", "EngineTest").ignore("PATH_TRAVERSAL_IN"),
+                        In.loc("EngineTest").ignore("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
                         In.loc("Communicator").ignore("RR_NOT_CHECKED"));
         return new FindBugsAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector).analyze();
     }
@@ -83,7 +93,7 @@ public class CodeAnalysisTest extends CodeAssertTest {
     protected PmdResult analyzePmd() {
         final PmdViolationCollector collector = new PmdViolationCollector().minPriority(RulePriority.MEDIUM)
                 .apply(PredefConfig.minimalPmdIgnore())
-                .because("It's examples", In.classes(ExampleTest.class, ReadmeTest.class)
+                .because("It's examples", In.locs("ExampleTest", "ReadmeTest")
                         .ignore("JUnitTestsShouldIncludeAssert", "LocalVariableCouldBeFinal", "UnusedLocalVariable"))
                 .because("It's a test", In.loc("*Test")
                         .ignore("ExcessiveMethodLength"))
@@ -94,7 +104,7 @@ public class CodeAnalysisTest extends CodeAssertTest {
                         In.clazz(CreationContext.class).ignore("AvoidThrowingRawExceptionTypes"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
-                        In.clazz(CommandRunnerTest.class).ignore("JUnitTestsShouldIncludeAssert"),
+                        In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),
                         In.locs("Lexer", "Parser", "ImmutableGraph", "MutableGraph")
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
@@ -102,9 +112,9 @@ public class CodeAnalysisTest extends CodeAssertTest {
                         In.classes(MutableGraph.class, Serializer.class, Parser.class).ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"))
                 .because("It's command line tool", In.loc("GraphvizServer")
-                        .ignore("AvoidCatchingGenericException"))
+                        .ignore("AvoidCatchingGenericException", "PreserveStackTrace"))
                 .because("I don't understand the message",
-                        In.classes(CommandRunnerTest.class, AbstractJsGraphvizEngine.class).ignore("SimplifiedTernary"))
+                        In.locs("CommandRunnerTest", "AbstractJsGraphvizEngine").ignore("SimplifiedTernary"))
                 .because("It's wrapping an Exception with a RuntimeException", In.clazz(CreationContext.class)
                         .ignore("AvoidCatchingGenericException"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)

@@ -15,16 +15,15 @@
  */
 package guru.nidi.graphviz.engine;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
+class AbstractGraphvizEngineTest {
 
-public class AbstractGraphvizEngineTest {
-
-    public static class GraphvizEngineDummy extends AbstractJsGraphvizEngine {
-        public GraphvizEngineDummy() {
+    static class GraphvizEngineDummy extends AbstractJsGraphvizEngine {
+        GraphvizEngineDummy() {
             super(true);
         }
 
@@ -40,7 +39,7 @@ public class AbstractGraphvizEngineTest {
     }
 
     @Test
-    public void vizExecTotalMemoryIsSet() {
+    void vizExecTotalMemoryIsSet() {
         final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy();
         final Options options = Options.create().format(Format.SVG).totalMemory(320000);
 
@@ -50,7 +49,7 @@ public class AbstractGraphvizEngineTest {
     }
 
     @Test
-    public void vizExecTotalMemoryIsNotSet() {
+    void vizExecTotalMemoryIsNotSet() {
         final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy();
         final Options options = Options.create().format(Format.SVG);
 

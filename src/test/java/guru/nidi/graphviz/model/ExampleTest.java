@@ -20,7 +20,7 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.engine.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.awt.*;
 import java.io.File;
@@ -37,24 +37,24 @@ import static guru.nidi.graphviz.model.Compass.WEST;
 import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.model.Link.to;
 
-public class ExampleTest {
-    @BeforeClass
-    public static void init() {
+class ExampleTest {
+    @BeforeAll
+    static void init() {
         Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
     }
 
-    @AfterClass
-    public static void end() {
+    @AfterAll
+    static void end() {
         Graphviz.releaseEngine();
     }
 
-    @After
-    public void closeContext() {
+    @AfterEach
+    void closeContext() {
         CreationContext.end();
     }
 
     @Test
-    public void ex11() throws IOException {
+    void ex11() throws IOException {
         final Graph g = CreationContext.use(() -> graph("ex1").directed().with(
                 node("main").link(
                         node("parse"), node("init"), node("cleanup"), node("printf")),
@@ -68,7 +68,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex12() throws IOException {
+    void ex12() throws IOException {
         final Node
                 printf = node("printf"),
                 make_string = node("make_string");
@@ -83,7 +83,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex2() throws IOException {
+    void ex2() throws IOException {
         final Node
                 init = node("init"),
                 execute = node("execute"),
@@ -128,7 +128,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex3() throws IOException {
+    void ex3() throws IOException {
         final Node
                 a = node("a").with(Shape.polygon(5, 0, 0), attr("peripheries", 3), Color.LIGHTBLUE, Style.FILLED),
                 c = node("c").with(Shape.polygon(4, .4, 0), Label.html("hello world")),
@@ -141,7 +141,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex41() throws IOException {
+    void ex41() throws IOException {
         final Node
                 struct1 = node("struct1").with(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
                 struct2 = node("struct2").with(Records.label("<f0> one|<f1> two")),
@@ -155,7 +155,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex42() throws IOException {
+    void ex42() throws IOException {
         CreationContext.begin()
                 .graphs().add(Color.YELLOWGREEN.background())
                 .nodes().add(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
@@ -177,7 +177,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex5() throws IOException {
+    void ex5() throws IOException {
         final Node
                 reiser = node("Reiser cpp"), csh = node("Cshell"),
                 ksh = node("ksh"), emacs = node("emacs"),
@@ -298,7 +298,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex6() throws IOException {
+    void ex6() throws IOException {
         final Node
                 node0 = node("node0").with(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""), rec("f5", ""), rec("f6", ""))),
                 node1 = node("node1").with(Records.of(turn(rec("n", "n14"), rec("719"), rec("p", "")))),
@@ -323,7 +323,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex7() throws IOException {
+    void ex7() throws IOException {
         final Graph g = graph("ex7").directed()
                 .with(
                         graph().cluster()
@@ -346,7 +346,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex8() throws IOException {
+    void ex8() throws IOException {
         final Node split = node("split types"),
                 redString = node("reduce 'string' line"),
                 redNum = node("reduce 'numbers' line"),
@@ -376,7 +376,7 @@ public class ExampleTest {
     }
 
     @Test
-    public void ex9() throws IOException {
+    void ex9() throws IOException {
         final Graph g = graph("ex9").directed()
                 .with(node("first").link(to(node("second")).with(Arrow.DOT.open().size(2))));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex9.png"));

@@ -21,8 +21,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.*;
 
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
+import static java.util.stream.Collectors.toList;
 
 final class GraphvizServer {
     private static final Logger LOG = LoggerFactory.getLogger(GraphvizServer.class);
@@ -31,21 +33,22 @@ final class GraphvizServer {
     private GraphvizServer() {
     }
 
-    public static void start() throws IOException {
+    public static void start(List<GraphvizEngine> engines) throws IOException {
         final boolean windows = System.getProperty("os.name").contains("windows");
         final String executable = windows ? "java.exe" : "java";
-        new ProcessBuilder(System.getProperty("java.home") + "/bin/" + executable,
-                "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName())
-                .inheritIO()
-                .start();
+        final List<String> cmd = new ArrayList<>(Arrays.asList(
+                System.getProperty("java.home") + "/bin/" + executable,
+                "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()));
+        cmd.addAll(engines.stream().map(e -> e.getClass().getName()).collect(toList()));
+        new ProcessBuilder(cmd).inheritIO().start();
     }
 
     public static void main(String... args) throws IOException {
         LOG.info("starting graphviz server...");
-        Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
-        LOG.info("started.");
-        Graphviz.initEngine();
-        LOG.info("inited.");
+        if (args.length > 0) {
+            Graphviz.useEngine(Arrays.stream(args).map(GraphvizServer::engineFromString).collect(toList()));
+        }
+        LOG.info("started, using engines " + Arrays.toString(args));
         try (final ServerSocket ss = new ServerSocket(PORT)) {
             while (true) {
                 try (final Socket socket = ss.accept();
@@ -71,6 +74,18 @@ final class GraphvizServer {
             }
         }
         LOG.info("graphviz server stopped.");
+    }
+
+    private static GraphvizEngine engineFromString(String s) {
+        try {
+            final Object o = Class.forName(s).getConstructor().newInstance();
+            if (!(o instanceof GraphvizEngine)) {
+                throw new IllegalArgumentException(s + " does not implement GraphvizEngine.");
+            }
+            return (GraphvizEngine) o;
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalArgumentException("class " + s + " not found.");
+        }
     }
 
     private static String render(String raw) {

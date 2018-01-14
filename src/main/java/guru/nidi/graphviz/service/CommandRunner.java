@@ -76,8 +76,6 @@ public class CommandRunner {
         return Arrays
                 .stream(pathEnvVar.split(File.pathSeparator))
                 .map(path -> Paths.get(path))
-
-                // Env PATH could contain paths that do not exist
                 .filter(path -> Files.exists(path))
                 .map(path -> {
                     try (Stream<Path> entries = Files.list(path)) {

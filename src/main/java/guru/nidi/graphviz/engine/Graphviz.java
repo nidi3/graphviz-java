@@ -19,7 +19,7 @@ import guru.nidi.graphviz.model.*;
 
 import java.awt.*;
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
@@ -43,38 +43,49 @@ public final class Graphviz {
         this.options = options;
     }
 
-    public static void useEngine(GraphvizEngine first, GraphvizEngine... engines) {
-        synchronized (Graphviz.class) {
-            if (engineQueue == null) {
-                engineQueue = new ArrayBlockingQueue<>(1);
-            } else {
-                try {
-                    getEngine().release();
-                } catch (GraphvizException e) {
-                    //ignore
-                }
-            }
-        }
-        engine = null;
-        first.init(e -> engineQueue.add(e), e -> useEngine(Arrays.asList(engines)));
-    }
-
-    private static void useEngine(List<GraphvizEngine> engines) {
-        if (engines.isEmpty()) {
-            engineQueue.add(new ErrorGraphvizEngine());
-        } else {
-            engines.get(0).init(e -> engineQueue.add(e), e -> useEngine(engines.subList(1, engines.size())));
-        }
-    }
-
-    public static void initEngine() {
+    public static void useDefaultEngines() {
         useEngine(new GraphvizCmdLineEngine(), new GraphvizV8Engine(),
                 new GraphvizServerEngine(), new GraphvizJdkEngine());
     }
 
+    public static void useEngine(GraphvizEngine first, GraphvizEngine... rest) {
+        final List<GraphvizEngine> engines = new ArrayList<>();
+        engines.add(first);
+        engines.addAll(Arrays.asList(rest));
+        useEngine(engines);
+    }
+
+    public static void useEngine(List<GraphvizEngine> engines) {
+        if (engines.isEmpty()) {
+            useDefaultEngines();
+        } else {
+            synchronized (Graphviz.class) {
+                if (engineQueue == null) {
+                    engineQueue = new ArrayBlockingQueue<>(1);
+                } else {
+                    try {
+                        getEngine().release();
+                    } catch (GraphvizException e) {
+                        //ignore
+                    }
+                }
+            }
+            engine = null;
+            doUseEngine(engines);
+        }
+    }
+
+    private static void doUseEngine(List<GraphvizEngine> engines) {
+        if (engines.isEmpty()) {
+            engineQueue.add(new ErrorGraphvizEngine());
+        } else {
+            engines.get(0).init(e -> engineQueue.add(e), e -> doUseEngine(engines.subList(1, engines.size())));
+        }
+    }
+
     private static GraphvizEngine getEngine() {
         if (engineQueue == null) {
-            initEngine();
+            useDefaultEngines();
         }
         synchronized (Graphviz.class) {
             if (engine == null) {

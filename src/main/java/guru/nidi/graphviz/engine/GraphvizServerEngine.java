@@ -17,10 +17,20 @@ package guru.nidi.graphviz.engine;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.*;
 
 public class GraphvizServerEngine extends AbstractGraphvizEngine {
+    private final List<GraphvizEngine> engines = new ArrayList<>();
+
     public GraphvizServerEngine() {
         super(false);
+    }
+
+    public GraphvizServerEngine useEngine(GraphvizEngine first, GraphvizEngine... rest) {
+        engines.clear();
+        engines.add(first);
+        engines.addAll(Arrays.asList(rest));
+        return this;
     }
 
     @Override
@@ -35,7 +45,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     @Override
     protected void doInit() throws Exception {
         if (!canConnect()) {
-            GraphvizServer.start();
+            GraphvizServer.start(engines);
             for (int i = 0; i < 100 && !canConnect(); i++) {
                 try {
                     Thread.sleep(50);

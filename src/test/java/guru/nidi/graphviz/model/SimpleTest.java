@@ -16,35 +16,37 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.engine.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class SimpleTest {
-    @BeforeClass
-    public static void init() {
+class SimpleTest {
+    @BeforeAll
+    static void init() {
         Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
     }
 
-    @AfterClass
-    public static void end() {
+    @AfterAll
+    static void end() {
         Graphviz.releaseEngine();
     }
 
     @Test
-    public void simple() {
+    void simple() {
         final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");
         assertNotNull(viz.render(SVG).toString());
     }
 
     @Test
-    public void dotError() {
+    void dotError() {
         try {
             System.out.println("Try error...");
             Graphviz.fromString("g { a -> b; }").render(SVG).toString();
-            fail();
+            fail("Wrong dot file should throw");
         } catch (GraphvizException e) {
             assertThat(e.getMessage(), containsString("syntax error in line 1 near 'g'"));
         }

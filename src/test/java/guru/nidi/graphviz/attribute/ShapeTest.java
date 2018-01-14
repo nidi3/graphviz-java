@@ -15,38 +15,38 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ShapeTest {
+class ShapeTest {
     @Test
-    public void simple() {
+    void simple() {
         assertEquals(attr("shape", "house"), attrs(Shape.HOUSE));
     }
 
     @Test
-    public void mDiamond() {
+    void mDiamond() {
         assertEquals(attrs(attr("shape", "Mdiamond"), attr("toplabel", "top"), attr("bottomlabel", "bottom")),
                 Shape.mDiamond("top", "bottom"));
     }
 
     @Test
-    public void mSquare() {
+    void mSquare() {
         assertEquals(attrs(attr("shape", "Msquare"), attr("toplabel", "top"), attr("bottomlabel", "bottom")),
                 Shape.mSquare("top", "bottom"));
     }
 
     @Test
-    public void mCircle() {
+    void mCircle() {
         assertEquals(attrs(attr("shape", "Mcircle"), attr("toplabel", "top"), attr("bottomlabel", "bottom")),
                 Shape.mCircle("top", "bottom"));
     }
 
     @Test
-    public void polygon() {
+    void polygon() {
         assertEquals(attrs(attr("sides", 4), attr("shape", "polygon"), attr("skew", 2.5), attr("distortion", .66)),
                 Shape.polygon(4, 2.5, .66));
     }

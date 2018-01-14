@@ -16,26 +16,26 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class GraphvizTest {
-    @BeforeClass
-    public static void init() {
+class GraphvizTest {
+    @BeforeAll
+    static void init() {
         Graphviz.useEngine(new AbstractGraphvizEngineTest.GraphvizEngineDummy());
     }
 
-    @AfterClass
-    public static void end() {
+    @AfterAll
+    static void end() {
         Graphviz.releaseEngine();
     }
 
     @Test
-    public void scaleMethodChainCheck() {
+    void scaleMethodChainCheck() {
         final Graph graph = graph().with(node("a").link("b"));
         final Graphviz graphviz = Graphviz.fromGraph(graph).height(20).width(30).scale(3);
 
@@ -43,7 +43,7 @@ public class GraphvizTest {
     }
 
     @Test
-    public void heightMethodChainCheck() {
+    void heightMethodChainCheck() {
         final Graph graph = graph().with(node("a").link("b"));
         final Graphviz graphviz = Graphviz.fromGraph(graph).scale(3).width(30).height(20);
 
@@ -51,7 +51,7 @@ public class GraphvizTest {
     }
 
     @Test
-    public void widthMethodChainCheck() {
+    void widthMethodChainCheck() {
         final Graph graph = graph().with(node("a").link("b"));
         final Graphviz graphviz = Graphviz.fromGraph(graph).scale(3).height(20).width(30);
 
@@ -59,7 +59,7 @@ public class GraphvizTest {
     }
 
     @Test
-    public void executeWithTotalMemory() {
+    void executeWithTotalMemory() {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph).totalMemory(32000).render(Format.SVG).toString();
 
@@ -67,7 +67,7 @@ public class GraphvizTest {
     }
 
     @Test
-    public void executeWithoutTotalMemory() {
+    void executeWithoutTotalMemory() {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph).render(Format.SVG).toString();
 

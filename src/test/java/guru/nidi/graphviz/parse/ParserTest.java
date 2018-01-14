@@ -17,7 +17,7 @@ package guru.nidi.graphviz.parse;
 
 import guru.nidi.graphviz.model.Label;
 import guru.nidi.graphviz.model.MutableNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -25,22 +25,22 @@ import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.model.Compass.NORTH_EAST;
 import static guru.nidi.graphviz.model.Compass.SOUTH_WEST;
 import static guru.nidi.graphviz.model.Factory.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ParserTest {
+class ParserTest {
     @Test
-    public void emptyGraph() throws IOException {
+    void emptyGraph() throws IOException {
         assertEquals(mutGraph("bla"), Parser.read("graph bla{}"));
     }
 
     @Test
-    public void emptyStrictDigraph() throws IOException {
+    void emptyStrictDigraph() throws IOException {
         assertEquals(mutGraph(Label.html("bla")).setStrict(true).setDirected(true),
                 Parser.read("strict digraph <bla>{}"));
     }
 
     @Test
-    public void attributesGraph() throws IOException {
+    void attributesGraph() throws IOException {
         assertEquals(mutGraph()
                         .generalAttrs().add("x", "y")
                         .graphAttrs().add("a", "b")
@@ -50,13 +50,13 @@ public class ParserTest {
     }
 
     @Test
-    public void nodes() throws IOException {
+    void nodes() throws IOException {
         assertEquals(mutGraph().add(mutNode("simple"), mutNode("with").add("a", "b")),
                 Parser.read("graph { simple with[\"a\"=b]}")); //TODO with port? "d:1 full:1:ne
     }
 
     @Test
-    public void links() throws IOException {
+    void links() throws IOException {
         final MutableNode
                 simple = mutNode("simple"),
                 d = mutNode("d"),
@@ -68,7 +68,7 @@ public class ParserTest {
     }
 
     @Test
-    public void subgraph() throws IOException {
+    void subgraph() throws IOException {
         assertEquals(mutGraph().add(
                 mutGraph("s").generalAttrs().add("a", "b"),
                 mutGraph().generalAttrs().add("c", "d"),
@@ -77,7 +77,7 @@ public class ParserTest {
     }
 
     @Test
-    public void leftSubgraphEdge() throws IOException {
+    void leftSubgraphEdge() throws IOException {
         assertEquals(mutGraph().add(
                 mutGraph().addLink(to(mutNode("x")).with("a", "b")),
                 mutGraph().addLink(mutNode("y")),
@@ -86,7 +86,7 @@ public class ParserTest {
     }
 
     @Test
-    public void rightSubgraphEdge() throws IOException {
+    void rightSubgraphEdge() throws IOException {
         assertEquals(mutGraph().add(
                 mutNode("x").addLink(to(mutGraph()).with("a", "b")),
                 mutNode("y").addLink(mutGraph()),
@@ -95,7 +95,7 @@ public class ParserTest {
     }
 
     @Test
-    public void subgraphSubgraphEdge() throws IOException {
+    void subgraphSubgraphEdge() throws IOException {
         assertEquals(mutGraph().add(
                 mutGraph().addLink(to(mutGraph()).with("a", "b")),
                 mutGraph().addLink(mutGraph()),
@@ -104,14 +104,14 @@ public class ParserTest {
     }
 
     @Test
-    public void inheritDirected() throws IOException {
+    void inheritDirected() throws IOException {
         assertEquals(mutGraph().setDirected(true).add(
                 mutGraph().setDirected(true).add(mutNode("a").addLink("b"))),
                 Parser.read("digraph { subgraph { a -> b } }"));
     }
 
     @Test
-    public void emptyString() throws IOException {
+    void emptyString() throws IOException {
         assertEquals(mutGraph().add(mutNode(""), mutNode("a").add("label", "")),
                 Parser.read("graph { \"\" a [label=\"\"] }"));
     }

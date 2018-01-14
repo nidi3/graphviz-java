@@ -18,7 +18,7 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.parse.Parser;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -29,19 +29,19 @@ import static guru.nidi.graphviz.attribute.Records.turn;
 import static guru.nidi.graphviz.model.Compass.*;
 import static guru.nidi.graphviz.model.Factory.*;
 
-public class ReadmeTest {
-    @BeforeClass
-    public static void init() {
+class ReadmeTest {
+    @BeforeAll
+    static void init() {
         Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
     }
 
-    @AfterClass
-    public static void end() {
+    @AfterAll
+    static void end() {
         Graphviz.releaseEngine();
     }
 
     @Test
-    public void ex1() throws IOException {
+    void ex1() throws IOException {
         //## basic
         Graph g = graph("example1").directed().with(node("a").link(node("b")));
         Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
@@ -49,7 +49,7 @@ public class ReadmeTest {
     }
 
     @Test
-    public void ex2() throws IOException {
+    void ex2() throws IOException {
         //## complex
         Node
                 init = node("init"),
@@ -74,7 +74,7 @@ public class ReadmeTest {
     }
 
     @Test
-    public void ex3() throws IOException {
+    void ex3() throws IOException {
         //## records
         Node
                 node0 = node("node0").with(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""))),
@@ -101,7 +101,7 @@ public class ReadmeTest {
     }
 
     @Test
-    public void ex4() throws IOException {
+    void ex4() throws IOException {
         //## manipulate
         MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
         Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-1.png"));
@@ -118,7 +118,7 @@ public class ReadmeTest {
     }
 
     @Test
-    public void ex5() throws IOException {
+    void ex5() throws IOException {
         //## config
         Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
         Graphviz viz = Graphviz.fromGraph(g);

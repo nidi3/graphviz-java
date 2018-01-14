@@ -18,11 +18,11 @@ package guru.nidi.graphviz;
 import guru.nidi.codeassert.config.For;
 import guru.nidi.codeassert.jacoco.CoverageCollector;
 import guru.nidi.codeassert.jacoco.JacocoAnalyzer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static guru.nidi.codeassert.jacoco.CoverageType.*;
 import static guru.nidi.codeassert.junit.CodeAssertMatchers.hasEnoughCoverage;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CodeCoverage {
     @Test
@@ -32,11 +32,11 @@ public class CodeCoverage {
                 .just(For.global().setMinima(0, 0, 0)) //TODO remove
 //                .just(For.global().setMinima(60, 75, 75))
                 .just(For.allPackages().setMinima(75, 75, 75))
-                .just(For.packge("*.attribute").setMinima(70, 75, 75))
-                .just(For.packge("*.engine").setMinima(30, 70, 70))
-                .just(For.packge("*.model").setMinima(60, 75, 75))
-                .just(For.packge("*.service").setMinima(40, 65, 75))
-                .just(For.packge("com.kitfox.svg*").setMinima(0,0,0)) //TODO remove
+                .just(For.thePackage("*.attribute").setMinima(70, 75, 75))
+                .just(For.thePackage("*.engine").setMinima(30, 70, 70))
+                .just(For.thePackage("*.model").setMinima(60, 75, 75))
+                .just(For.thePackage("*.service").setMinima(40, 65, 75))
+                .just(For.thePackage("com.kitfox.svg*").setMinima(0, 0, 0)) //TODO remove
         );
         assertThat("Enough code coverage", analyzer.analyze(), hasEnoughCoverage());
     }

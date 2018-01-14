@@ -18,8 +18,8 @@ package guru.nidi.graphviz.engine;
 import guru.nidi.graphviz.service.DefaultExecutor;
 import guru.nidi.graphviz.service.SystemUtils;
 import org.apache.commons.exec.CommandLine;
-import org.junit.*;
-import org.junit.rules.TemporaryFolder;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,13 +27,13 @@ import java.nio.file.Files;
 
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-public class EngineTest {
+class EngineTest {
     private static final String START1_7 =
             line("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>") +
                     line("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"") +
@@ -42,26 +42,31 @@ public class EngineTest {
                     line(" -->") +
                     line("<!-- Title: g Pages: 1 -->") +
                     "<svg";
+    private static File temp;
 
-    @Rule
-    public TemporaryFolder dotFolder = new TemporaryFolder();
+    @BeforeAll
+    static void init() throws IOException {
+        temp = new File(System.getProperty("java.io.tmpdir"), "engineTest");
+        FileUtils.deleteDirectory(temp);
+        temp.mkdir();
+    }
 
-    @After
-    public void end() {
+    @AfterEach
+    void end() {
         Graphviz.releaseEngine();
     }
 
     @Test
-    public void jdk() {
+    void jdk() {
         Graphviz.useEngine(new GraphvizJdkEngine());
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
     }
 
     @Test
-    public void server() {
+    void server() {
         GraphvizServerEngine.stopServer();
         try {
-            Graphviz.useEngine(new GraphvizServerEngine());
+            Graphviz.useEngine(new GraphvizServerEngine().useEngine(new GraphvizV8Engine()));
             assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
         } finally {
             GraphvizServerEngine.stopServer();
@@ -69,13 +74,13 @@ public class EngineTest {
     }
 
     @Test
-    public void v8() {
+    void v8() {
         Graphviz.useEngine(new GraphvizV8Engine());
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
     }
 
     @Test
-    public void cmdLine() throws IOException, InterruptedException {
+    void cmdLine() throws IOException, InterruptedException {
         final File dotFile = setUpFakeDotFile();
         final DefaultExecutor cmdExecutor = setUpFakeStubCommandExecutor();
 
@@ -89,13 +94,14 @@ public class EngineTest {
      * Test to check if we can set the output path and name of the dot file
      */
     @Test
-    public void cmdLineOutputDotFile() throws IOException, InterruptedException {
+    void cmdLineOutputDotFile() throws IOException, InterruptedException {
         final File dotFile = setUpFakeDotFile();
         final DefaultExecutor cmdExecutor = setUpFakeStubCommandExecutor();
 
         final String envPath = dotFile.getParent();
 
-        final File dotOutputFolder = dotFolder.newFolder();
+        final File dotOutputFolder = new File(temp, "out");
+        dotOutputFolder.mkdir();
         final String dotOutputName = "test123";
 
         // Configure engine to output the dotFile to dotOutputFolder
@@ -117,7 +123,8 @@ public class EngineTest {
         }
 
         // Add a fake dot executable to the temporary dotFolder
-        final File dotFile = this.dotFolder.newFile(filename);
+        final File dotFile = new File(temp, filename);
+        dotFile.createNewFile();
         dotFile.setExecutable(true);
         return dotFile;
     }
@@ -126,7 +133,6 @@ public class EngineTest {
         final DefaultExecutor cmdExecutor = mock(DefaultExecutor.class);
         doAnswer(invocationOnMock -> {
             final File workingDirectory = invocationOnMock.getArgumentAt(1, File.class);
-
             final File svgInput = new File(getClass().getClassLoader().getResource("outfile1.svg").getFile());
             final File svgOutputFile = new File(workingDirectory.getAbsolutePath() + "/outfile.svg");
             Files.copy(svgInput.toPath(), svgOutputFile.toPath());

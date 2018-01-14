@@ -16,29 +16,29 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.nio.file.Files;
 
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RendererTest {
+class RendererTest {
 
-    @BeforeClass
-    public static void init() {
+    @BeforeAll
+    static void init() {
         Graphviz.useEngine(new GraphvizV8Engine(), new GraphvizJdkEngine());
     }
 
-    @AfterClass
-    public static void end() {
+    @AfterAll
+    static void end() {
         Graphviz.releaseEngine();
     }
 
     @Test
-    public void toFileParentFolderNotExists() throws Exception {
+    void toFileParentFolderNotExists() throws Exception {
         final File expectedFile = new File("target/testFolder/ex1.png");
         Files.deleteIfExists(expectedFile.toPath());
         Files.deleteIfExists(expectedFile.getParentFile().toPath());

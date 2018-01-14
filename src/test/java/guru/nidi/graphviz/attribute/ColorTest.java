@@ -15,80 +15,81 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ColorTest {
+class ColorTest {
     @Test
-    public void simple() {
+    void simple() {
         assertColor(attr("color", "azure"), Color.AZURE);
     }
 
     @Test
-    public void fill() {
+    void fill() {
         assertColor(attr("fillcolor", "azure"), Color.AZURE.fill());
     }
 
     @Test
-    public void background() {
+    void background() {
         assertColor(attr("bgcolor", "azure"), Color.AZURE.background());
     }
 
     @Test
-    public void font() {
+    void font() {
         assertColor(attr("fontcolor", "azure"), Color.AZURE.font());
     }
 
     @Test
-    public void labelFont() {
+    void labelFont() {
         assertColor(attr("labelfontcolor", "azure"), Color.AZURE.labelFont());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void rgbNok() {
-        Color.rgb("123");
+    @Test
+    void rgbNok() {
+        assertThrows(IllegalArgumentException.class, () -> Color.rgb("123"));
     }
 
     @Test
-    public void rgbOk() {
+    void rgbOk() {
         assertColor(attr("color", "#123456"), Color.rgb("123456"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void rgbaNok() {
-        Color.rgba("123456");
+    @Test
+    void rgbaNok() {
+        assertThrows(IllegalArgumentException.class, () -> Color.rgba("123456"));
     }
 
     @Test
-    public void rgbaOk() {
+    void rgbaOk() {
         assertColor(attr("color", "#12345678"), Color.rgba("12345678"));
     }
 
     @Test
-    public void hsv() {
+    void hsv() {
         assertColor(attr("color", "0.12 0.34 0.56"), Color.hsv(.12, .34, .56));
     }
 
     @Test
-    public void gradient() {
+    void gradient() {
         assertColor(attr("color", "red:blue"), Color.RED.gradient(Color.BLUE));
     }
 
     @Test
-    public void gradientAt() {
+    void gradientAt() {
         assertColor(attr("color", "red:blue;0.3"), Color.RED.gradient(Color.BLUE, .3));
     }
 
     @Test
-    public void angle() {
+    void angle() {
         assertEquals(attrs(attr("color", "red"), attr("gradientangle", 45)), Color.RED.angle(45));
     }
 
     @Test
-    public void radial() {
+    void radial() {
         assertEquals(attrs(attr("color", "red"), attr("style", "radial"), attr("gradientangle", 45)),
                 Color.RED.radial(45));
     }

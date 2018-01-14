@@ -15,25 +15,25 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FontTest {
+class FontTest {
     @Test
-    public void name() {
+    void name() {
         assertEquals(attr("fontname", "Arial"), Font.name("Arial"));
     }
 
     @Test
-    public void size() {
+    void size() {
         assertEquals(attr("fontsize", 12), Font.size(12));
     }
 
     @Test
-    public void config() {
+    void config() {
         assertEquals(attrs(attr("fontname", "Arial"), attr("fontsize", 12)), Font.config("Arial", 12));
     }
 }
