@@ -49,7 +49,7 @@ public final class Options {
     }
 
     public static Options create() {
-        return new Options(Engine.DOT, null, null);
+        return new Options(Engine.DOT, Format.SVG, null);
     }
 
     public static Options fromJson(String json) {

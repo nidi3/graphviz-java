@@ -24,7 +24,9 @@ import org.junit.jupiter.api.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.concurrent.*;
 
+import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -77,6 +79,20 @@ class EngineTest {
     void v8() {
         Graphviz.useEngine(new GraphvizV8Engine());
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
+    }
+
+    @Test
+    void multiV8() throws InterruptedException {
+        Graphviz.useEngine(new GraphvizV8Engine());
+        final ExecutorService executor = Executors.newFixedThreadPool(2);
+        for (int i = 0; i < 2; i++) {
+            executor.submit(() -> {
+                Graphviz.fromString("graph g {a--b}").render(SVG).toString();
+                Graphviz.releaseEngine();
+            });
+        }
+        executor.shutdown();
+        executor.awaitTermination(60, TimeUnit.SECONDS);
     }
 
     @Test
