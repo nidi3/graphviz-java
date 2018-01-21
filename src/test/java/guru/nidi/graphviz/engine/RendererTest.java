@@ -49,4 +49,17 @@ class RendererTest {
         assertTrue(expectedFile.exists() && expectedFile.isFile());
     }
 
+    @Test
+    void toFileNoParentFolder() throws Exception {
+        final File file = new File("test.png");
+        Files.deleteIfExists(file.toPath());
+        try {
+            final Graph graph = graph("example1").directed().with(node("a").link(node("b")));
+            Graphviz.fromGraph(graph).width(200).render(Format.PNG).toFile(file);
+            assertTrue(file.exists());
+        } finally {
+            Files.deleteIfExists(file.toPath());
+        }
+    }
+
 }

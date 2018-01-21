@@ -41,7 +41,7 @@ public class Renderer {
     }
 
     public void toFile(File file) throws IOException {
-        Files.createDirectories(file.getParentFile().toPath());
+        Files.createDirectories(file.getAbsoluteFile().getParentFile().toPath());
         if (graphviz.format().image) {
             writeToFile(file, graphviz.format().name().toLowerCase(), toImage());
         } else {
