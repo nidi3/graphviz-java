@@ -17,6 +17,8 @@ package guru.nidi.graphviz.engine;
 
 import com.eclipsesource.v8.*;
 import com.eclipsesource.v8.utils.V8ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
     private static final Pattern ABORT = Pattern.compile("^undefined:\\d+: abort");
     private static final Pattern ERROR = Pattern.compile("^undefined:\\d+: (.*?)\n");
     private static ThreadLocal<Env> envs = new ThreadLocal<>();
@@ -69,10 +72,13 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
         final V8Array messages;
 
         Env(String init, String viz) {
+            LOG.info("Starting V8 runtime...");
             v8 = V8.createV8Runtime();
+            LOG.info("Started V8 runtime. Initializing graphviz...");
             v8.executeVoidScript(init);
             messages = v8.getArray("$$prints");
             v8.executeVoidScript(viz);
+            LOG.info("Initialized graphviz.");
         }
 
         String execute(String call) {

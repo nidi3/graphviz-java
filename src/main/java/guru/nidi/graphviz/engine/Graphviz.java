@@ -90,7 +90,7 @@ public final class Graphviz {
         synchronized (Graphviz.class) {
             if (engine == null) {
                 try {
-                    engine = engineQueue.poll(60, TimeUnit.SECONDS);
+                    engine = engineQueue.poll(120, TimeUnit.SECONDS);
                     if (engine == null) {
                         throw new GraphvizException("Initializing graphviz engine took too long.");
                     }
