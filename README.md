@@ -13,6 +13,18 @@ as a fallback with Java 8's Nashorn engine.
 
 ## Usage
 
+### Maven
+
+This project is available via Maven:
+
+```xml
+<dependency>
+    <groupId>guru.nidi</groupId>
+    <artifactId>graphviz-java</artifactId>
+    <version>0.2.3</version>
+</dependency>
+```
+
 ### Logging
 Graphviz-java uses the [SLF4J](https://www.slf4j.org/) facade to log. 
 Users must therefore provide a logging implementation like [LOGBack](https://logback.qos.ch/)
