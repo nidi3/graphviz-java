@@ -35,7 +35,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     protected String jsEscape(String js) {
-        return js.replace("\n", " ").replace("\\", "\\\\").replace("'", "\\'");
+        return js.replaceAll("\\R", " ").replace("\\", "\\\\").replace("'", "\\'");
     }
 
     protected String jsVizCode(String version) throws IOException {
