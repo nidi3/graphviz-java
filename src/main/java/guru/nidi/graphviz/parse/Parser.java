@@ -173,7 +173,7 @@ public final class Parser {
     }
 
     private void nodeStatement(MutableGraph graph, MutableNodePoint nodeId) throws IOException {
-        final MutableNode node = mutNode(nodeId.node().label()); //TODO ignore port and compass?
+        final MutableNode node = mutNode(nodeId.node().name()); //TODO ignore port and compass?
         if (token.type == BRACKET_OPEN) {
             applyMutableAttributes(node, attributeList());
         }

@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.joining;
 
 public class MutableNode implements Linkable, MutableAttributed<MutableNode>, LinkTarget,
         MutableLinkSource<MutableNode> {
-    protected Label label;
+    protected Label name;
     protected final List<Link> links;
     protected final MutableAttributed<MutableNode> attributes;
 
@@ -31,29 +31,32 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         this(null, new ArrayList<>(), Attributes.attrs());
     }
 
-    protected MutableNode(Label label, List<Link> links, Attributes attributes) {
+    protected MutableNode(Label name, List<Link> links, Attributes attributes) {
         this.links = links;
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
-        setLabel(label);
+        setName(name);
         CreationContext.current().ifPresent(ctx -> ctx.nodes().applyTo(attributes));
     }
 
     public MutableNode copy() {
-        return new MutableNode(label, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
+        return new MutableNode(name, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
     }
 
-    public final MutableNode setLabel(Label label) {
-        if (label != null && label.isExternal()) {
-            this.label = Label.of("");
-            attributes.add(label);
-        } else {
-            this.label = label;
+    public final MutableNode setName(Label name) {
+        this.name = name;
+        if (name != null) {
+            if (name.isExternal()) {
+                this.name = Label.of("");
+                attributes.add(name);
+            } else if (name.isHtml()) {
+                attributes.add(name);
+            }
         }
         return this;
     }
 
-    public MutableNode setLabel(String name) {
-        return setLabel(Label.of(name));
+    public MutableNode setName(String name) {
+        return setName(Label.of(name));
     }
 
     public MutableNode merge(MutableNode n) {
@@ -84,7 +87,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     }
 
     public MutableNode addLink(String node) {
-        return addLink(new MutableNode().setLabel(node));
+        return addLink(new MutableNode().setName(node));
     }
 
     public MutableNode addLink(String... nodes) {
@@ -117,8 +120,8 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return new MutableNodePoint().setNode(this);
     }
 
-    public Label label() {
-        return label;
+    public Label name() {
+        return name;
     }
 
     @Override
@@ -146,7 +149,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
 
         final MutableNode node = (MutableNode) o;
 
-        if (label != null ? !label.equals(node.label) : node.label != null) {
+        if (name != null ? !name.equals(node.name) : node.name != null) {
             return false;
         }
         if (links != null ? !links.equals(node.links) : node.links != null) {
@@ -158,7 +161,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
 
     @Override
     public int hashCode() {
-        int result = label != null ? label.hashCode() : 0;
+        int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (links != null ? links.hashCode() : 0);
         result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
         return result;
@@ -166,7 +169,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
 
     @Override
     public String toString() {
-        return label + attributes.toString() + "->"
+        return name + attributes.toString() + "->"
                 + links.stream().map(l -> l.to.toString()).collect(joining(","));
     }
 }

@@ -38,6 +38,10 @@ public class SimpleLabel {
                 : ("\"" + value.replace("\"", "\\\"").replace("\n", "\\n") + "\"");
     }
 
+    public boolean isHtml() {
+        return html;
+    }
+
     @Override
     public String toString() {
         return value;

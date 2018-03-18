@@ -44,7 +44,7 @@ public class Serializer {
         for (final Linkable linkable : linkables) {
             if (linkable instanceof MutableNode) {
                 final MutableNode node = (MutableNode) linkable;
-                final int i = indexOfLabel(nodes, node.label);
+                final int i = indexOfName(nodes, node.name);
                 if (i < 0) {
                     nodes.add(node);
                 } else {
@@ -88,9 +88,9 @@ public class Serializer {
         str.append("{\n");
     }
 
-    private int indexOfLabel(List<MutableNode> nodes, Label label) {
+    private int indexOfName(List<MutableNode> nodes, Label name) {
         for (int i = 0; i < nodes.size(); i++) {
-            if (nodes.get(i).label.equals(label)) {
+            if (nodes.get(i).name.equals(name)) {
                 return i;
             }
         }
@@ -180,12 +180,12 @@ public class Serializer {
     }
 
     private void node(MutableNode node) {
-        str.append(node.label.serialized());
+        str.append(node.name.serialized());
         attrs(node.attributes);
     }
 
     private void point(MutableNodePoint point) {
-        str.append(point.node.label.serialized());
+        str.append(point.node.name.serialized());
         if (point.record != null) {
             str.append(':');
             str.append(SimpleLabel.of(point.record).serialized());

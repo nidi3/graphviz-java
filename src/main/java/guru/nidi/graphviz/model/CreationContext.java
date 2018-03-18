@@ -72,11 +72,11 @@ public final class CreationContext {
         return graphAttributes;
     }
 
-    Node immutableNode(Label label) {
-        return immutableNodes.computeIfAbsent(label, ImmutableNode::new).with(nodeAttributes);
+    Node immutableNode(Label name) {
+        return immutableNodes.computeIfAbsent(name, ImmutableNode::new).with(nodeAttributes);
     }
 
-    MutableNode mutableNode(Label label) {
-        return mutableNodes.computeIfAbsent(label, l -> new MutableNode().setLabel(l)).add(nodeAttributes);
+    MutableNode mutableNode(Label name) {
+        return mutableNodes.computeIfAbsent(name, l -> new MutableNode().setName(l)).add(nodeAttributes);
     }
 }

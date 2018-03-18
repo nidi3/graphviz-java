@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ImmutableNode extends MutableNode implements Node {
-    ImmutableNode(Label label) {
-        this(label, new ArrayList<>(), Attributes.attrs());
+    ImmutableNode(Label name) {
+        this(name, new ArrayList<>(), Attributes.attrs());
     }
 
-    private ImmutableNode(Label label, List<Link> links, Attributes attributes) {
-        super(label, links, attributes);
+    private ImmutableNode(Label name, List<Link> links, Attributes attributes) {
+        super(name, links, attributes);
     }
 
     public NodePoint loc() {
@@ -67,6 +67,6 @@ class ImmutableNode extends MutableNode implements Node {
     }
 
     private ImmutableNode copyOfMut() {
-        return new ImmutableNode(label, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
+        return new ImmutableNode(name, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
     }
 }

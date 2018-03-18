@@ -64,10 +64,10 @@ public final class Factory {
         return mutNode(Label.of(name));
     }
 
-    public static MutableNode mutNode(Label label) {
+    public static MutableNode mutNode(Label name) {
         return CreationContext.current()
-                .map(ctx -> ctx.mutableNode(label))
-                .orElseGet(() -> new MutableNode().setLabel(label));
+                .map(ctx -> ctx.mutableNode(name))
+                .orElseGet(() -> new MutableNode().setName(name));
     }
 
     public static MutableNodePoint mutLoc(String record) {
