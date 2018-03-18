@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.parse;
 
-import guru.nidi.graphviz.model.Label;
+import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.model.MutableNode;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ class ParserTest {
 
     @Test
     void emptyStrictDigraph() throws IOException {
-        assertEquals(mutGraph(Label.html("bla")).setStrict(true).setDirected(true),
+        assertEquals(mutGraph("bla").setStrict(true).setDirected(true),
                 Parser.read("strict digraph <bla>{}"));
     }
 
@@ -112,7 +112,7 @@ class ParserTest {
 
     @Test
     void emptyString() throws IOException {
-        assertEquals(mutGraph().add(mutNode(""), mutNode("a").add("label", "")),
+        assertEquals(mutGraph().add(mutNode(""), mutNode("a").add("label", Label.of(""))),
                 Parser.read("graph { \"\" a [label=\"\"] }"));
     }
 }

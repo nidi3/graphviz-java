@@ -29,8 +29,9 @@ public class MapAttributes implements Attributes, Iterable<Map.Entry<String, Obj
         return attrs;
     }
 
-    public void add(String key, Object value) {
+    public MapAttributes add(String key, Object value) {
         attributes.put(key, value);
+        return this;
     }
 
     public MapAttributes add(MapAttributes attributes) {

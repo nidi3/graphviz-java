@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.Label;
 
 import java.util.ArrayList;
 import java.util.List;

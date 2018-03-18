@@ -26,9 +26,7 @@ public interface Attributes {
     }
 
     static Attributes attr(String key, Object value) {
-        final MapAttributes res = new MapAttributes();
-        res.add(key, value);
-        return res;
+        return new MapAttributes().add(key, value);
     }
 
     static Attributes attrs(Attributes... attributes) {

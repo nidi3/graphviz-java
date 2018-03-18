@@ -72,7 +72,6 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected FindBugsResult analyzeFindBugs() {
         final BugCollector collector = new BugCollector().minPriority(Priorities.NORMAL_PRIORITY)
                 .apply(PredefConfig.dependencyTestIgnore(CodeAnalysisTest.class))
-                .because("It's SVG salamander", In.loc("com.kitfox.svg*").ignoreAll())
                 .because("It's examples", In.loc("ReadmeTest").ignore("DLS_DEAD_LOCAL_STORE"))
                 .because("GraphvizServer is on localhost",
                         In.locs("GraphvizServer", "GraphvizServerEngine")
@@ -80,7 +79,6 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("We don't execute user submitted JS code",
                         In.clazz(GraphvizJdkEngine.class).ignore("SCRIPT_ENGINE_INJECTION"))
                 .because("It's ok",
-                        In.clazz(MutableGraph.class).ignore("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"),
                         In.loc("DefaultExecutor").ignore("DM_DEFAULT_ENCODING"),
                         In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
                         In.locs("GraphvizCmdLineEngine", "EngineTest").ignore("PATH_TRAVERSAL_IN"),
@@ -97,15 +95,17 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("JUnitTestsShouldIncludeAssert", "LocalVariableCouldBeFinal", "UnusedLocalVariable"))
                 .because("It's a test", In.loc("*Test")
                         .ignore("ExcessiveMethodLength"))
+                .because("It's a bug in PMD?", In.clazz(MutableNode.class).ignore("ConstructorCallsOverridableMethod"))
                 .because("There are a lot of colors", In.clazz(Color.class)
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
+                        In.loc("LabelTest").ignore("JUnitTestContainsTooManyAsserts"),
                         In.clazz(Serializer.class).ignore("AvoidStringBufferField"),
                         In.clazz(CreationContext.class).ignore("AvoidThrowingRawExceptionTypes"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),
-                        In.locs("Lexer", "Parser", "ImmutableGraph", "MutableGraph")
+                        In.locs("Lexer", "Parser", "ImmutableGraph", "MutableGraph", "Label#applyTo")
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
@@ -127,7 +127,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
         final CpdMatchCollector collector = new CpdMatchCollector()
                 .apply(PredefConfig.cpdIgnoreEqualsHashCodeToString())
                 .because("It's java",
-                        In.loc("*Graph").ignore("Graph(strict, directed, cluster, label,", "if (strict != graph.strict) {"));
+                        In.loc("*Graph").ignore("Graph(strict, directed, cluster, name,", "if (strict != graph.strict) {"));
         return new CpdAnalyzer(AnalyzerConfig.maven().main(), 35, collector).analyze();
     }
 

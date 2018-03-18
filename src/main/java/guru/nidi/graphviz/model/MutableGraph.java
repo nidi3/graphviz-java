@@ -23,7 +23,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     protected boolean strict;
     protected boolean directed;
     protected boolean cluster;
-    protected Label label;
+    protected String name;
     protected final Set<MutableNode> nodes;
     protected final Set<MutableGraph> subgraphs;
     protected final List<Link> links;
@@ -33,18 +33,18 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     protected final MutableAttributed<MutableGraph> graphAttrs;
 
     public MutableGraph() {
-        this(false, false, false, Label.of(""), new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
+        this(false, false, false, "", new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
                 null, null, null, null);
         CreationContext.current().ifPresent(ctx -> generalAttrs().add(ctx.graphs()));
     }
 
-    protected MutableGraph(boolean strict, boolean directed, boolean cluster, Label label,
+    protected MutableGraph(boolean strict, boolean directed, boolean cluster, String name,
                            LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
                            Attributes generalAttrs, Attributes nodeAttrs, Attributes linkAttrs, Attributes graphAttrs) {
         this.strict = strict;
         this.directed = directed;
         this.cluster = cluster;
-        this.label = label;
+        this.name = name;
         this.nodes = nodes;
         this.subgraphs = subgraphs;
         this.links = links;
@@ -55,7 +55,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     }
 
     public MutableGraph copy() {
-        return new MutableGraph(strict, directed, cluster, label,
+        return new MutableGraph(strict, directed, cluster, name,
                 new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(links),
                 generalAttrs, nodeAttrs, linkAttrs, graphAttrs);
     }
@@ -75,13 +75,9 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return this;
     }
 
-    public MutableGraph setLabel(Label label) {
-        this.label = label;
+    public MutableGraph setName(String name) {
+        this.name = name;
         return this;
-    }
-
-    public MutableGraph setLabel(String name) {
-        return setLabel(Label.of(name));
     }
 
     public MutableGraph add(LinkSource... sources) {
@@ -168,8 +164,8 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return cluster;
     }
 
-    public Label label() {
-        return label;
+    public String name() {
+        return name;
     }
 
     public MutableAttributed<MutableGraph> generalAttrs() {
@@ -208,7 +204,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         if (cluster != graph.cluster) {
             return false;
         }
-        if (!label.equals(graph.label)) {
+        if (!name.equals(graph.name)) {
             return false;
         }
         if (!nodes.equals(graph.nodes)) {
@@ -238,7 +234,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         int result = (strict ? 1 : 0);
         result = 31 * result + (directed ? 1 : 0);
         result = 31 * result + (cluster ? 1 : 0);
-        result = 31 * result + label.hashCode();
+        result = 31 * result + name.hashCode();
         result = 31 * result + nodes.hashCode();
         result = 31 * result + subgraphs.hashCode();
         result = 31 * result + links.hashCode();
@@ -254,9 +250,4 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return new Serializer(this).serialize();
     }
 
-    private static class LabelComparator implements Comparator<MutableNode> {
-        public int compare(MutableNode o1, MutableNode o2) {
-            return o1.label.value.compareTo(o2.label.value);
-        }
-    }
 }

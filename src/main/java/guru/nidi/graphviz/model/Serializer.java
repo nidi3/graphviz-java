@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.MutableAttributed;
+import guru.nidi.graphviz.attribute.*;
 
 import java.util.*;
 
@@ -77,12 +77,12 @@ public class Serializer {
     private void graphInit(MutableGraph graph, boolean toplevel) {
         if (toplevel) {
             str.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
-            if (!graph.label.isEmptyLabel()) {
-                str.append(graph.label.serialized()).append(' ');
+            if (!graph.name.isEmpty()) {
+                str.append(SimpleLabel.of(graph.name).serialized()).append(' ');
             }
-        } else if (!graph.label.isEmptyLabel() || graph.cluster) {
+        } else if (!graph.name.isEmpty() || graph.cluster) {
             str.append("subgraph ")
-                    .append((graph.cluster ? Label.of("cluster" + graph.label.value) : graph.label).serialized())
+                    .append(Label.of((graph.cluster ? "cluster_" : "") + graph.name).serialized())
                     .append(' ');
         }
         str.append("{\n");
@@ -188,7 +188,7 @@ public class Serializer {
         str.append(point.node.label.serialized());
         if (point.record != null) {
             str.append(':');
-            str.append(Label.of(point.record).serialized());
+            str.append(SimpleLabel.of(point.record).serialized());
         }
         if (point.compass != null) {
             str.append(':').append(point.compass.value);
@@ -212,8 +212,8 @@ public class Serializer {
     }
 
     private void attr(String key, Object value) {
-        str.append(Label.of(key).serialized())
+        str.append(SimpleLabel.of(key).serialized())
                 .append('=')
-                .append((value instanceof Label ? (Label) value : Label.of(value.toString())).serialized());
+                .append(SimpleLabel.of(value).serialized());
     }
 }

@@ -49,7 +49,6 @@ public class SingleAttributes<T> implements Attributes {
 
     @Override
     public Attributes applyTo(MapAttributes attrs) {
-        attrs.add(key, value);
-        return attrs;
+        return attrs.add(key, value);
     }
 }

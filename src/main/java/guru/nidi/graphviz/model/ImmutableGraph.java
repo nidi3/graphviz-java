@@ -24,18 +24,18 @@ class ImmutableGraph extends MutableGraph implements Graph {
     ImmutableGraph() {
     }
 
-    ImmutableGraph(boolean strict, boolean directed, boolean cluster, Label label,
+    ImmutableGraph(boolean strict, boolean directed, boolean cluster, String name,
                    LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
                    MutableAttributed<MutableGraph> attributes,
                    MutableAttributed<MutableGraph> nodeAttributes,
                    MutableAttributed<MutableGraph> linkAttributes,
                    MutableAttributed<MutableGraph> graphAttributes) {
-        super(strict, directed, cluster, label, nodes, subgraphs, links, attributes,
+        super(strict, directed, cluster, name, nodes, subgraphs, links, attributes,
                 nodeAttributes, linkAttributes, graphAttributes);
     }
 
     public ImmutableGraph copyOfMut() {
-        return new ImmutableGraph(strict, directed, cluster, label,
+        return new ImmutableGraph(strict, directed, cluster, name,
                 new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(links),
                 generalAttrs, nodeAttrs, linkAttrs, graphAttrs);
     }
@@ -52,8 +52,8 @@ class ImmutableGraph extends MutableGraph implements Graph {
         return (ImmutableGraph) copyOfMut().setCluster(true);
     }
 
-    public Graph labeled(Label label) {
-        return (ImmutableGraph) copyOfMut().setLabel(label);
+    public Graph named(String name) {
+        return (ImmutableGraph) copyOfMut().setName(name);
     }
 
     public Graph with(LinkSource... sources) {
@@ -104,7 +104,7 @@ class ImmutableGraph extends MutableGraph implements Graph {
         if (cluster != graph.cluster) {
             return false;
         }
-        if (!label.equals(graph.label)) {
+        if (!name.equals(graph.name)) {
             return false;
         }
         if (!nodes.equals(graph.nodes)) {
@@ -134,7 +134,7 @@ class ImmutableGraph extends MutableGraph implements Graph {
         int result = (strict ? 1 : 0);
         result = 31 * result + (directed ? 1 : 0);
         result = 31 * result + (cluster ? 1 : 0);
-        result = 31 * result + label.hashCode();
+        result = 31 * result + name.hashCode();
         result = 31 * result + nodes.hashCode();
         result = 31 * result + subgraphs.hashCode();
         result = 31 * result + links.hashCode();

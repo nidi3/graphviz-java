@@ -32,9 +32,9 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     }
 
     protected MutableNode(Label label, List<Link> links, Attributes attributes) {
-        this.label = label;
         this.links = links;
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
+        setLabel(label);
         CreationContext.current().ifPresent(ctx -> ctx.nodes().applyTo(attributes));
     }
 
@@ -42,8 +42,13 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return new MutableNode(label, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
     }
 
-    public MutableNode setLabel(Label label) {
-        this.label = label;
+    public final MutableNode setLabel(Label label) {
+        if (label != null && label.isExternal()) {
+            this.label = Label.of("");
+            attributes.add(label);
+        } else {
+            this.label = label;
+        }
         return this;
     }
 

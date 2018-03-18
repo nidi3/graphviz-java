@@ -15,8 +15,7 @@
  */
 package guru.nidi.graphviz.parse;
 
-import guru.nidi.graphviz.attribute.Attributed;
-import guru.nidi.graphviz.attribute.MutableAttributed;
+import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.model.*;
 
 import java.io.*;
@@ -52,7 +51,7 @@ public final class Parser {
         nextToken();
     }
 
-    private MutableGraph parse() throws IOException {
+    private MutableGraph parse() {
         return CreationContext.use(() -> {
             final MutableGraph graph = new MutableGraph();
             if (token.type == STRICT) {
@@ -66,7 +65,7 @@ public final class Parser {
             }
             nextToken();
             if (token.type == ID) {
-                graph.setLabel(label(token));
+                graph.setName(label(token).toString());
                 nextToken();
             }
             statementList(graph);
@@ -125,13 +124,13 @@ public final class Parser {
         }
     }
 
-    private MutableGraph subgraph(boolean directed) throws IOException {
+    private MutableGraph subgraph(boolean directed) {
         return CreationContext.use(() -> {
             final MutableGraph sub = new MutableGraph().setDirected(directed);
             if (token.type == SUBGRAPH) {
                 nextToken();
                 if (token.type == ID) {
-                    sub.setLabel(label(token));
+                    sub.setName(label(token).toString());
                     nextToken();
                 }
             }
@@ -202,13 +201,19 @@ public final class Parser {
         applyMutableAttributes(target, attributeList());
     }
 
-    private void applyMutableAttributes(MutableAttributed<?> attributed, List<Token> tokens) throws IOException {
+    private void applyMutableAttributes(MutableAttributed<?> attributed, List<Token> tokens) {
         for (int i = 0; i < tokens.size(); i += 2) {
-            attributed.add(tokens.get(i).value, tokens.get(i + 1).value);
+            final String key = tokens.get(i).value;
+            final Token value = tokens.get(i + 1);
+            if ("label".equals(key) || "xlabel".equals(key) || "headlabel".equals(key) || "taillabel".equals(key)) {
+                attributed.add(key, label(value));
+            } else {
+                attributed.add(key, value.value);
+            }
         }
     }
 
-    private <T extends Attributed<T>> T applyAttributes(T attributed, List<Token> tokens) throws IOException {
+    private <T extends Attributed<T>> T applyAttributes(T attributed, List<Token> tokens) {
         T res = attributed;
         for (int i = 0; i < tokens.size(); i += 2) {
             res = res.with(tokens.get(i).value, tokens.get(i + 1).value);

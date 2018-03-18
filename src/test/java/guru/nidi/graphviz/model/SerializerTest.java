@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.attribute.Label;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,37 +41,43 @@ class SerializerTest {
 
     @Test
     void strict() {
-        assertGraph("strict graph 'x' {\n}", graph("x").strict());
+        assertGraph("strict graph {\n}", graph().strict());
     }
 
     @Test
-    void escapeName() {
-        assertGraph("graph 'b\\'la' {\n}", graph("b\"la"));
+    void escapeLabel() {
+        assertGraph("graph {\ngraph ['label'='b\\'la']\n}", graph().graphAttr().with(Label.of("b\"la")));
     }
 
     @Test
-    void htmlName() {
-        assertGraph("graph <bla> {\n}", graph(html("bla")));
+    void htmlLabel() {
+        assertGraph("graph {\ngraph ['label'=<bla>]\n}", graph().graphAttr().with(Label.html("bla")));
     }
 
     @Test
     void graphAttr() {
-        assertGraph("graph 'x' {\ngraph ['bla'='blu']\n}", graph("x").graphAttr().with("bla", "blu"));
+        assertGraph("graph {\ngraph ['bla'='blu']\n}", graph().graphAttr().with("bla", "blu"));
+    }
+
+    @Test
+    void cluster() {
+        assertGraph("graph {\nsubgraph 'cluster_y' {\n'x' ['bla'='blu']\n}\n}", graph()
+                .with(graph("y").cluster().with(node("x").with("bla", "blu"))));
     }
 
     @Test
     void nodeAttr() {
-        assertGraph("graph 'x' {\nnode ['bla'='blu']\n}", graph("x").nodeAttr().with("bla", "blu"));
+        assertGraph("graph {\nnode ['bla'='blu']\n}", graph().nodeAttr().with("bla", "blu"));
     }
 
     @Test
     void linkAttr() {
-        assertGraph("graph 'x' {\nedge ['bla'='blu']\n}", graph("x").linkAttr().with("bla", "blu"));
+        assertGraph("graph {\nedge ['bla'='blu']\n}", graph().linkAttr().with("bla", "blu"));
     }
 
     @Test
     void generalAttr() {
-        assertGraph("graph 'x' {\n'bla'='blu'\n}", graph("x").generalAttr().with("bla", "blu"));
+        assertGraph("graph {\n'bla'='blu'\n}", graph().generalAttr().with("bla", "blu"));
     }
 
     @Test

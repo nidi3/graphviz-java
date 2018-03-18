@@ -13,29 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model;
+package guru.nidi.graphviz.attribute;
 
-import guru.nidi.graphviz.attribute.Attributed;
+import org.junit.jupiter.api.Test;
 
-public interface Graph extends Linkable, LinkSource, LinkTarget {
-    Graph strict();
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    Graph directed();
+class SimpleLabelTest {
+    @Test
+    void simple() {
+        assertEquals("\"hula\"", SimpleLabel.of("hula").serialized());
+    }
 
-    Graph cluster();
+    @Test
+    void html() {
+        assertEquals("<hula>", new SimpleLabel("hula", true).serialized());
 
-    Graph named(String name);
+    }
 
-    Graph link(LinkTarget... targets);
+    @Test
+    void ofSimpleLabel() {
+        assertEquals("\"hula\"", SimpleLabel.of(SimpleLabel.of("hula")).serialized());
+    }
 
-    Graph with(LinkSource... sources);
-
-    Attributed<Graph> nodeAttr();
-
-    Attributed<Graph> linkAttr();
-
-    Attributed<Graph> graphAttr();
-
-    Attributed<Graph> generalAttr();
+    @Test
+    void ofObject() {
+        assertEquals("\"1\"", SimpleLabel.of(1).serialized());
+    }
 
 }

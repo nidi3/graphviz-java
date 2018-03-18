@@ -15,8 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.MutableAttributed;
-import guru.nidi.graphviz.attribute.SimpleMutableAttributed;
+import guru.nidi.graphviz.attribute.*;
 
 import java.util.*;
 import java.util.concurrent.Callable;
