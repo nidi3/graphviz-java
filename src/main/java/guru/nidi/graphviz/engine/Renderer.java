@@ -62,12 +62,10 @@ public class Renderer {
     }
 
     public BufferedImage toImage() {
-        if (!graphviz.format().svg) {
-            throw new IllegalStateException("Images can only be rendered from PNG and SVG formats.");
+        if (!graphviz.rasterizer.accept(graphviz.format())) {
+            throw new IllegalStateException("Rasterizer " + graphviz.rasterizer + " does not support format " + graphviz.format());
         }
-        final String svg = graphviz.execute()
-                .replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
-        return graphviz.rasterizer.render(graphviz, graphicsConfigurer, svg);
+        return graphviz.rasterizer.rasterize(graphviz, graphicsConfigurer, graphviz.execute());
     }
 
     private void writeToFile(File output, String format, BufferedImage img) {
