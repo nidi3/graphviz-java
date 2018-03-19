@@ -169,7 +169,7 @@ g.generalAttrs()
         .nodeAttrs().add(Color.WHITE.fill())
         .nodes().forEach(node ->
         node.add(
-                Color.named(node.label().toString()),
+                Color.named(node.name().toString()),
                 Style.lineWidth(4).and(Style.FILLED)));
 Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-2.png"));
 ```

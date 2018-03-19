@@ -72,6 +72,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected FindBugsResult analyzeFindBugs() {
         final BugCollector collector = new BugCollector().minPriority(Priorities.NORMAL_PRIORITY)
                 .apply(PredefConfig.dependencyTestIgnore(CodeAnalysisTest.class))
+                .because("It's SVG salamander", In.loc("com.kitfox.svg*").ignoreAll())
                 .because("It's examples", In.loc("ReadmeTest").ignore("DLS_DEAD_LOCAL_STORE"))
                 .because("GraphvizServer is on localhost",
                         In.locs("GraphvizServer", "GraphvizServerEngine")
