@@ -44,6 +44,11 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     }
 
     @Override
+    public Object get(String key) {
+        return attributes.get(key);
+    }
+
+    @Override
     public E add(Attributes attributes) {
         attributes.applyTo(this.attributes);
         return target;

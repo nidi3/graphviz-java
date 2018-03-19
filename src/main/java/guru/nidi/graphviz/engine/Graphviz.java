@@ -165,7 +165,7 @@ public final class Graphviz {
 
     public Renderer render(Format format) {
         final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, options.format(format));
-        return new Renderer(graphviz, null, options.format);
+        return new Renderer(graphviz, null, format);
     }
 
     String execute() {

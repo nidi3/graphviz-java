@@ -30,4 +30,6 @@ public interface MutableAttributed<T> extends Attributes, Iterable<Map.Entry<Str
     }
 
     T add(Attributes attributes);
+
+    Object get(String key);
 }

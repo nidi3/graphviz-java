@@ -37,6 +37,10 @@ public interface Attributes {
         return res;
     }
 
+    default Object get(String key){
+        return applyTo(new MapAttributes()).get(key);
+    }
+
     default boolean isEmpty() {
         return applyTo(new MapAttributes()).isEmpty();
     }

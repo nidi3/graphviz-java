@@ -112,6 +112,11 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return attributes.applyTo(attrs);
     }
 
+    @Override
+    public Object get(String key) {
+        return attributes.get(key);
+    }
+
     private MutableNodePoint from(Link link) {
         if (link.from instanceof MutableNodePoint) {
             final MutableNodePoint f = (MutableNodePoint) link.from;

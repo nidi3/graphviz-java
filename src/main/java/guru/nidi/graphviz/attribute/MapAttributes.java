@@ -44,6 +44,11 @@ public class MapAttributes implements Attributes, Iterable<Map.Entry<String, Obj
     }
 
     @Override
+    public Object get(String key) {
+        return attributes.get(key);
+    }
+
+    @Override
     public Iterator<Map.Entry<String, Object>> iterator() {
         return attributes.entrySet().iterator();
     }
