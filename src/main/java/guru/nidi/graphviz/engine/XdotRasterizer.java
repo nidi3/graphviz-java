@@ -15,16 +15,26 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.parse.Parser;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
-public interface Rasterizer {
-    Rasterizer BATIK = new BatikRasterizer();
-    Rasterizer SALAMANDER = new SalamanderRasterizer();
-    Rasterizer XDOT = new XdotRasterizer();
+public class XdotRasterizer implements Rasterizer {
+    @Override
+    public Format format() {
+        return Format.XDOT;
+    }
 
-    Format format();
-
-    BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input);
+    @Override
+    public BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input) {
+        try {
+            final MutableGraph graph = Parser.read(input);
+            return null;
+        } catch (Exception e) {
+            throw new GraphvizException("Error rasterizing image", e);
+        }
+    }
 }

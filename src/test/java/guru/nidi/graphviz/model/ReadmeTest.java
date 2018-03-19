@@ -123,8 +123,8 @@ class ReadmeTest {
         Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
         Graphviz viz = Graphviz.fromGraph(g);
         viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
-        viz.width(200).rasterizer(Rasterizer.BATIK).render(Format.PNG).toFile(new File("example/ex5b.png"));
-        viz.width(200).rasterizer(Rasterizer.SALAMANDER).render(Format.PNG).toFile(new File("example/ex5s.png"));
+        viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
+        viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
         String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
         BufferedImage image = viz.render(Format.PNG).toImage();
         //## end

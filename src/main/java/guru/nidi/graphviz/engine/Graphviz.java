@@ -146,10 +146,6 @@ public final class Graphviz {
         return new Graphviz(src, rasterizer, width, height, scale, options.totalMemory(totalMemory));
     }
 
-    public Graphviz rasterizer(Rasterizer rasterizer) {
-        return new Graphviz(src, rasterizer, width, height, scale, options);
-    }
-
     public Graphviz width(int width) {
         return new Graphviz(src, rasterizer, width, height, scale, options);
     }
@@ -162,9 +158,14 @@ public final class Graphviz {
         return new Graphviz(src, rasterizer, width, height, scale, options);
     }
 
+    public Renderer rasterize(Rasterizer rasterizer) {
+        final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, options.format(rasterizer.format()));
+        return new Renderer(graphviz, null, Format.PNG);
+    }
+
     public Renderer render(Format format) {
         final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, options.format(format));
-        return new Renderer(graphviz, null);
+        return new Renderer(graphviz, null, options.format);
     }
 
     String execute() {

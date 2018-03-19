@@ -26,14 +26,16 @@ import java.util.function.Consumer;
 public class Renderer {
     private final Graphviz graphviz;
     private final Consumer<Graphics2D> graphicsConfigurer;
+    private final Format output;
 
-    Renderer(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer) {
+    Renderer(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, Format output) {
         this.graphviz = graphviz;
         this.graphicsConfigurer = graphicsConfigurer;
+        this.output = output;
     }
 
     public Renderer withGraphics(Consumer<Graphics2D> graphicsConfigurer) {
-        return new Renderer(graphviz, graphicsConfigurer);
+        return new Renderer(graphviz, graphicsConfigurer, output);
     }
 
     public String toString() {
@@ -42,8 +44,8 @@ public class Renderer {
 
     public void toFile(File file) throws IOException {
         Files.createDirectories(file.getAbsoluteFile().getParentFile().toPath());
-        if (graphviz.format().image) {
-            writeToFile(file, graphviz.format().name().toLowerCase(), toImage());
+        if (output.image) {
+            writeToFile(file, output.name().toLowerCase(), toImage());
         } else {
             try (final Writer out = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
                 out.write(toString());
@@ -52,8 +54,8 @@ public class Renderer {
     }
 
     public void toOutputStream(OutputStream outputStream) throws IOException {
-        if (graphviz.format().image) {
-            writeToOutputStream(outputStream, graphviz.format().name().toLowerCase(), toImage());
+        if (output.image) {
+            writeToOutputStream(outputStream, output.name().toLowerCase(), toImage());
         } else {
             try (final Writer out = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
                 out.write(toString());
@@ -62,9 +64,6 @@ public class Renderer {
     }
 
     public BufferedImage toImage() {
-        if (!graphviz.rasterizer.accept(graphviz.format())) {
-            throw new IllegalStateException("Rasterizer " + graphviz.rasterizer + " does not support format " + graphviz.format());
-        }
         return graphviz.rasterizer.rasterize(graphviz, graphicsConfigurer, graphviz.execute());
     }
 

@@ -26,8 +26,8 @@ import java.util.function.Consumer;
 
 public class BatikRasterizer implements Rasterizer {
     @Override
-    public boolean accept(Format format) {
-        return format.svg;
+    public Format format() {
+        return Format.SVG;
     }
 
     @Override

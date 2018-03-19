@@ -27,8 +27,8 @@ import static java.awt.RenderingHints.*;
 
 public class SalamanderRasterizer implements Rasterizer {
     @Override
-    public boolean accept(Format format) {
-        return format.svg;
+    public Format format() {
+        return Format.SVG;
     }
 
     @Override
