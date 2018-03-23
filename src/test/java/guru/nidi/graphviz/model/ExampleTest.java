@@ -150,8 +150,8 @@ class ExampleTest {
                 struct3 = node("struct3").with(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
         final Graph g = graph("ex41").directed().with(
                 struct1.link(
-                        Factory.between(port("f1"), struct2.port("f0")),
-                        Factory.between(port("f2"), struct3.port("here"))));
+                        between(port("f1"), struct2.port("f0")),
+                        between(port("f2"), struct3.port("here"))));
         Graphviz.fromGraph(g).height(500).rasterize(SALAMANDER).toFile(new File("target/ex41-s.png"));
         Graphviz.fromGraph(g).height(500).rasterize(BATIK).toFile(new File("target/ex41-b.png"));
     }
@@ -173,8 +173,8 @@ class ExampleTest {
                         rec("g"), rec("h")));
         final Graph g = graph("ex42").directed().with(
                 struct1.link(
-                        Factory.between(port("f1"), struct2.port("f0")),
-                        Factory.between(port("f2"), struct3.port("here"))));
+                        between(port("f1"), struct2.port("f0")),
+                        between(port("f2"), struct3.port("here"))));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex42.png"));
     }
 
@@ -314,13 +314,13 @@ class ExampleTest {
                 .generalAttr().with(RankDir.LEFT_TO_RIGHT)
                 .with(
                         node0.link(
-                                Factory.between(port("f0"), node1.port(WEST)),
-                                Factory.between(port("f1"), node2.port(WEST)),
-                                Factory.between(port("f2"), node3.port(WEST)),
-                                Factory.between(port("f5"), node4.port(WEST)),
-                                Factory.between(port("f6"), node5.port(WEST))),
-                        node2.link(Factory.between(port("p"), node6.port(WEST))),
-                        node4.link(Factory.between(port("p"), node7.port(WEST))));
+                                between(port("f0"), node1.port(WEST)),
+                                between(port("f1"), node2.port(WEST)),
+                                between(port("f2"), node3.port(WEST)),
+                                between(port("f5"), node4.port(WEST)),
+                                between(port("f6"), node5.port(WEST))),
+                        node2.link(between(port("p"), node6.port(WEST))),
+                        node4.link(between(port("p"), node7.port(WEST))));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex6.png"));
     }
 

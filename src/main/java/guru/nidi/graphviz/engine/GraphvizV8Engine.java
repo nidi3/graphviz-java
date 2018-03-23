@@ -51,7 +51,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
 
     @Override
     protected void doInit() throws IOException {
-        envs.set(new Env(jsInitEnv(), jsVizCode("1.8.0")));
+        envs.set(new Env(jsInitEnv(), jsVizCode("1.8.1")));
     }
 
     @Override
