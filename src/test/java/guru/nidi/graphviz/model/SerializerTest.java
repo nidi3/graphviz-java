@@ -124,13 +124,13 @@ class SerializerTest {
     void graphEdgeStart() {
         assertGraph("graph 'x' {\nsubgraph 'y' {\n'z' -- 'a'\n} -- 'x':n\n}", graph("x").with(
                 graph("y").with(node("z").link(
-                        node("a"))).link(node("x").loc(NORTH))));
+                        node("a"))).link(node("x").port(NORTH))));
     }
 
     @Test
     void graphEdgeEnd() {
         assertGraph("graph 'x' {\n'x':n -- subgraph 'y' {\n'z' -- 'a'\n}\n}", graph("x").with(
-                node("x").link(between(loc(NORTH),
+                node("x").link(between(port(NORTH),
                         graph("y").with(node("z").link(node("a")))))));
     }
 
@@ -144,20 +144,20 @@ class SerializerTest {
     @Test
     void compassEdge() {
         assertGraph("graph 'x' {\n'x':sw -- 'y':ne\n}", graph("x")
-                .with(node("x").link(between(loc(SOUTH_WEST), node("y").loc(NORTH_EAST)))));
+                .with(node("x").link(between(port(SOUTH_WEST), node("y").port(NORTH_EAST)))));
     }
 
     @Test
     void recordEdge() {
         assertGraph("graph 'x' {\n'x':'r1' -- 'y':'r2'\n}", graph("x")
-                .with(node("x").link(between(loc("r1"), node("y").loc("r2")))));
+                .with(node("x").link(between(port("r1"), node("y").port("r2")))));
     }
 
     @Test
     void compassRecordEdge() {
         assertGraph("graph 'x' {\n'x':'r1':sw -- 'y':'r2':ne\n}", graph("x")
                 .with(node("x").link(
-                        between(loc("r1", SOUTH_WEST), node("y").loc("r2", NORTH_EAST)))));
+                        between(port("r1", SOUTH_WEST), node("y").port("r2", NORTH_EAST)))));
     }
 
     @Test

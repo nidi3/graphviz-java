@@ -30,20 +30,20 @@ class ImmutableNode extends MutableNode implements Node {
         super(name, links, attributes);
     }
 
-    public NodePoint loc() {
-        return loc(null, null);
+    public PortNode port() {
+        return port(null, null);
     }
 
-    public NodePoint loc(String record) {
-        return loc(record, null);
+    public PortNode port(String record) {
+        return port(record, null);
     }
 
-    public NodePoint loc(Compass compass) {
-        return loc(null, compass);
+    public PortNode port(Compass compass) {
+        return port(null, compass);
     }
 
-    public NodePoint loc(String record, Compass compass) {
-        return new ImmutableNodePoint(this, record, compass);
+    public PortNode port(String record, Compass compass) {
+        return new ImmutablePortNode(this, record, compass);
     }
 
     public ImmutableNode link(LinkTarget target) {

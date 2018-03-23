@@ -27,7 +27,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
     }
 
     public static Link to(Node node) {
-        return to(node.loc());
+        return to(node.port());
     }
 
     public static Link to(LinkTarget to) {
@@ -39,7 +39,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
     }
 
     public static Link between(Node from, Node to) {
-        return between(from.loc(), to.loc());
+        return between(from.port(), to.port());
     }
 
     public static Link between(LinkSource from, LinkTarget to) {

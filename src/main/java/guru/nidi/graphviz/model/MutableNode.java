@@ -65,12 +65,12 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return this;
     }
 
-    public MutableNodePoint withRecord(String record) {
-        return new MutableNodePoint().setNode(this).setRecord(record);
+    public MutablePortNode withRecord(String record) {
+        return new MutablePortNode().setNode(this).setRecord(record);
     }
 
-    public MutableNodePoint withCompass(Compass compass) {
-        return new MutableNodePoint().setNode(this).setCompass(compass);
+    public MutablePortNode withCompass(Compass compass) {
+        return new MutablePortNode().setNode(this).setCompass(compass);
     }
 
     public MutableNode addLink(LinkTarget target) {
@@ -117,12 +117,12 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return attributes.get(key);
     }
 
-    private MutableNodePoint from(Link link) {
-        if (link.from instanceof MutableNodePoint) {
-            final MutableNodePoint f = (MutableNodePoint) link.from;
-            return new MutableNodePoint().setNode(this).setRecord(f.record()).setCompass(f.compass());
+    private MutablePortNode from(Link link) {
+        if (link.from instanceof MutablePortNode) {
+            final MutablePortNode f = (MutablePortNode) link.from;
+            return new MutablePortNode().setNode(this).setRecord(f.record()).setCompass(f.compass());
         }
-        return new MutableNodePoint().setNode(this);
+        return new MutablePortNode().setNode(this);
     }
 
     public Label name() {

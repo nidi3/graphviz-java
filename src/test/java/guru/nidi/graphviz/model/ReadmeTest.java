@@ -89,13 +89,13 @@ class ReadmeTest {
                 .generalAttr().with(RankDir.LEFT_TO_RIGHT)
                 .with(
                         node0.link(
-                                between(loc("f0"), node1.loc("v", SOUTH)),
-                                between(loc("f1"), node2.loc(WEST)),
-                                between(loc("f2"), node3.loc(WEST)),
-                                between(loc("f3"), node4.loc(WEST)),
-                                between(loc("f4"), node5.loc("v", NORTH))),
-                        node2.link(between(loc("p"), node6.loc(NORTH_WEST))),
-                        node4.link(between(loc("p"), node7.loc(SOUTH_WEST))));
+                                between(port("f0"), node1.port("v", SOUTH)),
+                                between(port("f1"), node2.port(WEST)),
+                                between(port("f2"), node3.port(WEST)),
+                                between(port("f3"), node4.port(WEST)),
+                                between(port("f4"), node5.port("v", NORTH))),
+                        node2.link(between(port("p"), node6.port(NORTH_WEST))),
+                        node4.link(between(port("p"), node7.port(SOUTH_WEST))));
         Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex3.png"));
         //## end
     }

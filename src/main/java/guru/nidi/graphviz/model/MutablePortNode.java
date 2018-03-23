@@ -15,35 +15,35 @@
  */
 package guru.nidi.graphviz.model;
 
-public class MutableNodePoint implements LinkTarget, MutableLinkSource<MutableNode> {
+public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNode> {
     protected MutableNode node;
     protected String record;
     protected Compass compass;
 
-    public MutableNodePoint() {
+    public MutablePortNode() {
     }
 
-    protected MutableNodePoint(MutableNode node, String record, Compass compass) {
+    protected MutablePortNode(MutableNode node, String record, Compass compass) {
         this.node = node;
         this.record = record;
         this.compass = compass;
     }
 
-    public MutableNodePoint copy() {
-        return new MutableNodePoint(node.copy(), record, compass);
+    public MutablePortNode copy() {
+        return new MutablePortNode(node.copy(), record, compass);
     }
 
-    public MutableNodePoint setNode(MutableNode node) {
+    public MutablePortNode setNode(MutableNode node) {
         this.node = node;
         return this;
     }
 
-    public MutableNodePoint setRecord(String record) {
+    public MutablePortNode setRecord(String record) {
         this.record = record;
         return this;
     }
 
-    public MutableNodePoint setCompass(Compass compass) {
+    public MutablePortNode setCompass(Compass compass) {
         this.compass = compass;
         return this;
     }
@@ -78,15 +78,15 @@ public class MutableNodePoint implements LinkTarget, MutableLinkSource<MutableNo
             return false;
         }
 
-        final MutableNodePoint nodePoint = (MutableNodePoint) o;
+        final MutablePortNode portNode = (MutablePortNode) o;
 
-        if (node != null ? !node.equals(nodePoint.node) : nodePoint.node != null) {
+        if (node != null ? !node.equals(portNode.node) : portNode.node != null) {
             return false;
         }
-        if (record != null ? !record.equals(nodePoint.record) : nodePoint.record != null) {
+        if (record != null ? !record.equals(portNode.record) : portNode.record != null) {
             return false;
         }
-        return compass == nodePoint.compass;
+        return compass == portNode.compass;
     }
 
     @Override

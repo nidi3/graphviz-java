@@ -39,16 +39,16 @@ public final class Factory {
                 .orElseGet(() -> new ImmutableNode(label));
     }
 
-    public static NodePoint loc(String record) {
-        return loc(record, null);
+    public static PortNode port(String record) {
+        return port(record, null);
     }
 
-    public static NodePoint loc(Compass compass) {
-        return loc(null, compass);
+    public static PortNode port(Compass compass) {
+        return port(null, compass);
     }
 
-    public static NodePoint loc(String record, Compass compass) {
-        return new ImmutableNodePoint(null, record, compass);
+    public static PortNode port(String record, Compass compass) {
+        return new ImmutablePortNode(null, record, compass);
     }
 
 
@@ -70,16 +70,16 @@ public final class Factory {
                 .orElseGet(() -> new MutableNode().setName(name));
     }
 
-    public static MutableNodePoint mutLoc(String record) {
-        return new MutableNodePoint().setRecord(record);
+    public static MutablePortNode mutPort(String record) {
+        return new MutablePortNode().setRecord(record);
     }
 
-    public static MutableNodePoint mutLoc(Compass compass) {
-        return new MutableNodePoint().setCompass(compass);
+    public static MutablePortNode mutPort(Compass compass) {
+        return new MutablePortNode().setCompass(compass);
     }
 
-    public static MutableNodePoint mutLoc(String record, Compass compass) {
-        return new MutableNodePoint().setRecord(record).setCompass(compass);
+    public static MutablePortNode mutPort(String record, Compass compass) {
+        return new MutablePortNode().setRecord(record).setCompass(compass);
     }
 
 

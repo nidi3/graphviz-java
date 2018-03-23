@@ -97,7 +97,7 @@ public final class Parser {
                     applyMutableAttributes(graph.generalAttrs(), Arrays.asList(base, nextToken(ID)));
                     nextToken();
                 } else {
-                    final MutableNodePoint nodeId = nodeId(base);
+                    final MutablePortNode nodeId = nodeId(base);
                     if (token.type == MINUS_MINUS || token.type == ARROW) {
                         edgeStatement(graph, nodeId);
                     } else {
@@ -172,7 +172,7 @@ public final class Parser {
                 new ParserException(lexer.pos, "Invalid compass value '" + name + "'"));
     }
 
-    private void nodeStatement(MutableGraph graph, MutableNodePoint nodeId) throws IOException {
+    private void nodeStatement(MutableGraph graph, MutablePortNode nodeId) throws IOException {
         final MutableNode node = mutNode(nodeId.node().name()); //TODO ignore port and compass?
         if (token.type == BRACKET_OPEN) {
             applyMutableAttributes(node, attributeList());
@@ -180,8 +180,8 @@ public final class Parser {
         graph.add(node);
     }
 
-    private MutableNodePoint nodeId(Token base) throws IOException {
-        final MutableNodePoint node = new MutableNodePoint().setNode(mutNode(label(base)));
+    private MutablePortNode nodeId(Token base) throws IOException {
+        final MutablePortNode node = new MutablePortNode().setNode(mutNode(label(base)));
         if (token.type == COLON) {
             final String second = nextToken(ID).value;
             nextToken();
@@ -189,7 +189,11 @@ public final class Parser {
                 node.setRecord(second).setCompass(compass(nextToken(ID).value));
                 nextToken();
             } else {
-                node.setCompass(compass(second));
+                if (Compass.of(second).isPresent()) {
+                    node.setCompass(compass(second));
+                } else {
+                    node.setRecord(second);
+                }
             }
         }
         return node;

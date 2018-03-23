@@ -15,24 +15,24 @@
  */
 package guru.nidi.graphviz.model;
 
-class ImmutableNodePoint extends MutableNodePoint implements NodePoint {
-    ImmutableNodePoint(MutableNode node, String record, Compass compass) {
+class ImmutablePortNode extends MutablePortNode implements PortNode {
+    ImmutablePortNode(MutableNode node, String record, Compass compass) {
         super(node, record, compass);
     }
 
-    public ImmutableNodePoint loc(String record) {
-        return new ImmutableNodePoint(node, record, compass);
+    public ImmutablePortNode port(String record) {
+        return new ImmutablePortNode(node, record, compass);
     }
 
-    public ImmutableNodePoint loc(Compass compass) {
-        return new ImmutableNodePoint(node, record, compass);
+    public ImmutablePortNode port(Compass compass) {
+        return new ImmutablePortNode(node, record, compass);
     }
 
-    public ImmutableNodePoint loc(String record, Compass compass) {
-        return new ImmutableNodePoint(node, record, compass);
+    public ImmutablePortNode port(String record, Compass compass) {
+        return new ImmutablePortNode(node, record, compass);
     }
 
     public Node link(LinkTarget target) {
-        return (Node) new ImmutableNodePoint(node.copy(), record, compass).addLink(target);
+        return (Node) new ImmutablePortNode(node.copy(), record, compass).addLink(target);
     }
 }

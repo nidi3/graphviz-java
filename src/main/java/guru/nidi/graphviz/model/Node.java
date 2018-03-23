@@ -18,13 +18,13 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.Attributed;
 
 public interface Node extends Linkable, Attributed<Node>, LinkTarget, LinkSource {
-    NodePoint loc();
+    PortNode port();
 
-    NodePoint loc(String record);
+    PortNode port(String record);
 
-    NodePoint loc(Compass compass);
+    PortNode port(Compass compass);
 
-    NodePoint loc(String record, Compass compass);
+    PortNode port(String record, Compass compass);
 
     Node link(LinkTarget... targets);
 

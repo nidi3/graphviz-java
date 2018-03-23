@@ -145,18 +145,24 @@ class Lexer {
         final StringBuilder s = new StringBuilder();
         int level = 1;
         readRawChar();
-        do {
+        level = htmlLevel(level, ch);
+        while ((ch != '>' || level > 0) && ch != CH_EOF) {
             s.append(ch);
             readRawChar();
-            if (ch == '<') {
-                level++;
-            }
-            if (ch == '>') {
-                level--;
-            }
-        } while ((ch != '>' || level > 0) && ch != CH_EOF);
+            level = htmlLevel(level, ch);
+        }
         readChar();
         return new Token(ID, SUB_HTML, s.toString());
+    }
+
+    private int htmlLevel(int level, char ch) {
+        if (ch == '<') {
+            return level + 1;
+        }
+        if (ch == '>') {
+            return level - 1;
+        }
+        return level;
     }
 
     private Token simpleIdent() throws IOException {

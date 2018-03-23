@@ -117,12 +117,14 @@ public class Serializer {
         if (!visited.contains(linkable)) {
             visited.add(linkable);
             for (final Link link : linkable.links()) {
-                if (link.to instanceof MutableNodePoint) {
-                    linkedNodes(((MutableNodePoint) link.to).node, visited);
+                if (link.to instanceof MutableNode) {
+                    linkedNodes((MutableNode) link.to, visited);
+                } else if (link.to instanceof MutablePortNode) {
+                    linkedNodes(((MutablePortNode) link.to).node, visited);
                 } else if (link.to instanceof MutableGraph) {
                     linkedNodes((MutableGraph) link.to, visited);
                 } else {
-                    throw new IllegalStateException("unexpected link to " + link.to);
+                    throw new IllegalStateException("unexpected link to " + link.to + " of " + link.to.getClass());
                 }
             }
         }
@@ -170,8 +172,10 @@ public class Serializer {
     }
 
     private void linkTarget(Object linkable) {
-        if (linkable instanceof MutableNodePoint) {
-            point((MutableNodePoint) linkable);
+        if (linkable instanceof MutableNode) {
+            node((MutableNode) linkable);
+        } else if (linkable instanceof MutablePortNode) {
+            port((MutablePortNode) linkable);
         } else if (linkable instanceof MutableGraph) {
             graph((MutableGraph) linkable, false);
         } else {
@@ -184,14 +188,13 @@ public class Serializer {
         attrs(node.attributes);
     }
 
-    private void point(MutableNodePoint point) {
-        str.append(point.node.name.serialized());
-        if (point.record != null) {
-            str.append(':');
-            str.append(SimpleLabel.of(point.record).serialized());
+    private void port(MutablePortNode portNode) {
+        str.append(portNode.node.name.serialized());
+        if (portNode.record != null) {
+            str.append(':').append(SimpleLabel.of(portNode.record).serialized());
         }
-        if (point.compass != null) {
-            str.append(':').append(point.compass.value);
+        if (portNode.compass != null) {
+            str.append(':').append(portNode.compass.value);
         }
     }
 

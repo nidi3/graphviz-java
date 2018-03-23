@@ -36,6 +36,7 @@ import static guru.nidi.graphviz.engine.Rasterizer.BATIK;
 import static guru.nidi.graphviz.engine.Rasterizer.SALAMANDER;
 import static guru.nidi.graphviz.model.Compass.WEST;
 import static guru.nidi.graphviz.model.Factory.*;
+import static guru.nidi.graphviz.model.Link.between;
 import static guru.nidi.graphviz.model.Link.to;
 
 class ExampleTest {
@@ -149,8 +150,8 @@ class ExampleTest {
                 struct3 = node("struct3").with(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
         final Graph g = graph("ex41").directed().with(
                 struct1.link(
-                        between(loc("f1"), struct2.loc("f0")),
-                        between(loc("f2"), struct3.loc("here"))));
+                        Factory.between(port("f1"), struct2.port("f0")),
+                        Factory.between(port("f2"), struct3.port("here"))));
         Graphviz.fromGraph(g).height(500).rasterize(SALAMANDER).toFile(new File("target/ex41-s.png"));
         Graphviz.fromGraph(g).height(500).rasterize(BATIK).toFile(new File("target/ex41-b.png"));
     }
@@ -172,8 +173,8 @@ class ExampleTest {
                         rec("g"), rec("h")));
         final Graph g = graph("ex42").directed().with(
                 struct1.link(
-                        between(loc("f1"), struct2.loc("f0")),
-                        between(loc("f2"), struct3.loc("here"))));
+                        Factory.between(port("f1"), struct2.port("f0")),
+                        Factory.between(port("f2"), struct3.port("here"))));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex42.png"));
     }
 
@@ -313,13 +314,13 @@ class ExampleTest {
                 .generalAttr().with(RankDir.LEFT_TO_RIGHT)
                 .with(
                         node0.link(
-                                between(loc("f0"), node1.loc(WEST)),
-                                between(loc("f1"), node2.loc(WEST)),
-                                between(loc("f2"), node3.loc(WEST)),
-                                between(loc("f5"), node4.loc(WEST)),
-                                between(loc("f6"), node5.loc(WEST))),
-                        node2.link(between(loc("p"), node6.loc(WEST))),
-                        node4.link(between(loc("p"), node7.loc(WEST))));
+                                Factory.between(port("f0"), node1.port(WEST)),
+                                Factory.between(port("f1"), node2.port(WEST)),
+                                Factory.between(port("f2"), node3.port(WEST)),
+                                Factory.between(port("f5"), node4.port(WEST)),
+                                Factory.between(port("f6"), node5.port(WEST))),
+                        node2.link(Factory.between(port("p"), node6.port(WEST))),
+                        node4.link(Factory.between(port("p"), node7.port(WEST))));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex6.png"));
     }
 
@@ -385,10 +386,14 @@ class ExampleTest {
 
     @Test
     void ex10() throws IOException {
-//        node("parent").
-//        final Graph g = graph("ex10").directed()
-//                .with(node("first").link(to(node("second")).with(Arrow.DOT.open().size(2))));
-//        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex10.png"));
+        final Node parent = node("parent").with(Shape.NONE, Label.html("<table border='1' cellborder='1'>" +
+                "<tr><td colspan='3'>The foo, the bar and the baz</td></tr>" +
+                "<tr><td port='one'>First port</td><td port='two'>Second port</td><td port='three'>Third port</td></tr>" +
+                "</table>"));
+        final Graph g = graph("ex10").directed()
+                .with(parent.link(between(port("one"), node("first")), between(port("two"), node("second"))),
+                        node("third").link(to(parent.port("three", Compass.SOUTH))));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex10.png"));
     }
 
 }

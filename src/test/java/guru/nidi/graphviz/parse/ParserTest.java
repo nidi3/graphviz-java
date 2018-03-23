@@ -25,6 +25,8 @@ import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.model.Compass.NORTH_EAST;
 import static guru.nidi.graphviz.model.Compass.SOUTH_WEST;
 import static guru.nidi.graphviz.model.Factory.*;
+import static guru.nidi.graphviz.model.Link.between;
+import static guru.nidi.graphviz.model.Link.to;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ParserTest {
@@ -59,12 +61,14 @@ class ParserTest {
     void links() throws IOException {
         final MutableNode
                 simple = mutNode("simple"),
+                c = mutNode("c"),
                 d = mutNode("d"),
                 full = mutNode("full");
         assertEquals(mutGraph().add(
-                simple.addLink(to(d.withCompass(SOUTH_WEST)).with("a", "b")),
-                d.addLink(between(loc(SOUTH_WEST), full.withRecord("2").setCompass(NORTH_EAST)).with("a", "b"))),
-                Parser.read("graph { simple -- d:sw -- full:2:ne [a=b]}"));
+                simple.addLink(to(c.withRecord("2")).with("a", "b")),
+                c.withRecord("2").addLink(to(d.withCompass(SOUTH_WEST)).with("a", "b")),
+                d.addLink(between(port(SOUTH_WEST), full.withRecord("2").setCompass(NORTH_EAST)).with("a", "b"))),
+                Parser.read("graph { simple -- c:2 -- d:sw -- full:2:ne [a=b]}"));
     }
 
     @Test

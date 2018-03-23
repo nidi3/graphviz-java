@@ -78,8 +78,18 @@ class LexerTest {
     }
 
     @Test
+    void emptyHtmlId() throws IOException {
+        assertTokens("<>", token(ID, SUB_HTML, ""));
+    }
+
+    @Test
     void htmlId() throws IOException {
         assertTokens(" <text <tag> end>", token(ID, SUB_HTML, "text <tag> end"));
+    }
+
+    @Test
+    void htmlIdWithoutspaces() throws IOException {
+        assertTokens("<<text>>", token(ID, SUB_HTML, "<text>"));
     }
 
     private void assertTokens(String s, Token... expected) throws IOException {

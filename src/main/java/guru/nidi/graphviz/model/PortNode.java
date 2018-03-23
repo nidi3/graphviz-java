@@ -15,10 +15,10 @@
  */
 package guru.nidi.graphviz.model;
 
-public interface NodePoint extends LinkTarget, LinkSource {
-    NodePoint loc(String record);
+public interface PortNode extends LinkTarget, LinkSource {
+    PortNode port(String record);
 
-    NodePoint loc(Compass compass);
+    PortNode port(Compass compass);
 
-    NodePoint loc(String record, Compass compass);
+    PortNode port(String record, Compass compass);
 }

@@ -92,8 +92,8 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
             nodes.add((MutableNode) source);
             return this;
         }
-        if (source instanceof MutableNodePoint) {
-            nodes.add(((MutableNodePoint) source).node);
+        if (source instanceof MutablePortNode) {
+            nodes.add(((MutablePortNode) source).node);
             return this;
         }
         if (source instanceof MutableGraph) {
@@ -132,8 +132,8 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         if (!visited.contains(node)) {
             visited.add(node);
             for (final Link link : node.links()) {
-                if (link.to instanceof MutableNodePoint) {
-                    collectNodes(((MutableNodePoint) link.to).node, visited);
+                if (link.to instanceof MutablePortNode) {
+                    collectNodes(((MutablePortNode) link.to).node, visited);
                 }
             }
         }

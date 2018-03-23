@@ -104,7 +104,7 @@ public class PerformanceTest {
         Graphviz.fromGraph(g).render(SVG).toString();
     }
 
-    public void ex2() {
+    void ex2() {
         final Node
                 init = node("init"),
                 execute = node("execute"),
@@ -122,7 +122,7 @@ public class PerformanceTest {
         Graphviz.fromGraph(g).render(SVG).toString();
     }
 
-    public void ex3() {
+    void ex3() {
         final Node
                 a = node("a").with(Shape.polygon(5, 0, 0), attr("peripheries", 3), Color.LIGHTBLUE, Style.FILLED),
                 c = node("c").with(Shape.polygon(4, .4, 0), Label.of("hello world")),
@@ -134,19 +134,19 @@ public class PerformanceTest {
         Graphviz.fromGraph(g).render(SVG).toString();
     }
 
-    public void ex4() {
+    void ex4() {
         final Node
                 struct1 = node("struct1").with(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
                 struct2 = node("struct2").with(Records.label("<f0> one|<f1> two")),
                 struct3 = node("struct3").with(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
         final Graph g = graph("ex41").directed().with(
                 struct1.link(
-                        between(loc("f1"), struct2.loc("f0")),
-                        between(loc("f2"), struct3.loc("here"))));
+                        between(port("f1"), struct2.port("f0")),
+                        between(port("f2"), struct3.port("here"))));
         Graphviz.fromGraph(g).render(SVG).toString();
     }
 
-    public void ex5() {
+    void ex5() {
         final Node
                 reiser = node("Reiser cpp"), csh = node("Cshell"),
                 ksh = node("ksh"), emacs = node("emacs"),
@@ -267,7 +267,7 @@ public class PerformanceTest {
         Graphviz.fromGraph(g).render(SVG).toString();
     }
 
-    public void ex6() {
+    void ex6() {
         final Node
                 node0 = node("node0").with(Records.of(rec("f0", ""), rec("f1", ""), rec("f2", ""), rec("f3", ""), rec("f4", ""), rec("f5", ""), rec("f6", ""))),
                 node1 = node("node1").with(Records.of(turn(rec("n", "n14"), rec("719"), rec("p", "")))),
@@ -281,17 +281,17 @@ public class PerformanceTest {
                 .generalAttr().with(RankDir.LEFT_TO_RIGHT)
                 .with(
                         node0.link(
-                                between(loc("f0"), node1.loc(WEST)),
-                                between(loc("f1"), node2.loc(WEST)),
-                                between(loc("f2"), node3.loc(WEST)),
-                                between(loc("f5"), node4.loc(WEST)),
-                                between(loc("f6"), node5.loc(WEST))),
-                        node2.link(between(loc("p"), node6.loc(WEST))),
-                        node4.link(between(loc("p"), node7.loc(WEST))));
+                                between(port("f0"), node1.port(WEST)),
+                                between(port("f1"), node2.port(WEST)),
+                                between(port("f2"), node3.port(WEST)),
+                                between(port("f5"), node4.port(WEST)),
+                                between(port("f6"), node5.port(WEST))),
+                        node2.link(between(port("p"), node6.port(WEST))),
+                        node4.link(between(port("p"), node7.port(WEST))));
         Graphviz.fromGraph(g).render(SVG).toString();
     }
 
-    public void ex7() {
+    void ex7() {
         final Graph g = graph("ex7").directed()
                 .with(
                         graph().cluster()

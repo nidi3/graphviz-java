@@ -68,8 +68,8 @@ The size of the resulting image, the rendering engine and the output format can 
 Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
 Graphviz viz = Graphviz.fromGraph(g);
 viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
-viz.width(200).rasterizer(Rasterizer.BATIK).render(Format.PNG).toFile(new File("example/ex5b.png"));
-viz.width(200).rasterizer(Rasterizer.SALAMANDER).render(Format.PNG).toFile(new File("example/ex5s.png"));
+viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
+viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
 String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
 BufferedImage image = viz.render(Format.PNG).toImage();
 ```
@@ -125,13 +125,13 @@ Graph g = graph("example3").directed()
         .generalAttr().with(RankDir.LEFT_TO_RIGHT)
         .with(
                 node0.link(
-                        between(loc("f0"), node1.loc("v", SOUTH)),
-                        between(loc("f1"), node2.loc(WEST)),
-                        between(loc("f2"), node3.loc(WEST)),
-                        between(loc("f3"), node4.loc(WEST)),
-                        between(loc("f4"), node5.loc("v", NORTH))),
-                node2.link(between(loc("p"), node6.loc(NORTH_WEST))),
-                node4.link(between(loc("p"), node7.loc(SOUTH_WEST))));
+                        between(port("f0"), node1.port("v", SOUTH)),
+                        between(port("f1"), node2.port(WEST)),
+                        between(port("f2"), node3.port(WEST)),
+                        between(port("f3"), node4.port(WEST)),
+                        between(port("f4"), node5.port("v", NORTH))),
+                node2.link(between(port("p"), node6.port(NORTH_WEST))),
+                node4.link(between(port("p"), node7.port(SOUTH_WEST))));
 Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex3.png"));
 ```
 [//]: # (end)
