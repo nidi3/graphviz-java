@@ -65,10 +65,7 @@ class ExampleTest {
                         node("make_string"), node("printf"), node("compare")),
                 node("init").link(
                         node("make_string"))));
-        Graph h=graph().directed().with(node("b").link(node("a")),node("a").link(node("b")));
-        Graphviz.fromGraph(h).render(PNG).toFile(new File("target/ex11h.png"));
-        Graphviz.fromGraph(g).rasterize(Rasterizer.XDOT).toFile(new File("target/ex11x.png"));
-        Graphviz.fromGraph(g).rasterize(SALAMANDER).toFile(new File("target/ex11.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex11.png"));
     }
 
     @Test
@@ -83,7 +80,6 @@ class ExampleTest {
                         node("init").link(make_string),
                         node("cleanup"),
                         printf));
-        Graphviz.fromGraph(g).rasterize(Rasterizer.XDOT).toFile(new File("target/ex12x.png"));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex12.png"));
     }
 
