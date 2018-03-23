@@ -24,15 +24,9 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.function.Consumer;
 
-public class BatikRasterizer implements Rasterizer {
+public class BatikRasterizer extends SvgRasterizer {
     @Override
-    public Format format() {
-        return Format.SVG;
-    }
-
-    @Override
-    public BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input) {
-        final String svg = input.replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
+    public BufferedImage doRasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String svg) {
         final BufferedImage[] image = new BufferedImage[1];
         final TranscoderInput in = new TranscoderInput(new StringReader(svg));
         try {

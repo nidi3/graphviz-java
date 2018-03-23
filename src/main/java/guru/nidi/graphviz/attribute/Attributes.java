@@ -37,7 +37,7 @@ public interface Attributes {
         return res;
     }
 
-    default Object get(String key){
+    default Object get(String key) {
         return applyTo(new MapAttributes()).get(key);
     }
 

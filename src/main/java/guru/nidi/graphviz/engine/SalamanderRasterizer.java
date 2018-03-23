@@ -25,15 +25,9 @@ import java.util.function.Consumer;
 
 import static java.awt.RenderingHints.*;
 
-public class SalamanderRasterizer implements Rasterizer {
+public class SalamanderRasterizer extends SvgRasterizer {
     @Override
-    public Format format() {
-        return Format.SVG;
-    }
-
-    @Override
-    public BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input) {
-       final String svg = input.replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
+    public BufferedImage doRasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String svg) {
         final SVGDiagram diagram = createDiagram(svg);
         double scaleX = graphviz.scale;
         double scaleY = graphviz.scale;

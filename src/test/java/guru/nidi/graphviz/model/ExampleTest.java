@@ -383,4 +383,12 @@ class ExampleTest {
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex9.png"));
     }
 
+    @Test
+    void ex10() throws IOException {
+//        node("parent").
+//        final Graph g = graph("ex10").directed()
+//                .with(node("first").link(to(node("second")).with(Arrow.DOT.open().size(2))));
+//        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex10.png"));
+    }
+
 }

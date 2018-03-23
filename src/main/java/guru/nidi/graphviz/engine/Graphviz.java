@@ -159,7 +159,8 @@ public final class Graphviz {
     }
 
     public Renderer rasterize(Rasterizer rasterizer) {
-        final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, options.format(rasterizer.format()));
+        final Options opts = options.format(rasterizer.format());
+        final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, opts);
         return new Renderer(graphviz, null, Format.PNG);
     }
 
