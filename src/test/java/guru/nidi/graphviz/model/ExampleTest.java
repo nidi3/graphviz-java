@@ -65,7 +65,10 @@ class ExampleTest {
                         node("make_string"), node("printf"), node("compare")),
                 node("init").link(
                         node("make_string"))));
-        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex11.png"));
+        Graph h=graph().directed().with(node("b").link(node("a")),node("a").link(node("b")));
+        Graphviz.fromGraph(h).render(PNG).toFile(new File("target/ex11h.png"));
+        Graphviz.fromGraph(g).rasterize(Rasterizer.XDOT).toFile(new File("target/ex11x.png"));
+        Graphviz.fromGraph(g).rasterize(SALAMANDER).toFile(new File("target/ex11.png"));
     }
 
     @Test
@@ -80,6 +83,7 @@ class ExampleTest {
                         node("init").link(make_string),
                         node("cleanup"),
                         printf));
+        Graphviz.fromGraph(g).rasterize(Rasterizer.XDOT).toFile(new File("target/ex12x.png"));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex12.png"));
     }
 
@@ -151,8 +155,8 @@ class ExampleTest {
                 struct1.link(
                         between(loc("f1"), struct2.loc("f0")),
                         between(loc("f2"), struct3.loc("here"))));
-        Graphviz.fromGraph(g).height(500).rasterizer(SALAMANDER).render(PNG).toFile(new File("target/ex41-s.png"));
-        Graphviz.fromGraph(g).height(500).rasterizer(BATIK).render(PNG).toFile(new File("target/ex41-b.png"));
+        Graphviz.fromGraph(g).height(500).rasterize(SALAMANDER).toFile(new File("target/ex41-s.png"));
+        Graphviz.fromGraph(g).height(500).rasterize(BATIK).toFile(new File("target/ex41-b.png"));
     }
 
     @Test
@@ -371,8 +375,8 @@ class ExampleTest {
                         succNum.link(end)
                 );
         final Graphviz viz = Graphviz.fromGraph(g).width(320);
-        viz.rasterizer(SALAMANDER).render(PNG).toFile(new File("target/ex8s.png"));
-        viz.rasterizer(BATIK).render(PNG).toFile(new File("target/ex8b.png"));
+        viz.rasterize(SALAMANDER).toFile(new File("target/ex8s.png"));
+        viz.rasterize(BATIK).toFile(new File("target/ex8b.png"));
         viz.render(SVG).toFile(new File("target/ex8.svg"));
     }
 

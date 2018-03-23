@@ -18,6 +18,10 @@ package guru.nidi.graphviz.engine;
 import guru.nidi.graphviz.attribute.MutableAttributed;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.parse.Parser;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import org.apache.commons.math3.exception.NonMonotonicSequenceException;
+import org.apache.commons.math3.util.MathArrays;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -25,6 +29,7 @@ import java.util.function.Consumer;
 
 import static java.awt.RenderingHints.*;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
+import static java.lang.Math.round;
 
 public class XdotRasterizer implements Rasterizer {
     @Override
@@ -70,50 +75,27 @@ public class XdotRasterizer implements Rasterizer {
 
     private void draw(Graphics2D g, String draw) {
         if (draw != null) {
-            final Tokenizer t = new Tokenizer(draw);
-            int len, x, y, w, h;
-            int[][] xy;
+            final XdotTokenizer t = new XdotTokenizer(draw);
             while (t.hasMore()) {
                 char c = t.readChar();
                 switch (c) {
                     case 'E':
                     case 'e':
-                        x = t.readDouble();
-                        y = t.readDouble();
-                        w = t.readDouble();
-                        h = t.readDouble();
-                        if (c == 'e') {
-                            g.drawOval(x - w, y - h, w * 2, h * 2);
-                        } else {
-                            g.fillOval(x - w, y - h, w * 2, h * 2);
-                        }
+                        ellipse(g, t, c == 'E');
                         break;
                     case 'P':
                     case 'p':
-                        len = t.readInt();
-                        xy = t.readXYarray(len);
-                        if (c == 'p') {
-                            g.drawPolygon(xy[0], xy[1], len);
-                        } else {
-                            g.fillPolygon(xy[0], xy[1], len);
-                        }
+                        polygon(g, t, c == 'P');
                         break;
                     case 'L':
-                        len = t.readInt();
-                        xy = t.readXYarray(len);
-                        g.drawPolyline(xy[0], xy[1], len);
+                        polyline(g, t);
                         break;
                     case 'B':
                     case 'b':
-                        len = t.readInt();
-                        xy = t.readXYarray(len);
+                        bspline2(g, t);
                         break;
                     case 'T':
-                        x = t.readDouble();
-                        y = t.readDouble();
-                        int j = t.readInt();
-                        w = t.readDouble();
-                        g.drawString(t.readString(), x + (j - 1) * w / 2, y + g.getFontMetrics().getAscent() / 2);
+                        text(g, t);
                         break;
                     case 't':
                         t.readInt();
@@ -132,14 +114,54 @@ public class XdotRasterizer implements Rasterizer {
                         t.readString();
                         break;
                     case 'I':
-                        x = t.readDouble();
-                        y = t.readDouble();
-                        w = t.readDouble();
-                        h = t.readDouble();
-                        t.readString();
+                        image(g, t);
                         break;
                 }
             }
+        }
+    }
+
+    private void image(Graphics2D g, XdotTokenizer t) {
+        int x = t.readIntDouble();
+        int y = t.readIntDouble();
+        int w = t.readIntDouble();
+        int h = t.readIntDouble();
+        t.readString();
+    }
+
+    private void text(Graphics2D g, XdotTokenizer t) {
+        int x = t.readIntDouble();
+        int y = t.readIntDouble();
+        int j = t.readInt();
+        int w = t.readIntDouble();
+        g.drawString(t.readString(), x + (j - 1) * w / 2, y + g.getFontMetrics().getAscent() / 2);
+    }
+
+    private void polyline(Graphics2D g, XdotTokenizer t) {
+        int len = t.readInt();
+        int[][] ixy = t.readIntCoords(len);
+        g.drawPolyline(ixy[0], ixy[1], len);
+    }
+
+    private void polygon(Graphics2D g, XdotTokenizer t, boolean fill) {
+        int len = t.readInt();
+        int[][] ixy = t.readIntCoords(len);
+        if (fill) {
+            g.fillPolygon(ixy[0], ixy[1], len);
+        } else {
+            g.drawPolygon(ixy[0], ixy[1], len);
+        }
+    }
+
+    private void ellipse(Graphics2D g, XdotTokenizer t, boolean fill) {
+        int x = t.readIntDouble();
+        int y = t.readIntDouble();
+        int w = t.readIntDouble();
+        int h = t.readIntDouble();
+        if (fill) {
+            g.fillOval(x - w, y - h, w * 2, h * 2);
+        } else {
+            g.drawOval(x - w, y - h, w * 2, h * 2);
         }
     }
 
@@ -165,57 +187,68 @@ public class XdotRasterizer implements Rasterizer {
         graphics.setRenderingHint(KEY_RENDERING, VALUE_RENDER_QUALITY);
         graphics.setRenderingHint(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON);
     }
+
+    private void bspline(Graphics2D g, XdotTokenizer t) {
+        int len = t.readInt();
+        double[][] xy = t.readDoubleCoords(len);
+        MathArrays.sortInPlace(xy[0], xy[1]);
+        for (int i = 0; i < xy[0].length; i++) {
+            g.drawOval((int) round(xy[0][i]), (int) round(xy[1][i]), 3, 3);
+        }
+        try {
+            final PolynomialSplineFunction psf = new SplineInterpolator().interpolate(xy[0], xy[1]);
+            double s = (xy[0][len - 1] - xy[0][0]) / 20;
+            for (int i = 0; i < 20; i++) {
+                double x0 = xy[0][0] + i * s;
+                double x1 = xy[0][0] + (i + 1) * s;
+                g.drawLine((int) round(x0), (int) round(psf.value(x0)), (int) round(x1), (int) round(psf.value(x1)));
+            }
+        } catch (NonMonotonicSequenceException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void bspline2(Graphics2D g, XdotTokenizer t) {
+        int len = t.readInt();
+        double[][] xy = t.readDoubleCoords(len);
+//        for (int i = 0; i < xy[0].length; i++) {
+//            g.drawOval((int) round(xy[0][i]) - 2, (int) round(xy[1][i]) - 2, 4, 4);
+//        }
+
+        int m = 50;
+        double xa, ya, xb, yb, xc, yc, xd, yd, a0, a1, a2, a3, b0, b1, b2, b3, x, y, x0 = 0, y0 = 0;
+        for (int i = 1; i < xy[0].length - 2; i++) {
+            xa = xy[0][i - 1];
+            xb = xy[0][i];
+            xc = xy[0][i + 1];
+            xd = xy[0][i + 2];
+            ya = xy[1][i - 1];
+            yb = xy[1][i];
+            yc = xy[1][i + 1];
+            yd = xy[1][i + 2];
+            a3 = (-xa + 3 * (xb - xc) + xd) / 6;
+            b3 = (-ya + 3 * (yb - yc) + yd) / 6;
+            a2 = (xa - 2 * xb + xc) / 2;
+            b2 = (ya - 2 * yb + yc) / 2;
+            a1 = (xc - xa) / 2;
+            b1 = (yc - ya) / 2;
+            a0 = (xa + 4 * xb + xc) / 6;
+            b0 = (ya + 4 * yb + yc) / 6;
+            for (int j = 0; j <= m; j++) {
+                double f = (double) j / m;
+                x = ((a3 * f + a2) * f + a1) * f + a0;
+                y = ((b3 * f + b2) * f + b1) * f + b0;
+                if ((i > 1 || j > 0) && (Math.abs(x - x0) > 2 || Math.abs(y - y0) > 2)) {
+                    g.drawLine((int) round(x0), (int) round(y0), (int) round(x), (int) round(y));
+                    x0 = x;
+                    y0 = y;
+                }
+                if (i == 1 && j == 0) {
+                    x0 = x;
+                    y0 = y;
+                }
+            }
+        }
+    }
 }
 
-class Tokenizer {
-    private final String in;
-    private int pos;
-
-    public Tokenizer(String in) {
-        this.in = in;
-    }
-
-    public String readString() {
-        int len = readInt();
-        String s = in.substring(pos + 1, pos + len + 1);
-        pos += len + 2;
-        return s;
-    }
-
-    private String readTillSpace() {
-        int e = in.indexOf(' ', pos);
-        String s = in.substring(pos, e);
-        pos = e + 1;
-        return s;
-    }
-
-    public char readChar() {
-        final String s = readTillSpace();
-        if (s.length() != 1) {
-            throw new GraphvizException("Expected char, but found '" + s + "'");
-        }
-        return s.charAt(0);
-    }
-
-    public int readInt() {
-        return Integer.parseInt(readTillSpace());
-    }
-
-    public int readDouble() {
-        return (int) Math.round(Double.parseDouble(readTillSpace()));
-    }
-
-    public int[][] readXYarray(int len) {
-        int[] x = new int[len];
-        int[] y = new int[len];
-        for (int i = 0; i < len; i++) {
-            x[i] = readDouble();
-            y[i] = readDouble();
-        }
-        return new int[][]{x, y};
-    }
-
-    public boolean hasMore() {
-        return pos < in.length() - 1;
-    }
-}

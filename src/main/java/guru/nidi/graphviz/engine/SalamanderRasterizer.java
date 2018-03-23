@@ -33,7 +33,7 @@ public class SalamanderRasterizer implements Rasterizer {
 
     @Override
     public BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input) {
-       final String svg = input.replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
+        final String svg = input.replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
         final SVGDiagram diagram = createDiagram(svg);
         double scaleX = graphviz.scale;
         double scaleY = graphviz.scale;
