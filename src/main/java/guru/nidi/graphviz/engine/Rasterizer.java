@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 public interface Rasterizer {
     Rasterizer BATIK = new BatikRasterizer();
     Rasterizer SALAMANDER = new SalamanderRasterizer();
-    Rasterizer XDOT = new XdotRasterizer();
 
     Format format();
 
