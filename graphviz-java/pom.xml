@@ -47,7 +47,7 @@
                                 </input>
                             </inputs>
                             <outputs>
-                                <output>README.md</output>
+                                <output>../README.md</output>
                             </outputs>
                             <prefix>\n```java</prefix>
                             <postfix>```\n</postfix>

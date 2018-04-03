@@ -58,7 +58,7 @@ Graph g = graph("example1").directed().with(node("a").link(node("b")));
 Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex1.png" width="100">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1.png" width="100">
 
 ### Configuration
 The size of the resulting image, the rendering engine and the output format can be configured:
@@ -74,9 +74,9 @@ String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
 BufferedImage image = viz.render(Format.PNG).toImage();
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5b.png" width="100">
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5s.png" width="100">
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex5.svg" width="100">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5b.png" width="100">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5s.png" width="100">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5.svg" width="100">
 
 ### Complex example
 
@@ -103,7 +103,7 @@ Graph g = graph("example2").directed().with(
 Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex2.png"));
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex2.png" width="500">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex2.png" width="500">
 
 ### Example with records
 ```java
@@ -135,7 +135,7 @@ Graph g = graph("example3").directed()
 Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex3.png"));
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex3.png" width="500">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex3.png" width="500">
 
 ### Read and manipulate graphs
 
@@ -157,7 +157,7 @@ graph {
     pink -- blue -- black
 }
 ```
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex4-1.png" width="400">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-1.png" width="400">
 
 [//]: # (manipulate)
 ```java
@@ -174,4 +174,4 @@ g.generalAttrs()
 Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-2.png"));
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/example/ex4-2.png" width="400">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-2.png" width="400">
