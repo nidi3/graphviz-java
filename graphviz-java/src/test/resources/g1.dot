@@ -1,0 +1,21 @@
+graph {
+layout=neato;
+overlap=scalexy;
+sep="+1"; // 0.1, +1
+
+node[label="Large node", width=2, height=2];
+l1; l2; l3;
+node[label="\N", width=0.5, height=0.3];
+1 -- l1;
+2 -- l1;
+3 -- l1;
+4 -- l1;
+5 -- l1;
+5 -- l2;
+6 -- l2;
+7 -- l2;
+8 -- l2;
+8 -- l3;
+9 -- l3;
+10 -- l3;
+}
