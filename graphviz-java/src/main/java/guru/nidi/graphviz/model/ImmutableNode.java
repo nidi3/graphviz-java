@@ -56,12 +56,10 @@ class ImmutableNode extends MutableNode implements Node {
 
     public ImmutableNode link(String node) {
         return (ImmutableNode) copyOfMut().addLink(node);
-        //         return update(copyOfMut().addLink(node));
     }
 
     public ImmutableNode link(String... nodes) {
         return (ImmutableNode) copyOfMut().addLink(nodes);
-        //        return update(copyOfMut().addLink(nodes));
     }
 
     public ImmutableNode with(Attributes attrs) {
@@ -71,10 +69,4 @@ class ImmutableNode extends MutableNode implements Node {
     private ImmutableNode copyOfMut() {
         return new ImmutableNode(name, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
     }
-
-//    private ImmutableNode update(MutableNode node) {
-//        final ImmutableNode n = (ImmutableNode) node;
-//        CreationContext.current().map(ctx -> ctx.setNode(n));
-//        return n;
-//    }
 }
