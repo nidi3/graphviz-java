@@ -75,7 +75,7 @@ operator fun PortNode.div(compass: Compass) = this.port(compass)!!
 
 infix fun Node.link(node: String) = this.link(node)!!
 operator fun Node.minus(node: String) = this.link(node)!!
-operator fun PortNode.minus(node: String) = Factory.between(this, Factory.node(node))
+operator fun PortNode.minus(node: String) = Factory.between(this, Factory.node(node))!!
 
 infix fun String.link(target: LinkTarget) = Factory.node(this).link(target)!!
 operator fun String.get(vararg attrs: Attributes) = Factory.node(this).with(*attrs)!!
