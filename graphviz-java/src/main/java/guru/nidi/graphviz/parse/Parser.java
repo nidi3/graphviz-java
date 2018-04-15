@@ -22,8 +22,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static guru.nidi.graphviz.model.Factory.between;
-import static guru.nidi.graphviz.model.Factory.mutNode;
+import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.parse.Token.*;
 
 public final class Parser {
@@ -53,7 +52,7 @@ public final class Parser {
 
     private MutableGraph parse() {
         return CreationContext.use(() -> {
-            final MutableGraph graph = new MutableGraph();
+            final MutableGraph graph = mutGraph();
             if (token.type == STRICT) {
                 graph.setStrict(true);
                 nextToken();
@@ -126,7 +125,7 @@ public final class Parser {
 
     private MutableGraph subgraph(boolean directed) {
         return CreationContext.use(() -> {
-            final MutableGraph sub = new MutableGraph().setDirected(directed);
+            final MutableGraph sub = mutGraph().setDirected(directed);
             if (token.type == SUBGRAPH) {
                 nextToken();
                 if (token.type == ID) {

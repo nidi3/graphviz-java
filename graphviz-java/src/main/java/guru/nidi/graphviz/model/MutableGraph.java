@@ -31,7 +31,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     protected final MutableAttributed<MutableGraph> linkAttrs;
     protected final MutableAttributed<MutableGraph> graphAttrs;
 
-    public MutableGraph() {
+    MutableGraph() {
         this(false, false, false, "", new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
                 null, null, null);
         CreationContext.current().ifPresent(ctx -> {

@@ -72,35 +72,54 @@ public final class CreationContext {
         return graphAttributes;
     }
 
-    //    public Graph applyTo(Graph graph) {
-    //        return graph
-    //                .graphAttr().with(graphAttributes)
-    //                .with(immutableNodes.values().toArray(new ImmutableNode[0]))
-    //                .with(mutableNodes.values().toArray(new MutableNode[0]));
-    //    }
-    //
-    //    public MutableGraph applyTo(MutableGraph graph) {
-    //        return graph
-    //                .graphAttrs().add(graphAttributes)
-    //                .add(immutableNodes.values().toArray(new ImmutableNode[0]))
-    //                .add(mutableNodes.values().toArray(new MutableNode[0]));
-    //    }
+    public Graph applyTo(Graph graph) {
+        return graph
+                .graphAttr().with(graphAttributes)
+                .with(immutableNodes.values().toArray(new ImmutableNode[0]))
+                .with(mutableNodes.values().toArray(new MutableNode[0]));
+    }
 
-    ImmutableNode newNode(Label name) {
+    public MutableGraph applyTo(MutableGraph graph) {
+        return graph
+                .graphAttrs().add(graphAttributes)
+                .add(immutableNodes.values().toArray(new ImmutableNode[0]))
+                .add(mutableNodes.values().toArray(new MutableNode[0]));
+    }
+
+    static ImmutableNode createNode(Label name) {
+        return current()
+                .map(ctx -> ctx.newNode(name))
+                .orElseGet(() -> new ImmutableNode(name));
+    }
+
+    private ImmutableNode newNode(Label name) {
         return immutableNodes.computeIfAbsent(name, ImmutableNode::new).with(nodeAttributes);
     }
 
-    MutableNode newMutNode(Label name) {
+    Node setNode(ImmutableNode node) {
+        immutableNodes.put(node.name, node.with(nodeAttributes));
+        return node;
+    }
+
+    static MutableNode createMutNode(Label name) {
+        return current()
+                .map(ctx -> ctx.newMutNode(name))
+                .orElseGet(() -> new MutableNode().setName(name));
+    }
+
+    private MutableNode newMutNode(Label name) {
         return mutableNodes.computeIfAbsent(name, l -> new MutableNode().setName(l)).add(nodeAttributes);
     }
 
-    //    Node setNode(ImmutableNode node) {
-    //        immutableNodes.put(node.name, node.with(nodeAttributes));
-    //        return node;
-    //    }
-    //
-    //    MutableNode setMutNode(MutableNode node) {
-    //        mutableNodes.put(node.name, node.add(nodeAttributes));
-    //        return node;
-    //    }
+    MutableNode setMutNode(MutableNode node) {
+        mutableNodes.put(node.name, node.add(nodeAttributes));
+        return node;
+    }
+
+    static Link createLink(LinkSource from, LinkTarget to) {
+        final Link link = new Link(from, to, Attributes.attrs());
+        return current()
+                .map(ctx -> link.with(ctx.linkAttributes))
+                .orElse(link);
+    }
 }

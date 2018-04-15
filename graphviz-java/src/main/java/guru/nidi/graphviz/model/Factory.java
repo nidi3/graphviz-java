@@ -33,10 +33,8 @@ public final class Factory {
         return node(Label.of(name));
     }
 
-    public static Node node(Label label) {
-        return CreationContext.current()
-                .map(ctx -> ctx.newNode(label))
-                .orElseGet(() -> new ImmutableNode(label));
+    public static Node node(Label name) {
+        return CreationContext.createNode(name);
     }
 
     public static PortNode port(String record) {
@@ -65,9 +63,7 @@ public final class Factory {
     }
 
     public static MutableNode mutNode(Label name) {
-        return CreationContext.current()
-                .map(ctx -> ctx.newMutNode(name))
-                .orElseGet(() -> new MutableNode().setName(name));
+        return CreationContext.createMutNode(name);
     }
 
     public static MutablePortNode mutPort(String record) {
