@@ -24,7 +24,7 @@ class CodeAnalysisTest : CodeAssertJunit5Test() {
     override fun analyzeDependencies(): DependencyResult {
         return DependencyAnalyzer(config)
                 .rules(DependencyRules.denyAll()
-                        .withExternals("java.*", "kotlin.*", "org.*", "jdk.*", "guru.nidi.codeassert.*")
+                        .withExternals("java.*", "kotlin.*", "org.*")
                         .withRelativeRules(object : DependencyRuler() {
                             val attribute = rule()
                             val model = rule()
