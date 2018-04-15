@@ -86,7 +86,7 @@ class ReadmeTest {
                 node6 = node("node6").with(Records.of(turn(rec("o1"), rec("794"), rec("")))),
                 node7 = node("node7").with(Records.of(turn(rec("s7"), rec("659"), rec(""))));
         Graph g = graph("example3").directed()
-                .generalAttr().with(RankDir.LEFT_TO_RIGHT)
+                .graphAttr().with(RankDir.LEFT_TO_RIGHT)
                 .with(
                         node0.link(
                                 between(port("f0"), node1.port("v", SOUTH)),
@@ -106,7 +106,7 @@ class ReadmeTest {
         MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
         Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-1.png"));
 
-        g.generalAttrs()
+        g.graphAttrs()
                 .add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
                 .nodeAttrs().add(Color.WHITE.fill())
                 .nodes().forEach(node ->

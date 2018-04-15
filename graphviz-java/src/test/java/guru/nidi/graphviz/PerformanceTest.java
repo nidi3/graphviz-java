@@ -178,7 +178,7 @@ public class PerformanceTest {
                 proc = node("Process"), adv = node("Adv. Software Technology");
 
         final Graph g = graph("ex5").directed()
-                .generalAttr().with(attr("ranksep", .75), attr("size", "7.5,7.5"))
+                .graphAttr().with(attr("ranksep", .75), attr("size", "7.5,7.5"))
                 .nodeAttr().with(Shape.RECTANGLE)
                 .with(
                         graph().nodeAttr().with(Shape.NONE)
@@ -196,19 +196,19 @@ public class PerformanceTest {
                                                                                                                         node("1990").link(
                                                                                                                                 node("future")))))))))))))
                                 .with(bsh, make, sccs, reiser, csh, yacc, cron, rcs, emacs, build, vi, curses),
-                        graph().generalAttr().with(Rank.SAME).nodeAttr().with(Shape.ELLIPSE).with(sis, cfg, archlib, proc),
-                        graph().generalAttr().with(Rank.SAME).with(node("past"), sccs, make, bsh, yacc, cron),
-                        graph().generalAttr().with(Rank.SAME).with(node("1978"), reiser, csh),
-                        graph().generalAttr().with(Rank.SAME).with(node("1980"), build, emacs, vi),
-                        graph().generalAttr().with(Rank.SAME).with(node("1982"), rcs, curses, imx, syned),
-                        graph().generalAttr().with(Rank.SAME).with(node("1983"), ksh, ifs, ttu),
-                        graph().generalAttr().with(Rank.SAME).with(node("1985"), nmake, peggy),
-                        graph().generalAttr().with(Rank.SAME).with(node("1986"), cs, ncpp, kshi, cursesi, pg2),
-                        graph().generalAttr().with(Rank.SAME).with(node("1987"), dag, csas, ansiCpp, fdelta, d3fs, nmake2),
-                        graph().generalAttr().with(Rank.SAME).with(node("1988"), cia, sbcs, pax, ksh88, pegasus, backtalk),
-                        graph().generalAttr().with(Rank.SAME).with(node("1989"), ciapp, app, ship, dataShare, ryacc, mosaic),
-                        graph().generalAttr().with(Rank.SAME).with(node("1990"), dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
-                        graph().generalAttr().with(Rank.SAME).with(node("future"), adv),
+                        graph().graphAttr().with(Rank.SAME).nodeAttr().with(Shape.ELLIPSE).with(sis, cfg, archlib, proc),
+                        graph().graphAttr().with(Rank.SAME).with(node("past"), sccs, make, bsh, yacc, cron),
+                        graph().graphAttr().with(Rank.SAME).with(node("1978"), reiser, csh),
+                        graph().graphAttr().with(Rank.SAME).with(node("1980"), build, emacs, vi),
+                        graph().graphAttr().with(Rank.SAME).with(node("1982"), rcs, curses, imx, syned),
+                        graph().graphAttr().with(Rank.SAME).with(node("1983"), ksh, ifs, ttu),
+                        graph().graphAttr().with(Rank.SAME).with(node("1985"), nmake, peggy),
+                        graph().graphAttr().with(Rank.SAME).with(node("1986"), cs, ncpp, kshi, cursesi, pg2),
+                        graph().graphAttr().with(Rank.SAME).with(node("1987"), dag, csas, ansiCpp, fdelta, d3fs, nmake2),
+                        graph().graphAttr().with(Rank.SAME).with(node("1988"), cia, sbcs, pax, ksh88, pegasus, backtalk),
+                        graph().graphAttr().with(Rank.SAME).with(node("1989"), ciapp, app, ship, dataShare, ryacc, mosaic),
+                        graph().graphAttr().with(Rank.SAME).with(node("1990"), dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
+                        graph().graphAttr().with(Rank.SAME).with(node("future"), adv),
                         sccs.link(rcs, nmake, d3fs),
                         make.link(build, nmake),
                         build.link(nmake2),
@@ -278,7 +278,7 @@ public class PerformanceTest {
                 node6 = node("node6").with(Records.of(turn(rec("n", "o15"), rec("794"), rec("p", "")))),
                 node7 = node("node7").with(Records.of(turn(rec("n", "s19"), rec("659"), rec("p", ""))));
         final Graph g = graph("ex6").directed()
-                .generalAttr().with(RankDir.LEFT_TO_RIGHT)
+                .graphAttr().with(RankDir.LEFT_TO_RIGHT)
                 .with(
                         node0.link(
                                 between(port("f0"), node1.port(WEST)),
@@ -296,11 +296,11 @@ public class PerformanceTest {
                 .with(
                         graph().cluster()
                                 .nodeAttr().with(Style.FILLED, Color.WHITE)
-                                .generalAttr().with(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
+                                .graphAttr().with(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
                                 .with(node("a0").link(node("a1").link(node("a2").link(node("a3"))))),
                         graph("x").cluster()
                                 .nodeAttr().with(Style.FILLED)
-                                .generalAttr().with(Color.BLUE, Label.of("process #2"))
+                                .graphAttr().with(Color.BLUE, Label.of("process #2"))
                                 .with(node("b0").link(node("b1").link(node("b2").link(node("b3"))))),
                         node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
                         node("a1").link("b3"),

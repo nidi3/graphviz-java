@@ -27,20 +27,21 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     protected final Set<MutableNode> nodes;
     protected final Set<MutableGraph> subgraphs;
     protected final List<Link> links;
-    protected final MutableAttributed<MutableGraph> generalAttrs;
     protected final MutableAttributed<MutableGraph> nodeAttrs;
     protected final MutableAttributed<MutableGraph> linkAttrs;
     protected final MutableAttributed<MutableGraph> graphAttrs;
 
     public MutableGraph() {
         this(false, false, false, "", new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
-                null, null, null, null);
-        CreationContext.current().ifPresent(ctx -> generalAttrs().add(ctx.graphs()));
+                null, null, null);
+        CreationContext.current().ifPresent(ctx -> {
+            graphAttrs().add(ctx.graphs());
+        });
     }
 
     protected MutableGraph(boolean strict, boolean directed, boolean cluster, String name,
                            LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
-                           Attributes generalAttrs, Attributes nodeAttrs, Attributes linkAttrs, Attributes graphAttrs) {
+                           Attributes nodeAttrs, Attributes linkAttrs, Attributes graphAttrs) {
         this.strict = strict;
         this.directed = directed;
         this.cluster = cluster;
@@ -48,7 +49,6 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         this.nodes = nodes;
         this.subgraphs = subgraphs;
         this.links = links;
-        this.generalAttrs = new SimpleMutableAttributed<>(this, generalAttrs);
         this.nodeAttrs = new SimpleMutableAttributed<>(this, nodeAttrs);
         this.linkAttrs = new SimpleMutableAttributed<>(this, linkAttrs);
         this.graphAttrs = new SimpleMutableAttributed<>(this, graphAttrs);
@@ -57,7 +57,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     public MutableGraph copy() {
         return new MutableGraph(strict, directed, cluster, name,
                 new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(links),
-                generalAttrs, nodeAttrs, linkAttrs, graphAttrs);
+                nodeAttrs, linkAttrs, graphAttrs);
     }
 
     public MutableGraph setStrict(boolean strict) {
@@ -168,10 +168,6 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return name;
     }
 
-    public MutableAttributed<MutableGraph> generalAttrs() {
-        return generalAttrs;
-    }
-
     public MutableAttributed<MutableGraph> nodeAttrs() {
         return nodeAttrs;
     }
@@ -216,9 +212,6 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         if (!links.equals(graph.links)) {
             return false;
         }
-        if (!generalAttrs.equals(graph.generalAttrs)) {
-            return false;
-        }
         if (!nodeAttrs.equals(graph.nodeAttrs)) {
             return false;
         }
@@ -238,7 +231,6 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         result = 31 * result + nodes.hashCode();
         result = 31 * result + subgraphs.hashCode();
         result = 31 * result + links.hashCode();
-        result = 31 * result + generalAttrs.hashCode();
         result = 31 * result + nodeAttrs.hashCode();
         result = 31 * result + linkAttrs.hashCode();
         result = 31 * result + graphAttrs.hashCode();

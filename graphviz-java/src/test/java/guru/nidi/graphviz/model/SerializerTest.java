@@ -76,11 +76,6 @@ class SerializerTest {
     }
 
     @Test
-    void generalAttr() {
-        assertGraph("graph {\n'bla'='blu'\n}", graph().generalAttr().with("bla", "blu"));
-    }
-
-    @Test
     void nodes() {
         assertGraph("graph 'x' {\n'x' ['bla'='blu']\n}", graph("x")
                 .with(node("x").with("bla", "blu")));
@@ -92,7 +87,7 @@ class SerializerTest {
                 .graphs().add("g", "x")
                 .nodes().add("n", "y")
                 .links().add("l", "z");
-        assertGraph("graph 'x' {\n'g'='x'\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
+        assertGraph("graph 'x' {\ngraph ['g'='x']\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
                 .with(node("x").with("bla", "blu").link(node("y"))));
     }
 

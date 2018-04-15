@@ -35,7 +35,7 @@ public final class Factory {
 
     public static Node node(Label label) {
         return CreationContext.current()
-                .map(ctx -> ctx.immutableNode(label))
+                .map(ctx -> ctx.newNode(label))
                 .orElseGet(() -> new ImmutableNode(label));
     }
 
@@ -66,7 +66,7 @@ public final class Factory {
 
     public static MutableNode mutNode(Label name) {
         return CreationContext.current()
-                .map(ctx -> ctx.mutableNode(name))
+                .map(ctx -> ctx.newMutNode(name))
                 .orElseGet(() -> new MutableNode().setName(name));
     }
 

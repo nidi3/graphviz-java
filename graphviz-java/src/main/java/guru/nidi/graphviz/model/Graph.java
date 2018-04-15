@@ -35,7 +35,4 @@ public interface Graph extends Linkable, LinkSource, LinkTarget {
     Attributed<Graph> linkAttr();
 
     Attributed<Graph> graphAttr();
-
-    Attributed<Graph> generalAttr();
-
 }

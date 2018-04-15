@@ -24,20 +24,19 @@ class ImmutableGraph extends MutableGraph implements Graph {
     ImmutableGraph() {
     }
 
-    ImmutableGraph(boolean strict, boolean directed, boolean cluster, String name,
+    private ImmutableGraph(boolean strict, boolean directed, boolean cluster, String name,
                    LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
-                   MutableAttributed<MutableGraph> attributes,
                    MutableAttributed<MutableGraph> nodeAttributes,
                    MutableAttributed<MutableGraph> linkAttributes,
                    MutableAttributed<MutableGraph> graphAttributes) {
-        super(strict, directed, cluster, name, nodes, subgraphs, links, attributes,
+        super(strict, directed, cluster, name, nodes, subgraphs, links,
                 nodeAttributes, linkAttributes, graphAttributes);
     }
 
-    public ImmutableGraph copyOfMut() {
+    private ImmutableGraph copyOfMut() {
         return new ImmutableGraph(strict, directed, cluster, name,
                 new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(links),
-                generalAttrs, nodeAttrs, linkAttrs, graphAttrs);
+                 nodeAttrs, linkAttrs, graphAttrs);
     }
 
     public Graph strict() {
@@ -80,10 +79,6 @@ class ImmutableGraph extends MutableGraph implements Graph {
         return new GraphAttributed(MutableGraph::graphAttrs);
     }
 
-    public Attributed<Graph> generalAttr() {
-        return new GraphAttributed(MutableGraph::generalAttrs);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -116,9 +111,6 @@ class ImmutableGraph extends MutableGraph implements Graph {
         if (!links.equals(graph.links)) {
             return false;
         }
-        if (!generalAttrs.equals(graph.generalAttrs)) {
-            return false;
-        }
         if (!nodeAttrs.equals(graph.nodeAttrs)) {
             return false;
         }
@@ -138,7 +130,6 @@ class ImmutableGraph extends MutableGraph implements Graph {
         result = 31 * result + nodes.hashCode();
         result = 31 * result + subgraphs.hashCode();
         result = 31 * result + links.hashCode();
-        result = 31 * result + generalAttrs.hashCode();
         result = 31 * result + nodeAttrs.hashCode();
         result = 31 * result + linkAttrs.hashCode();
         result = 31 * result + graphAttrs.hashCode();

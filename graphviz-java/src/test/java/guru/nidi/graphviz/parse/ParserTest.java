@@ -44,7 +44,7 @@ class ParserTest {
     @Test
     void attributesGraph() throws IOException {
         assertEquals(mutGraph()
-                        .generalAttrs().add("x", "y")
+                        .graphAttrs().add("x", "y")
                         .graphAttrs().add("a", "b")
                         .nodeAttrs().add("c", "d")
                         .linkAttrs().add(attr("e", "f"), attr("g", "h"), attr("i", "j")),
@@ -74,9 +74,9 @@ class ParserTest {
     @Test
     void subgraph() throws IOException {
         assertEquals(mutGraph().add(
-                mutGraph("s").generalAttrs().add("a", "b"),
-                mutGraph().generalAttrs().add("c", "d"),
-                mutGraph().generalAttrs().add("e", "f")),
+                mutGraph("s").graphAttrs().add("a", "b"),
+                mutGraph().graphAttrs().add("c", "d"),
+                mutGraph().graphAttrs().add("e", "f")),
                 Parser.read("graph { subgraph s { a=b }; subgraph { c=d }; { e=f } }"));
     }
 

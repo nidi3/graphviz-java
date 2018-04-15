@@ -94,7 +94,7 @@ public final class Parser {
             case ID:
                 nextToken();
                 if (token.type == EQUAL) {
-                    applyMutableAttributes(graph.generalAttrs(), Arrays.asList(base, nextToken(ID)));
+                    applyMutableAttributes(graph.graphAttrs(), Arrays.asList(base, nextToken(ID)));
                     nextToken();
                 } else {
                     final MutablePortNode nodeId = nodeId(base);

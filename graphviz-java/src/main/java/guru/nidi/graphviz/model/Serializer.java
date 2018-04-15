@@ -68,10 +68,6 @@ public class Serializer {
         attributes("graph", graph.graphAttrs);
         attributes("node", graph.nodeAttrs);
         attributes("edge", graph.linkAttrs);
-        for (final Map.Entry<String, Object> attr : graph.generalAttrs) {
-            attr(attr.getKey(), attr.getValue());
-            str.append('\n');
-        }
     }
 
     private void graphInit(MutableGraph graph, boolean toplevel) {
