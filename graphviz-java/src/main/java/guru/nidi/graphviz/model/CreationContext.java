@@ -82,11 +82,6 @@ public final class CreationContext {
         return immutableNodes.computeIfAbsent(name, ImmutableNode::new).with(nodeAttributes);
     }
 
-    Node setNode(ImmutableNode node) {
-        immutableNodes.put(node.name, node.with(nodeAttributes));
-        return node;
-    }
-
     static MutableNode createMutNode(Label name) {
         return current()
                 .map(ctx -> ctx.newMutNode(name))
@@ -95,11 +90,6 @@ public final class CreationContext {
 
     private MutableNode newMutNode(Label name) {
         return mutableNodes.computeIfAbsent(name, l -> new MutableNode().setName(l)).add(nodeAttributes);
-    }
-
-    MutableNode setMutNode(MutableNode node) {
-        mutableNodes.put(node.name, node.add(nodeAttributes));
-        return node;
     }
 
     static Link createLink(LinkSource from, LinkTarget to) {
