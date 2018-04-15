@@ -35,7 +35,6 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         this.links = links;
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
         setName(name);
-        CreationContext.current().ifPresent(ctx -> ctx.nodes().applyTo(attributes));
     }
 
     public MutableNode copy() {

@@ -29,7 +29,7 @@ fun graph(name: String = "", strict: Boolean = false, directed: Boolean = false,
     try {
         val ctx = CreationContext.begin()
         config()
-//        ctx.applyTo(graph)
+        ctx.applyTo(graph)
     } finally {
         CreationContext.end()
     }
@@ -82,6 +82,6 @@ operator fun String.get(vararg attrs: Attributes) = Factory.node(this).with(*att
 
 operator fun Node.get(vararg attrs: Attributes): Node {
     val n = this.with(*attrs)
-//    CreationContext.current().map { it.setNode(n as ImmutableNode) }
+    CreationContext.current().map { it.setNode(n as ImmutableNode) }
     return n
 }

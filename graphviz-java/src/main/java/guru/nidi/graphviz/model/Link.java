@@ -47,11 +47,10 @@ public final class Link implements Attributed<Link>, LinkTarget {
     }
 
     private static Link objBetween(LinkSource from, LinkTarget to) {
-        final Link link = new Link(from, to, Attributes.attrs());
-        return CreationContext.current().map(ctx -> link.with(ctx.links())).orElse(link);
+        return CreationContext.createLink(from, to);
     }
 
-    private Link(LinkSource from, LinkTarget to, Attributes attributes) {
+    Link(LinkSource from, LinkTarget to, Attributes attributes) {
         this.from = from;
         this.to = to;
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
