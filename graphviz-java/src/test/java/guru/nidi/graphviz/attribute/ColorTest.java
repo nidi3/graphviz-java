@@ -59,6 +59,11 @@ class ColorTest {
     }
 
     @Test
+    void rgbOkWithHash() {
+        assertColor(attr("color", "#123456"), Color.rgb("#123456"));
+    }
+
+    @Test
     void rgbaNok() {
         assertThrows(IllegalArgumentException.class, () -> Color.rgba("123456"));
     }
@@ -66,6 +71,21 @@ class ColorTest {
     @Test
     void rgbaOk() {
         assertColor(attr("color", "#12345678"), Color.rgba("12345678"));
+    }
+
+    @Test
+    void rgbaOkWithHash() {
+        assertColor(attr("color", "#12345678"), Color.rgba("#12345678"));
+    }
+
+    @Test
+    void rgbInt() {
+        assertColor(attr("color", "#f008ff"), Color.rgb(0xf008ff));
+    }
+
+    @Test
+    void rgbaInt() {
+        assertColor(attr("color", "#f008fff8"), Color.rgba(0xf8f008ff));
     }
 
     @Test
