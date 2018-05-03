@@ -70,16 +70,16 @@ public class Color extends SingleAttributes<String> {
         return new Color("#" + val);
     }
 
+    public static Color rgb(int rgb) {
+        return rgb(hex(rgb >> 16) + hex(rgb >> 8) + hex(rgb));
+    }
+
     public static Color rgba(String rgba) {
         final String val = rgba.startsWith("#") ? rgba.substring(1) : rgba;
         if (val.length() != 8) {
             throw new IllegalArgumentException("Must have length 8");
         }
         return new Color("#" + val);
-    }
-
-    public static Color rgb(int rgb) {
-        return rgb(hex(rgb >> 16) + hex(rgb >> 8) + hex(rgb));
     }
 
     public static Color rgba(int rgba) {

@@ -116,6 +116,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("AvoidCatchingGenericException", "PreserveStackTrace"))
                 .because("I don't understand the message",
                         In.locs("CommandRunnerTest", "AbstractJsGraphvizEngine").ignore("SimplifiedTernary"))
+                .because("I don't agree",
+                        In.everywhere().ignore("SimplifyStartsWith"))
                 .because("It's wrapping an Exception with a RuntimeException", In.clazz(CreationContext.class)
                         .ignore("AvoidCatchingGenericException"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)
