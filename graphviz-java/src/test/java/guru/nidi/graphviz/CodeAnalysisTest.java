@@ -106,7 +106,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),
-                        In.locs("Lexer", "Parser", "ImmutableGraph", "MutableGraph", "Label#applyTo")
+                        In.locs("Lexer", "Parser", "ImmutableGraph", "MutableGraph", "Label#applyTo", "Options#toJson")
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
@@ -116,6 +116,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("AvoidCatchingGenericException", "PreserveStackTrace"))
                 .because("I don't understand the message",
                         In.locs("CommandRunnerTest", "AbstractJsGraphvizEngine").ignore("SimplifiedTernary"))
+                .because("I don't agree",
+                        In.everywhere().ignore("SimplifyStartsWith"))
                 .because("It's wrapping an Exception with a RuntimeException", In.clazz(CreationContext.class)
                         .ignore("AvoidCatchingGenericException"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)
@@ -136,8 +138,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(PredefConfig.minimalCheckstyleIgnore())
-                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style").ignore("empty.line.separator"))
-                .just(In.locs("Records", "Shape").ignore("name.invalidPattern"));
+                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style").ignore("empty.line.separator"));
         final StyleChecks checks = PredefConfig.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }

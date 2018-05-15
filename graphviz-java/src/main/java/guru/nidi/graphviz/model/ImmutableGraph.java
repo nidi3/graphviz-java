@@ -25,10 +25,10 @@ class ImmutableGraph extends MutableGraph implements Graph {
     }
 
     private ImmutableGraph(boolean strict, boolean directed, boolean cluster, String name,
-                   LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
-                   MutableAttributed<MutableGraph> nodeAttributes,
-                   MutableAttributed<MutableGraph> linkAttributes,
-                   MutableAttributed<MutableGraph> graphAttributes) {
+                           LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
+                           MutableAttributed<MutableGraph> nodeAttributes,
+                           MutableAttributed<MutableGraph> linkAttributes,
+                           MutableAttributed<MutableGraph> graphAttributes) {
         super(strict, directed, cluster, name, nodes, subgraphs, links,
                 nodeAttributes, linkAttributes, graphAttributes);
     }
@@ -36,7 +36,7 @@ class ImmutableGraph extends MutableGraph implements Graph {
     private ImmutableGraph copyOfMut() {
         return new ImmutableGraph(strict, directed, cluster, name,
                 new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(links),
-                 nodeAttrs, linkAttrs, graphAttrs);
+                nodeAttrs, linkAttrs, graphAttrs);
     }
 
     public Graph strict() {

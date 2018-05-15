@@ -63,17 +63,32 @@ public class Color extends SingleAttributes<String> {
     }
 
     public static Color rgb(String rgb) {
-        if (rgb.length() != 6) {
+        final String val = rgb.startsWith("#") ? rgb.substring(1) : rgb;
+        if (val.length() != 6) {
             throw new IllegalArgumentException("Must have length 6");
         }
-        return new Color("#" + rgb);
+        return new Color("#" + val);
+    }
+
+    public static Color rgb(int rgb) {
+        return rgb(hex(rgb >> 16) + hex(rgb >> 8) + hex(rgb));
     }
 
     public static Color rgba(String rgba) {
-        if (rgba.length() != 8) {
+        final String val = rgba.startsWith("#") ? rgba.substring(1) : rgba;
+        if (val.length() != 8) {
             throw new IllegalArgumentException("Must have length 8");
         }
-        return new Color("#" + rgba);
+        return new Color("#" + val);
+    }
+
+    public static Color rgba(int rgba) {
+        return rgba(hex(rgba >> 16) + hex(rgba >> 8) + hex(rgba) + hex(rgba >> 24));
+    }
+
+    private static String hex(int value) {
+        final String s = Integer.toHexString(value & 0xff);
+        return s.length() == 1 ? "0" + s : s;
     }
 
     public static Color hsv(double h, double s, double v) {

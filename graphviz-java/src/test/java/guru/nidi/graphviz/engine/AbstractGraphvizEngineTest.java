@@ -39,22 +39,22 @@ class AbstractGraphvizEngineTest {
     }
 
     @Test
-    void vizExecTotalMemoryIsSet() {
+    void vizExecWithOptions() {
         final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy();
-        final Options options = Options.create().format(Format.SVG).totalMemory(320000);
+        final Options options = Options.create().format(Format.SVG).totalMemory(320000).yInvert(true);
 
         final String vizResult = engineUnderTest.jsVizExec("digraph{ a -> b}", options);
 
-        assertThat(vizResult, is("Viz('digraph{ a -> b}',{format:'svg',engine:'dot',totalMemory:'320000'});"));
+        assertThat(vizResult, is("render('digraph{ a -> b}',{format:'svg',engine:'dot',totalMemory:'320000',yInvert:true});"));
     }
 
     @Test
-    void vizExecTotalMemoryIsNotSet() {
+    void vizExecWithoutOptions() {
         final GraphvizEngineDummy engineUnderTest = new GraphvizEngineDummy();
         final Options options = Options.create().format(Format.SVG);
 
         final String vizResult = engineUnderTest.jsVizExec("digraph{ a -> b}", options);
 
-        assertThat(vizResult, is("Viz('digraph{ a -> b}',{format:'svg',engine:'dot'});"));
+        assertThat(vizResult, is("render('digraph{ a -> b}',{format:'svg',engine:'dot'});"));
     }
 }

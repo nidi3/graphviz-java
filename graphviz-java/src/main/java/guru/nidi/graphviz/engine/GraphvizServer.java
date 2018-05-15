@@ -100,7 +100,9 @@ final class GraphvizServer {
             src = raw.substring(pos + 3);
         }
         return Graphviz.fromString(src)
-                .engine(options.engine).totalMemory(options.totalMemory)
+                .engine(options.engine)
+                .totalMemory(options.totalMemory)
+                .yInvert(options.yInvert)
                 .render(options.format).toString();
     }
 

@@ -17,7 +17,7 @@ package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.GraphvizV8Engine;
+import guru.nidi.graphviz.engine.GraphvizJdkEngine;
 import guru.nidi.graphviz.model.*;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
@@ -31,8 +31,8 @@ import static guru.nidi.graphviz.model.Link.to;
 public class PerformanceTest {
     public static void main(String[] args) {
         final long a = System.nanoTime();
-        Graphviz.useEngine(new GraphvizV8Engine());
-//        Graphviz.useEngine(new GraphvizJdkEngine());
+//        Graphviz.useEngine(new GraphvizV8Engine());
+        Graphviz.useEngine(new GraphvizJdkEngine());
         Graphviz.fromString("graph {a--b}").render(SVG).toString();
         final long b = System.nanoTime();
         System.out.printf("init %.0f ms%n", (b - a) / 1e6);

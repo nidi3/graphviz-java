@@ -16,20 +16,13 @@
 package guru.nidi.graphviz.engine;
 
 import com.eclipsesource.v8.*;
-import com.eclipsesource.v8.utils.V8ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
-    private static final Pattern ABORT = Pattern.compile("^undefined:\\d+: abort");
-    private static final Pattern ERROR = Pattern.compile("^undefined:\\d+: (.*?)\n");
     private static ThreadLocal<Env> envs = new ThreadLocal<>();
 
     public GraphvizV8Engine() {
@@ -51,7 +44,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
 
     @Override
     protected void doInit() throws IOException {
-        envs.set(new Env(jsInitEnv(), jsVizCode("1.8.1")));
+        envs.set(new Env(jsInitEnv(), jsVizCode("2.0.0")));
     }
 
     @Override
@@ -69,37 +62,31 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
 
     private static class Env {
         final V8 v8;
-        final V8Array messages;
+        final ResultHandler resultHandler = new ResultHandler();
 
         Env(String init, String viz) {
             LOG.info("Starting V8 runtime...");
             v8 = V8.createV8Runtime();
             LOG.info("Started V8 runtime. Initializing graphviz...");
-            v8.executeVoidScript(init);
-            messages = v8.getArray("$$prints");
             v8.executeVoidScript(viz);
+            v8.executeVoidScript(init);
+            v8.registerJavaMethod((JavaVoidCallback) (receiver, parameters) ->
+                    resultHandler.setResult(parameters.getString(0)), "result");
+            v8.registerJavaMethod((JavaVoidCallback) (receiver, parameters) ->
+                    resultHandler.setError(parameters.getString(0)), "error");
             LOG.info("Initialized graphviz.");
         }
 
         String execute(String call) {
             try {
-                return v8.executeStringScript(call);
+                v8.executeVoidScript(call);
+                return resultHandler.waitFor();
             } catch (V8RuntimeException e) {
-                if (ABORT.matcher(e.getMessage()).find()) {
-                    throw new GraphvizException(IntStream.range(0, messages.length())
-                            .mapToObj(i -> V8ObjectUtils.getValue(messages, i).toString())
-                            .collect(Collectors.joining("\n")));
-                }
-                final Matcher em = ERROR.matcher(e.getMessage());
-                if (em.find()) {
-                    throw new GraphvizException(em.group(1));
-                }
                 throw new GraphvizException("Problem executing graphviz", e);
             }
         }
 
         void release() {
-            messages.release();
             v8.release(true);
         }
     }
