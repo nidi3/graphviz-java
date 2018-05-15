@@ -124,9 +124,14 @@ class ExampleTest {
         graphviz.engine(Engine.NEATO).render(PNG).toFile(new File("target/ex2-ne.png"));
         graphviz.engine(Engine.OSAGE).render(PNG).toFile(new File("target/ex2-os.png"));
         graphviz.engine(Engine.TWOPI).render(PNG).toFile(new File("target/ex2-tp.png"));
+        graphviz.engine(Engine.FDP).render(PNG).toFile(new File("target/ex2-fdp.png"));
         graphviz.render(SVG).toFile(new File("target/ex2.svg"));
         graphviz.render(JSON).toFile(new File("target/ex2.json"));
+        graphviz.render(JSON0).toFile(new File("target/ex2.json0"));
         graphviz.render(PS).toFile(new File("target/ex2.ps"));
+        graphviz.render(PS2).toFile(new File("target/ex2.ps2"));
+        graphviz.render(PLAIN).toFile(new File("target/ex2.plain"));
+        graphviz.render(PLAIN_EXT).toFile(new File("target/ex2.plain-ext"));
     }
 
     @Test
