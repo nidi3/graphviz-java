@@ -24,6 +24,10 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
 
     public GraphvizJdkEngine() {
         super(false);
+        final String version = System.getProperty("java.version");
+        if (version.startsWith("1.8.0_") && Integer.parseInt(version.substring(6)) < 40) {
+            throw new GraphvizException("You are using an old version of java 1.8. Please update it.");
+        }
     }
 
     @Override

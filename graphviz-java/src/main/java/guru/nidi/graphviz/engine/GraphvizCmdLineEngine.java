@@ -72,8 +72,8 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
                 bw.write(src);
             }
             final String command = engine
-                    + (options.yInvert != null && options.yInvert ? " -y" : "") +
-                    " -T" + getFormatName(options.format)
+                    + (options.yInvert != null && options.yInvert ? " -y" : "")
+                    + " -T" + getFormatName(options.format)
                     + " " + dotfile.getAbsolutePath() + " -ooutfile.svg";
             cmdRunner.exec(command, tempDirPath.toFile());
 

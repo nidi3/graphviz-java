@@ -106,7 +106,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),
-                        In.locs("Lexer", "Parser", "ImmutableGraph", "MutableGraph", "Label#applyTo")
+                        In.locs("Lexer", "Parser", "ImmutableGraph", "MutableGraph", "Label#applyTo", "Options#toJson")
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
@@ -138,8 +138,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(PredefConfig.minimalCheckstyleIgnore())
-                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style").ignore("empty.line.separator"))
-                .just(In.locs("Records", "Shape").ignore("name.invalidPattern"));
+                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style").ignore("empty.line.separator"));
         final StyleChecks checks = PredefConfig.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }

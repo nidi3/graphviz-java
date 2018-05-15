@@ -42,7 +42,7 @@ import static guru.nidi.graphviz.model.Link.to;
 class ExampleTest {
     @BeforeAll
     static void init() {
-        Graphviz.useEngine( new GraphvizJdkEngine());
+        Graphviz.useEngine(new GraphvizJdkEngine());
     }
 
     @AfterAll
