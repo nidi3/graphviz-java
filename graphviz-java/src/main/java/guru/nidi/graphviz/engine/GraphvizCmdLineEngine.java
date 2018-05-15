@@ -71,8 +71,9 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
                     new OutputStreamWriter(new FileOutputStream(dotfile), StandardCharsets.UTF_8))) {
                 bw.write(src);
             }
-
-            final String command = engine + " -T" + getFormatName(options.format)
+            final String command = engine
+                    + (options.yInvert != null && options.yInvert ? " -y" : "") +
+                    " -T" + getFormatName(options.format)
                     + " " + dotfile.getAbsolutePath() + " -ooutfile.svg";
             cmdRunner.exec(command, tempDirPath.toFile());
 

@@ -31,7 +31,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     protected abstract String jsExecute(String jsCall);
 
     protected String jsVizExec(String src, Options options) {
-        return src.startsWith("Viz(") ? src : ("Viz('" + jsEscape(src) + "'," + options.toJson(false) + ");");
+        return src.startsWith("render") ? src : ("render('" + jsEscape(src) + "'," + options.toJson(false) + ");");
     }
 
     protected String jsEscape(String js) {
@@ -39,13 +39,21 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     protected String jsVizCode(String version) throws IOException {
-        try (final InputStream in = getClass().getResourceAsStream("/viz-" + version + ".js")) {
-            return IoUtils.readStream(in);
+        try (final InputStream api = getClass().getResourceAsStream("/viz-" + version + ".js");
+             final InputStream engine = getClass().getResourceAsStream("/viz-full.render-" + version + ".js")) {
+            return IoUtils.readStream(api) + IoUtils.readStream(engine);
         }
     }
 
     protected String jsInitEnv() {
-        return "var $$prints=[], print=function(s){$$prints.push(s);};";
+        return "var viz = new Viz();"
+                + "function render(src, options){"
+                + "  try {"
+                + "    viz.renderString(src, options)"
+                + "      .then(function(res) { result(res); })"
+                + "      .catch(function(err) { viz = new Viz(); error(err.toString()); });"
+                + "  } catch(e) { error(e.toString()); }"
+                + "}";
     }
 
 }

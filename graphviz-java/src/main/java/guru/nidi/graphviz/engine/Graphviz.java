@@ -146,6 +146,10 @@ public final class Graphviz {
         return new Graphviz(src, rasterizer, width, height, scale, options.totalMemory(totalMemory));
     }
 
+    public Graphviz yInvert(Boolean yInvert) {
+        return new Graphviz(src, rasterizer, width, height, scale, options.yInvert(yInvert));
+    }
+
     public Graphviz width(int width) {
         return new Graphviz(src, rasterizer, width, height, scale, options);
     }

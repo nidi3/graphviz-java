@@ -16,21 +16,11 @@
 package guru.nidi.graphviz.engine;
 
 import javax.script.*;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.io.InputStream;
 
 public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
-    static {
-        try {
-            //viz.js causes AssertionErrors in nashorn engine, so disable them
-            final Class<?> label = Class.forName("jdk.nashorn.internal.codegen.Label");
-            label.getClassLoader().setClassAssertionStatus(label.getName(), false);
-        } catch (ClassNotFoundException e) {
-            //no nashorn, no cry
-        }
-    }
-
     private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
+    private static final ThreadLocal<ResultHandler> HANDLER = new ThreadLocal<>();
 
     public GraphvizJdkEngine() {
         super(false);
@@ -39,27 +29,30 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
     @Override
     protected String jsExecute(String jsCall) {
         try {
-            return (String) ENGINE.eval("$$prints=[]; " + jsCall);
-        } catch (ScriptException e) {
-            if (e.getMessage().startsWith("abort")) {
-                try {
-                    throw new GraphvizException(((Map<Integer, Object>) ENGINE.eval("$$prints"))
-                            .values()
-                            .stream()
-                            .map(Object::toString)
-                            .collect(Collectors.joining("\n")));
-                } catch (ScriptException e1) {
-                    //fall through to general exception
-                }
+            if (HANDLER.get() == null) {
+                HANDLER.set(new ResultHandler());
             }
+            ENGINE.eval("var handler = graphviz.resultHandler();" + jsCall);
+            return HANDLER.get().waitFor();
+        } catch (ScriptException e) {
             throw new GraphvizException("Problem executing graphviz", e);
         }
     }
 
     @Override
     protected void doInit() throws Exception {
+        try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
+            ENGINE.eval(IoUtils.readStream(api));
+        }
+        ENGINE.eval(jsVizCode("2.0.0"));
+        ENGINE.eval("var graphviz = Java.type('guru.nidi.graphviz.engine.GraphvizJdkEngine');"
+                + "function result(r){ handler.setResult(r); }"
+                + "function error(r){ handler.setError(r); }");
         ENGINE.eval(jsInitEnv());
-        ENGINE.eval(jsVizCode("1.8.1"));
-        ENGINE.eval("Viz('digraph g { a -> b; }');");
+        execute("digraph g { a -> b; }", Options.create());
+    }
+
+    public static ResultHandler resultHandler() {
+        return HANDLER.get();
     }
 }

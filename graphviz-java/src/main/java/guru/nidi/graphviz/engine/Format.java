@@ -31,8 +31,11 @@ public enum Format {
     SVG_STANDALONE("svg", false, true),
     XDOT("xdot", false, false),
     PLAIN("plain", false, false),
+    PLAIN_EXT("plain-ext", false, false),
     PS("ps", false, false),
-    JSON("json", false, false);
+    PS2("ps2", false, false),
+    JSON("json", false, false),
+    JSON0("json0", false, false);
 
     final String vizName;
     final boolean image;

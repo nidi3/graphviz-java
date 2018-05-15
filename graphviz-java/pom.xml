@@ -115,6 +115,11 @@
         <!--<version>1.0</version>-->
         <!--</dependency>-->
         <dependency>
+            <groupId>net.arnx</groupId>
+            <artifactId>nashorn-promise</artifactId>
+            <version>0.1.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_macosx_x86_64</artifactId>
             <version>${j2v8.version}</version>
