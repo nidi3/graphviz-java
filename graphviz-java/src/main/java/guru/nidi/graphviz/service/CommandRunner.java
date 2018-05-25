@@ -75,7 +75,7 @@ public class CommandRunner {
 
         return Arrays
                 .stream(pathEnvVar.split(File.pathSeparator))
-                .map(path -> Paths.get(path))
+                .map(CommandRunner::pathOf)
                 .filter(path -> Files.exists(path))
                 .map(path -> {
                     try (Stream<Path> entries = Files.list(path)) {
@@ -100,6 +100,10 @@ public class CommandRunner {
                     }
                 })
                 .flatMap(stream -> stream);
+    }
+
+    private static Path pathOf(String path) {
+        return Paths.get(SystemUtils.IS_OS_WINDOWS ? path.replace("\"", "") : path);
     }
 
     static boolean isExecutableFound(String program) {
