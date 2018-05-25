@@ -44,10 +44,13 @@ public class Renderer {
 
     public void toFile(File file) throws IOException {
         Files.createDirectories(file.getAbsoluteFile().getParentFile().toPath());
+        final File target = file.getName().contains(".")
+                ? file
+                : new File(file.getParentFile(), file.getName() + "." + output.fileExtension);
         if (output.image) {
-            writeToFile(file, output.name().toLowerCase(), toImage());
+            writeToFile(target, output.name().toLowerCase(), toImage());
         } else {
-            try (final Writer out = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+            try (final Writer out = new OutputStreamWriter(new FileOutputStream(target), StandardCharsets.UTF_8)) {
                 out.write(toString());
             }
         }

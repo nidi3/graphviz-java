@@ -19,6 +19,7 @@ import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 
 import static guru.nidi.graphviz.model.Factory.graph;
@@ -40,11 +41,22 @@ class RendererTest {
     @Test
     void toFileParentFolderNotExists() throws Exception {
         final File expectedFile = new File("target/testFolder/ex1.png");
+        testFileExists(expectedFile, expectedFile);
+    }
+
+    @Test
+    void toFileWithoutExtension() throws Exception {
+        final File expectedFile = new File("target/testFolder/ex1.png");
+        final File givenFile = new File("target/testFolder/ex1");
+        testFileExists(givenFile, expectedFile);
+    }
+
+    private void testFileExists(File giveFile, File expectedFile) throws IOException {
         Files.deleteIfExists(expectedFile.toPath());
         Files.deleteIfExists(expectedFile.getParentFile().toPath());
 
         final Graph graph = graph("example1").directed().with(node("a").link(node("b")));
-        Graphviz.fromGraph(graph).width(200).render(Format.PNG).toFile(expectedFile);
+        Graphviz.fromGraph(graph).width(200).render(Format.PNG).toFile(giveFile);
 
         assertTrue(expectedFile.exists() && expectedFile.isFile());
     }
