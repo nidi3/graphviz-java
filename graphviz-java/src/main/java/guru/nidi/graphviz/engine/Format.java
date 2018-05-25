@@ -34,7 +34,7 @@ public enum Format {
     PS("ps", false, false),
     JSON("json", false, false);
 
-    final String vizName;
+    public final String vizName;
     final boolean image;
     final boolean svg;
 
