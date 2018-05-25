@@ -15,67 +15,32 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Label;
-
 public final class Factory {
     private Factory() {
     }
 
     public static Graph graph() {
-        return graph("");
+        return new Graph();
     }
 
     public static Graph graph(String name) {
-        return new ImmutableGraph().named(name);
+        return new Graph().name(name);
     }
 
     public static Node node(String name) {
-        return node(Label.of(name));
+        return GraphContext.node(name);
     }
 
-    public static Node node(Label name) {
-        return CreationContext.createNode(name);
+    public static Port port(String record) {
+        return new Port().setRecord(record);
     }
 
-    public static PortNode port(String record) {
-        return port(record, null);
+    public static Port port(Compass compass) {
+        return new Port().setCompass(compass);
     }
 
-    public static PortNode port(Compass compass) {
-        return port(null, compass);
-    }
-
-    public static PortNode port(String record, Compass compass) {
-        return new ImmutablePortNode(null, record, compass);
-    }
-
-
-    public static MutableGraph mutGraph() {
-        return new MutableGraph();
-    }
-
-    public static MutableGraph mutGraph(String name) {
-        return new MutableGraph().setName(name);
-    }
-
-    public static MutableNode mutNode(String name) {
-        return mutNode(Label.of(name));
-    }
-
-    public static MutableNode mutNode(Label name) {
-        return CreationContext.createMutNode(name);
-    }
-
-    public static MutablePortNode mutPort(String record) {
-        return new MutablePortNode().setRecord(record);
-    }
-
-    public static MutablePortNode mutPort(Compass compass) {
-        return new MutablePortNode().setCompass(compass);
-    }
-
-    public static MutablePortNode mutPort(String record, Compass compass) {
-        return new MutablePortNode().setRecord(record).setCompass(compass);
+    public static Port port(String record, Compass compass) {
+        return new Port().setRecord(record).setCompass(compass);
     }
 
 

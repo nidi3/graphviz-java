@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public final class EndLabel extends SimpleLabel implements Attributes {
+final class EndLabel extends SimpleLabel implements Attributes {
     private final String key;
     private final Double angle;
     private final Double distance;

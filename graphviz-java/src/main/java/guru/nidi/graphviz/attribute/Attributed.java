@@ -15,10 +15,12 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import java.util.Map;
+
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
-public interface Attributed<T> extends Attributes {
+public interface Attributed<T> extends Attributes, Iterable<Map.Entry<String, Object>> {
     default T with(String name, Object value) {
         return with(attr(name, value));
     }
@@ -27,5 +29,7 @@ public interface Attributed<T> extends Attributes {
         return with(attrs(attributes));
     }
 
-    T with(Attributes attribute);
+    T with(Attributes attributes);
+
+    Object get(String key);
 }

@@ -15,5 +15,6 @@
  */
 package guru.nidi.graphviz.model;
 
-public interface LinkSource {
+public interface LinkSource<T> {
+    T link(LinkTarget target);
 }

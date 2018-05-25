@@ -18,15 +18,15 @@ package guru.nidi.graphviz.attribute;
 import java.util.Iterator;
 import java.util.Map;
 
-public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
+public class SimpleAttributed<E> implements Attributed<E> {
     private final E target;
     final MapAttributes attributes = new MapAttributes();
 
-    public SimpleMutableAttributed(E target) {
+    public SimpleAttributed(E target) {
         this.target = target;
     }
 
-    public SimpleMutableAttributed(E target, Attributes attributes) {
+    public SimpleAttributed(E target, Attributes attributes) {
         this.target = target;
         if (attributes != null) {
             attributes.applyTo(this.attributes);
@@ -49,7 +49,7 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     }
 
     @Override
-    public E add(Attributes attributes) {
+    public E with(Attributes attributes) {
         attributes.applyTo(this.attributes);
         return target;
     }
@@ -63,7 +63,7 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
             return false;
         }
 
-        final SimpleMutableAttributed<?> that = (SimpleMutableAttributed<?>) o;
+        final SimpleAttributed<?> that = (SimpleAttributed<?>) o;
 
         return attributes.equals(that.attributes);
 

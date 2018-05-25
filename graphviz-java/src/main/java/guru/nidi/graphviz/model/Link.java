@@ -17,17 +17,16 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public final class Link implements Attributed<Link>, LinkTarget {
     final LinkSource from;
     final LinkTarget to;
-    final MutableAttributed<Link> attributes;
-
-    public static Link to(MutableNode node) {
-        return to(node.withRecord(null));
-    }
+    final Attributed<Link> attributes;
 
     public static Link to(Node node) {
-        return to(node.port());
+        return to(node);
     }
 
     public static Link to(LinkTarget to) {
@@ -47,17 +46,28 @@ public final class Link implements Attributed<Link>, LinkTarget {
     }
 
     private static Link objBetween(LinkSource from, LinkTarget to) {
-        return CreationContext.createLink(from, to);
+        return new Link(from, to, Attributes.attrs());
     }
 
     Link(LinkSource from, LinkTarget to, Attributes attributes) {
         this.from = from;
         this.to = to;
-        this.attributes = new SimpleMutableAttributed<>(this, attributes);
+        this.attributes = new SimpleAttributed<>(this, attributes);
     }
 
+    @Override
+    public Iterator<Map.Entry<String, Object>> iterator() {
+        return attributes.iterator();
+    }
+
+    @Override
     public Link with(Attributes attrs) {
         return new Link(from, to, attrs.applyTo(attributes.applyTo(Attributes.attrs())));
+    }
+
+    @Override
+    public Object get(String key) {
+        return attributes.get(key);
     }
 
     @Override
@@ -75,7 +85,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
     }
 
     //TODO differentiate between mutable and immutable
-    public MutableAttributed<Link> attrs() {
+    public Attributed<Link> attrs() {
         return attributes;
     }
 

@@ -6,7 +6,7 @@
     <parent>
         <artifactId>graphviz-java-parent</artifactId>
         <groupId>guru.nidi</groupId>
-        <version>0.4.1-SNAPSHOT</version>
+        <version>0.5.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>graphviz-kotlin</artifactId>

@@ -20,10 +20,10 @@ import guru.nidi.graphviz.attribute.*;
 import java.util.*;
 
 public class Serializer {
-    private final MutableGraph graph;
+    private final Graph graph;
     private final StringBuilder str;
 
-    public Serializer(MutableGraph graph) {
+    public Serializer(Graph graph) {
         this.graph = graph;
         str = new StringBuilder();
     }
@@ -33,17 +33,17 @@ public class Serializer {
         return str.toString();
     }
 
-    private void graph(MutableGraph graph, boolean toplevel) {
+    private void graph(Graph graph, boolean toplevel) {
         graphInit(graph, toplevel);
         graphAttrs(graph);
 
-        final List<MutableNode> nodes = new ArrayList<>();
-        final List<MutableGraph> graphs = new ArrayList<>();
-        final Collection<Linkable> linkables = linkedNodes(graph.nodes);
+        final List<Node> nodes = new ArrayList<>();
+        final List<Graph> graphs = new ArrayList<>();
+        final Collection<Linkable> linkables = linkedNodes(graph.nodes.values());
         linkables.addAll(linkedNodes(graph.subgraphs));
         for (final Linkable linkable : linkables) {
-            if (linkable instanceof MutableNode) {
-                final MutableNode node = (MutableNode) linkable;
+            if (linkable instanceof Node) {
+                final Node node = (Node) linkable;
                 final int i = indexOfName(nodes, node.name);
                 if (i < 0) {
                     nodes.add(node);
@@ -51,7 +51,7 @@ public class Serializer {
                     nodes.set(i, node.copy().merge(nodes.get(i)));
                 }
             } else {
-                graphs.add((MutableGraph) linkable);
+                graphs.add((Graph) linkable);
             }
         }
 
@@ -64,13 +64,13 @@ public class Serializer {
         str.append('}');
     }
 
-    private void graphAttrs(MutableGraph graph) {
+    private void graphAttrs(Graph graph) {
         attributes("graph", graph.graphAttrs);
         attributes("node", graph.nodeAttrs);
         attributes("edge", graph.linkAttrs);
     }
 
-    private void graphInit(MutableGraph graph, boolean toplevel) {
+    private void graphInit(Graph graph, boolean toplevel) {
         if (toplevel) {
             str.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
             if (!graph.name.isEmpty()) {
@@ -84,7 +84,7 @@ public class Serializer {
         str.append("{\n");
     }
 
-    private int indexOfName(List<MutableNode> nodes, Label name) {
+    private int indexOfName(List<Node> nodes, String name) {
         for (int i = 0; i < nodes.size(); i++) {
             if (nodes.get(i).name.equals(name)) {
                 return i;
@@ -93,7 +93,7 @@ public class Serializer {
         return -1;
     }
 
-    private void attributes(String name, MutableAttributed<?> attributed) {
+    private void attributes(String name, Attributed<?> attributed) {
         if (!attributed.isEmpty()) {
             str.append(name);
             attrs(attributed);
@@ -113,12 +113,12 @@ public class Serializer {
         if (!visited.contains(linkable)) {
             visited.add(linkable);
             for (final Link link : linkable.links()) {
-                if (link.to instanceof MutableNode) {
-                    linkedNodes((MutableNode) link.to, visited);
-                } else if (link.to instanceof MutablePortNode) {
-                    linkedNodes(((MutablePortNode) link.to).node, visited);
-                } else if (link.to instanceof MutableGraph) {
-                    linkedNodes((MutableGraph) link.to, visited);
+                if (link.to instanceof Node) {
+                    linkedNodes((Node) link.to, visited);
+                } else if (link.to instanceof Port) {
+                    linkedNodes(((Port) link.to).node, visited);
+                } else if (link.to instanceof Graph) {
+                    linkedNodes((Graph) link.to, visited);
                 } else {
                     throw new IllegalStateException("unexpected link to " + link.to + " of " + link.to.getClass());
                 }
@@ -126,17 +126,17 @@ public class Serializer {
         }
     }
 
-    private void nodes(MutableGraph graph, List<MutableNode> nodes) {
-        for (final MutableNode node : nodes) {
-            if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty())) {
+    private void nodes(Graph graph, List<Node> nodes) {
+        for (final Node node : nodes) {
+            if (!node.attributes.isEmpty() || (graph.nodes.values().contains(node) && node.links.isEmpty())) {
                 node(node);
                 str.append('\n');
             }
         }
     }
 
-    private void graphs(List<MutableGraph> graphs, List<MutableNode> nodes) {
-        for (final MutableGraph graph : graphs) {
+    private void graphs(List<Graph> graphs, List<Node> nodes) {
+        for (final Graph graph : graphs) {
             if (graph.links.isEmpty() && !isLinked(graph, nodes) && !isLinked(graph, graphs)) {
                 graph(graph, false);
                 str.append('\n');
@@ -144,7 +144,7 @@ public class Serializer {
         }
     }
 
-    private boolean isLinked(MutableGraph graph, List<? extends Linkable> linkables) {
+    private boolean isLinked(Graph graph, List<? extends Linkable> linkables) {
         for (final Linkable linkable : linkables) {
             for (final Link link : linkable.links()) {
                 if (link.to.equals(graph)) {
@@ -168,33 +168,33 @@ public class Serializer {
     }
 
     private void linkTarget(Object linkable) {
-        if (linkable instanceof MutableNode) {
-            node((MutableNode) linkable);
-        } else if (linkable instanceof MutablePortNode) {
-            port((MutablePortNode) linkable);
-        } else if (linkable instanceof MutableGraph) {
-            graph((MutableGraph) linkable, false);
+        if (linkable instanceof Node) {
+            node((Node) linkable);
+        } else if (linkable instanceof Port) {
+            port((Port) linkable);
+        } else if (linkable instanceof Graph) {
+            graph((Graph) linkable, false);
         } else {
             throw new IllegalStateException("unexpected link target " + linkable);
         }
     }
 
-    private void node(MutableNode node) {
-        str.append(node.name.serialized());
+    private void node(Node node) {
+        str.append(node.name);
         attrs(node.attributes);
     }
 
-    private void port(MutablePortNode portNode) {
-        str.append(portNode.node.name.serialized());
-        if (portNode.record != null) {
-            str.append(':').append(SimpleLabel.of(portNode.record).serialized());
+    private void port(Port port) {
+        str.append(port.node.name);
+        if (port.record != null) {
+            str.append(':').append(SimpleLabel.of(port.record).serialized());
         }
-        if (portNode.compass != null) {
-            str.append(':').append(portNode.compass.value);
+        if (port.compass != null) {
+            str.append(':').append(port.compass.value);
         }
     }
 
-    private void attrs(MutableAttributed<?> attrs) {
+    private void attrs(Attributed<?> attrs) {
         if (!attrs.isEmpty()) {
             str.append(" [");
             boolean first = true;

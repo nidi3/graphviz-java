@@ -36,7 +36,6 @@ import static guru.nidi.graphviz.engine.Rasterizer.BATIK;
 import static guru.nidi.graphviz.engine.Rasterizer.SALAMANDER;
 import static guru.nidi.graphviz.model.Compass.WEST;
 import static guru.nidi.graphviz.model.Factory.*;
-import static guru.nidi.graphviz.model.Link.between;
 import static guru.nidi.graphviz.model.Link.to;
 
 class ExampleTest {
@@ -52,12 +51,12 @@ class ExampleTest {
 
     @AfterEach
     void closeContext() {
-        CreationContext.end();
+        GraphContext.end();
     }
 
     @Test
     void ex11() throws IOException {
-        final Graph g = CreationContext.use(() -> graph("ex1").directed().with(
+        final Graph g = graph("ex1").directed().with(
                 node("main").link(
                         node("parse"), node("init"), node("cleanup"), node("printf")),
                 node("parse").link(
@@ -163,7 +162,7 @@ class ExampleTest {
 
     @Test
     void ex42() throws IOException {
-        CreationContext.begin()
+        GraphContext.begin()
                 .graphs().add(Color.YELLOWGREEN.background())
                 .nodes().add(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
                 .links().add(Style.DOTTED);

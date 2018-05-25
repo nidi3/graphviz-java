@@ -21,17 +21,17 @@ import guru.nidi.graphviz.attribute.Attributes
 import guru.nidi.graphviz.attribute.Attributes.attr
 
 fun graph(name: String = "", strict: Boolean = false, directed: Boolean = false, cluster: Boolean = false, config: () -> Unit = { }): Graph {
-    val graph = (Factory.graph(name) as MutableGraph).apply {
+    val graph = (Factory.graph(name) as Graph).apply {
         isStrict = strict
         isDirected = directed
         isCluster = cluster
     }
     try {
-        val ctx = CreationContext.begin()
+        val ctx = GraphContext.begin()
         config()
         ctx.applyTo(graph)
     } finally {
-        CreationContext.end()
+        GraphContext.end()
     }
     return graph as Graph
 }
@@ -45,7 +45,7 @@ interface AttributeContainer {
 val edge = object : AttributeContainer {
     override fun get(vararg attrs: Attributes) {
         attrs.forEach { attr ->
-            CreationContext.current().get().links().add(attr)
+            GraphContext.current().get().links().add(attr)
         }
     }
 }
@@ -53,7 +53,7 @@ val edge = object : AttributeContainer {
 val node = object : AttributeContainer {
     override fun get(vararg attrs: Attributes) {
         attrs.forEach { attr ->
-            CreationContext.current().get().nodes().add(attr)
+            GraphContext.current().get().nodes().add(attr)
         }
     }
 }
@@ -61,7 +61,7 @@ val node = object : AttributeContainer {
 val graph = object : AttributeContainer {
     override fun get(vararg attrs: Attributes) {
         attrs.forEach { attr ->
-            CreationContext.current().get().graphs().add(attr)
+            GraphContext.current().get().graphs().add(attr)
         }
     }
 }
@@ -82,6 +82,6 @@ operator fun String.get(vararg attrs: Attributes) = Factory.node(this).with(*att
 
 operator fun Node.get(vararg attrs: Attributes): Node {
     val n = this.with(*attrs)
-    CreationContext.current().map { it.setNode(n as ImmutableNode) }
+    GraphContext.current().map { it.setNode(n as ImmutableNode) }
     return n
 }

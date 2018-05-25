@@ -96,13 +96,13 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("JUnitTestsShouldIncludeAssert", "LocalVariableCouldBeFinal", "UnusedLocalVariable"))
                 .because("It's a test", In.loc("*Test")
                         .ignore("ExcessiveMethodLength"))
-                .because("It's a bug in PMD?", In.clazz(MutableNode.class).ignore("ConstructorCallsOverridableMethod"))
+                .because("It's a bug in PMD?", In.clazz(Node.class).ignore("ConstructorCallsOverridableMethod"))
                 .because("There are a lot of colors", In.clazz(Color.class)
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
                         In.loc("LabelTest").ignore("JUnitTestContainsTooManyAsserts"),
                         In.clazz(Serializer.class).ignore("AvoidStringBufferField"),
-                        In.clazz(CreationContext.class).ignore("AvoidThrowingRawExceptionTypes"),
+                        In.clazz(GraphContext.class).ignore("AvoidThrowingRawExceptionTypes"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),
@@ -110,16 +110,14 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
-                        In.classes(MutableGraph.class, Serializer.class, Parser.class).ignore("GodClass"),
+                        In.classes(Graph.class, Serializer.class, Parser.class).ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"))
                 .because("It's command line tool", In.loc("GraphvizServer")
                         .ignore("AvoidCatchingGenericException", "PreserveStackTrace"))
                 .because("I don't understand the message",
                         In.locs("CommandRunnerTest", "AbstractJsGraphvizEngine").ignore("SimplifiedTernary"))
                 .because("I don't agree",
-                        In.everywhere().ignore("SimplifyStartsWith"))
-                .because("It's wrapping an Exception with a RuntimeException", In.clazz(CreationContext.class)
-                        .ignore("AvoidCatchingGenericException"));
+                        In.everywhere().ignore("SimplifyStartsWith"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)
                 .withRulesets(PredefConfig.defaultPmdRulesets())
                 .analyze();

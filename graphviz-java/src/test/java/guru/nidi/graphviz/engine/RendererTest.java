@@ -22,7 +22,6 @@ import java.io.File;
 import java.nio.file.Files;
 
 import static guru.nidi.graphviz.model.Factory.graph;
-import static guru.nidi.graphviz.model.Factory.node;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RendererTest {
@@ -43,7 +42,7 @@ class RendererTest {
         Files.deleteIfExists(expectedFile.toPath());
         Files.deleteIfExists(expectedFile.getParentFile().toPath());
 
-        final Graph graph = graph("example1").directed().with(node("a").link(node("b")));
+        final Graph graph = graph("example1").setDirected(true).with(node("a").link(node("b")));
         Graphviz.fromGraph(graph).width(200).render(Format.PNG).toFile(expectedFile);
 
         assertTrue(expectedFile.exists() && expectedFile.isFile());

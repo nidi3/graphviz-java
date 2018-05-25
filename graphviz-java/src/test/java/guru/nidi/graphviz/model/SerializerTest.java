@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SerializerTest {
     @AfterEach
     void closeContext() {
-        CreationContext.end();
+        GraphContext.end();
     }
 
     @Test
@@ -79,16 +79,6 @@ class SerializerTest {
     void nodes() {
         assertGraph("graph 'x' {\n'x' ['bla'='blu']\n}", graph("x")
                 .with(node("x").with("bla", "blu")));
-    }
-
-    @Test
-    void context() {
-        CreationContext.begin()
-                .graphs().add("g", "x")
-                .nodes().add("n", "y")
-                .links().add("l", "z");
-        assertGraph("graph 'x' {\ngraph ['g'='x']\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
-                .with(node("x").with("bla", "blu").link(node("y"))));
     }
 
     @Test
@@ -163,6 +153,6 @@ class SerializerTest {
     }
 
     private void assertGraph(String expected, Graph graph) {
-        assertEquals(expected.replace("'", "\""), new Serializer((MutableGraph) graph).serialize());
+        assertEquals(expected.replace("'", "\""), new Serializer((Graph) graph).serialize());
     }
 }

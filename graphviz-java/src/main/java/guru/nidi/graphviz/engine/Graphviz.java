@@ -15,7 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.model.*;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Serializer;
 
 import java.awt.*;
 import java.io.*;
@@ -131,10 +132,6 @@ public final class Graphviz {
     }
 
     public static Graphviz fromGraph(Graph graph) {
-        return fromGraph((MutableGraph) graph);
-    }
-
-    public static Graphviz fromGraph(MutableGraph graph) {
         return fromString(new Serializer(graph).serialize());
     }
 

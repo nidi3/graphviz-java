@@ -18,7 +18,8 @@ package guru.nidi.graphviz;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizV8Engine;
-import guru.nidi.graphviz.model.*;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Node;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Records.rec;
@@ -92,7 +93,7 @@ public class PerformanceTest {
     }
 
     public void ex1() {
-        final Graph g = CreationContext.use(() -> graph("ex1").directed().with(
+        final Graph g = graph("ex1").directed().with(
                 node("main").link(
                         node("parse"), node("init"), node("cleanup"), node("printf")),
                 node("parse").link(
@@ -100,7 +101,7 @@ public class PerformanceTest {
                 node("execute").link(
                         node("make_string"), node("printf"), node("compare")),
                 node("init").link(
-                        node("make_string"))));
+                        node("make_string")));
         Graphviz.fromGraph(g).render(SVG).toString();
     }
 

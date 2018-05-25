@@ -15,40 +15,40 @@
  */
 package guru.nidi.graphviz.model;
 
-public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNode> {
-    protected MutableNode node;
+public class Port implements LinkTarget, LinkSource<Node> {
+    protected Node node;
     protected String record;
     protected Compass compass;
 
-    public MutablePortNode() {
+    public Port() {
     }
 
-    protected MutablePortNode(MutableNode node, String record, Compass compass) {
+    protected Port(Node node, String record, Compass compass) {
         this.node = node;
         this.record = record;
         this.compass = compass;
     }
 
-    public MutablePortNode copy() {
-        return new MutablePortNode(node.copy(), record, compass);
+    public Port copy() {
+        return new Port(node.copy(), record, compass);
     }
 
-    public MutablePortNode setNode(MutableNode node) {
+    public Port setNode(Node node) {
         this.node = node;
         return this;
     }
 
-    public MutablePortNode setRecord(String record) {
+    public Port setRecord(String record) {
         this.record = record;
         return this;
     }
 
-    public MutablePortNode setCompass(Compass compass) {
+    public Port setCompass(Compass compass) {
         this.compass = compass;
         return this;
     }
 
-    public MutableNode addLink(LinkTarget target) {
+    public Node link(LinkTarget target) {
         return node.addLink(target);
     }
 
@@ -57,7 +57,7 @@ public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNod
         return Link.to(this);
     }
 
-    public MutableNode node() {
+    public Node node() {
         return node;
     }
 
@@ -78,7 +78,7 @@ public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNod
             return false;
         }
 
-        final MutablePortNode portNode = (MutablePortNode) o;
+        final Port portNode = (Port) o;
 
         if (node != null ? !node.equals(portNode.node) : portNode.node != null) {
             return false;

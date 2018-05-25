@@ -103,7 +103,7 @@ class ReadmeTest {
     @Test
     void ex4() throws IOException {
         //## manipulate
-        MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
+        Graph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
         Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-1.png"));
 
         g.graphAttrs()
