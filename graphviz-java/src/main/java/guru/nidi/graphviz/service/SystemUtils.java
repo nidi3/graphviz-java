@@ -31,9 +31,12 @@ public final class SystemUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SystemUtils.class);
 
     private static final String OS_NAME = getSystemProperty("os.name");
-    static final boolean IS_OS_WINDOWS = getOsMatchesName("Windows");
-    static final boolean IS_OS_MAC = getOsMatchesName("Mac");
-    static final boolean IS_OS_LINUX = getOsMatchesName("Linux") || getOsMatchesName("LINUX");
+    private static final boolean IS_OS_WINDOWS = getOsMatchesName("Windows");
+    private static final boolean IS_OS_MAC = getOsMatchesName("Mac");
+    private static final boolean IS_OS_LINUX = getOsMatchesName("Linux") || getOsMatchesName("LINUX");
+
+    private SystemUtils() {
+    }
 
     private static String getSystemProperty(String property) {
         try {
