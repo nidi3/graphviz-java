@@ -21,7 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -75,7 +76,7 @@ public class CommandRunner {
 
         return Arrays
                 .stream(pathEnvVar.split(File.pathSeparator))
-                .map(CommandRunner::pathOf)
+                .map(SystemUtils::pathOf)
                 .filter(path -> Files.exists(path))
                 .map(path -> {
                     try (Stream<Path> entries = Files.list(path)) {
@@ -100,10 +101,6 @@ public class CommandRunner {
                     }
                 })
                 .flatMap(stream -> stream);
-    }
-
-    private static Path pathOf(String path) {
-        return Paths.get(SystemUtils.IS_OS_WINDOWS ? path.replace("\"", "") : path);
     }
 
     static boolean isExecutableFound(String program) {

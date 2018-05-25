@@ -133,12 +133,7 @@ class EngineTest {
     }
 
     private File setUpFakeDotFile() throws IOException {
-        String filename = "dot";
-        if (SystemUtils.IS_OS_WINDOWS) {
-            filename = filename + ".exe";
-        }
-
-        // Add a fake dot executable to the temporary dotFolder
+        final String filename = SystemUtils.executableName("dot");
         final File dotFile = new File(temp, filename);
         dotFile.createNewFile();
         dotFile.setExecutable(true);
