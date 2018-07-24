@@ -17,15 +17,19 @@ package guru.nidi.graphviz.engine;
 
 import javax.script.*;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
     private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
     private static final ThreadLocal<ResultHandler> HANDLER = new ThreadLocal<>();
+    private static final Pattern JAVA_18_PATTERN = Pattern.compile("1.8.0_(\\d+).*");
 
     public GraphvizJdkEngine() {
         super(false);
         final String version = System.getProperty("java.version");
-        if (version.startsWith("1.8.0_") && Integer.parseInt(version.substring(6)) < 40) {
+        final Matcher matcher = JAVA_18_PATTERN.matcher(version);
+        if (matcher.matches() && Integer.parseInt(matcher.group(1)) < 40) {
             throw new GraphvizException("You are using an old version of java 1.8. Please update it.");
         }
     }
