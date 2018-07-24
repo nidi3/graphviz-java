@@ -68,7 +68,8 @@ public class Renderer {
 
     public BufferedImage toImage() {
         if (graphviz.rasterizer == null) {
-            throw new IllegalStateException("Rasterizer explicitly set no null or neither batik nor salamander found on classpath.");
+            throw new IllegalStateException("- Rasterizer explicitly set no null or\n"
+                    + "- neither Batik nor Salamander found on classpath.");
         }
         return graphviz.rasterizer.rasterize(graphviz, graphicsConfigurer, graphviz.execute());
     }
