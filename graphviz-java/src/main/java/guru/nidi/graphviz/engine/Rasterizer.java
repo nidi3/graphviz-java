@@ -20,9 +20,9 @@ import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
 public interface Rasterizer {
-    Rasterizer BATIK = IoUtils.isOnClasspath("org.apache.batik.transcoder.image.ImageTranscoder") ? new BatikRasterizer() : null;
+    Rasterizer BATIK = IoUtils.isOnClasspath("org.apache.batik.transcoder.Transcoder") ? new BatikRasterizer() : null;
     Rasterizer SALAMANDER = IoUtils.isOnClasspath("com.kitfox.svg.SVGDiagram") ? new SalamanderRasterizer() : null;
-    Rasterizer DEFAULT = BATIK != null ? BATIK : SALAMANDER;
+    Rasterizer DEFAULT = BATIK == null ? SALAMANDER : BATIK;
 
     Format format();
 
