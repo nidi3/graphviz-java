@@ -32,4 +32,12 @@ final class IoUtils {
         return new String(buf, StandardCharsets.UTF_8);
     }
 
+    public static boolean isOnClasspath(String clazz) {
+        try {
+            Class.forName(clazz);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }
