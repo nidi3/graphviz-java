@@ -24,9 +24,8 @@ import java.io.IOException;
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.model.Compass.NORTH_EAST;
 import static guru.nidi.graphviz.model.Compass.SOUTH_WEST;
+import static guru.nidi.graphviz.model.Edge.to;
 import static guru.nidi.graphviz.model.Factory.*;
-import static guru.nidi.graphviz.model.Link.to;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ParserTest {
     @Test

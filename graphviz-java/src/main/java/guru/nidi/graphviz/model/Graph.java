@@ -15,46 +15,39 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.*;
-
 import java.util.*;
 
-public class Graph implements Linkable, LinkSource<Graph>, LinkTarget {
-    protected boolean strict;
-    protected boolean directed;
-    protected boolean cluster;
-    protected String name;
-    protected final Map<String, Node> nodes;
-    protected final Set<Graph> subgraphs;
-    protected final List<Link> links;
-    protected final Attributed<Graph> nodeAttrs;
-    protected final Attributed<Graph> linkAttrs;
-    protected final Attributed<Graph> graphAttrs;
+public class Graph implements EdgeContainer, Linkable, EdgeSource {
+    boolean strict;
+    boolean directed;
+    boolean cluster;
+    String name;
+    final Map<String, Node> nodes;
+    final Set<Graph> subgraphs;
+    final List<Edge> edges;
 
-    Graph() {
-        this(false, false, false, "", new LinkedHashMap<>(), new LinkedHashSet<>(), new ArrayList<>(),
-                null, null, null);
+    public Graph() {
+        this("");
+    }
+
+    public Graph(String name) {
+        this(false, false, false, name, new LinkedHashMap<>(), new LinkedHashSet<>(), new ArrayList<>());
     }
 
     Graph(boolean strict, boolean directed, boolean cluster, String name,
-          LinkedHashMap<String, Node> nodes, LinkedHashSet<Graph> subgraphs, List<Link> links,
-          Attributes nodeAttrs, Attributes linkAttrs, Attributes graphAttrs) {
+          LinkedHashMap<String, Node> nodes, LinkedHashSet<Graph> subgraphs, List<Edge> edges) {
         this.strict = strict;
         this.directed = directed;
         this.cluster = cluster;
         this.name = name;
         this.nodes = nodes;
         this.subgraphs = subgraphs;
-        this.links = links;
-        this.nodeAttrs = new SimpleAttributed<>(this, nodeAttrs);
-        this.linkAttrs = new SimpleAttributed<>(this, linkAttrs);
-        this.graphAttrs = new SimpleAttributed<>(this, graphAttrs);
+        this.edges = edges;
     }
 
     public Graph copy() {
         return new Graph(strict, directed, cluster, name,
-                new LinkedHashMap<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(links),
-                nodeAttrs, linkAttrs, graphAttrs);
+                new LinkedHashMap<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(edges));
     }
 
     public Graph strict() {
@@ -90,65 +83,25 @@ public class Graph implements Linkable, LinkSource<Graph>, LinkTarget {
     }
 
     public Graph use(ThrowingConsumer<Graph> actions) {
-        GraphContext.use(this, actions);
-        return this;
+        return GraphContext.use(this, actions);
     }
 
-    public Graph with(LinkSource... sources) {
-        for (final LinkSource source : sources) {
-            with(source);
-        }
-        return this;
+    public Node node(Node node) {
+        return nodes.merge(node.name, node, Node::merge);
     }
 
-    public Graph with(LinkSource source) {
-        if (source instanceof Node) {
-            addNode((Node) source);
-            return this;
-        }
-        if (source instanceof Port) {
-            addNode(((Port) source).node);
-            return this;
-        }
-        if (source instanceof Graph) {
-            subgraphs.add((Graph) source);
-            return this;
-        }
-        throw new IllegalArgumentException("Unknown source of type " + source.getClass());
-    }
-
-    private void addNode(Node node) {
-        nodes.merge(node.name, node, Node::merge);
-    }
-
-    public Graph link(LinkTarget... targets) {
-        for (final LinkTarget target : targets) {
-            link(target);
-        }
-        return this;
-    }
-
-    public Graph link(LinkTarget target) {
-        final Link link = target.linkTo();
-        links.add(Link.between(this, link.to).with(link.attributes));
-        return this;
-    }
-
-    public Collection<Node> nodes() {
-        return nodes.values();
-    }
-
-    public Collection<Graph> graphs() {
-        return subgraphs;
-    }
-
-    public Collection<Link> links() {
-        return links;
+    public Node node(String name) {
+        return node(new Node(name));
     }
 
     @Override
-    public Link linkTo() {
-        return Link.to(this);
+    public EdgeContainer containedBy() {
+        return this;
+    }
+
+    @Override
+    public Linkable linkable() {
+        return this;
     }
 
     public boolean isStrict() {
@@ -167,16 +120,16 @@ public class Graph implements Linkable, LinkSource<Graph>, LinkTarget {
         return name;
     }
 
-    public Attributed<Graph> nodeAttr() {
-        return nodeAttrs;
+    public Collection<Node> nodes() {
+        return nodes.values();
     }
 
-    public Attributed<Graph> linkAttr() {
-        return linkAttrs;
+    public Collection<Graph> graphs() {
+        return subgraphs;
     }
 
-    public Attributed<Graph> graphAttr() {
-        return graphAttrs;
+    public Collection<Edge> edges() {
+        return edges;
     }
 
     @Override
@@ -208,17 +161,10 @@ public class Graph implements Linkable, LinkSource<Graph>, LinkTarget {
         if (!subgraphs.equals(graph.subgraphs)) {
             return false;
         }
-        if (!links.equals(graph.links)) {
+        if (!edges.equals(graph.edges)) {
             return false;
         }
-        if (!nodeAttrs.equals(graph.nodeAttrs)) {
-            return false;
-        }
-        if (!linkAttrs.equals(graph.linkAttrs)) {
-            return false;
-        }
-        return graphAttrs.equals(graph.graphAttrs);
-
+        return true;
     }
 
     @Override
@@ -229,10 +175,7 @@ public class Graph implements Linkable, LinkSource<Graph>, LinkTarget {
         result = 31 * result + name.hashCode();
         result = 31 * result + nodes.hashCode();
         result = 31 * result + subgraphs.hashCode();
-        result = 31 * result + links.hashCode();
-        result = 31 * result + nodeAttrs.hashCode();
-        result = 31 * result + linkAttrs.hashCode();
-        result = 31 * result + graphAttrs.hashCode();
+        result = 31 * result + edges.hashCode();
         return result;
     }
 

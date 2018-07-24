@@ -26,8 +26,8 @@ import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.model.Compass.WEST;
+import static guru.nidi.graphviz.model.Edge.to;
 import static guru.nidi.graphviz.model.Factory.*;
-import static guru.nidi.graphviz.model.Link.to;
 
 public class PerformanceTest {
     public static void main(String[] args) {

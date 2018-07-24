@@ -82,7 +82,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("It's ok",
                         In.loc("DefaultExecutor").ignore("DM_DEFAULT_ENCODING"),
                         In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
-                        In.locs("GraphvizCmdLineEngine", "EngineTest").ignore("PATH_TRAVERSAL_IN"),
+                        In.locs("GraphvizCmdLineEngine", "EngineTest", "SystemUtils", "Renderer").ignore("PATH_TRAVERSAL_IN"),
                         In.loc("EngineTest").ignore("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
                         In.loc("Communicator").ignore("RR_NOT_CHECKED"));
         return new FindBugsAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector).analyze();
@@ -100,6 +100,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("There are a lot of colors", In.clazz(Color.class)
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
+                        In.clazz(Format.class).ignore("AvoidDuplicateLiterals"),
                         In.loc("LabelTest").ignore("JUnitTestContainsTooManyAsserts"),
                         In.clazz(Serializer.class).ignore("AvoidStringBufferField"),
                         In.clazz(GraphContext.class).ignore("AvoidThrowingRawExceptionTypes"),

@@ -16,11 +16,11 @@
 package guru.nidi.graphviz.attribute;
 
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 
 public class SimpleAttributed<E> implements Attributed<E> {
     private final E target;
-    final MapAttributes attributes = new MapAttributes();
+    private final MapAttributes attributes = new MapAttributes();
 
     public SimpleAttributed(E target) {
         this.target = target;
@@ -39,7 +39,7 @@ public class SimpleAttributed<E> implements Attributed<E> {
     }
 
     @Override
-    public Iterator<Map.Entry<String, Object>> iterator() {
+    public Iterator<Entry<String, Object>> iterator() {
         return attributes.iterator();
     }
 

@@ -1,0 +1,13 @@
+graph{
+    node [shape=box]
+    edge [color=red]
+    //graph [bgcolor=blue]
+    a -- {
+        node[shape=circle]
+        edge [color=green]
+    graph [bgcolor=blue]
+
+        b --c
+    } -- d
+
+}

@@ -16,16 +16,27 @@
 
 package guru.nidi.graphviz.service;
 
+import org.apache.commons.exec.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SystemUtils {
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public final class SystemUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SystemUtils.class);
 
     private static final String OS_NAME = getSystemProperty("os.name");
-    public static final boolean IS_OS_WINDOWS = getOsMatchesName("Windows");
-    public static final boolean IS_OS_MAC = getOsMatchesName("Mac");
-    public static final boolean IS_OS_LINUX = getOsMatchesName("Linux") || getOsMatchesName("LINUX");
+    private static final boolean IS_OS_WINDOWS = getOsMatchesName("Windows");
+    private static final boolean IS_OS_MAC = getOsMatchesName("Mac");
+    private static final boolean IS_OS_LINUX = getOsMatchesName("Linux") || getOsMatchesName("LINUX");
+
+    private SystemUtils() {
+    }
 
     private static String getSystemProperty(String property) {
         try {
@@ -44,4 +55,45 @@ public class SystemUtils {
     private static boolean isOsNameMatch(String osName, String osNamePrefix) {
         return osName != null && osName.startsWith(osNamePrefix);
     }
+
+    public static Path pathOf(String path) {
+        return Paths.get(IS_OS_WINDOWS ? path.replace("\"", "") : path);
+    }
+
+    public static String executableName(String filename) {
+        return IS_OS_WINDOWS ? filename + ".exe" : filename;
+    }
+
+    public static Function<CommandLine, CommandLine> getShellWrapperOrDefault(boolean shellWrapper) {
+        if (!shellWrapper) {
+            return Function.identity();
+        }
+        if (IS_OS_WINDOWS) {
+            return getWindowsShellWrapperFunc();
+        }
+        if (IS_OS_LINUX || IS_OS_MAC) {
+            return getLinuxShellWrapperFunc();
+        }
+        throw new IllegalStateException("Unsupported OS");
+    }
+
+    private static Function<CommandLine, CommandLine> getWindowsShellWrapperFunc() {
+        return (cmd) -> new CommandLine("cmd")
+                .addArgument("/C")
+                .addArguments(cmd.toStrings(), false);
+    }
+
+    private static Function<CommandLine, CommandLine> getLinuxShellWrapperFunc() {
+        return (cmd) -> {
+            final String originalCmd = Stream.concat(
+                    Arrays.stream(new String[]{cmd.getExecutable()}),
+                    Arrays.stream(cmd.getArguments())
+            ).collect(Collectors.joining(" "));
+
+            return new CommandLine("/bin/sh")
+                    .addArgument("-c")
+                    .addArgument(originalCmd, false);
+        };
+    }
+
 }

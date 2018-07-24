@@ -15,8 +15,12 @@
  */
 package guru.nidi.graphviz.model;
 
-import java.util.Collection;
-
+/**
+ * elements of a Link. TODO used?
+ */
 public interface Linkable {
-    Collection<Link> links();
+    EdgeContainer containedBy();
+//    Link link(Linkable target);
+
+//    Link linkTo();
 }

@@ -15,46 +15,39 @@
  */
 package guru.nidi.graphviz.model;
 
-public class Port implements LinkTarget, LinkSource<Node> {
-    protected Node node;
-    protected String record;
-    protected Compass compass;
+public class Port implements Linkable, EdgeSource {
+    final Node node;
+    String record;
+    Compass compass;
 
-    public Port() {
-    }
-
-    protected Port(Node node, String record, Compass compass) {
+    Port(Node node, String record, Compass compass) {
         this.node = node;
         this.record = record;
         this.compass = compass;
     }
 
     public Port copy() {
-        return new Port(node.copy(), record, compass);
+        return new Port(node, record, compass);
     }
 
-    public Port setNode(Node node) {
-        this.node = node;
-        return this;
-    }
-
-    public Port setRecord(String record) {
+    public Port record(String record) {
         this.record = record;
         return this;
     }
 
-    public Port setCompass(Compass compass) {
+    public Port compass(Compass compass) {
         this.compass = compass;
         return this;
     }
 
-    public Node link(LinkTarget target) {
-        return node.addLink(target);
+    @Override
+    public EdgeContainer containedBy() {
+        return node;
     }
 
     @Override
-    public Link linkTo() {
-        return Link.to(this);
+    public Linkable linkable() {
+        return this;
     }
 
     public Node node() {

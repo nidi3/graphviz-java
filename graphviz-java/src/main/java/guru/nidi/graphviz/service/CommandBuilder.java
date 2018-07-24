@@ -15,13 +15,6 @@
  */
 package guru.nidi.graphviz.service;
 
-import org.apache.commons.exec.CommandLine;
-
-import java.util.Arrays;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * Build a CommandRunner.
  *
@@ -43,43 +36,11 @@ public class CommandBuilder {
 
     public CommandRunner build() {
         return new CommandRunner(
-                getShellWrapperOrDefault(shellWrapper),
+                SystemUtils.getShellWrapperOrDefault(shellWrapper),
                 getCmdExecutorOrDefault(cmdExec));
     }
 
     private static DefaultExecutor getCmdExecutorOrDefault(DefaultExecutor cmdExec) {
         return cmdExec == null ? new DefaultExecutor() : cmdExec;
-    }
-
-    private static Function<CommandLine, CommandLine> getShellWrapperOrDefault(boolean shellWrapper) {
-        if (!shellWrapper) {
-            return Function.identity();
-        }
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return getWindowsShellWrapperFunc();
-        }
-        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC) {
-            return getLinuxShellWrapperFunc();
-        }
-        throw new IllegalStateException("Unsupported OS");
-    }
-
-    private static Function<CommandLine, CommandLine> getWindowsShellWrapperFunc() {
-        return (cmd) -> new CommandLine("cmd")
-                .addArgument("/C")
-                .addArguments(cmd.toStrings(), false);
-    }
-
-    private static Function<CommandLine, CommandLine> getLinuxShellWrapperFunc() {
-        return (cmd) -> {
-            final String originalCmd = Stream.concat(
-                    Arrays.stream(new String[]{cmd.getExecutable()}),
-                    Arrays.stream(cmd.getArguments())
-            ).collect(Collectors.joining(" "));
-
-            return new CommandLine("/bin/sh")
-                    .addArgument("-c")
-                    .addArgument(originalCmd, false);
-        };
     }
 }

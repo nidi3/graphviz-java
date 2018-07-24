@@ -51,25 +51,25 @@ public final class Parser {
         nextToken();
     }
 
-    private Graph parse() {
-        return graph().use(graph -> {
-            if (token.type == STRICT) {
-                graph.strict(true);
-                nextToken();
-            }
-            if (token.type == DIGRAPH) {
-                graph.directed(true);
-            } else if (token.type != GRAPH) {
-                fail("'graph' or 'digraph' expected");
-            }
+    private Graph parse() throws IOException {
+        final Graph graph = new Graph();
+        if (token.type == STRICT) {
+            graph.strict(true);
             nextToken();
-            if (token.type == ID) {
-                graph.name(label(token).toString());
-                nextToken();
-            }
-            statementList(graph);
-            assertToken(EOF);
-        });
+        }
+        if (token.type == DIGRAPH) {
+            graph.directed(true);
+        } else if (token.type != GRAPH) {
+            fail("'graph' or 'digraph' expected");
+        }
+        nextToken();
+        if (token.type == ID) {
+            graph.name(label(token).toString());
+            nextToken();
+        }
+        statementList(graph);
+        assertToken(EOF);
+        return graph;
     }
 
     private Label label(Token token) {
@@ -95,7 +95,7 @@ public final class Parser {
                     applyMutableAttributes(graph.graphAttr(), Arrays.asList(base, nextToken(ID)));
                     nextToken();
                 } else {
-                    final Port nodeId = nodeId(base);
+                    final Port nodeId = nodeId(graph, base);
                     if (token.type == MINUS_MINUS || token.type == ARROW) {
                         edgeStatement(graph, nodeId);
                     } else {
@@ -109,7 +109,7 @@ public final class Parser {
                 if (token.type == MINUS_MINUS || token.type == ARROW) {
                     edgeStatement(graph, sub);
                 } else {
-                    graph.with(sub);
+                    graph.graphs().add(sub);
                 }
                 return true;
             case GRAPH:
@@ -122,23 +122,23 @@ public final class Parser {
         }
     }
 
-    private Graph subgraph(boolean directed) {
-        return graph().directed(directed).use(sub -> {
-            if (token.type == SUBGRAPH) {
+    private Graph subgraph(boolean directed) throws IOException {
+        final Graph sub = new Graph().directed(directed);
+        if (token.type == SUBGRAPH) {
+            nextToken();
+            if (token.type == ID) {
+                sub.name(label(token).toString());
                 nextToken();
-                if (token.type == ID) {
-                    sub.name(label(token).toString());
-                    nextToken();
-                }
             }
-            statementList(sub);
-        });
+        }
+        statementList(sub);
+        return sub;
     }
 
-    private void edgeStatement(Graph graph, LinkSource<? extends LinkSource> linkSource)
+    private void edgeStatement(Graph graph, Linkable linkable)
             throws IOException {
-        final List<LinkSource<? extends LinkSource>> points = new ArrayList<>();
-        points.add(linkSource);
+        final List<Linkable> points = new ArrayList<>();
+        points.add(linkable);
         do {
             if (graph.isDirected() && token.type == MINUS_MINUS) {
                 fail("-- used in digraph. Use -> instead.");
@@ -150,16 +150,16 @@ public final class Parser {
             if (token.type == ID) {
                 final Token id = token;
                 nextToken();
-                points.add(nodeId(id));
+                points.add(nodeId(graph, id));
             } else if (token.type == SUBGRAPH || token.type == BRACE_OPEN) {
                 points.add(subgraph(graph.isDirected()));
             }
         } while (token.type == MINUS_MINUS || token.type == ARROW);
         final List<Token> attrs = (token.type == BRACKET_OPEN) ? attributeList() : Collections.emptyList();
         for (int i = 0; i < points.size() - 1; i++) {
-            final LinkSource<? extends LinkSource> from = points.get(i);
+            final Linkable from = points.get(i);
             final LinkTarget to = (LinkTarget) points.get(i + 1);
-            graph.with(from.link(applyAttributes(between(from, to), attrs)));
+            from.link(applyAttributes(between(from, to), attrs));
         }
     }
 
@@ -169,30 +169,29 @@ public final class Parser {
     }
 
     private void nodeStatement(Graph graph, Port nodeId) throws IOException {
-        final Node node = node(nodeId.node().name()); //TODO ignore port and compass?
+        final Node node = graph.node(nodeId.node().name()); //TODO ignore port and compass?
         if (token.type == BRACKET_OPEN) {
             applyMutableAttributes(node, attributeList());
         }
-        graph.with(node);
     }
 
-    private Port nodeId(Token base) throws IOException {
-        final Port node = new Port().setNode(node(label(base).serialized()));
+    private Port nodeId(Graph graph, Token base) throws IOException {
+        final Port port = graph.node(label(base).serialized()).port();
         if (token.type == COLON) {
             final String second = nextToken(ID).value;
             nextToken();
             if (token.type == COLON) {
-                node.setRecord(second).setCompass(compass(nextToken(ID).value));
+                port.record(second).compass(compass(nextToken(ID).value));
                 nextToken();
             } else {
                 if (Compass.of(second).isPresent()) {
-                    node.setCompass(compass(second));
+                    port.compass(compass(second));
                 } else {
-                    node.setRecord(second);
+                    port.record(second);
                 }
             }
         }
-        return node;
+        return port;
     }
 
     private void attributeStatement(Graph graph) throws IOException {

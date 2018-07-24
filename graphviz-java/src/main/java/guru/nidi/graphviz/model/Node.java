@@ -21,28 +21,27 @@ import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
-public class Node implements Linkable, Attributed<Node>, LinkTarget,
-        LinkSource<Node> {
+public class Node implements EdgeContainer,EdgeSource, Attributed<Node> {
     protected final String name;
-    protected final List<Link> links;
+    protected final List<Edge> edges;
     protected final Attributed<Node> attributes;
 
     Node(String name) {
         this(name, new ArrayList<>(), Attributes.attrs());
     }
 
-    Node(String name, List<Link> links, Attributes attributes) {
+    Node(String name, List<Edge> edges, Attributes attributes) {
         this.name = name;
-        this.links = links;
+        this.edges = edges;
         this.attributes = new SimpleAttributed<>(this, attributes);
     }
 
     public Node copy() {
-        return new Node(name, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
+        return new Node(name, new ArrayList<>(edges), attributes.applyTo(Attributes.attrs()));
     }
 
     public Node merge(Node n) {
-        links.addAll(n.links);
+        edges.addAll(n.edges);
         attributes.with(n.attributes);
         return this;
     }
@@ -63,34 +62,9 @@ public class Node implements Linkable, Attributed<Node>, LinkTarget,
         return new Port(this, record, compass);
     }
 
-    public Node addLink(LinkTarget target) {
-        final Link link = target.linkTo();
-        links.add(Link.between(from(link), link.to).with(link.attributes));
-        return this;
-    }
-
-    public Node link(LinkTarget target) {
-        final Link link = target.linkTo();
-        links.add(Link.between(from(link), link.to).with(link.attributes));
-        return this;
-    }
-
-    public Node link(LinkTarget... targets) {
-        for (final LinkTarget target : targets) {
-            link(target);
-        }
-        return this;
-    }
-
-    public Node link(String node) {
-        return link(new Node(node));
-    }
-
-    public Node link(String... nodes) {
-        for (final String node : nodes) {
-            link(node);
-        }
-        return this;
+    @Override
+    public Linkable linkable() {
+        return port();
     }
 
     public Node with(Attributes attrs) {
@@ -113,26 +87,13 @@ public class Node implements Linkable, Attributed<Node>, LinkTarget,
         return attributes.get(key);
     }
 
-    private Port from(Link link) {
-        if (link.from instanceof Port) {
-            final Port f = (Port) link.from;
-            return new Port().setNode(this).setRecord(f.record()).setCompass(f.compass());
-        }
-        return new Port().setNode(this);
-    }
-
     public String name() {
         return name;
     }
 
     @Override
-    public Collection<Link> links() {
-        return links;
-    }
-
-    @Override
-    public Link linkTo() {
-        return Link.to(this);
+    public Collection<Edge> edges() {
+        return edges;
     }
 
     public Attributed<Node> attrs() {
@@ -153,7 +114,7 @@ public class Node implements Linkable, Attributed<Node>, LinkTarget,
         if (name != null ? !name.equals(node.name) : node.name != null) {
             return false;
         }
-        if (links != null ? !links.equals(node.links) : node.links != null) {
+        if (edges != null ? !edges.equals(node.edges) : node.edges != null) {
             return false;
         }
         return !(attributes != null ? !attributes.equals(node.attributes) : node.attributes != null);
@@ -163,7 +124,7 @@ public class Node implements Linkable, Attributed<Node>, LinkTarget,
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (links != null ? links.hashCode() : 0);
+        result = 31 * result + (edges != null ? edges.hashCode() : 0);
         result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
         return result;
     }
@@ -171,6 +132,6 @@ public class Node implements Linkable, Attributed<Node>, LinkTarget,
     @Override
     public String toString() {
         return name + attributes.toString() + "->"
-                + links.stream().map(l -> l.to.toString()).collect(joining(","));
+                + edges.stream().map(l -> l.to.toString()).collect(joining(","));
     }
 }

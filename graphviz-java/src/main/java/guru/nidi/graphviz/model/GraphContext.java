@@ -15,20 +15,27 @@
  */
 package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.attribute.Attributes;
 import guru.nidi.graphviz.engine.GraphvizException;
 
-import java.util.*;
+import java.util.Stack;
 
-final class GraphContext {
-    private static final ThreadLocal<Stack<GraphContext>> CONTEXT = ThreadLocal.withInitial(Stack::new);
-    private final Map<String, Node> nodes = new HashMap<>();
+public final class GraphContext {
+    final Attributes nodeAttrs = Attributes.attrs();
+    final Attributes edgeAttrs = Attributes.attrs();
+    final Attributes graphAttrs = Attributes.attrs();
+    private final Stack<Graph> graphs = new Stack<>();
 
-    private GraphContext() {}
+    private static final ThreadLocal<GraphContext> CONTEXT = new ThreadLocal<>();
 
-    public static void use(Graph graph, ThrowingConsumer<Graph> actions) {
-        begin();
+    private GraphContext() {
+    }
+
+    static Graph use(Graph graph, ThrowingConsumer<Graph> actions) {
+        begin(graph);
         try {
             actions.accept(graph);
+            return graph;
         } catch (Exception e) {
             throw new GraphvizException("Exception during graph creation", e);
         } finally {
@@ -36,31 +43,54 @@ final class GraphContext {
         }
     }
 
-    public static GraphContext get() {
-        final Stack<GraphContext> cs = CONTEXT.get();
-        if (cs.empty()) {
+    private static void begin(Graph graph) {
+        GraphContext context = CONTEXT.get();
+        if (context == null) {
+            context = new GraphContext();
+            CONTEXT.set(context);
+        }
+        context.graphs.push(graph);
+    }
+
+    private static void end() {
+        final GraphContext context = CONTEXT.get();
+        context.graphs.pop();
+        if (context.graphs.isEmpty()) {
+            CONTEXT.remove();
+        }
+    }
+
+    static GraphContext context() {
+        final GraphContext context = CONTEXT.get();
+        if (context == null) {
             throw new IllegalStateException("All operations must be executed inside a Graph.");
         }
-        return cs.peek();
+        return context;
     }
 
-    public static void begin() {
-        CONTEXT.get().push(new GraphContext());
-    }
-
-    public static void end() {
-        final Stack<GraphContext> cs = CONTEXT.get();
-        if (!cs.empty()) {
-            cs.pop();
-        }
+    static Graph graph(){
+        return context().graphs.peek();
     }
 
     public static Node node(String name) {
-        return get().newNode(name);
+        return node(new Node(name));
     }
 
-    private Node newNode(String name) {
-        return nodes.computeIfAbsent(name, Node::new);
+    public static Node node(Node node) {
+        return nodes.merge(node.name, node, Node::merge);
+
+    }
+
+    public static void nodeAttrs(Attributes... attributes) {
+        get().nodeAttrs.with(attributes);
+    }
+
+    public static void edgeAttrs(Attributes... attributes) {
+        get().edgeAttrs.with(attributes);
+    }
+
+    public static void graphAttrs(Attributes... attributes) {
+        get().graphAttrs.with(attributes);
     }
 
 }

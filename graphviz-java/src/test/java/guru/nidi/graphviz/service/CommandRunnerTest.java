@@ -43,7 +43,7 @@ class CommandRunnerTest {
 
     @Test
     void testRunEchoHelloWorld() throws IOException, InterruptedException {
-        final CommandLine expected = SystemUtils.IS_OS_WINDOWS
+        final CommandLine expected = System.getProperty("os.name").contains("Windows")
                 ? CommandLine.parse("cmd /C echo hello world")
                 : CommandLine.parse("/bin/sh -c").addArgument("echo hello world", false);
 

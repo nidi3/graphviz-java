@@ -18,51 +18,60 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 
-public final class Link implements Attributed<Link>, LinkTarget {
-    final LinkSource from;
-    final LinkTarget to;
-    final Attributed<Link> attributes;
+public final class Edge implements Attributed<Edge>, EdgeSource {
+    final Linkable from;
+    final Linkable to;
+    final Attributed<Edge> attributes;
 
-    public static Link to(Node node) {
-        return to(node);
+//    public static Link to(Node node) {
+//        return to(node);
+//    }
+//
+//    public static Link to(Linkable to) {
+//        return objBetween(null, to);
+//    }
+//
+//    public Linkable to() {
+//        return to;
+//    }
+//
+//    public static Link between(Node from, Node to) {
+//        return between(from.port(), to.port());
+//    }
+//
+//    public static Link between(Linkable from, LinkTarget to) {
+//        return objBetween(from, to);
+//    }
+//
+//    private static Link objBetween(Linkable from, LinkTarget to) {
+//        return new Link(from, to, Attributes.attrs());
+//    }
+
+    Edge(Linkable from, Linkable to) {
+        this(from, to, Attributes.attrs());
     }
 
-    public static Link to(LinkTarget to) {
-        return objBetween(null, to);
-    }
-
-    public LinkTarget to() {
-        return to;
-    }
-
-    public static Link between(Node from, Node to) {
-        return between(from.port(), to.port());
-    }
-
-    public static Link between(LinkSource from, LinkTarget to) {
-        return objBetween(from, to);
-    }
-
-    private static Link objBetween(LinkSource from, LinkTarget to) {
-        return new Link(from, to, Attributes.attrs());
-    }
-
-    Link(LinkSource from, LinkTarget to, Attributes attributes) {
+    Edge(Linkable from, Linkable to, Attributes attributes) {
         this.from = from;
         this.to = to;
         this.attributes = new SimpleAttributed<>(this, attributes);
     }
 
     @Override
-    public Iterator<Map.Entry<String, Object>> iterator() {
+    public Linkable linkable() {
+        return to;
+    }
+
+    @Override
+    public Iterator<Entry<String, Object>> iterator() {
         return attributes.iterator();
     }
 
     @Override
-    public Link with(Attributes attrs) {
-        return new Link(from, to, attrs.applyTo(attributes.applyTo(Attributes.attrs())));
+    public Edge with(Attributes attrs) {
+        return new Edge(from, to, attrs.applyTo(attributes));
     }
 
     @Override
@@ -75,17 +84,15 @@ public final class Link implements Attributed<Link>, LinkTarget {
         return attributes.applyTo(attrs);
     }
 
-    @Override
-    public Link linkTo() {
+    public Edge linkTo() {
         return this;
     }
 
-    public LinkSource from() {
+    public Linkable from() {
         return from;
     }
 
-    //TODO differentiate between mutable and immutable
-    public Attributed<Link> attrs() {
+    public Attributed<Edge> attrs() {
         return attributes;
     }
 
@@ -98,7 +105,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
             return false;
         }
 
-        final Link link = (Link) o;
+        final Edge edge = (Edge) o;
 
         /*
         //including from could cause circular executions
@@ -109,7 +116,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
 //            return false;
 //        }
         */
-        return attributes.equals(link.attributes);
+        return attributes.equals(edge.attributes);
     }
 
     @Override

@@ -35,8 +35,9 @@ import static guru.nidi.graphviz.engine.Format.*;
 import static guru.nidi.graphviz.engine.Rasterizer.BATIK;
 import static guru.nidi.graphviz.engine.Rasterizer.SALAMANDER;
 import static guru.nidi.graphviz.model.Compass.WEST;
+import static guru.nidi.graphviz.model.Edge.to;
 import static guru.nidi.graphviz.model.Factory.*;
-import static guru.nidi.graphviz.model.Link.to;
+import static guru.nidi.graphviz.model.GraphContext.*;
 
 class ExampleTest {
     @BeforeAll
@@ -49,60 +50,47 @@ class ExampleTest {
         Graphviz.releaseEngine();
     }
 
-    @AfterEach
-    void closeContext() {
-        GraphContext.end();
-    }
-
     @Test
     void ex11() throws IOException {
-        final Graph g = graph("ex1").directed().with(
-                node("main").link(
-                        node("parse"), node("init"), node("cleanup"), node("printf")),
-                node("parse").link(
-                        node("execute")),
-                node("execute").link(
-                        node("make_string"), node("printf"), node("compare")),
-                node("init").link(
-                        node("make_string"))));
-        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex11.png"));
-    }
-
-    @Test
-    void ex12() throws IOException {
-        final Node
-                printf = node("printf"),
-                make_string = node("make_string");
-        final Graph g = graph("ex1").directed().with(
-                node("main").with(Color.rgb("ffcc00"), Style.FILLED).link(
-                        node("parse").link(node("execute")
-                                .link(make_string, printf, node("compare"))),
-                        node("init").link(make_string),
-                        node("cleanup"),
-                        printf));
-        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex12.png"));
+        Graph graph = new Graph("ex1").directed().use(g -> {
+            node("main").link("parse").link("execute");
+            node("main").link("init");
+            node("main").link("cleanup");
+            node("main").link("printf");
+            node("execute").link("make_string");
+            node("execute").link("printf");
+            node("execute").link("compare");
+            node("init").link("make_string");
+        });
+        Graphviz.fromGraph(graph).render(PNG).toFile(new File("target/ex11.png"));
     }
 
     @Test
     void ex2() throws IOException {
-        final Node
-                init = node("init"),
-                execute = node("execute"),
-                compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
-                make_string = node("make_string").with(Label.of("make a\nstring")),
-                printf = node("printf");
-        final Graph g = graph("ex2").directed()
-                .graphAttr().with(Color.rgb("222222").background())
-                .nodeAttr().with(Font.config("Arial", 14), Color.rgb("bbbbbb").fill(), Style.FILLED)
-                .with(
-                        node("main").with(Shape.RECTANGLE).link(
-                                to(node("parse").link(execute)).with("weight", 8),
-                                to(init).with(Style.DOTTED),
-                                node("cleanup"),
-                                to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
-                        execute.link(graph().with(make_string, printf), to(compare).with(Color.RED)),
-                        init.link(make_string));
-        final Graphviz graphviz = Graphviz.fromGraph(g);
+        final Graph graph = new Graph("ex2").directed().use(g -> {
+            graphAttrs(Color.rgb("222222").background());
+            nodeAttrs(Font.config("Arial", 14), Color.rgb("bbbbbb").fill(), Style.FILLED);
+
+            final Node
+                    main = node("main").with(Shape.RECTANGLE),
+                    parse=node("parse"),
+                    init = node("init"),
+                    execute = node("execute"),
+                    compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
+                    make_string = node("make_string").with(Label.of("make a\nstring")),
+                    printf = node("printf");
+
+            main.link(parse).with("weight", 8);
+            parse.link(execute);
+            main.link(init).with(Style.DOTTED);
+            main.link(            node("cleanup"));
+            execute.link(new Graph().use(h->{make_string; printf;}));
+            init.link(make_string);
+            , to(compare).with(Color.RED));
+
+                    to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED));
+        });
+        final Graphviz graphviz = Graphviz.fromGraph(graph);
         graphviz.render(PNG).toFile(new File("target/ex2.png"));
         graphviz.render(PNG).withGraphics(gr -> {
             gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

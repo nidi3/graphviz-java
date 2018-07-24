@@ -39,11 +39,11 @@ public class Serializer {
 
         final List<Node> nodes = new ArrayList<>();
         final List<Graph> graphs = new ArrayList<>();
-        final Collection<Linkable> linkables = linkedNodes(graph.nodes.values());
-        linkables.addAll(linkedNodes(graph.subgraphs));
-        for (final Linkable linkable : linkables) {
-            if (linkable instanceof Node) {
-                final Node node = (Node) linkable;
+        final Collection<EdgeContainer> edgeContainers = linkedNodes(graph.nodes.values());
+        edgeContainers.addAll(linkedNodes(graph.subgraphs));
+        for (final EdgeContainer edgeContainer : edgeContainers) {
+            if (edgeContainer instanceof Node) {
+                final Node node = (Node) edgeContainer;
                 final int i = indexOfName(nodes, node.name);
                 if (i < 0) {
                     nodes.add(node);
@@ -51,7 +51,7 @@ public class Serializer {
                     nodes.set(i, node.copy().merge(nodes.get(i)));
                 }
             } else {
-                graphs.add((Graph) linkable);
+                graphs.add((Graph) edgeContainer);
             }
         }
 
@@ -67,7 +67,7 @@ public class Serializer {
     private void graphAttrs(Graph graph) {
         attributes("graph", graph.graphAttrs);
         attributes("node", graph.nodeAttrs);
-        attributes("edge", graph.linkAttrs);
+        attributes("edge", graph.edgeAttrs);
     }
 
     private void graphInit(Graph graph, boolean toplevel) {
@@ -101,34 +101,35 @@ public class Serializer {
         }
     }
 
-    private Collection<Linkable> linkedNodes(Collection<? extends Linkable> nodes) {
-        final Set<Linkable> visited = new LinkedHashSet<>();
-        for (final Linkable node : nodes) {
+    private Collection<EdgeContainer> linkedNodes(Collection<? extends EdgeContainer> nodes) {
+        final Set<EdgeContainer> visited = new LinkedHashSet<>();
+        for (final EdgeContainer node : nodes) {
             linkedNodes(node, visited);
         }
         return visited;
     }
 
-    private void linkedNodes(Linkable linkable, Set<Linkable> visited) {
-        if (!visited.contains(linkable)) {
-            visited.add(linkable);
-            for (final Link link : linkable.links()) {
-                if (link.to instanceof Node) {
-                    linkedNodes((Node) link.to, visited);
-                } else if (link.to instanceof Port) {
-                    linkedNodes(((Port) link.to).node, visited);
-                } else if (link.to instanceof Graph) {
-                    linkedNodes((Graph) link.to, visited);
-                } else {
-                    throw new IllegalStateException("unexpected link to " + link.to + " of " + link.to.getClass());
-                }
+    private void linkedNodes(EdgeContainer edgeContainer, Set<EdgeContainer> visited) {
+        if (!visited.contains(edgeContainer)) {
+            visited.add(edgeContainer);
+            for (final Edge edge : edgeContainer.edges()) {
+                linkedNodes(edge.to.containedBy(),visited);
+//                if (link.to instanceof Node) {
+//                    linkedNodes((Node) link.to, visited);
+//                } else if (link.to instanceof Port) {
+//                    linkedNodes(((Port) link.to).node, visited);
+//                } else if (link.to instanceof Graph) {
+//                    linkedNodes((Graph) link.to, visited);
+//                } else {
+//                    throw new IllegalStateException("unexpected link to " + link.to + " of " + link.to.getClass());
+//                }
             }
         }
     }
 
     private void nodes(Graph graph, List<Node> nodes) {
         for (final Node node : nodes) {
-            if (!node.attributes.isEmpty() || (graph.nodes.values().contains(node) && node.links.isEmpty())) {
+            if (!node.attributes.isEmpty() || (graph.nodes.values().contains(node) && node.edges.isEmpty())) {
                 node(node);
                 str.append('\n');
             }
@@ -137,17 +138,17 @@ public class Serializer {
 
     private void graphs(List<Graph> graphs, List<Node> nodes) {
         for (final Graph graph : graphs) {
-            if (graph.links.isEmpty() && !isLinked(graph, nodes) && !isLinked(graph, graphs)) {
+            if (graph.edges.isEmpty() && !isLinked(graph, nodes) && !isLinked(graph, graphs)) {
                 graph(graph, false);
                 str.append('\n');
             }
         }
     }
 
-    private boolean isLinked(Graph graph, List<? extends Linkable> linkables) {
-        for (final Linkable linkable : linkables) {
-            for (final Link link : linkable.links()) {
-                if (link.to.equals(graph)) {
+    private boolean isLinked(Graph graph, List<? extends EdgeContainer> linkables) {
+        for (final EdgeContainer edgeContainer : linkables) {
+            for (final Edge edge : edgeContainer.edges()) {
+                if (edge.to.equals(graph)) {
                     return true;
                 }
             }
@@ -155,13 +156,13 @@ public class Serializer {
         return false;
     }
 
-    private void edges(List<? extends Linkable> linkables) {
-        for (final Linkable linkable : linkables) {
-            for (final Link link : linkable.links()) {
-                linkTarget(link.from);
+    private void edges(List<? extends EdgeContainer> linkables) {
+        for (final EdgeContainer edgeContainer : linkables) {
+            for (final Edge edge : edgeContainer.edges()) {
+                linkTarget(edge.from);
                 str.append(graph.directed ? " -> " : " -- ");
-                linkTarget(link.to);
-                attrs(link.attributes);
+                linkTarget(edge.to);
+                attrs(edge.attributes);
                 str.append('\n');
             }
         }

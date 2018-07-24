@@ -16,8 +16,9 @@
 package guru.nidi.graphviz.attribute;
 
 import java.util.*;
+import java.util.Map.Entry;
 
-public class MapAttributes implements Attributes, Iterable<Map.Entry<String, Object>> {
+public class MapAttributes implements Attributes, Iterable<Entry<String, Object>> {
     protected final Map<String, Object> attributes;
 
     MapAttributes() {
@@ -49,7 +50,7 @@ public class MapAttributes implements Attributes, Iterable<Map.Entry<String, Obj
     }
 
     @Override
-    public Iterator<Map.Entry<String, Object>> iterator() {
+    public Iterator<Entry<String, Object>> iterator() {
         return attributes.entrySet().iterator();
     }
 

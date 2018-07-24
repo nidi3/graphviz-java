@@ -15,6 +15,11 @@
  */
 package guru.nidi.graphviz.model;
 
-public interface LinkSource<T> {
-    T link(LinkTarget target);
+import java.util.Collection;
+
+/**
+ * contains edges
+ */
+public interface EdgeContainer {
+    Collection<Edge> edges();
 }

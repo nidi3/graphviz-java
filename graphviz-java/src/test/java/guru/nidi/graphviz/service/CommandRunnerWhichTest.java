@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.*;
  * @author toon
  */
 class CommandRunnerWhichTest {
-    private final static String CMD_EXISTS = SystemUtils.IS_OS_WINDOWS ? "notepad.exe" : "ls";
+    private final static String CMD_EXISTS = System.getProperty("os.name").contains("Windows") ? "notepad.exe" : "ls";
     private final static String CMD_NOT_EXISTS = "foobeebaabeloo"; // <me> crosses fingers
 
     @Test
