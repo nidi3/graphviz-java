@@ -21,7 +21,7 @@ This project is available via Maven:
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-java</artifactId>
-    <version>0.2.3</version>
+    <version>0.5.2</version>
 </dependency>
 ```
 
