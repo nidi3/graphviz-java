@@ -121,7 +121,7 @@ public final class Graphviz {
     }
 
     public static Graphviz fromString(String src) {
-        return new Graphviz(src, Rasterizer.BATIK, 0, 0, 1, Options.create());
+        return new Graphviz(src, Rasterizer.DEFAULT, 0, 0, 1, Options.create());
     }
 
     public static Graphviz fromFile(File src) throws IOException {
