@@ -52,6 +52,7 @@ class ReadmeTest {
     void ex2() throws IOException {
         //## complex
         Node
+                main = node("main").with(Label.html("<b>main</b>"), Color.rgb("1020d0").font()),
                 init = node("init"),
                 execute = node("execute"),
                 compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
@@ -59,7 +60,7 @@ class ReadmeTest {
                 printf = node("printf");
 
         Graph g = graph("example2").directed().with(
-                node("main").with(Shape.RECTANGLE).link(
+                main.link(
                         to(node("parse").link(execute)).with("weight", 8),
                         to(init).with(Style.DOTTED),
                         node("cleanup"),
