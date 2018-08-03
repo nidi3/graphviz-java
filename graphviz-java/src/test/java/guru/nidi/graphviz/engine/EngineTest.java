@@ -31,6 +31,7 @@ import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -77,8 +78,38 @@ class EngineTest {
 
     @Test
     void v8() {
-        Graphviz.useEngine(new GraphvizV8Engine());
-        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
+        assertNativeLibs(System.getProperty("user.home"), () -> {
+            Graphviz.useEngine(new GraphvizV8Engine());
+            assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
+        });
+    }
+
+    @Test
+    void v8WithPath() {
+        final String tmpDir = System.getProperty("java.io.tmpdir");
+        assertNativeLibs(tmpDir, () -> {
+            Graphviz.useEngine(new GraphvizV8Engine(tmpDir));
+            assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
+        });
+    }
+
+    private void assertNativeLibs(String basedir, Runnable task) {
+        final File[] libs = new File[]{
+                new File(basedir, "libj2v8_linux_x86_64.so"),
+                new File(basedir, "libj2v8_macosx_x86_64.dylib"),
+                new File(basedir, "libj2v8_win32_x86.dll"),
+                new File(basedir, "libj2v8_win32_x86_64.dll"),
+        };
+        for (File lib : libs) {
+            lib.delete();
+        }
+        task.run();
+        for (File lib : libs) {
+            if (lib.exists()) {
+                return;
+            }
+        }
+        fail("No native library found");
     }
 
     @Test
