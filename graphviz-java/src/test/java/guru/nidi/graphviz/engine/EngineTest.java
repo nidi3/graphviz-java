@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
+import com.eclipsesource.v8.V8;
 import guru.nidi.graphviz.service.DefaultExecutor;
 import guru.nidi.graphviz.service.SystemUtils;
 import org.apache.commons.exec.CommandLine;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.util.concurrent.*;
 
@@ -78,33 +80,40 @@ class EngineTest {
 
     @Test
     void v8() {
+        Graphviz.useEngine(new GraphvizV8Engine());
+        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
+    }
+
+    @Test
+    void v8WithoutPath() throws Exception {
         assertNativeLibs(System.getProperty("user.home"), () -> {
             Graphviz.useEngine(new GraphvizV8Engine());
-            assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
         });
     }
 
     @Test
-    void v8WithPath() {
+    void v8WithPath() throws Exception {
         final String tmpDir = System.getProperty("java.io.tmpdir");
         assertNativeLibs(tmpDir, () -> {
             Graphviz.useEngine(new GraphvizV8Engine(tmpDir));
-            assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
         });
     }
 
-    private void assertNativeLibs(String basedir, Runnable task) {
+    private void assertNativeLibs(String basedir, Runnable task) throws ReflectiveOperationException {
         final File[] libs = new File[]{
                 new File(basedir, "libj2v8_linux_x86_64.so"),
                 new File(basedir, "libj2v8_macosx_x86_64.dylib"),
                 new File(basedir, "libj2v8_win32_x86.dll"),
                 new File(basedir, "libj2v8_win32_x86_64.dll"),
         };
-        for (File lib : libs) {
+        for (final File lib : libs) {
             lib.delete();
         }
+        final Field loaded = V8.class.getDeclaredField("nativeLibraryLoaded");
+        loaded.setAccessible(true);
+        loaded.setBoolean(null, false);
         task.run();
-        for (File lib : libs) {
+        for (final File lib : libs) {
             if (lib.exists()) {
                 return;
             }
