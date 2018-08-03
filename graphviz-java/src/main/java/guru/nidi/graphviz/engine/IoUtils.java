@@ -15,8 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 final class IoUtils {
@@ -38,6 +37,14 @@ final class IoUtils {
             return true;
         } catch (ClassNotFoundException e) {
             return false;
+        }
+    }
+
+    public static void closeQuietly(Closeable c){
+        try {
+            c.close();
+        } catch (IOException e) {
+            //ignore
         }
     }
 }

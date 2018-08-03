@@ -16,15 +16,19 @@
 package guru.nidi.graphviz.engine;
 
 import java.io.*;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 class Communicator implements Closeable {
+    private final Socket socket;
     private final BufferedReader in;
     private final BufferedWriter out;
 
-    public Communicator(InputStream in, OutputStream out) throws UnsupportedEncodingException {
-        this.in = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-        this.out = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
+    public Communicator(Socket socket, int timeout) throws IOException {
+        socket.setSoTimeout(timeout);
+        this.socket = socket;
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+        this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
     }
 
     public int readLen() throws IOException {
@@ -62,15 +66,8 @@ class Communicator implements Closeable {
 
     @Override
     public void close() {
-        try {
-            in.close();
-        } catch (IOException e) {
-            //ignore
-        }
-        try {
-            out.close();
-        } catch (IOException e) {
-            //ignore
-        }
+        IoUtils.closeQuietly(in);
+        IoUtils.closeQuietly(out);
+        IoUtils.closeQuietly(socket);
     }
 }

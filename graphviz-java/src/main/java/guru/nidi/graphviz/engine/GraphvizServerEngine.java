@@ -99,7 +99,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
 
     private static <T> T communicating(ComFunc<T> action) throws IOException {
         try (final Socket socket = new Socket("localhost", GraphvizServer.PORT);
-             final Communicator com = new Communicator(socket.getInputStream(), socket.getOutputStream())) {
+             final Communicator com = new Communicator(socket, 5000)) {
             return action.apply(com);
         }
     }
