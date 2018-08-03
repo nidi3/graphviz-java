@@ -24,9 +24,15 @@ import java.io.IOException;
 public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
     private static ThreadLocal<Env> envs = new ThreadLocal<>();
+    private final String extractionPath;
 
     public GraphvizV8Engine() {
+        this(null);
+    }
+
+    public GraphvizV8Engine(String extractionPath) {
         super(true);
+        this.extractionPath = extractionPath;
     }
 
     @Override
@@ -44,7 +50,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
 
     @Override
     protected void doInit() throws IOException {
-        envs.set(new Env(jsInitEnv(), jsVizCode("2.0.0")));
+        envs.set(new Env(extractionPath, jsInitEnv(), jsVizCode("2.0.0")));
     }
 
     @Override
@@ -64,9 +70,9 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
         final V8 v8;
         final ResultHandler resultHandler = new ResultHandler();
 
-        Env(String init, String viz) {
+        Env(String extractionPath, String init, String viz) {
             LOG.info("Starting V8 runtime...");
-            v8 = V8.createV8Runtime();
+            v8 = V8.createV8Runtime(null, extractionPath);
             LOG.info("Started V8 runtime. Initializing graphviz...");
             v8.executeVoidScript(viz);
             v8.executeVoidScript(init);
