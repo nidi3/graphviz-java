@@ -52,7 +52,7 @@ final class GraphvizServer {
         try (final ServerSocket ss = new ServerSocket(PORT)) {
             while (true) {
                 try (final Socket socket = ss.accept();
-                     final Communicator com = new Communicator(socket.getInputStream(), socket.getOutputStream())) {
+                     final Communicator com = new Communicator(socket, 500)) {
                     final int len = com.readLen();
                     if (len != 0) {
                         if (len == -1) {
