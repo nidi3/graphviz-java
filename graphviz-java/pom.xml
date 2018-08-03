@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -14,6 +15,7 @@
     <properties>
         <java.version>1.8</java.version>
         <j2v8.version>4.6.0</j2v8.version>
+        <j2v8-linux.version>4.8.0</j2v8-linux.version>
     </properties>
 
     <build>
@@ -127,7 +129,7 @@
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_linux_x86_64</artifactId>
-            <version>${j2v8.version}</version>
+            <version>${j2v8-linux.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
