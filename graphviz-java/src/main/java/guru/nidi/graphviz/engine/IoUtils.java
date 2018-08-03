@@ -40,7 +40,7 @@ final class IoUtils {
         }
     }
 
-    public static void closeQuietly(Closeable c){
+    public static void closeQuietly(Closeable c) {
         try {
             c.close();
         } catch (IOException e) {
