@@ -15,7 +15,7 @@
     <properties>
         <java.version>1.8</java.version>
         <j2v8.version>4.6.0</j2v8.version>
-        <j2v8-linux.version>4.7.0</j2v8-linux.version>
+        <j2v8-linux.version>4.6.0</j2v8-linux.version>
     </properties>
 
     <build>
