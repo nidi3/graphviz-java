@@ -15,12 +15,12 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import java.util.Map;
+import java.util.Map.Entry;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
-public interface MutableAttributed<T> extends Attributes, Iterable<Map.Entry<String, Object>> {
+public interface MutableAttributed<T> extends Attributes, Iterable<Entry<String, Object>> {
     default T add(String name, Object value) {
         return add(attr(name, value));
     }

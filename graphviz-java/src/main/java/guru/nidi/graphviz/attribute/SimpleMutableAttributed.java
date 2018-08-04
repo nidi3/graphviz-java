@@ -16,7 +16,7 @@
 package guru.nidi.graphviz.attribute;
 
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 
 public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     private final E target;
@@ -39,7 +39,7 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     }
 
     @Override
-    public Iterator<Map.Entry<String, Object>> iterator() {
+    public Iterator<Entry<String, Object>> iterator() {
         return attributes.iterator();
     }
 
