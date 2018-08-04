@@ -44,11 +44,10 @@ class ParserTest {
     @Test
     void attributesGraph() throws IOException {
         assertEquals(mutGraph()
-                        .graphAttrs().add("x", "y")
-                        .graphAttrs().add("a", "b")
-                        .nodeAttrs().add("c", "d")
-                        .linkAttrs().add(attr("e", "f"), attr("g", "h"), attr("i", "j")),
-                Parser.read("graph { x=y; graph [a=b]; node[c=d] edge[e=f,g=h][i=j] }"));
+                        .graphAttrs().add(attr("x", "y"), attr("a", "b"))
+                        .add(mutNode("a").add(attr("c", "d")).addLink(to(mutNode("b").add(attr("c", "d")))
+                                .with(attr("e", "f"), attr("g", "h"), attr("i", "j")))),
+                Parser.read("graph { x=y; graph [a=b]; node[c=d] edge[e=f,g=h][i=j] a -- b }"));
     }
 
     @Test

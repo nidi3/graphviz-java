@@ -112,7 +112,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
                         In.classes(MutableGraph.class, Serializer.class, Parser.class).ignore("GodClass"),
-                        In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"))
+                        In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
+                        In.clazz(ThrowingFunction.class).ignore("SignatureDeclareThrowsException"))
                 .because("It's command line tool", In.loc("GraphvizServer")
                         .ignore("AvoidCatchingGenericException", "PreserveStackTrace"))
                 .because("I don't understand the message",

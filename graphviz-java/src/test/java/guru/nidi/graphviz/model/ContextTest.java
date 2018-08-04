@@ -19,9 +19,10 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.engine.*;
 import org.junit.jupiter.api.*;
 
-import java.util.*;
+import java.util.List;
 
 import static guru.nidi.graphviz.model.Factory.*;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ContextTest {
@@ -39,32 +40,41 @@ class ContextTest {
     void overwriteNode() {
         final MutableGraph g = CreationContext.use(ctx -> {
             ctx.nodes().add(Color.RED);
-            return mutGraph().add(node("a").with(Color.BLUE)).add(node("b"));
+            return mutGraph().add(
+                    node("a").with(Color.BLUE),
+                    node("b"));
         });
-        final Iterator<MutableNode> iter = g.nodes().iterator();
-        assertEquals("blue", iter.next().attrs().get("color"));
-        assertEquals("red", iter.next().attrs().get("color"));
+        assertEquals(mutGraph().add(
+                node("a").with(Color.BLUE),
+                node("b").with(Color.RED)),
+                g);
     }
 
     @Test
     void overwriteLink() {
         final MutableGraph g = CreationContext.use(ctx -> {
             ctx.links().add(Color.RED);
-            return mutGraph().add(node("a").link(to(node("b")).with(Color.BLUE)),
+            return mutGraph().add(
+                    node("a").link(to(node("b")).with(Color.BLUE)),
                     node("b").link(node("c")));
         });
-        final Iterator<MutableNode> nodes = g.rootNodes().iterator();
-        assertEquals("blue", nodes.next().links().iterator().next().get("color"));
-        assertEquals("red", nodes.next().links().iterator().next().get("color"));
+        assertEquals(mutGraph().add(
+                node("a").link(to(node("b")).with(Color.BLUE)),
+                node("b").link(to(node("c")).with(Color.RED))),
+                g);
     }
 
     @Test
     void overwriteGraph() {
         final List<MutableGraph> gs = CreationContext.use(ctx -> {
             ctx.graphs().add(Color.RED);
-            return Arrays.asList(mutGraph().graphAttrs().add(Color.BLUE), mutGraph());
+            return asList(
+                    mutGraph().graphAttrs().add(Color.BLUE),
+                    mutGraph());
         });
-        assertEquals("blue", gs.get(0).graphAttrs().get("color"));
-        assertEquals("red", gs.get(1).graphAttrs().get("color"));
+        assertEquals(asList(
+                mutGraph().graphAttrs().add(Color.BLUE),
+                mutGraph().graphAttrs().add(Color.RED)),
+                gs);
     }
 }
