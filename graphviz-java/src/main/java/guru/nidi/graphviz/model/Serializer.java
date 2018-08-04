@@ -18,6 +18,7 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 public class Serializer {
     private final MutableGraph graph;
@@ -198,7 +199,7 @@ public class Serializer {
         if (!attrs.isEmpty()) {
             str.append(" [");
             boolean first = true;
-            for (final Map.Entry<String, Object> attr : attrs) {
+            for (final Entry<String, Object> attr : attrs) {
                 if (first) {
                     first = false;
                 } else {

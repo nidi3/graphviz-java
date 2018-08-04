@@ -46,6 +46,14 @@ public final class CreationContext {
         return cs.empty() ? Optional.empty() : Optional.of(cs.peek());
     }
 
+    public static CreationContext get() {
+        final Stack<CreationContext> cs = CONTEXT.get();
+        if (cs.empty()) {
+            throw new IllegalStateException("Not in a CreationContext");
+        }
+        return cs.peek();
+    }
+
     public static CreationContext begin() {
         final CreationContext ctx = new CreationContext();
         CONTEXT.get().push(ctx);
@@ -88,7 +96,7 @@ public final class CreationContext {
     }
 
     private MutableNode newMutNode(Label name) {
-        return mutableNodes.computeIfAbsent(name, l -> new MutableNode().setName(l)).add(nodeAttributes);
+        return mutableNodes.computeIfAbsent(name, l -> new MutableNode().setName(l).add(nodeAttributes));
     }
 
     static Link createLink(LinkSource from, LinkTarget to) {

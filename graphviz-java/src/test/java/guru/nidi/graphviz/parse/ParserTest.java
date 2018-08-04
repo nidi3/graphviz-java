@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.parse;
 
-import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.model.MutableNode;
 import org.junit.jupiter.api.Test;
 
@@ -118,5 +118,22 @@ class ParserTest {
     void emptyString() throws IOException {
         assertEquals(mutGraph().add(mutNode(""), mutNode("a").add("label", Label.of(""))),
                 Parser.read("graph { \"\" a [label=\"\"] }"));
+    }
+
+    @Test
+    void multiNodeAttr() throws IOException {
+        final MutableNode b = mutNode("b").add(Color.BLUE, attr("width", "1"), Shape.EGG);
+        final MutableNode a = mutNode("a").add(Color.RED, attr("width", "1")).addLink(b);
+        assertEquals(mutGraph().add(a, b),
+                Parser.read("graph { node[color=red, width=1] a node[color=blue, shape=egg] a -- b }"));
+    }
+
+    @Test
+    void multiLinkAttr() throws IOException {
+        final MutableNode b = mutNode("b");
+        final MutableNode a = mutNode("a").addLink(to(b).with(Color.RED, attr("width", "1")))
+                .addLink(to(b).with(Color.BLUE, attr("width", "1"), Shape.EGG));
+        assertEquals(mutGraph().add(a, b),
+                Parser.read("graph { edge[color=red, width=1] a -- b edge[color=blue, shape=egg] a -- b }"));
     }
 }

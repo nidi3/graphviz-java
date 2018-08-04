@@ -199,7 +199,7 @@ public final class Parser {
     }
 
     private void attributeStatement(MutableGraph graph) throws IOException {
-        final MutableAttributed<MutableGraph> target = attributes(graph, token);
+        final MutableAttributed<?> target = attributes(graph, token);
         nextToken();
         applyMutableAttributes(target, attributeList());
     }
@@ -224,14 +224,14 @@ public final class Parser {
         return res;
     }
 
-    private MutableAttributed<MutableGraph> attributes(MutableGraph graph, Token token) {
+    private MutableAttributed<?> attributes(MutableGraph graph, Token token) {
         switch (token.type) {
             case GRAPH:
                 return graph.graphAttrs();
             case NODE:
-                return graph.nodeAttrs();
+                return CreationContext.get().nodes();
             case EDGE:
-                return graph.linkAttrs();
+                return CreationContext.get().links();
             default:
                 return null;
         }

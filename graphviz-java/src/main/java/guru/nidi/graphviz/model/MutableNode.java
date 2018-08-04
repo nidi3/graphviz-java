@@ -18,6 +18,7 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import static java.util.stream.Collectors.joining;
 
@@ -102,7 +103,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     }
 
     @Override
-    public Iterator<Map.Entry<String, Object>> iterator() {
+    public Iterator<Entry<String, Object>> iterator() {
         return attributes.iterator();
     }
 
