@@ -18,7 +18,6 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 
 import java.util.*;
-import java.util.concurrent.Callable;
 
 public final class CreationContext {
     private static final ThreadLocal<Stack<CreationContext>> CONTEXT = ThreadLocal.withInitial(Stack::new);
@@ -31,10 +30,10 @@ public final class CreationContext {
     private CreationContext() {
     }
 
-    public static <T> T use(Callable<T> actions) {
-        begin();
+    public static <T> T use(ThrowingFunction<CreationContext, T> actions) {
+        final CreationContext ctx = begin();
         try {
-            return actions.call();
+            return actions.apply(ctx);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

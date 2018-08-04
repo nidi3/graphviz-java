@@ -51,7 +51,7 @@ public final class Parser {
     }
 
     private MutableGraph parse() {
-        return CreationContext.use(() -> {
+        return CreationContext.use(ctx -> {
             final MutableGraph graph = mutGraph();
             if (token.type == STRICT) {
                 graph.setStrict(true);
@@ -124,7 +124,7 @@ public final class Parser {
     }
 
     private MutableGraph subgraph(boolean directed) {
-        return CreationContext.use(() -> {
+        return CreationContext.use(ctx -> {
             final MutableGraph sub = mutGraph().setDirected(directed);
             if (token.type == SUBGRAPH) {
                 nextToken();

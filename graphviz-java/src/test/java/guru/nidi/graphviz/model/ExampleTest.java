@@ -57,7 +57,7 @@ class ExampleTest {
 
     @Test
     void ex11() throws IOException {
-        final Graph g = CreationContext.use(() -> graph("ex1").directed().with(
+        final Graph g = CreationContext.use(ctx -> graph("ex1").directed().with(
                 node("main").link(
                         node("parse"), node("init"), node("cleanup"), node("printf")),
                 node("parse").link(
@@ -400,5 +400,4 @@ class ExampleTest {
                         node("third").link(to(parent.port("three", Compass.SOUTH))));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex10.png"));
     }
-
 }

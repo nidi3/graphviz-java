@@ -92,7 +92,7 @@ public class PerformanceTest {
     }
 
     public void ex1() {
-        final Graph g = CreationContext.use(() -> graph("ex1").directed().with(
+        final Graph g = CreationContext.use(ctx -> graph("ex1").directed().with(
                 node("main").link(
                         node("parse"), node("init"), node("cleanup"), node("printf")),
                 node("parse").link(
