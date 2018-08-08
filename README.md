@@ -83,7 +83,7 @@ Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1
 
 ### Imperative
 There is a third possibility to use the API, based on the mutable version.
-Its form is closer the way dot files are written.
+Its form is closer to the way dot files are written.
 In the lambda of the `MutableGraph.use` method, all referenced nodes, links and graphs are automatically added to the parent graph,
 without explicitly calling the `add` method. 
 
