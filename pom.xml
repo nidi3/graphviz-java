@@ -20,6 +20,7 @@
 
     <modules>
         <module>graphviz-java</module>
+        <module>graphviz-kotlin</module>
     </modules>
 
     <scm>
