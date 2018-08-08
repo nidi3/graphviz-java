@@ -56,8 +56,8 @@ class ExampleTest {
     }
 
     @Test
-    void ex11() throws IOException {
-        final Graph g = CreationContext.use(ctx -> graph("ex1").directed().with(
+    void ex1a() throws IOException {
+        final Graph g = CreationContext.use(ctx -> graph("ex1a").directed().with(
                 node("main").link(
                         node("parse"), node("init"), node("cleanup"), node("printf")),
                 node("parse").link(
@@ -66,22 +66,22 @@ class ExampleTest {
                         node("make_string"), node("printf"), node("compare")),
                 node("init").link(
                         node("make_string"))));
-        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex11.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex1a.png"));
     }
 
     @Test
-    void ex12() throws IOException {
+    void ex1b() throws IOException {
         final Node
                 printf = node("printf"),
                 make_string = node("make_string");
-        final Graph g = graph("ex1").directed().with(
+        final Graph g = graph("ex1b").directed().with(
                 node("main").with(Color.rgb("ffcc00"), Style.FILLED).link(
                         node("parse").link(node("execute")
                                 .link(make_string, printf, node("compare"))),
                         node("init").link(make_string),
                         node("cleanup"),
                         printf));
-        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex12.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex1b.png"));
     }
 
     @Test
@@ -148,25 +148,25 @@ class ExampleTest {
     }
 
     @Test
-    void ex41() throws IOException {
+    void ex4a() throws IOException {
         final Node
                 struct1 = node("struct1").with(Records.label("<f0> left|<f1> mid\\ dle|<f2> right")),
                 struct2 = node("struct2").with(Records.label("<f0> one|<f1> two")),
                 struct3 = node("struct3").with(Records.label("hello\nworld |{ b |{c|<here> d|e}| f}| g | h"));
-        final Graph g = graph("ex41").directed().with(
+        final Graph g = graph("ex4a").directed().with(
                 struct1.link(
                         between(port("f1"), struct2.port("f0")),
                         between(port("f2"), struct3.port("here"))));
-        Graphviz.fromGraph(g).height(500).rasterize(SALAMANDER).toFile(new File("target/ex41-s.png"));
-        Graphviz.fromGraph(g).height(500).rasterize(BATIK).toFile(new File("target/ex41-b.png"));
+        Graphviz.fromGraph(g).height(500).rasterize(SALAMANDER).toFile(new File("target/ex4a-s.png"));
+        Graphviz.fromGraph(g).height(500).rasterize(BATIK).toFile(new File("target/ex4a-b.png"));
     }
 
     @Test
-    void ex42() throws IOException {
+    void ex4b() throws IOException {
         CreationContext.begin()
-                .graphs().add(Color.YELLOWGREEN.background())
-                .nodes().add(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
-                .links().add(Style.DOTTED);
+                .graphAttrs().add(Color.YELLOWGREEN.background())
+                .nodeAttrs().add(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
+                .linkAttrs().add(Style.DOTTED);
         final Node
                 struct1 = node("struct1").with(Records.mOf(rec("f0", "left"), rec("f1", "mid dle"), rec("f2", "right"))),
                 struct2 = node("struct2").with(Records.mOf(rec("f0", "one"), rec("f1", "two"))),
@@ -176,11 +176,11 @@ class ExampleTest {
                                 turn(rec("c"), rec("here", "d"), rec("e")),
                                 rec("f")),
                         rec("g"), rec("h")));
-        final Graph g = graph("ex42").directed().with(
+        final Graph g = graph("ex4b").directed().with(
                 struct1.link(
                         between(port("f1"), struct2.port("f0")),
                         between(port("f2"), struct3.port("here"))));
-        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex42.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex4b.png"));
     }
 
     @Test
@@ -400,4 +400,18 @@ class ExampleTest {
                         node("third").link(to(parent.port("three", Compass.SOUTH))));
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex10.png"));
     }
+
+    @Test
+    void ex11() throws IOException {
+        Graphviz.fromGraph(mutGraph("example11").setDirected(true).use((g, ctx) -> {
+            nodeAttrs().add(Color.RED);
+            linkAttrs().add(Arrow.DIAMOND);
+            graphAttrs().add(Label.of("Ex6"));
+            mutNode("a").addLink("b");
+            mutGraph("sub").setCluster(true).use((g2, ctx2) -> {
+                mutNode("sa").addLink("sb");
+            }).addLink(mutNode("a"));
+        })).render(Format.PNG).toFile(new File("target/ex11"));
+    }
+
 }

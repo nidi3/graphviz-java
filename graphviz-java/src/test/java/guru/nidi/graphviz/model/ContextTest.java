@@ -39,7 +39,7 @@ class ContextTest {
     @Test
     void overwriteNode() {
         final MutableGraph g = CreationContext.use(ctx -> {
-            ctx.nodes().add(Color.RED);
+            ctx.nodeAttrs().add(Color.RED);
             return mutGraph().add(
                     node("a").with(Color.BLUE),
                     node("b"));
@@ -53,7 +53,7 @@ class ContextTest {
     @Test
     void overwriteLink() {
         final MutableGraph g = CreationContext.use(ctx -> {
-            ctx.links().add(Color.RED);
+            ctx.linkAttrs().add(Color.RED);
             return mutGraph().add(
                     node("a").link(to(node("b")).with(Color.BLUE)),
                     node("b").link(node("c")));
@@ -67,7 +67,7 @@ class ContextTest {
     @Test
     void overwriteGraph() {
         final List<MutableGraph> gs = CreationContext.use(ctx -> {
-            ctx.graphs().add(Color.RED);
+            ctx.graphAttrs().add(Color.RED);
             return asList(
                     mutGraph().graphAttrs().add(Color.BLUE),
                     mutGraph());

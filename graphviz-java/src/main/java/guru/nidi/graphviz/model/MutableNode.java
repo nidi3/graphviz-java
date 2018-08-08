@@ -20,6 +20,7 @@ import guru.nidi.graphviz.attribute.*;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static guru.nidi.graphviz.model.Factory.mutNode;
 import static java.util.stream.Collectors.joining;
 
 public class MutableNode implements Linkable, MutableAttributed<MutableNode>, LinkTarget,
@@ -87,7 +88,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     }
 
     public MutableNode addLink(String node) {
-        return addLink(new MutableNode().setName(node));
+        return addLink(mutNode(node));
     }
 
     public MutableNode addLink(String... nodes) {

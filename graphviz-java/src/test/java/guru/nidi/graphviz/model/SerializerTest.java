@@ -84,9 +84,9 @@ class SerializerTest {
     @Test
     void context() {
         CreationContext.begin()
-                .graphs().add("g", "x")
-                .nodes().add("n", "y")
-                .links().add("l", "z");
+                .graphAttrs().add("g", "x")
+                .nodeAttrs().add("n", "y")
+                .linkAttrs().add("l", "z");
         assertGraph("graph 'x' {\ngraph ['g'='x']\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
                 .with(node("x").with("bla", "blu").link(node("y"))));
     }

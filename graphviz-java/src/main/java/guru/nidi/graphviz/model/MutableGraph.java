@@ -35,7 +35,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         this(false, false, false, "", new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
                 null, null, null);
         CreationContext.current().ifPresent(ctx -> {
-            graphAttrs().add(ctx.graphs());
+            graphAttrs().add(ctx.graphAttrs());
         });
     }
 
@@ -58,6 +58,13 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         return new MutableGraph(strict, directed, cluster, name,
                 new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(links),
                 nodeAttrs, linkAttrs, graphAttrs);
+    }
+
+    public MutableGraph use(ThrowingBiConsumer<MutableGraph, CreationContext> actions) {
+        return CreationContext.use(this, ctx -> {
+            actions.accept(this, ctx);
+            return this;
+        });
     }
 
     public MutableGraph setStrict(boolean strict) {

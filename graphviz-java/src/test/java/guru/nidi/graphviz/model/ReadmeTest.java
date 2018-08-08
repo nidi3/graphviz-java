@@ -43,8 +43,30 @@ class ReadmeTest {
     @Test
     void ex1() throws IOException {
         //## basic
-        Graph g = graph("example1").directed().with(node("a").link(node("b")));
+        Graph g = graph("example1").directed().with(
+                node("a").with(Color.RED).link(node("b")));
         Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
+        //## end
+    }
+
+    @Test
+    void ex1m() throws IOException {
+        //## mutable
+        MutableGraph g = mutGraph("example1").setDirected(true).add(
+                mutNode("a").add(Color.RED).addLink(mutNode("b")));
+        Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1m.png"));
+        //## end
+    }
+
+    @Test
+    void ex1i() throws IOException {
+        //## imperative
+        MutableGraph g = mutGraph("example1").setDirected(true).use((gr, ctx) -> {
+            mutNode("b");
+            nodeAttrs().add(Color.RED);
+            mutNode("a").addLink(mutNode("b"));
+        });
+        Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1i.png"));
         //## end
     }
 
@@ -130,5 +152,4 @@ class ReadmeTest {
         BufferedImage image = viz.render(Format.PNG).toImage();
         //## end
     }
-
 }

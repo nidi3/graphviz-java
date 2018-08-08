@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.MutableAttributed;
 
 public final class Factory {
     private Factory() {
@@ -51,11 +52,11 @@ public final class Factory {
 
 
     public static MutableGraph mutGraph() {
-        return new MutableGraph();
+        return CreationContext.createMutGraph();
     }
 
     public static MutableGraph mutGraph(String name) {
-        return new MutableGraph().setName(name);
+        return mutGraph().setName(name);
     }
 
     public static MutableNode mutNode(String name) {
@@ -89,6 +90,19 @@ public final class Factory {
 
     public static Link between(LinkSource from, LinkTarget to) {
         return Link.between(from, to);
+    }
+
+
+    public static MutableAttributed<?> nodeAttrs() {
+        return CreationContext.get().nodeAttrs();
+    }
+
+    public static MutableAttributed<?> linkAttrs() {
+        return CreationContext.get().linkAttrs();
+    }
+
+    public static MutableAttributed<?> graphAttrs() {
+        return CreationContext.get().graphAttrs();
     }
 
 }

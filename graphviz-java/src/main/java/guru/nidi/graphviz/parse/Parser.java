@@ -229,9 +229,9 @@ public final class Parser {
             case GRAPH:
                 return graph.graphAttrs();
             case NODE:
-                return CreationContext.get().nodes();
+                return CreationContext.get().nodeAttrs();
             case EDGE:
-                return CreationContext.get().links();
+                return CreationContext.get().linkAttrs();
             default:
                 return null;
         }
