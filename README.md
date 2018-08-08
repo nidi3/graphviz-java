@@ -3,15 +3,18 @@
 [![codecov](https://codecov.io/gh/nidi3/graphviz-java/branch/master/graph/badge.svg)](https://codecov.io/gh/nidi3/graphviz-java)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Use graphviz with pure java.
+Use graphviz with pure java. Create graphviz models using java code and convert them into nice graphics.
 
-Uses this [javascript version](https://github.com/mdaines/viz.js) of graphviz created using 
-[Emscripten](https://github.com/kripken/emscripten).
+## How it works
+To execute the graphviz layout engine, one of these options is used:
+- If the machine has graphviz installed and a `dot` command is available, spawn a new process running `dot`.
+- Use this [javascript version](https://github.com/mdaines/viz.js) of graphviz and execute it on the V8 javascript engine.
+This is done with the bundled [J2V8](https://github.com/eclipsesource/J2V8) library.
+- Alternatively, the javascript can be executed on Java's own Nashorn engine.
 
-The javascript code is executed either with [J2V8](https://github.com/eclipsesource/J2V8) or, 
-as a fallback with Java 8's Nashorn engine.
+The method(s) to be used can be configured with the `Graphviz.useEngine()` method. 
 
-## Usage
+## Prerequisites
 
 ### Maven
 
@@ -49,18 +52,63 @@ or [Log4j](https://logging.apache.org/log4j/2.x/)
 </dependency>
 ```
 
-### Simple example
-The basic usage is as follows (assuming `import static guru.nidi.graphviz.model.Factory.*`):
+## API
+The API is separated into a mutable and immutable part.
+The basic usage is as follows (assuming `import static guru.nidi.graphviz.model.Factory.*`).
 
+### Immutable
 [//]: # (basic)
 ```java
-Graph g = graph("example1").directed().with(node("a").link(node("b")));
+Graph g = graph("example1").directed().with(
+        node("a").with(Color.RED).link(node("b")));
 Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1.png" width="100">
 
-### Configuration
+Attention: `Node a = node("a"); a.with(Color.RED);` Is not working as it might be expected. 
+All "mutating" methods like `with` on nodes, links and graphs create new objects and leave the original object unchanged.
+So in the example above, variable `a` contains a node that is NOT red.
+If you want a red node, do `a = a.with(Color.RED)` or use the mutable API.
+
+### Mutable
+[//]: # (mutable)
+```java
+MutableGraph g = mutGraph("example1").setDirected(true).add(
+        mutNode("a").add(Color.RED).addLink(mutNode("b")));
+Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1m.png"));
+```
+[//]: # (end)
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1m.png" width="100">
+
+### Imperative
+There is a third possibility to use the API, based on the mutable version.
+Its form is closer the way dot files are written.
+In the lambda of the `MutableGraph.use` method, all referenced nodes, links and graphs are automatically added to the parent graph,
+without explicitly calling the `add` method. 
+
+[//]: # (imperative)
+```java
+MutableGraph g = mutGraph("example1").setDirected(true).use((gr, ctx) -> {
+    mutNode("b");
+    nodeAttrs().add(Color.RED);
+    mutNode("a").addLink(mutNode("b"));
+});
+Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1i.png"));
+```
+[//]: # (end)
+This corresponds to the following `dot` file:
+```dot
+digraph example1 {
+    b
+    node[color=red]
+    a -> b
+}
+```
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1i.png" width="100">
+
+
+## Configuration
 The size of the resulting image, the rendering engine and the output format can be configured:
 
 [//]: # (config)
@@ -78,7 +126,7 @@ BufferedImage image = viz.render(Format.PNG).toImage();
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5s.png" width="100">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5.svg" width="100">
 
-### Complex example
+## Complex example
 
 [//]: # (complex)
 ```java
@@ -106,7 +154,7 @@ Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex2
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex2.png" width="500">
 
-### Example with records
+## Example with records
 ```java
 import static guru.nidi.graphviz.attribute.Records.*;
 import static guru.nidi.graphviz.model.Compass.*;
@@ -138,9 +186,9 @@ Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex3
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex3.png" width="500">
 
-### Read and manipulate graphs
+## Read and manipulate graphs
 
-Dot files can be parsed and thus manipulated:
+Dot files can be parsed and thus manipulated. Given this file `color.dot`:
 
 ```
 graph {
@@ -160,6 +208,8 @@ graph {
 ```
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-1.png" width="400">
 
+Then running this program:
+
 [//]: # (manipulate)
 ```java
 MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
@@ -175,4 +225,7 @@ g.graphAttrs()
 Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-2.png"));
 ```
 [//]: # (end)
+
+results in this graphics:
+
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-2.png" width="400">
