@@ -26,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import static java.util.Locale.ENGLISH;
+
 /**
  * Engine that tries to parse the dot file using the GraphvizEngine installed on the host.
  *
@@ -89,7 +91,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     private String getEngineExecutable(Engine engine) {
-        final String exe = SystemUtils.executableName(engine == null ? "dot" : engine.toString().toLowerCase());
+        final String exe = SystemUtils.executableName(engine == null ? "dot" : engine.toString().toLowerCase(ENGLISH));
         if (!CommandRunner.isExecutableFound(exe, envPath)) {
             final GraphvizException e = new GraphvizException(exe + " command not found");
             e.setStackTrace(new StackTraceElement[0]);

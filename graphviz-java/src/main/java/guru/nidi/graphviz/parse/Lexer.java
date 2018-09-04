@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static guru.nidi.graphviz.parse.Token.*;
+import static java.util.Locale.ENGLISH;
 
 class Lexer {
     private static final Map<String, Integer> KEYWORDS = new HashMap<>();
@@ -172,7 +173,7 @@ class Lexer {
             readRawChar();
         } while ((isIdentStart() || (ch >= '0' && ch <= '9')) && ch != CH_EOF);
         sync();
-        final Integer key = KEYWORDS.get(s.toString().toLowerCase());
+        final Integer key = KEYWORDS.get(s.toString().toLowerCase(ENGLISH));
         return key == null ? new Token(ID, SUB_SIMPLE, s.toString()) : new Token(key, s.toString());
     }
 
@@ -182,7 +183,7 @@ class Lexer {
         }
     }
 
-    private char readChar() throws IOException {
+    private void readChar() throws IOException {
         do {
             readRawChar();
             if (ch == '/') {
@@ -199,7 +200,6 @@ class Lexer {
                 }
             }
         } while (ch <= ' ' && ch != CH_EOF);
-        return ch;
     }
 
     private void readComment() throws IOException {

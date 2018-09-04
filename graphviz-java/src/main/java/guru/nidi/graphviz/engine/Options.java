@@ -18,6 +18,8 @@ package guru.nidi.graphviz.engine;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Locale.ENGLISH;
+
 /*
  * Copyright (C) 2015 Stefan Niederhauser (nidin@gmx.ch)
  *
@@ -89,7 +91,7 @@ public final class Options {
 
     public String toJson(boolean raw) {
         final String form = "format:'" + (raw ? format : format.vizName) + "'";
-        final String eng = ",engine:'" + (raw ? engine : engine.toString().toLowerCase()) + "'";
+        final String eng = ",engine:'" + (raw ? engine : engine.toString().toLowerCase(ENGLISH)) + "'";
         final String mem = totalMemory == null ? "" : (",totalMemory:'" + totalMemory + "'");
         final String yInv = yInvert == null ? "" : (",yInvert:" + yInvert);
         return "{" + form + eng + mem + yInv + "}";

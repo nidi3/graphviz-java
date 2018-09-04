@@ -19,20 +19,19 @@ package guru.nidi.graphviz.model
 
 import guru.nidi.graphviz.attribute.Attributes
 import guru.nidi.graphviz.attribute.Attributes.attr
+import guru.nidi.graphviz.model.Factory.*
 
-fun graph(name: String = "", strict: Boolean = false, directed: Boolean = false, cluster: Boolean = false, config: () -> Unit = { }): Graph {
-    val graph = (Factory.graph(name) as MutableGraph).apply {
-        isStrict = strict
-        isDirected = directed
-        isCluster = cluster
-    }
-    CreationContext.use {
-        config()
-    }
-    return graph as Graph
-}
+fun graph(name: String = "", strict: Boolean = false, directed: Boolean = false, cluster: Boolean = false, config: () -> Unit = { }) =
+        mutGraph(name).apply {
+            isStrict = strict
+            isDirected = directed
+            isCluster = cluster
+            CreationContext.use {
+                config()
+            }
+        }
 
-infix fun String.eq(value: Any) = attr(this, value)
+infix fun String.eq(value: Any) = attr(this, value)!!
 
 interface AttributeContainer {
     operator fun get(vararg attrs: Attributes)
@@ -62,22 +61,21 @@ val graph = object : AttributeContainer {
     }
 }
 
-infix fun String.link(node: String) = Factory.node(this).link(node)!!
-operator fun String.minus(node: String) = Factory.node(this).link(node)!!
-operator fun String.div(record: String) = Factory.node(this).port(record)!!
-operator fun String.div(compass: Compass) = Factory.node(this).port(compass)!!
+infix fun String.link(node: String) = mutNode(this).addLink(node).links.last()!!
+infix fun String.link(target: LinkTarget) = mutNode(this).addLink(target)!!
+operator fun String.minus(node: String) = mutNode(this).addLink(mutNode(node))!!
+operator fun String.div(record: String) = mutNode(this).withRecord(record)!!
+operator fun String.div(compass: Compass) = mutNode(this).withCompass(compass)!!
+operator fun String.get(vararg attrs: Attributes) = mutNode(this).add(*attrs)!!
 
-operator fun PortNode.div(compass: Compass) = this.port(compass)!!
+operator fun MutablePortNode.div(compass: Compass) = this.setCompass(compass)!!
 
-infix fun Node.link(node: String) = this.link(node)!!
-operator fun Node.minus(node: String) = this.link(node)!!
-operator fun PortNode.minus(node: String) = Factory.between(this, Factory.node(node))
+infix fun MutableNode.link(node: String) = this.addLink(node)!!
+operator fun MutableNode.minus(node: String) = this.addLink(node)!!
+operator fun MutablePortNode.minus(node: String) = between(this, mutNode(node))!!
 
-infix fun String.link(target: LinkTarget) = Factory.node(this).link(target)!!
-operator fun String.get(vararg attrs: Attributes) = Factory.node(this).with(*attrs)!!
-
-operator fun Node.get(vararg attrs: Attributes): Node {
-    val n = this.with(*attrs)
+operator fun MutableNode.get(vararg attrs: Attributes): MutableNode {
+    val n = this.add(*attrs)
 //    CreationContext.current().map { it.setNode(n as ImmutableNode) }
     return n
 }

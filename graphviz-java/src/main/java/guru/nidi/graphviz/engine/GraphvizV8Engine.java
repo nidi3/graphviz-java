@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
     private static ThreadLocal<Env> envs = new ThreadLocal<>();
     private final String extractionPath;
 
@@ -67,6 +66,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
     }
 
     private static class Env {
+        private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
         final V8 v8;
         final ResultHandler resultHandler = new ResultHandler();
 

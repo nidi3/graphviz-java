@@ -26,12 +26,17 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Every.everyItem;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Matchers.any;
@@ -125,14 +130,16 @@ class EngineTest {
     void multiV8() throws InterruptedException {
         Graphviz.useEngine(new GraphvizV8Engine());
         final ExecutorService executor = Executors.newFixedThreadPool(2);
+        final List<String> res = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             executor.submit(() -> {
-                Graphviz.fromString("graph g {a--b}").render(SVG).toString();
+                res.add(Graphviz.fromString("graph g {a--b}").render(SVG).toString());
                 Graphviz.releaseEngine();
             });
         }
         executor.shutdown();
         executor.awaitTermination(60, TimeUnit.SECONDS);
+        assertThat(res, everyItem(not(isEmptyOrNullString())));
     }
 
     @Test

@@ -17,6 +17,8 @@ package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,20 +40,11 @@ class RendererTest {
         Graphviz.releaseEngine();
     }
 
-    @Test
-    void toFileParentFolderNotExists() throws Exception {
-        final File expectedFile = new File("target/testFolder/ex1.png");
-        testFileExists(expectedFile, expectedFile);
-    }
-
-    @Test
-    void toFileWithoutExtension() throws Exception {
-        final File expectedFile = new File("target/testFolder/ex1.png");
-        final File givenFile = new File("target/testFolder/ex1");
-        testFileExists(givenFile, expectedFile);
-    }
-
-    private void testFileExists(File giveFile, File expectedFile) throws IOException {
+    @ParameterizedTest
+    @CsvSource({
+            "target/testFolder/ex1.png, target/testFolder/ex1.png",
+            "target/testFolder/ex1, target/testFolder/ex1.png"})
+    void testFile(File giveFile, File expectedFile) throws IOException {
         Files.deleteIfExists(expectedFile.toPath());
         Files.deleteIfExists(expectedFile.getParentFile().toPath());
 

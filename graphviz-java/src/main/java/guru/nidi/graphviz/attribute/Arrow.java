@@ -17,6 +17,7 @@ package guru.nidi.graphviz.attribute;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
+import static java.util.Locale.ENGLISH;
 
 public final class Arrow extends SingleAttributes<String> {
     public enum DirType {
@@ -78,7 +79,7 @@ public final class Arrow extends SingleAttributes<String> {
             a = attrs(a, attr("arrowsize", size));
         }
         if (type != null) {
-            a = attrs(a, attr("dir", type.name().toLowerCase()));
+            a = attrs(a, attr("dir", type.name().toLowerCase(ENGLISH)));
         }
         return a;
     }

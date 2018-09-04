@@ -19,9 +19,11 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.function.Consumer;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Locale.ENGLISH;
 
 public class Renderer {
     private final Graphviz graphviz;
@@ -48,9 +50,9 @@ public class Renderer {
                 ? file
                 : new File(file.getParentFile(), file.getName() + "." + output.fileExtension);
         if (output.image) {
-            writeToFile(target, output.name().toLowerCase(), toImage());
+            writeToFile(target, output.name().toLowerCase(ENGLISH), toImage());
         } else {
-            try (final Writer out = new OutputStreamWriter(new FileOutputStream(target), StandardCharsets.UTF_8)) {
+            try (final Writer out = new OutputStreamWriter(new FileOutputStream(target), UTF_8)) {
                 out.write(toString());
             }
         }
@@ -58,9 +60,9 @@ public class Renderer {
 
     public void toOutputStream(OutputStream outputStream) throws IOException {
         if (output.image) {
-            writeToOutputStream(outputStream, output.name().toLowerCase(), toImage());
+            writeToOutputStream(outputStream, output.name().toLowerCase(ENGLISH), toImage());
         } else {
-            try (final Writer out = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+            try (final Writer out = new OutputStreamWriter(outputStream, UTF_8)) {
                 out.write(toString());
             }
         }
