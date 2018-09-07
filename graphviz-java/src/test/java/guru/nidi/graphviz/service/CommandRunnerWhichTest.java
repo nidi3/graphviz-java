@@ -44,7 +44,7 @@ class CommandRunnerWhichTest {
     }
 
     @Test
-    void isExecutableFound() throws Exception {
+    void isExecutableFound() {
         assertThat(CommandRunner.isExecutableFound(CMD_EXISTS), is(true));
     }
 

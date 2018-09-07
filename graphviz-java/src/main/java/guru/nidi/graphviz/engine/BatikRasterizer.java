@@ -19,20 +19,22 @@ import org.apache.batik.transcoder.*;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.function.Consumer;
 
 public class BatikRasterizer extends SvgRasterizer {
     @Override
-    public BufferedImage doRasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String svg) {
+    public BufferedImage doRasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String svg) {
         final BufferedImage[] image = new BufferedImage[1];
         final TranscoderInput in = new TranscoderInput(new StringReader(svg));
         try {
             final TranscoderOutput out = new TranscoderOutput(new OutputStream() {
                 @Override
-                public void write(int b) throws IOException {
+                public void write(int b) {
                 }
             });
             final PNGTranscoder t = new PNGTranscoder() {

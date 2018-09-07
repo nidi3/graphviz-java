@@ -28,7 +28,7 @@ class AbstractGraphvizEngineTest {
         }
 
         @Override
-        protected void doInit() throws Exception {
+        protected void doInit() {
             // nothing
         }
 

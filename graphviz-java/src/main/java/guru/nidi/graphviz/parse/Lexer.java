@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.parse;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +55,7 @@ class Lexer {
         return numeralOrIdent();
     }
 
+    @Nullable
     private Token symbol() throws IOException {
         switch (ch) {
             case CH_EOF:

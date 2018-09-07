@@ -15,23 +15,27 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import javax.annotation.Nullable;
+
 public final class EndLabel extends SimpleLabel implements Attributes {
     private final String key;
+    @Nullable
     private final Double angle;
+    @Nullable
     private final Double distance;
 
-    private EndLabel(String key, String value, boolean html, Double angle, Double distance) {
+    private EndLabel(String key, String value, boolean html, @Nullable Double angle, @Nullable Double distance) {
         super(value, html);
         this.key = key;
         this.angle = angle;
         this.distance = distance;
     }
 
-    public static EndLabel head(SimpleLabel label, Double angle, Double distance) {
+    public static EndLabel head(SimpleLabel label, @Nullable Double angle, @Nullable Double distance) {
         return new EndLabel("headlabel", label.value, label.html, angle, distance);
     }
 
-    public static EndLabel tail(SimpleLabel label, Double angle, Double distance) {
+    public static EndLabel tail(SimpleLabel label, @Nullable Double angle, @Nullable Double distance) {
         return new EndLabel("taillabel", label.value, label.html, angle, distance);
     }
 

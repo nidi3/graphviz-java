@@ -18,6 +18,7 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.Attributes;
 import guru.nidi.graphviz.attribute.Label;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ class ImmutableNode extends MutableNode implements Node {
         return port(null, compass);
     }
 
-    public PortNode port(String record, Compass compass) {
+    public PortNode port(@Nullable String record, @Nullable Compass compass) {
         return new ImmutablePortNode(this, record, compass);
     }
 

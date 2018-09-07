@@ -47,7 +47,7 @@ public final class Parser {
 
     private Parser(Lexer lexer) throws IOException {
         this.lexer = lexer;
-        nextToken();
+        token = nextToken();
     }
 
     private MutableGraph parse() {
@@ -233,7 +233,7 @@ public final class Parser {
             case EDGE:
                 return CreationContext.get().linkAttrs();
             default:
-                return null;
+                throw new IllegalArgumentException("Unexpected token " + token);
         }
     }
 

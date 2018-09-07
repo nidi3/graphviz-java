@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -27,10 +28,11 @@ import static java.util.Locale.ENGLISH;
 
 public class Renderer {
     private final Graphviz graphviz;
+    @Nullable
     private final Consumer<Graphics2D> graphicsConfigurer;
     private final Format output;
 
-    Renderer(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, Format output) {
+    Renderer(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, Format output) {
         this.graphviz = graphviz;
         this.graphicsConfigurer = graphicsConfigurer;
         this.output = output;

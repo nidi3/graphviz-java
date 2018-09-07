@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
@@ -26,10 +27,10 @@ abstract class SvgRasterizer implements Rasterizer {
     }
 
     @Override
-    public BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input) {
+    public BufferedImage rasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String input) {
         final String svg = input.replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
         return doRasterize(graphviz, graphicsConfigurer, svg);
     }
 
-    abstract BufferedImage doRasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String svg);
+    abstract BufferedImage doRasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String svg);
 }

@@ -17,7 +17,10 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 
+import javax.annotation.Nullable;
+
 public final class Link implements Attributed<Link>, LinkTarget {
+    @Nullable
     final LinkSource from;
     final LinkTarget to;
     final MutableAttributed<Link> attributes;
@@ -46,11 +49,11 @@ public final class Link implements Attributed<Link>, LinkTarget {
         return objBetween(from, to);
     }
 
-    private static Link objBetween(LinkSource from, LinkTarget to) {
+    private static Link objBetween(@Nullable LinkSource from, LinkTarget to) {
         return CreationContext.createLink(from, to);
     }
 
-    Link(LinkSource from, LinkTarget to, Attributes attributes) {
+    Link(@Nullable LinkSource from, LinkTarget to, Attributes attributes) {
         this.from = from;
         this.to = to;
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
@@ -70,6 +73,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
         return this;
     }
 
+    @Nullable
     public LinkSource from() {
         return from;
     }

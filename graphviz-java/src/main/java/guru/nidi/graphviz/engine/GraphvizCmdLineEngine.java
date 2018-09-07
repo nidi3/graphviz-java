@@ -20,6 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -39,7 +40,9 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private final String envPath;
     private final CommandRunner cmdRunner;
 
+    @Nullable
     private String dotOutputFilePath;
+    @Nullable
     private String dotOutputFileName;
 
     public GraphvizCmdLineEngine() {
@@ -90,7 +93,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         }
     }
 
-    private String getEngineExecutable(Engine engine) {
+    private String getEngineExecutable(@Nullable Engine engine) {
         final String exe = SystemUtils.executableName(engine == null ? "dot" : engine.toString().toLowerCase(ENGLISH));
         if (!CommandRunner.isExecutableFound(exe, envPath)) {
             final GraphvizException e = new GraphvizException(exe + " command not found");
@@ -100,8 +103,8 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         return exe;
     }
 
-    private String getFormatName(Format format) {
-        return format == null || format.vizName == null ? "svg" : format.vizName;
+    private String getFormatName(@Nullable Format format) {
+        return format == null ? "svg" : format.vizName;
     }
 
     private File getOrCreateTempDirectory() {

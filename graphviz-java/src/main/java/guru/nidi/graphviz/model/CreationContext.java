@@ -17,10 +17,12 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public final class CreationContext {
     private static final ThreadLocal<Stack<CreationContext>> CONTEXT = ThreadLocal.withInitial(Stack::new);
+    @Nullable
     private final MutableGraph graph;
     private final Map<Label, ImmutableNode> immutableNodes = new HashMap<>();
     private final Map<Label, MutableNode> mutableNodes = new HashMap<>();
@@ -32,7 +34,7 @@ public final class CreationContext {
         this(null);
     }
 
-    private CreationContext(MutableGraph graph) {
+    private CreationContext(@Nullable MutableGraph graph) {
         this.graph = graph;
     }
 
@@ -40,7 +42,7 @@ public final class CreationContext {
         return use(null, actions);
     }
 
-    public static <T> T use(MutableGraph graph, ThrowingFunction<CreationContext, T> actions) {
+    public static <T> T use(@Nullable MutableGraph graph, ThrowingFunction<CreationContext, T> actions) {
         final CreationContext ctx = begin(graph);
         try {
             return actions.apply(ctx);
@@ -68,7 +70,7 @@ public final class CreationContext {
         return begin(null);
     }
 
-    public static CreationContext begin(MutableGraph graph) {
+    public static CreationContext begin(@Nullable MutableGraph graph) {
         final CreationContext ctx = new CreationContext(graph);
         CONTEXT.get().push(ctx);
         return ctx;
@@ -123,11 +125,11 @@ public final class CreationContext {
     static MutableNode createMutNode(Label name) {
         return current()
                 .map(ctx -> ctx.newMutNode(name))
-                .orElseGet(() -> new MutableNode().setName(name));
+                .orElseGet(() -> new MutableNode(name));
     }
 
     private MutableNode newMutNode(Label name) {
-        return mutableNodes.computeIfAbsent(name, l -> addMutNode(new MutableNode()).setName(l).add(nodeAttributes));
+        return mutableNodes.computeIfAbsent(name, l -> addMutNode(new MutableNode(l)).add(nodeAttributes));
     }
 
     private MutableNode addMutNode(MutableNode node) {
@@ -137,7 +139,7 @@ public final class CreationContext {
         return node;
     }
 
-    static Link createLink(LinkSource from, LinkTarget to) {
+    static Link createLink(@Nullable LinkSource from, LinkTarget to) {
         final Link link = new Link(from, to, Attributes.attrs());
         return current()
                 .map(ctx -> link.with(ctx.linkAttributes))

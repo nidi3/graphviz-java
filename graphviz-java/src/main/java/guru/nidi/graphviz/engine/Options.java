@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
+import javax.annotation.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,10 +44,12 @@ public final class Options {
 
     final Engine engine;
     final Format format;
+    @Nullable
     final Integer totalMemory;
+    @Nullable
     final Boolean yInvert;
 
-    private Options(Engine engine, Format format, Integer totalMemory, Boolean yInvert) {
+    private Options(Engine engine, Format format, @Nullable Integer totalMemory, @Nullable Boolean yInvert) {
         this.engine = engine;
         this.format = format;
         this.totalMemory = totalMemory;
@@ -81,11 +84,11 @@ public final class Options {
         return new Options(engine, format, totalMemory, yInvert);
     }
 
-    public Options totalMemory(Integer totalMemory) {
+    public Options totalMemory(@Nullable Integer totalMemory) {
         return new Options(engine, format, totalMemory, yInvert);
     }
 
-    public Options yInvert(Boolean yInvert) {
+    public Options yInvert(@Nullable Boolean yInvert) {
         return new Options(engine, format, totalMemory, yInvert);
     }
 

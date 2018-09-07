@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.verify;
  */
 class CommandRunnerTest {
 
-    @Captor
+    @Captor @Nullable
     private ArgumentCaptor<CommandLine> runEchoCaptor;
 
     @BeforeEach

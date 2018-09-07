@@ -38,11 +38,11 @@ public final class Records {
     }
 
     public static Attributes of(String... recs) {
-        return attrs(attr(SHAPE, RECORD), attr(LABEL, Arrays.stream(recs).collect(joining("|"))));
+        return attrs(attr(SHAPE, RECORD), attr(LABEL, String.join("|", recs)));
     }
 
     public static Attributes mOf(String... recs) {
-        return attrs(attr(SHAPE, "Mrecord"), attr(LABEL, Arrays.stream(recs).collect(joining("|"))));
+        return attrs(attr(SHAPE, "Mrecord"), attr(LABEL, String.join("|", recs)));
     }
 
     public static String rec(String tag, String label) {
@@ -56,7 +56,7 @@ public final class Records {
     }
 
     public static String turn(String... records) {
-        return "{" + Arrays.stream(records).collect(joining("|")) + "}";
+        return "{" + String.join("|", records) + "}";
     }
 
 }

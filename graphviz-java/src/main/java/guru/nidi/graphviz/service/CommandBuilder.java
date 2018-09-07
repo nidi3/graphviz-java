@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.service;
 
+import javax.annotation.Nullable;
+
 /**
  * Build a CommandRunner.
  *
@@ -22,6 +24,7 @@ package guru.nidi.graphviz.service;
  */
 public class CommandBuilder {
     private boolean shellWrapper;
+    @Nullable
     private DefaultExecutor cmdExec;
 
     public CommandBuilder withShellWrapper(boolean shellWrapper) {
@@ -40,7 +43,7 @@ public class CommandBuilder {
                 getCmdExecutorOrDefault(cmdExec));
     }
 
-    private static DefaultExecutor getCmdExecutorOrDefault(DefaultExecutor cmdExec) {
+    private static DefaultExecutor getCmdExecutorOrDefault(@Nullable DefaultExecutor cmdExec) {
         return cmdExec == null ? new DefaultExecutor() : cmdExec;
     }
 }

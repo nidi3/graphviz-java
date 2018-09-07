@@ -86,7 +86,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         try {
             communicating(com -> {
                 com.writeLen(-1);
-                return null;
+                return "";
             });
         } catch (IOException e) {
             //ignore

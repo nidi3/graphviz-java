@@ -19,6 +19,7 @@ import org.apache.commons.exec.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,20 +40,20 @@ public class CommandRunner {
         this.cmdExec = cmdExec;
     }
 
-    void exec(CommandLine cmd, File workDir) throws IOException, InterruptedException {
+    void exec(CommandLine cmd, @Nullable File workDir) throws IOException, InterruptedException {
         final CommandLine wrappedCmd = wrapperFunc.apply(cmd);
         cmdExec.execute(wrappedCmd, workDir);
     }
 
-    public void exec(String cmd, File workDir, String... args) throws IOException, InterruptedException {
+    public void exec(String cmd, @Nullable File workDir, String... args) throws IOException, InterruptedException {
         exec(cmd, workDir, args, true);
     }
 
-    private void exec(String cmd, File workDir, String[] args, boolean quote) throws IOException, InterruptedException {
+    private void exec(String cmd, @Nullable File workDir, String[] args, boolean quote) throws IOException, InterruptedException {
         exec(new CommandLine(cmd).addArguments(args, quote), workDir);
     }
 
-    private void exec(String cmd, File workDir, List<String> args) throws IOException, InterruptedException {
+    private void exec(String cmd, @Nullable File workDir, List<String> args) throws IOException, InterruptedException {
         exec(cmd, workDir, args.toArray(new String[args.size()]));
     }
 
@@ -69,7 +70,7 @@ public class CommandRunner {
         return which(program, Optional.ofNullable(System.getenv("PATH")).orElse(""));
     }
 
-    private static Stream<Path> which(String program, String pathEnvVar) {
+    private static Stream<Path> which(@Nullable String program, @Nullable String pathEnvVar) {
         if (program == null || "".equals(program.trim()) || pathEnvVar == null || "".equalsIgnoreCase(pathEnvVar)) {
             return Stream.empty();
         }

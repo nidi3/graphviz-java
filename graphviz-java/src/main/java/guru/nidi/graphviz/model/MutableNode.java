@@ -17,20 +17,23 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 
 import static guru.nidi.graphviz.model.Factory.mutNode;
 import static java.util.stream.Collectors.joining;
 
+@Nonnull
 public class MutableNode implements Linkable, MutableAttributed<MutableNode>, LinkTarget,
         MutableLinkSource<MutableNode> {
     protected Label name;
     protected final List<Link> links;
     protected final MutableAttributed<MutableNode> attributes;
 
-    MutableNode() {
-        this(null, new ArrayList<>(), Attributes.attrs());
+    MutableNode(Label name) {
+        this(name, new ArrayList<>(), Attributes.attrs());
     }
 
     protected MutableNode(Label name, List<Link> links, Attributes attributes) {
@@ -45,13 +48,11 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
 
     public final MutableNode setName(Label name) {
         this.name = name;
-        if (name != null) {
-            if (name.isExternal()) {
-                this.name = Label.of("");
-                attributes.add(name);
-            } else if (name.isHtml()) {
-                attributes.add(name);
-            }
+        if (name.isExternal()) {
+            this.name = Label.of("");
+            attributes.add(name);
+        } else if (name.isHtml()) {
+            attributes.add(name);
         }
         return this;
     }
@@ -66,7 +67,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return this;
     }
 
-    public MutablePortNode withRecord(String record) {
+    public MutablePortNode withRecord(@Nullable String record) {
         return new MutablePortNode().setNode(this).setRecord(record);
     }
 
@@ -126,6 +127,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return new MutablePortNode().setNode(this);
     }
 
+    @Nullable
     public Label name() {
         return name;
     }
@@ -155,21 +157,21 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
 
         final MutableNode node = (MutableNode) o;
 
-        if (name != null ? !name.equals(node.name) : node.name != null) {
+        if (!name.equals(node.name)) {
             return false;
         }
-        if (links != null ? !links.equals(node.links) : node.links != null) {
+        if (!links.equals(node.links)) {
             return false;
         }
-        return !(attributes != null ? !attributes.equals(node.attributes) : node.attributes != null);
+        return attributes.equals(node.attributes);
 
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (links != null ? links.hashCode() : 0);
-        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        int result = name.hashCode();
+        result = 31 * result + links.hashCode();
+        result = 31 * result + attributes.hashCode();
         return result;
     }
 

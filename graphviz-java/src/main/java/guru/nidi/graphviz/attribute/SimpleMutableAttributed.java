@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -26,7 +27,7 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
         this.target = target;
     }
 
-    public SimpleMutableAttributed(E target, Attributes attributes) {
+    public SimpleMutableAttributed(E target, @Nullable Attributes attributes) {
         this.target = target;
         if (attributes != null) {
             attributes.applyTo(this.attributes);

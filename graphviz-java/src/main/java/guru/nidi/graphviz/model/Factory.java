@@ -18,6 +18,8 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.MutableAttributed;
 
+import javax.annotation.Nullable;
+
 public final class Factory {
     private Factory() {
     }
@@ -46,7 +48,7 @@ public final class Factory {
         return port(null, compass);
     }
 
-    public static PortNode port(String record, Compass compass) {
+    public static PortNode port(@Nullable String record, @Nullable Compass compass) {
         return new ImmutablePortNode(null, record, compass);
     }
 

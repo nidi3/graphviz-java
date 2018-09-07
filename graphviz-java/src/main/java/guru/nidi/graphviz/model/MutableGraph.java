@@ -17,6 +17,7 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, LinkTarget {
@@ -34,14 +35,12 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     MutableGraph() {
         this(false, false, false, "", new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
                 null, null, null);
-        CreationContext.current().ifPresent(ctx -> {
-            graphAttrs().add(ctx.graphAttrs());
-        });
+        CreationContext.current().ifPresent(ctx -> graphAttrs().add(ctx.graphAttrs()));
     }
 
     protected MutableGraph(boolean strict, boolean directed, boolean cluster, String name,
                            LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
-                           Attributes nodeAttrs, Attributes linkAttrs, Attributes graphAttrs) {
+                           @Nullable Attributes nodeAttrs, @Nullable Attributes linkAttrs, @Nullable Attributes graphAttrs) {
         this.strict = strict;
         this.directed = directed;
         this.cluster = cluster;

@@ -19,17 +19,19 @@ import com.eclipsesource.v8.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
-    private static ThreadLocal<Env> envs = new ThreadLocal<>();
+    private static final ThreadLocal<Env> envs = new ThreadLocal<>();
+    @Nullable
     private final String extractionPath;
 
     public GraphvizV8Engine() {
         this(null);
     }
 
-    public GraphvizV8Engine(String extractionPath) {
+    public GraphvizV8Engine(@Nullable String extractionPath) {
         super(true);
         this.extractionPath = extractionPath;
     }
@@ -70,7 +72,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
         final V8 v8;
         final ResultHandler resultHandler = new ResultHandler();
 
-        Env(String extractionPath, String init, String viz) {
+        Env(@Nullable String extractionPath, String init, String viz) {
             LOG.info("Starting V8 runtime...");
             v8 = V8.createV8Runtime(null, extractionPath);
             LOG.info("Started V8 runtime. Initializing graphviz...");

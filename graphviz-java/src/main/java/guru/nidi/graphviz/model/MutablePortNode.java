@@ -15,15 +15,20 @@
  */
 package guru.nidi.graphviz.model;
 
+import javax.annotation.Nullable;
+
 public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNode> {
+    @Nullable
     protected MutableNode node;
+    @Nullable
     protected String record;
+    @Nullable
     protected Compass compass;
 
     public MutablePortNode() {
     }
 
-    protected MutablePortNode(MutableNode node, String record, Compass compass) {
+    protected MutablePortNode(@Nullable MutableNode node, @Nullable String record, @Nullable Compass compass) {
         this.node = node;
         this.record = record;
         this.compass = compass;
@@ -38,12 +43,12 @@ public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNod
         return this;
     }
 
-    public MutablePortNode setRecord(String record) {
+    public MutablePortNode setRecord(@Nullable String record) {
         this.record = record;
         return this;
     }
 
-    public MutablePortNode setCompass(Compass compass) {
+    public MutablePortNode setCompass(@Nullable Compass compass) {
         this.compass = compass;
         return this;
     }
@@ -57,14 +62,17 @@ public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNod
         return Link.to(this);
     }
 
+    @Nullable
     public MutableNode node() {
         return node;
     }
 
+    @Nullable
     public String record() {
         return record;
     }
 
+    @Nullable
     public Compass compass() {
         return compass;
     }

@@ -15,16 +15,20 @@
  */
 package guru.nidi.graphviz.engine;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
 public interface Rasterizer {
+    @Nullable
     Rasterizer BATIK = IoUtils.isOnClasspath("org.apache.batik.transcoder.Transcoder") ? new BatikRasterizer() : null;
+    @Nullable
     Rasterizer SALAMANDER = IoUtils.isOnClasspath("com.kitfox.svg.SVGDiagram") ? new SalamanderRasterizer() : null;
+    @Nullable
     Rasterizer DEFAULT = BATIK == null ? SALAMANDER : BATIK;
 
     Format format();
 
-    BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input);
+    BufferedImage rasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String input);
 }

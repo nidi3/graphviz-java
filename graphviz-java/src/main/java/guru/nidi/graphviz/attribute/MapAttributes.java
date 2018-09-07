@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -30,7 +31,7 @@ public class MapAttributes implements Attributes, Iterable<Entry<String, Object>
         return attrs;
     }
 
-    public MapAttributes add(String key, Object value) {
+    public MapAttributes add(String key,@Nullable Object value) {
         if (value == null) {
             attributes.remove(key);
         } else {

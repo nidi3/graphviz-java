@@ -19,6 +19,7 @@ import org.apache.commons.exec.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.*;
 
 /**
@@ -29,7 +30,7 @@ import java.io.*;
 public class DefaultExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutor.class);
 
-    public void execute(CommandLine cmd, File workingDirectory) throws InterruptedException, IOException {
+    public void execute(CommandLine cmd,@Nullable File workingDirectory) throws InterruptedException, IOException {
         LOG.info("executing command {}", cmd.toString());
 
         final ExecuteWatchdog watchdog = new ExecuteWatchdog(60 * 1000);

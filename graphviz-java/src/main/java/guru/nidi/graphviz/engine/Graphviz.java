@@ -17,6 +17,7 @@ package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.*;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
@@ -25,16 +26,19 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public final class Graphviz {
+    @Nullable
     private static volatile BlockingQueue<GraphvizEngine> engineQueue;
+    @Nullable
     private static GraphvizEngine engine;
     private final String src;
     private final Options options;
+    @Nullable
     final Rasterizer rasterizer;
     final int width;
     final int height;
     final double scale;
 
-    private Graphviz(String src, Rasterizer rasterizer, int width, int height, double scale, Options options) {
+    private Graphviz(String src, @Nullable Rasterizer rasterizer, int width, int height, double scale, Options options) {
         this.src = src;
         this.rasterizer = rasterizer;
         this.width = width;
@@ -142,11 +146,11 @@ public final class Graphviz {
         return new Graphviz(src, rasterizer, width, height, scale, options.engine(engine));
     }
 
-    public Graphviz totalMemory(Integer totalMemory) {
+    public Graphviz totalMemory(@Nullable Integer totalMemory) {
         return new Graphviz(src, rasterizer, width, height, scale, options.totalMemory(totalMemory));
     }
 
-    public Graphviz yInvert(Boolean yInvert) {
+    public Graphviz yInvert(@Nullable Boolean yInvert) {
         return new Graphviz(src, rasterizer, width, height, scale, options.yInvert(yInvert));
     }
 
@@ -187,7 +191,7 @@ public final class Graphviz {
         }
 
         public String execute(String src, Options options) {
-            return null;
+            return "";
         }
 
         public void release() {

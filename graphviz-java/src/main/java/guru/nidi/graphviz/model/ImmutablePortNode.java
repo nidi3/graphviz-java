@@ -15,8 +15,10 @@
  */
 package guru.nidi.graphviz.model;
 
+import javax.annotation.Nullable;
+
 class ImmutablePortNode extends MutablePortNode implements PortNode {
-    ImmutablePortNode(MutableNode node, String record, Compass compass) {
+    ImmutablePortNode(@Nullable MutableNode node, @Nullable String record, @Nullable Compass compass) {
         super(node, record, compass);
     }
 

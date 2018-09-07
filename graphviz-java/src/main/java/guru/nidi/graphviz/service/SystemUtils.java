@@ -20,6 +20,7 @@ import org.apache.commons.exec.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ import java.util.stream.Stream;
 public final class SystemUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SystemUtils.class);
 
+    @Nullable
     private static final String OS_NAME = getSystemProperty("os.name");
     private static final boolean IS_OS_WINDOWS = getOsMatchesName("Windows");
     private static final boolean IS_OS_MAC = getOsMatchesName("Mac");
@@ -38,6 +40,7 @@ public final class SystemUtils {
     private SystemUtils() {
     }
 
+    @Nullable
     private static String getSystemProperty(String property) {
         try {
             return System.getProperty(property);
@@ -52,7 +55,7 @@ public final class SystemUtils {
         return isOsNameMatch(OS_NAME, osNamePrefix);
     }
 
-    private static boolean isOsNameMatch(String osName, String osNamePrefix) {
+    private static boolean isOsNameMatch(@Nullable String osName, String osNamePrefix) {
         return osName != null && osName.startsWith(osNamePrefix);
     }
 

@@ -22,6 +22,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -52,6 +53,7 @@ class EngineTest {
                     line(" -->") +
                     line("<!-- Title: g Pages: 1 -->") +
                     "<svg";
+    @Nullable
     private static File temp;
 
     @BeforeAll
@@ -91,17 +93,13 @@ class EngineTest {
 
     @Test
     void v8WithoutPath() throws Exception {
-        assertNativeLibs(System.getProperty("user.home"), () -> {
-            Graphviz.useEngine(new GraphvizV8Engine());
-        });
+        assertNativeLibs(System.getProperty("user.home"), () -> Graphviz.useEngine(new GraphvizV8Engine()));
     }
 
     @Test
     void v8WithPath() throws Exception {
         final String tmpDir = System.getProperty("java.io.tmpdir");
-        assertNativeLibs(tmpDir, () -> {
-            Graphviz.useEngine(new GraphvizV8Engine(tmpDir));
-        });
+        assertNativeLibs(tmpDir, () -> Graphviz.useEngine(new GraphvizV8Engine(tmpDir)));
     }
 
     private void assertNativeLibs(String basedir, Runnable task) throws ReflectiveOperationException {

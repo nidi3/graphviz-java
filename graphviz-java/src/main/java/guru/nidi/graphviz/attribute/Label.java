@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import javax.annotation.Nullable;
+
 import static guru.nidi.graphviz.attribute.Label.Justification.LEFT;
 import static guru.nidi.graphviz.attribute.Label.Justification.RIGHT;
 import static guru.nidi.graphviz.attribute.Label.Location.BOTTOM;
@@ -32,11 +34,13 @@ public final class Label extends SimpleLabel implements Attributes {
     private final boolean external;
     private final boolean floating;
     private final boolean decorated;
+    @Nullable
     private final Justification just;
+    @Nullable
     private final Location loc;
 
     private Label(String value, boolean html, boolean external, boolean floating, boolean decorated,
-                  Justification just, Location loc) {
+                  @Nullable Justification just, @Nullable Location loc) {
         super(value, html);
         this.external = external;
         this.floating = floating;
@@ -128,12 +132,12 @@ public final class Label extends SimpleLabel implements Attributes {
 
         final Label label = (Label) o;
 
-        return !(value != null ? !value.equals(label.value) : label.value != null);
+        return value.equals(label.value);
     }
 
     @Override
     public int hashCode() {
-        return value != null ? value.hashCode() : 0;
+        return value.hashCode();
     }
 
     @Override
