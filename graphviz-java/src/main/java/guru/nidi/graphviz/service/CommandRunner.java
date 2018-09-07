@@ -71,11 +71,11 @@ public class CommandRunner {
         return which(program, Optional.ofNullable(System.getenv("PATH")).orElse(""));
     }
 
-    private static Stream<Path> which(@Nullable String programOption, @Nullable String pathEnvVar) {
-        if (programOption == null || "".equals(programOption.trim()) || pathEnvVar == null || "".equalsIgnoreCase(pathEnvVar)) {
+    private static Stream<Path> which(@Nullable String optProgram, @Nullable String pathEnvVar) {
+        if (optProgram == null || "".equals(optProgram.trim()) || pathEnvVar == null || "".equals(pathEnvVar)) {
             return Stream.empty();
         }
-        final String program = programOption; //help code analysis
+        final String program = optProgram; //help code analysis
         return Arrays
                 .stream(pathEnvVar.split(File.pathSeparator))
                 .map(SystemUtils::pathOf)
