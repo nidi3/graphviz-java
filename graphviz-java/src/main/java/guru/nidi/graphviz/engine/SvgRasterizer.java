@@ -32,5 +32,7 @@ abstract class SvgRasterizer implements Rasterizer {
         return doRasterize(graphviz, graphicsConfigurer, svg);
     }
 
-    abstract BufferedImage doRasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String svg);
+    abstract BufferedImage doRasterize(Graphviz graphviz,
+                                       @Nullable Consumer<Graphics2D> graphicsConfigurer,
+                                       String svg);
 }

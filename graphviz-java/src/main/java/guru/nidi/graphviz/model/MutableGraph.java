@@ -40,7 +40,9 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
 
     protected MutableGraph(boolean strict, boolean directed, boolean cluster, String name,
                            LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
-                           @Nullable Attributes nodeAttrs, @Nullable Attributes linkAttrs, @Nullable Attributes graphAttrs) {
+                           @Nullable Attributes nodeAttrs,
+                           @Nullable Attributes linkAttrs,
+                           @Nullable Attributes graphAttrs) {
         this.strict = strict;
         this.directed = directed;
         this.cluster = cluster;

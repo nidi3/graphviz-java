@@ -57,6 +57,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
             DependencyRule model, attribute, engine, parse, service;
 
             public void defineRules() {
+                base().mayBeUsedBy(all());
                 engine.mayUse(model, service);
                 parse.mayUse(model, attribute);
                 model.mayUse(attribute);

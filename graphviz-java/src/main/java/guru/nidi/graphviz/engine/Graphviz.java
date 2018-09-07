@@ -38,7 +38,8 @@ public final class Graphviz {
     final int height;
     final double scale;
 
-    private Graphviz(String src, @Nullable Rasterizer rasterizer, int width, int height, double scale, Options options) {
+    private Graphviz(String src, @Nullable Rasterizer rasterizer,
+                     int width, int height, double scale, Options options) {
         this.src = src;
         this.rasterizer = rasterizer;
         this.width = width;

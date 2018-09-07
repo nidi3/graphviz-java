@@ -49,7 +49,8 @@ public class CommandRunner {
         exec(cmd, workDir, args, true);
     }
 
-    private void exec(String cmd, @Nullable File workDir, String[] args, boolean quote) throws IOException, InterruptedException {
+    private void exec(String cmd, @Nullable File workDir, String[] args, boolean quote)
+            throws IOException, InterruptedException {
         exec(new CommandLine(cmd).addArguments(args, quote), workDir);
     }
 
@@ -70,11 +71,11 @@ public class CommandRunner {
         return which(program, Optional.ofNullable(System.getenv("PATH")).orElse(""));
     }
 
-    private static Stream<Path> which(@Nullable String program, @Nullable String pathEnvVar) {
-        if (program == null || "".equals(program.trim()) || pathEnvVar == null || "".equalsIgnoreCase(pathEnvVar)) {
+    private static Stream<Path> which(@Nullable String programOption, @Nullable String pathEnvVar) {
+        if (programOption == null || "".equals(programOption.trim()) || pathEnvVar == null || "".equalsIgnoreCase(pathEnvVar)) {
             return Stream.empty();
         }
-
+        final String program = programOption; //help code analysis
         return Arrays
                 .stream(pathEnvVar.split(File.pathSeparator))
                 .map(SystemUtils::pathOf)
@@ -83,7 +84,7 @@ public class CommandRunner {
                     try (Stream<Path> entries = Files.list(path)) {
                         return entries
                                 // Filter on the filename
-                                // Doing a case-senstive compare here, thats not correct on windows ?
+                                // Doing a case-sensitive compare here, that's not correct on windows ?
                                 .filter(filePath -> program.equals(filePath.getFileName().toString()))
 
                                 // Filter out folders

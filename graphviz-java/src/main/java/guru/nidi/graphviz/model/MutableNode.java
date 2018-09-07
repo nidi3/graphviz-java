@@ -39,6 +39,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     protected MutableNode(Label name, List<Link> links, Attributes attributes) {
         this.links = links;
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
+        this.name = name; //satisfy code analyzers
         setName(name);
     }
 

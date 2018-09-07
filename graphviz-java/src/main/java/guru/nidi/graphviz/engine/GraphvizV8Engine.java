@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 
 public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
-    private static final ThreadLocal<Env> envs = new ThreadLocal<>();
+    private static final ThreadLocal<Env> ENVS = new ThreadLocal<>();
     @Nullable
     private final String extractionPath;
 
@@ -42,21 +42,21 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
     }
 
     static void releaseThread() {
-        final Env env = envs.get();
+        final Env env = ENVS.get();
         if (env != null) {
             env.release();
-            envs.remove();
+            ENVS.remove();
         }
     }
 
     @Override
     protected void doInit() throws IOException {
-        envs.set(new Env(extractionPath, jsInitEnv(), jsVizCode("2.0.0")));
+        ENVS.set(new Env(extractionPath, jsInitEnv(), jsVizCode("2.0.0")));
     }
 
     @Override
     protected String jsExecute(String call) {
-        final Env env = envs.get();
+        final Env env = ENVS.get();
         if (env == null) {
             try {
                 doInit();
@@ -64,7 +64,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
                 throw new GraphvizException("Could not initialize v8 engine for new thread", e);
             }
         }
-        return envs.get().execute(call);
+        return ENVS.get().execute(call);
     }
 
     private static class Env {
