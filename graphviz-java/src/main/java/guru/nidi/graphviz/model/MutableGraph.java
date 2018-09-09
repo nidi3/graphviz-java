@@ -96,19 +96,8 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     }
 
     public MutableGraph add(LinkSource source) {
-        if (source instanceof MutableNode) {
-            nodes.add((MutableNode) source);
-            return this;
-        }
-        if (source instanceof MutablePortNode) {
-            nodes.add(((MutablePortNode) source).node);
-            return this;
-        }
-        if (source instanceof MutableGraph) {
-            subgraphs.add((MutableGraph) source);
-            return this;
-        }
-        throw new IllegalArgumentException("Unknown source of type " + source.getClass());
+        source.addTo(this);
+        return this;
     }
 
     public MutableGraph addLink(LinkTarget... targets) {
@@ -121,6 +110,16 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     public MutableGraph addLink(LinkTarget target) {
         final Link link = target.linkTo();
         links.add(Link.between(this, link.to).with(link.attributes));
+        return this;
+    }
+
+    @Override
+    public void addTo(MutableGraph graph) {
+        graph.subgraphs.add(this);
+    }
+
+    @Override
+    public Linkable asLinkable() {
         return this;
     }
 

@@ -17,4 +17,6 @@ package guru.nidi.graphviz.model;
 
 public interface LinkTarget {
     Link linkTo();
+
+    Linkable asLinkable();
 }

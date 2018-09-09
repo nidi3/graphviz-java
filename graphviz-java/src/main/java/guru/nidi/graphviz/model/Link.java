@@ -73,6 +73,11 @@ public final class Link implements Attributed<Link>, LinkTarget {
         return this;
     }
 
+    @Override
+    public Linkable asLinkable() {
+        return to.asLinkable();
+    }
+
     @Nullable
     public LinkSource from() {
         return from;

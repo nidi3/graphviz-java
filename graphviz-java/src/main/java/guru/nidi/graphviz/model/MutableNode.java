@@ -100,9 +100,19 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return this;
     }
 
+    @Override
+    public Linkable asLinkable() {
+        return this;
+    }
+
     public MutableNode add(Attributes attrs) {
         attributes.add(attrs);
         return this;
+    }
+
+    @Override
+    public void addTo(MutableGraph graph) {
+        graph.nodes.add(this);
     }
 
     @Override

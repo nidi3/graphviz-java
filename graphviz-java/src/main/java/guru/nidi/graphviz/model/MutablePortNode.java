@@ -58,8 +58,18 @@ public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNod
     }
 
     @Override
+    public Linkable asLinkable() {
+        return node;
+    }
+
+    @Override
     public Link linkTo() {
         return Link.to(this);
+    }
+
+    @Override
+    public void addTo(MutableGraph graph) {
+        graph.nodes.add(node);
     }
 
     @Nullable

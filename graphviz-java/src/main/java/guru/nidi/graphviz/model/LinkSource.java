@@ -16,4 +16,5 @@
 package guru.nidi.graphviz.model;
 
 public interface LinkSource {
+    void addTo(MutableGraph graph);
 }

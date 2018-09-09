@@ -114,15 +114,7 @@ public class Serializer {
         if (!visited.contains(linkable)) {
             visited.add(linkable);
             for (final Link link : linkable.links()) {
-                if (link.to instanceof MutableNode) {
-                    linkedNodes((MutableNode) link.to, visited);
-                } else if (link.to instanceof MutablePortNode) {
-                    linkedNodes(((MutablePortNode) link.to).node, visited);
-                } else if (link.to instanceof MutableGraph) {
-                    linkedNodes((MutableGraph) link.to, visited);
-                } else {
-                    throw new IllegalStateException("unexpected link to " + link.to + " of " + link.to.getClass());
-                }
+                linkedNodes(link.to.asLinkable(),visited);
             }
         }
     }
