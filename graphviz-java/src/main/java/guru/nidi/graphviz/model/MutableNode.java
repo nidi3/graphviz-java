@@ -77,8 +77,7 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
 
     @Override
     public Link linkTo(LinkTarget target) {
-        final Link link = target.linkTo();
-        return adjustLink(link).with(link.attributes);
+        return adjustLink(target.linkTo());
     }
 
     @Override
@@ -147,18 +146,18 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
     private Link adjustLink(Link link) {
         final MutablePortNode me = new MutablePortNode().setNode(this);
         if (link.from == null) {
-            return Link.between(me, link.to);
+            return Link.between(me, link.to).with(link.attributes);
         }
         if (link.from instanceof MutablePortNode) {
             final MutablePortNode f = (MutablePortNode) link.from;
             return f.node != null && f.node != this
                     ? Link.between(me, link.from.asLinkTarget())
-                    : Link.between(me.setRecord(f.record()).setCompass(f.compass()), link.to);
+                    : Link.between(me.setRecord(f.record()).setCompass(f.compass()), link.to).with(link.attributes);
         }
         if (link.from instanceof MutableNode) {
             return link.from != this
                     ? Link.between(me, link.from.asLinkTarget())
-                    : Link.between(me, link.to);
+                    : Link.between(me, link.to).with(link.attributes);
         }
         throw new IllegalStateException("Unexpected element " + link.from + " in link");
     }

@@ -121,11 +121,26 @@ public class Serializer {
 
     private void nodes(MutableGraph graph, List<MutableNode> nodes) {
         for (final MutableNode node : nodes) {
-            if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty())) {
+            if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty() && !isLinked(node, nodes))) {
                 node(node);
                 str.append('\n');
             }
         }
+    }
+
+    private boolean isLinked(MutableNode node, List<MutableNode> nodes) {
+        for (final MutableNode m : nodes) {
+            for (final Link link : m.links) {
+                if (isNode(link.to, node)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isNode(LinkTarget target, MutableNode node) {
+        return target == node || (target instanceof MutablePortNode && ((MutablePortNode) target).node == node);
     }
 
     private void graphs(List<MutableGraph> graphs, List<MutableNode> nodes) {
