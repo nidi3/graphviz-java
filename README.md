@@ -5,11 +5,11 @@
 
 Use graphviz with pure java. Create graphviz models using java code and convert them into nice graphics.
 
-## [How it works](#user-content-how-it-works)
-## [Prerequisites](#user-content-prerequisites)
-## [API](#user-content-api)
-## [Examples](#user-content-examples)
-## [Configuration](#user-content-configuration)
+#### [How it works ](#user-content-how-it-works)
+#### [Prerequisites ](#user-content-prerequisites)
+#### [API ](#user-content-api)
+#### [Examples ](#user-content-examples)
+#### [Configuration ](#user-content-configuration)
 
 
 ## How it works
