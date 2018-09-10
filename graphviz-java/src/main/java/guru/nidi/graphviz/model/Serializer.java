@@ -121,7 +121,8 @@ public class Serializer {
 
     private void nodes(MutableGraph graph, List<MutableNode> nodes) {
         for (final MutableNode node : nodes) {
-            if (!node.attributes.isEmpty() || (graph.nodes.contains(node) && node.links.isEmpty() && !isLinked(node, nodes))) {
+            if (!node.attributes.isEmpty()
+                    || (graph.nodes.contains(node) && node.links.isEmpty() && !isLinked(node, nodes))) {
                 node(node);
                 str.append('\n');
             }
@@ -132,6 +133,17 @@ public class Serializer {
         for (final MutableNode m : nodes) {
             for (final Link link : m.links) {
                 if (isNode(link.to, node)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isLinked(MutableGraph graph, List<? extends LinkSource> linkSources) {
+        for (final LinkSource linkSource : linkSources) {
+            for (final Link link : linkSource.links()) {
+                if (link.to.equals(graph)) {
                     return true;
                 }
             }
@@ -152,19 +164,8 @@ public class Serializer {
         }
     }
 
-    private boolean isLinked(MutableGraph graph, List<? extends LinkSource> linkables) {
-        for (final LinkSource linkSource : linkables) {
-            for (final Link link : linkSource.links()) {
-                if (link.to.equals(graph)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void edges(List<? extends LinkSource> linkables) {
-        for (final LinkSource linkSource : linkables) {
+    private void edges(List<? extends LinkSource> linkSources) {
+        for (final LinkSource linkSource : linkSources) {
             for (final Link link : linkSource.links()) {
                 linkTarget(link.from);
                 str.append(graph.directed ? " -> " : " -- ");

@@ -150,12 +150,12 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
         }
         if (link.from instanceof MutablePortNode) {
             final MutablePortNode f = (MutablePortNode) link.from;
-            return f.node != null && f.node != this
+            return f.node != null && !f.node.name.equals(name)
                     ? Link.between(me, link.from.asLinkTarget())
                     : Link.between(me.setRecord(f.record()).setCompass(f.compass()), link.to).with(link.attributes);
         }
         if (link.from instanceof MutableNode) {
-            return link.from != this
+            return !((MutableNode) link.from).name.equals(name)
                     ? Link.between(me, link.from.asLinkTarget())
                     : Link.between(me, link.to).with(link.attributes);
         }

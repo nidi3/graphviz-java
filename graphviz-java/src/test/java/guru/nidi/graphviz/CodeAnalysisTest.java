@@ -103,7 +103,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("it's ok here",
                         In.clazz(Format.class).ignore("AvoidDuplicateLiterals"),
                         In.loc("LabelTest").ignore("JUnitTestContainsTooManyAsserts"),
-                        In.clazz(Serializer.class).ignore("AvoidStringBufferField"),
+                        In.clazz(Serializer.class).ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
                         In.clazz(CreationContext.class).ignore("AvoidThrowingRawExceptionTypes"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
@@ -115,6 +115,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.classes(MutableGraph.class, Serializer.class, Parser.class).ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
+                        In.clazz(MutableNode.class).ignore("ConfusingTernary"),
                         In.classes(ThrowingFunction.class, ThrowingBiConsumer.class).ignore("SignatureDeclareThrowsException"))
                 .because("It's command line tool", In.loc("GraphvizServer")
                         .ignore("AvoidCatchingGenericException", "PreserveStackTrace"))
