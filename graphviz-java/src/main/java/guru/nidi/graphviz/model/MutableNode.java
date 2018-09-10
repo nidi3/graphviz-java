@@ -78,7 +78,7 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
     @Override
     public Link linkTo(LinkTarget target) {
         final Link link = target.linkTo();
-        return Link.between(from(link), link.to).with(link.attributes);
+        return adjustLink(link).with(link.attributes);
     }
 
     @Override
@@ -106,6 +106,11 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
         for (final String node : nodes) {
             addLink(node);
         }
+        return this;
+    }
+
+    @Override
+    public LinkTarget asLinkTarget() {
         return this;
     }
 
@@ -139,12 +144,23 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
         return attributes.get(key);
     }
 
-    private MutablePortNode from(Link link) {
+    private Link adjustLink(Link link) {
+        final MutablePortNode me = new MutablePortNode().setNode(this);
+        if (link.from == null) {
+            return Link.between(me, link.to);
+        }
         if (link.from instanceof MutablePortNode) {
             final MutablePortNode f = (MutablePortNode) link.from;
-            return new MutablePortNode().setNode(this).setRecord(f.record()).setCompass(f.compass());
+            return f.node != null && f.node != this
+                    ? Link.between(me, link.from.asLinkTarget())
+                    : Link.between(me.setRecord(f.record()).setCompass(f.compass()), link.to);
         }
-        return new MutablePortNode().setNode(this);
+        if (link.from instanceof MutableNode) {
+            return link.from != this
+                    ? Link.between(me, link.from.asLinkTarget())
+                    : Link.between(me, link.to);
+        }
+        throw new IllegalStateException("Unexpected element " + link.from + " in link");
     }
 
     @Nullable
@@ -153,7 +169,7 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
     }
 
     @Override
-    public Collection<Link> links() {
+    public List<Link> links() {
         return links;
     }
 

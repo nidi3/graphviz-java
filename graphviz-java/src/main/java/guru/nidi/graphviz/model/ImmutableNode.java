@@ -71,7 +71,7 @@ class ImmutableNode extends MutableNode implements Node {
     }
 
     @Override
-    public Collection<Link> links() {
-        return Collections.unmodifiableCollection(super.links());
+    public List<Link> links() {
+        return Collections.unmodifiableList(super.links());
     }
 }

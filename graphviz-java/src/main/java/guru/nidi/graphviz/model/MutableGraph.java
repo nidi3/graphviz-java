@@ -129,6 +129,11 @@ public class MutableGraph implements LinkSource, LinkTarget {
     }
 
     @Override
+    public LinkTarget asLinkTarget() {
+        return this;
+    }
+
+    @Override
     public LinkSource asLinkSource() {
         return this;
     }
@@ -160,7 +165,7 @@ public class MutableGraph implements LinkSource, LinkTarget {
         return subgraphs;
     }
 
-    public Collection<Link> links() {
+    public List<Link> links() {
         return links;
     }
 

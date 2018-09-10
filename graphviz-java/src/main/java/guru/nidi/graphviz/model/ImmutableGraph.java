@@ -80,8 +80,8 @@ class ImmutableGraph extends MutableGraph implements Graph {
     }
 
     @Override
-    public Collection<Link> links() {
-        return Collections.unmodifiableCollection(super.links());
+    public List<Link> links() {
+        return Collections.unmodifiableList(super.links());
     }
 
     @Override

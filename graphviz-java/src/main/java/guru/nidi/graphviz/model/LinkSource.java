@@ -15,12 +15,14 @@
  */
 package guru.nidi.graphviz.model;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface LinkSource {
-    Collection<Link> links();
+    List<Link> links();
 
     Link linkTo(LinkTarget target);
 
     void addTo(MutableGraph graph);
+
+    LinkTarget asLinkTarget();
 }
