@@ -80,6 +80,11 @@ class ImmutableGraph extends MutableGraph implements Graph {
     }
 
     @Override
+    public Collection<Link> links() {
+        return Collections.unmodifiableCollection(super.links());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

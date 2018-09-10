@@ -138,9 +138,9 @@ public final class Parser {
         });
     }
 
-    private void edgeStatement(MutableGraph graph, MutableLinkSource<? extends MutableLinkSource> linkSource)
+    private void edgeStatement(MutableGraph graph, LinkSource linkSource)
             throws IOException {
-        final List<MutableLinkSource<? extends MutableLinkSource>> points = new ArrayList<>();
+        final List<LinkSource> points = new ArrayList<>();
         points.add(linkSource);
         do {
             if (graph.isDirected() && token.type == MINUS_MINUS) {
@@ -160,9 +160,10 @@ public final class Parser {
         } while (token.type == MINUS_MINUS || token.type == ARROW);
         final List<Token> attrs = (token.type == BRACKET_OPEN) ? attributeList() : Collections.emptyList();
         for (int i = 0; i < points.size() - 1; i++) {
-            final MutableLinkSource<? extends LinkSource> from = points.get(i);
+            final LinkSource from = points.get(i);
             final LinkTarget to = (LinkTarget) points.get(i + 1);
-            graph.add(from.addLink(applyAttributes(between(from, to), attrs)));
+            from.links().add(applyAttributes(between(from, to), attrs));
+            graph.add(from);
         }
     }
 

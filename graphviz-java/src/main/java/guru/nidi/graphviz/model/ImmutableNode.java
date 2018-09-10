@@ -19,8 +19,7 @@ import guru.nidi.graphviz.attribute.Attributes;
 import guru.nidi.graphviz.attribute.Label;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 class ImmutableNode extends MutableNode implements Node {
     ImmutableNode(Label name) {
@@ -69,5 +68,10 @@ class ImmutableNode extends MutableNode implements Node {
 
     private ImmutableNode copyOfMut() {
         return new ImmutableNode(name, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
+    }
+
+    @Override
+    public Collection<Link> links() {
+        return Collections.unmodifiableCollection(super.links());
     }
 }

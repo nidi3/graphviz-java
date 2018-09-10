@@ -20,14 +20,14 @@ import guru.nidi.graphviz.attribute.*;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, LinkTarget {
+public class MutableGraph implements LinkSource, LinkTarget {
     protected boolean strict;
     protected boolean directed;
     protected boolean cluster;
     protected String name;
     protected final Set<MutableNode> nodes;
     protected final Set<MutableGraph> subgraphs;
-    protected final List<Link> links;
+    protected final LinkList links;
     protected final MutableAttributed<MutableGraph> nodeAttrs;
     protected final MutableAttributed<MutableGraph> linkAttrs;
     protected final MutableAttributed<MutableGraph> graphAttrs;
@@ -49,7 +49,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
         this.name = name;
         this.nodes = nodes;
         this.subgraphs = subgraphs;
-        this.links = links;
+        this.links = new LinkList(this, links);
         this.nodeAttrs = new SimpleMutableAttributed<>(this, nodeAttrs);
         this.linkAttrs = new SimpleMutableAttributed<>(this, linkAttrs);
         this.graphAttrs = new SimpleMutableAttributed<>(this, graphAttrs);
@@ -57,7 +57,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
 
     public MutableGraph copy() {
         return new MutableGraph(strict, directed, cluster, name,
-                new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(links),
+                new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), links,
                 nodeAttrs, linkAttrs, graphAttrs);
     }
 
@@ -108,9 +108,19 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     }
 
     public MutableGraph addLink(LinkTarget target) {
-        final Link link = target.linkTo();
-        links.add(Link.between(this, link.to).with(link.attributes));
+        links.add(linkTo(target));
         return this;
+    }
+
+    @Override
+    public Link linkTo(LinkTarget target) {
+        final Link link = target.linkTo();
+        return Link.between(this, link.to).with(link.attributes);
+    }
+
+    @Override
+    public Link linkTo() {
+        return Link.to(this);
     }
 
     @Override
@@ -119,7 +129,7 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
     }
 
     @Override
-    public Linkable asLinkable() {
+    public LinkSource asLinkSource() {
         return this;
     }
 
@@ -152,11 +162,6 @@ public class MutableGraph implements Linkable, MutableLinkSource<MutableGraph>, 
 
     public Collection<Link> links() {
         return links;
-    }
-
-    @Override
-    public Link linkTo() {
-        return Link.to(this);
     }
 
     public boolean isStrict() {

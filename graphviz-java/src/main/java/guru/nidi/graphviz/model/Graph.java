@@ -17,7 +17,7 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributed;
 
-public interface Graph extends Linkable, LinkSource, LinkTarget {
+public interface Graph extends LinkSource, LinkTarget {
     Graph strict();
 
     Graph directed();

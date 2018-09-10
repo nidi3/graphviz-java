@@ -26,10 +26,9 @@ import static guru.nidi.graphviz.model.Factory.mutNode;
 import static java.util.stream.Collectors.joining;
 
 @Nonnull
-public class MutableNode implements Linkable, MutableAttributed<MutableNode>, LinkTarget,
-        MutableLinkSource<MutableNode> {
+public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, LinkTarget {
     protected Label name;
-    protected final List<Link> links;
+    protected final LinkList links;
     protected final MutableAttributed<MutableNode> attributes;
 
     MutableNode(Label name) {
@@ -37,14 +36,14 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     }
 
     protected MutableNode(Label name, List<Link> links, Attributes attributes) {
-        this.links = links;
+        this.links = new LinkList(this, links);
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
         this.name = name; //satisfy code analyzers
         setName(name);
     }
 
     public MutableNode copy() {
-        return new MutableNode(name, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
+        return new MutableNode(name, links, attributes.applyTo(Attributes.attrs()));
     }
 
     public final MutableNode setName(Label name) {
@@ -76,9 +75,19 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
         return new MutablePortNode().setNode(this).setCompass(compass);
     }
 
-    public MutableNode addLink(LinkTarget target) {
+    @Override
+    public Link linkTo(LinkTarget target) {
         final Link link = target.linkTo();
-        links.add(Link.between(from(link), link.to).with(link.attributes));
+        return Link.between(from(link), link.to).with(link.attributes);
+    }
+
+    @Override
+    public Link linkTo() {
+        return Link.to(this);
+    }
+
+    public MutableNode addLink(LinkTarget target) {
+        links.add(linkTo(target));
         return this;
     }
 
@@ -101,7 +110,7 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     }
 
     @Override
-    public Linkable asLinkable() {
+    public LinkSource asLinkSource() {
         return this;
     }
 
@@ -146,11 +155,6 @@ public class MutableNode implements Linkable, MutableAttributed<MutableNode>, Li
     @Override
     public Collection<Link> links() {
         return links;
-    }
-
-    @Override
-    public Link linkTo() {
-        return Link.to(this);
     }
 
     public MutableAttributed<MutableNode> attrs() {

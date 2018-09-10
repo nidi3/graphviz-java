@@ -17,7 +17,7 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributed;
 
-public interface Node extends Linkable, Attributed<Node>, LinkTarget, LinkSource {
+public interface Node extends Attributed<Node>, LinkSource, LinkTarget {
     PortNode port();
 
     PortNode port(String record);

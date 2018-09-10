@@ -40,11 +40,11 @@ public class Serializer {
 
         final List<MutableNode> nodes = new ArrayList<>();
         final List<MutableGraph> graphs = new ArrayList<>();
-        final Collection<Linkable> linkables = linkedNodes(graph.nodes);
-        linkables.addAll(linkedNodes(graph.subgraphs));
-        for (final Linkable linkable : linkables) {
-            if (linkable instanceof MutableNode) {
-                final MutableNode node = (MutableNode) linkable;
+        final Collection<LinkSource> linkSources = linkedNodes(graph.nodes);
+        linkSources.addAll(linkedNodes(graph.subgraphs));
+        for (final LinkSource linkSource : linkSources) {
+            if (linkSource instanceof MutableNode) {
+                final MutableNode node = (MutableNode) linkSource;
                 final int i = indexOfName(nodes, node.name);
                 if (i < 0) {
                     nodes.add(node);
@@ -52,7 +52,7 @@ public class Serializer {
                     nodes.set(i, node.copy().merge(nodes.get(i)));
                 }
             } else {
-                graphs.add((MutableGraph) linkable);
+                graphs.add((MutableGraph) linkSource);
             }
         }
 
@@ -102,19 +102,19 @@ public class Serializer {
         }
     }
 
-    private Collection<Linkable> linkedNodes(Collection<? extends Linkable> nodes) {
-        final Set<Linkable> visited = new LinkedHashSet<>();
-        for (final Linkable node : nodes) {
+    private Collection<LinkSource> linkedNodes(Collection<? extends LinkSource> nodes) {
+        final Set<LinkSource> visited = new LinkedHashSet<>();
+        for (final LinkSource node : nodes) {
             linkedNodes(node, visited);
         }
         return visited;
     }
 
-    private void linkedNodes(Linkable linkable, Set<Linkable> visited) {
-        if (!visited.contains(linkable)) {
-            visited.add(linkable);
-            for (final Link link : linkable.links()) {
-                linkedNodes(link.to.asLinkable(),visited);
+    private void linkedNodes(LinkSource linkSource, Set<LinkSource> visited) {
+        if (!visited.contains(linkSource)) {
+            visited.add(linkSource);
+            for (final Link link : linkSource.links()) {
+                linkedNodes(link.to.asLinkSource(), visited);
             }
         }
     }
@@ -137,9 +137,9 @@ public class Serializer {
         }
     }
 
-    private boolean isLinked(MutableGraph graph, List<? extends Linkable> linkables) {
-        for (final Linkable linkable : linkables) {
-            for (final Link link : linkable.links()) {
+    private boolean isLinked(MutableGraph graph, List<? extends LinkSource> linkables) {
+        for (final LinkSource linkSource : linkables) {
+            for (final Link link : linkSource.links()) {
                 if (link.to.equals(graph)) {
                     return true;
                 }
@@ -148,9 +148,9 @@ public class Serializer {
         return false;
     }
 
-    private void edges(List<? extends Linkable> linkables) {
-        for (final Linkable linkable : linkables) {
-            for (final Link link : linkable.links()) {
+    private void edges(List<? extends LinkSource> linkables) {
+        for (final LinkSource linkSource : linkables) {
+            for (final Link link : linkSource.links()) {
                 linkTarget(link.from);
                 str.append(graph.directed ? " -> " : " -- ");
                 linkTarget(link.to);

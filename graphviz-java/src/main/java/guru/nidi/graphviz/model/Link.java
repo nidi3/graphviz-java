@@ -59,6 +59,11 @@ public final class Link implements Attributed<Link>, LinkTarget {
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
     }
 
+    public Link add(Attributes attrs) {
+        attributes.add(attrs);
+        return this;
+    }
+
     public Link with(Attributes attrs) {
         return new Link(from, to, attrs.applyTo(attributes.applyTo(Attributes.attrs())));
     }
@@ -74,8 +79,8 @@ public final class Link implements Attributed<Link>, LinkTarget {
     }
 
     @Override
-    public Linkable asLinkable() {
-        return to.asLinkable();
+    public LinkSource asLinkSource() {
+        return to.asLinkSource();
     }
 
     @Nullable

@@ -16,8 +16,9 @@
 package guru.nidi.graphviz.model;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 
-public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNode> {
+public class MutablePortNode implements LinkSource, LinkTarget {
     @Nullable
     protected MutableNode node;
     @Nullable
@@ -58,13 +59,23 @@ public class MutablePortNode implements LinkTarget, MutableLinkSource<MutableNod
     }
 
     @Override
-    public Linkable asLinkable() {
-        return node;
+    public Collection<Link> links() {
+        return node.links;
+    }
+
+    @Override
+    public Link linkTo(LinkTarget target) {
+        return node.linkTo(target);
     }
 
     @Override
     public Link linkTo() {
         return Link.to(this);
+    }
+
+    @Override
+    public LinkSource asLinkSource() {
+        return node;
     }
 
     @Override
