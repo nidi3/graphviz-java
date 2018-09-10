@@ -41,11 +41,8 @@ class CodeAnalysisTest : CodeAssertJunit5Test() {
                 .rules(DependencyRules.denyAll()
                         .withExternals("java.*", "kotlin.*", "org.*")
                         .withRelativeRules(object : DependencyRuler() {
-                            val attribute = rule()
-                            val model = rule()
-
                             override fun defineRules() {
-                                model.mayUse(attribute)
+                                base().mayUse(all())
                             }
                         }))
                 .analyze()

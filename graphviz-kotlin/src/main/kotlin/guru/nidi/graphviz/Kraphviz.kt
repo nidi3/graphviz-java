@@ -15,11 +15,12 @@
  */
 @file:JvmName("Kraphviz")
 
-package guru.nidi.graphviz.model
+package guru.nidi.graphviz
 
 import guru.nidi.graphviz.attribute.Attributes
 import guru.nidi.graphviz.attribute.Attributes.attr
 import guru.nidi.graphviz.engine.Graphviz
+import guru.nidi.graphviz.model.*
 import guru.nidi.graphviz.model.Factory.mutGraph
 import guru.nidi.graphviz.model.Factory.mutNode
 
@@ -60,20 +61,20 @@ val graph = object : AttributeContainer {
     }
 }
 
-operator fun MutableNode.minus(target: LinkTarget) = addLink(target).links.last()!!
+operator fun MutableNode.minus(target: LinkTarget) = addLink(target).links().last()!!
 operator fun MutableNode.minus(node: String) = this - mutNode(node)
 operator fun MutableNode.div(record: String) = withRecord(record)
 operator fun MutableNode.div(compass: Compass) = withCompass(compass)
 operator fun MutableNode.get(vararg attrs: Attributes) = add(*attrs)
 
-operator fun MutablePortNode.minus(target: LinkTarget) = addLink(target).links.last()!!
+operator fun MutablePortNode.minus(target: LinkTarget) = addLink(target).links().last()!!
 operator fun MutablePortNode.minus(node: String) = this - mutNode(node)
 operator fun MutablePortNode.div(record: String) = setRecord(record)
 operator fun MutablePortNode.div(compass: Compass) = setCompass(compass)
-operator fun MutablePortNode.get(vararg attrs: Attributes) = node!!.add(*attrs)
+operator fun MutablePortNode.get(vararg attrs: Attributes) = node()!!.add(*attrs)
 
 operator fun Link.minus(target: LinkTarget): Link {
-    val source = to.asLinkSource()
+    val source = to().asLinkSource()
     source.links().add(source.linkTo(target))
     return source.links().last()
 }

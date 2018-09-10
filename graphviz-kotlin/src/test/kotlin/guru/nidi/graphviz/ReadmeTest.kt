@@ -17,7 +17,6 @@ package guru.nidi.graphviz
 
 import guru.nidi.graphviz.attribute.*
 import guru.nidi.graphviz.engine.Format.PNG
-import guru.nidi.graphviz.model.*
 import guru.nidi.graphviz.model.Compass.NORTH
 import guru.nidi.graphviz.model.Compass.SOUTH
 import org.junit.jupiter.api.Test
