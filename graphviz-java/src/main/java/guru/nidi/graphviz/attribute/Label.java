@@ -57,6 +57,12 @@ public final class Label extends SimpleLabel implements Attributes {
         return new Label(value, true, false, false, false, null, null);
     }
 
+    public static Label raw(String value) {
+        return value.startsWith("<") && value.endsWith(">")
+                ? new Label(value.substring(1, value.length() - 1), true, false, false, false, null, null)
+                : new Label(value, false, false, false, false, null, null);
+    }
+
     public EndLabel head() {
         return EndLabel.head(this, null, null);
     }

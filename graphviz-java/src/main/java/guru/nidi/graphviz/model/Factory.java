@@ -62,7 +62,11 @@ public final class Factory {
     }
 
     public static MutableNode mutNode(String name) {
-        return mutNode(Label.of(name));
+        return mutNode(name, false);
+    }
+
+    public static MutableNode mutNode(String name, boolean raw) {
+        return mutNode(raw ? Label.raw(name) : Label.of(name));
     }
 
     public static MutableNode mutNode(Label name) {
