@@ -120,7 +120,7 @@ digraph example1 {
 ```xml
 <dependency>
     <groupId>guru.nidi</groupId>
-    <artifactId>graphviz-java</artifactId>
+    <artifactId>graphviz-kotlin</artifactId>
     <version>0.6.0</version>
 </dependency>
 ```
