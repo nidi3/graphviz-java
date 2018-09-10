@@ -5,6 +5,13 @@
 
 Use graphviz with pure java. Create graphviz models using java code and convert them into nice graphics.
 
+## [How it works](#user-content-how-it-works)
+## [Prerequisites](#user-content-prerequisites)
+## [API](#user-content-api)
+## [Examples](#user-content-examples)
+## [Configuration](#user-content-configuration)
+
+
 ## How it works
 To execute the graphviz layout engine, one of these options is used:
 - If the machine has graphviz installed and a `dot` command is available, spawn a new process running `dot`.
@@ -107,26 +114,34 @@ digraph example1 {
 ```
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1i.png" width="100">
 
+### Kotlin DSL
+**Kotlin DSL is still experimental** Things can change and any feedback is very welcome.
 
-## Configuration
-The size of the resulting image, the rendering engine and the output format can be configured:
+The kotlin DSL based on the imperative API. It defines that following elements:
 
-[//]: # (config)
-```java
-Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
-Graphviz viz = Graphviz.fromGraph(g);
-viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
-viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
-viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
-String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
-BufferedImage image = viz.render(Format.PNG).toImage();
+- `edge`, `node`, `graph` variables to define global attributes.
+- `-`, `/`, `[]` operators on MutableNode which link, define ports, set attributes.
+- `-`, `/`, `[]` operators on String so that strings can be used directly to define nodes.
+- `-`, `[]` operators on Link which allow to chain links and set attributes.  
+
+[//]: # (kotlin)
+```kotlin
+graph(directed = true) {
+    edge["color" eq "red", Arrow.TEE]
+    node[Color.GREEN]
+    graph[RankDir.LEFT_TO_RIGHT]
+
+    "a" - "b" - "c"
+    ("c"[Color.RED] - "d"[Color.BLUE])[Arrow.VEE]
+    "d" / NORTH - "e" / SOUTH
+}.toGraphviz().render(PNG).toFile(File("example/ex1.png"))
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5b.png" width="100">
-<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5s.png" width="100">
-<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5.svg" width="100">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-kotlin/example/ex1.png" width="500">
 
-## Complex example
+## Examples
+
+### Complex example
 
 [//]: # (complex)
 ```java
@@ -154,7 +169,7 @@ Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex2
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex2.png" width="500">
 
-## Example with records
+### Example with records
 ```java
 import static guru.nidi.graphviz.attribute.Records.*;
 import static guru.nidi.graphviz.model.Compass.*;
@@ -186,7 +201,7 @@ Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex3
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex3.png" width="500">
 
-## Read and manipulate graphs
+### Read and manipulate graphs
 
 Dot files can be parsed and thus manipulated. Given this file `color.dot`:
 
@@ -229,3 +244,21 @@ Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4
 results in this graphics:
 
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-2.png" width="400">
+
+## Configuration
+The size of the resulting image, the rendering engine and the output format can be configured:
+
+[//]: # (config)
+```java
+Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
+Graphviz viz = Graphviz.fromGraph(g);
+viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
+viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
+viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
+String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
+BufferedImage image = viz.render(Format.PNG).toImage();
+```
+[//]: # (end)
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5b.png" width="100">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5s.png" width="100">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5.svg" width="100">

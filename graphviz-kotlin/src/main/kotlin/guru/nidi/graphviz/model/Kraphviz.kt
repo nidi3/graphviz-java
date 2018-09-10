@@ -19,19 +19,21 @@ package guru.nidi.graphviz.model
 
 import guru.nidi.graphviz.attribute.Attributes
 import guru.nidi.graphviz.attribute.Attributes.attr
-import guru.nidi.graphviz.model.Factory.*
+import guru.nidi.graphviz.engine.Graphviz
+import guru.nidi.graphviz.model.Factory.mutGraph
+import guru.nidi.graphviz.model.Factory.mutNode
 
 fun graph(name: String = "", strict: Boolean = false, directed: Boolean = false, cluster: Boolean = false, config: () -> Unit = { }) =
         mutGraph(name).apply {
             isStrict = strict
             isDirected = directed
             isCluster = cluster
-            CreationContext.use {
+            use { _, _ ->
                 config()
             }
         }
 
-infix fun String.eq(value: Any) = attr(this, value)!!
+infix fun String.eq(value: Any) = attr(this, value)
 
 interface AttributeContainer {
     operator fun get(vararg attrs: Attributes)
@@ -39,43 +41,51 @@ interface AttributeContainer {
 
 val edge = object : AttributeContainer {
     override fun get(vararg attrs: Attributes) {
-        attrs.forEach { attr ->
-            CreationContext.get().linkAttrs().add(attr)
-        }
+        val linkAttrs = CreationContext.get().linkAttrs()
+        attrs.forEach { linkAttrs.add(it) }
     }
 }
 
 val node = object : AttributeContainer {
     override fun get(vararg attrs: Attributes) {
-        attrs.forEach { attr ->
-            CreationContext.get().nodeAttrs().add(attr)
-        }
+        val nodeAttrs = CreationContext.get().nodeAttrs()
+        attrs.forEach { nodeAttrs.add(it) }
     }
 }
 
 val graph = object : AttributeContainer {
     override fun get(vararg attrs: Attributes) {
-        attrs.forEach { attr ->
-            CreationContext.get().graphAttrs().add(attr)
-        }
+        val graphAttrs = CreationContext.get().graphAttrs()
+        attrs.forEach { graphAttrs.add(it) }
     }
 }
 
-infix fun String.link(node: String) = mutNode(this).addLink(node).links.last()!!
-infix fun String.link(target: LinkTarget) = mutNode(this).addLink(target)!!
-operator fun String.minus(node: String) = mutNode(this).addLink(mutNode(node))!!
-operator fun String.div(record: String) = mutNode(this).withRecord(record)!!
-operator fun String.div(compass: Compass) = mutNode(this).withCompass(compass)!!
-operator fun String.get(vararg attrs: Attributes) = mutNode(this).add(*attrs)!!
+operator fun MutableNode.minus(target: LinkTarget) = addLink(target).links.last()!!
+operator fun MutableNode.minus(node: String) = this - mutNode(node)
+operator fun MutableNode.div(record: String) = withRecord(record)
+operator fun MutableNode.div(compass: Compass) = withCompass(compass)
+operator fun MutableNode.get(vararg attrs: Attributes) = add(*attrs)
 
-operator fun MutablePortNode.div(compass: Compass) = this.setCompass(compass)!!
+operator fun MutablePortNode.minus(target: LinkTarget) = addLink(target).links.last()!!
+operator fun MutablePortNode.minus(node: String) = this - mutNode(node)
+operator fun MutablePortNode.div(record: String) = setRecord(record)
+operator fun MutablePortNode.div(compass: Compass) = setCompass(compass)
+operator fun MutablePortNode.get(vararg attrs: Attributes) = node!!.add(*attrs)
 
-infix fun MutableNode.link(node: String) = this.addLink(node)!!
-operator fun MutableNode.minus(node: String) = this.addLink(node)!!
-operator fun MutablePortNode.minus(node: String) = between(this, mutNode(node))!!
-
-operator fun MutableNode.get(vararg attrs: Attributes): MutableNode {
-    val n = this.add(*attrs)
-//    CreationContext.current().map { it.setNode(n as ImmutableNode) }
-    return n
+operator fun Link.minus(target: LinkTarget): Link {
+    val source = to.asLinkSource()
+    source.links().add(source.linkTo(target))
+    return source.links().last()
 }
+
+operator fun Link.minus(node: String) = this - mutNode(node)
+operator fun Link.get(vararg attrs: Attributes) = add(Attributes.attrs(*attrs))
+
+operator fun String.unaryMinus() = mutNode(this, true)
+operator fun String.minus(target: LinkTarget) = -this - target
+operator fun String.minus(node: String) = -this - node
+operator fun String.div(record: String) = -this / record
+operator fun String.div(compass: Compass) = -this / compass
+operator fun String.get(vararg attrs: Attributes) = (-this).add(*attrs)
+
+fun MutableGraph.toGraphviz() = Graphviz.fromGraph(this)

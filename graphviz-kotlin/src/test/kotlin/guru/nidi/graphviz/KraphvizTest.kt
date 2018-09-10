@@ -15,10 +15,8 @@
  */
 package guru.nidi.graphviz
 
-import guru.nidi.graphviz.attribute.Arrow
-import guru.nidi.graphviz.attribute.Color
+import guru.nidi.graphviz.attribute.*
 import guru.nidi.graphviz.engine.Format.PNG
-import guru.nidi.graphviz.engine.Graphviz
 import guru.nidi.graphviz.model.*
 import guru.nidi.graphviz.model.Compass.SOUTH
 import org.junit.jupiter.api.Test
@@ -33,14 +31,30 @@ class KraphvizTest {
             node[Color.GREEN]
             graph[Color.GREY.background()]
 
-            "g".link("h")
-            "i" link "j"
             "e" - "f"
 
             ("a"[Color.RED] - "b")[Arrow.VEE]
-            "c" / "rec" / SOUTH - "d"
+            "c" / "rec" / SOUTH - "d" / Compass.WEST
         }
         println(g)
-        Graphviz.fromGraph(g).render(PNG).toFile(File("target/kt1.png"))
+        g.toGraphviz().render(PNG).toFile(File("target/kt1.png"))
+    }
+
+    @Test
+    fun complex() {
+        val g = graph("example2", directed = true) {
+            val main = "<<b>main</b>>"[Color.rgb("1020d0").font()]
+            main - ("parse" - "execute")["weight" eq 8]
+            (main - "init")[Style.DOTTED]
+            main - "cleanup"
+            (main - "printf")[Style.BOLD, Label.of("100 times"), Color.RED]
+            "execute" - graph() {
+                -"make a\nstring"
+                -"printf"
+            }
+            ("execute" - "compare"[Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)])[Color.RED]
+            "init" - "make a\nstring"
+        }
+        g.toGraphviz().render(PNG).toFile(File("target/kt2.png"))
     }
 }
