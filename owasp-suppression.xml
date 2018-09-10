@@ -2,6 +2,6 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
     <suppress>
         <notes>not sure if this is correct, but we cannot do anything against...</notes>
-        <cpe>cpe:/a:graphviz:graphviz:2.2</cpe>
+        <cpe>cpe:/a:graphviz:graphviz</cpe>
     </suppress>
 </suppressions>
