@@ -31,7 +31,7 @@ This project is available via Maven:
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-java</artifactId>
-    <version>0.5.4</version>
+    <version>0.6.0</version>
 </dependency>
 ```
 
@@ -115,7 +115,15 @@ digraph example1 {
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1i.png" width="100">
 
 ### Kotlin DSL
-**Kotlin DSL is still experimental** Things can change and any feedback is very welcome.
+**Kotlin DSL is still experimental.** Things can change and any feedback is very welcome.
+
+```xml
+<dependency>
+    <groupId>guru.nidi</groupId>
+    <artifactId>graphviz-java</artifactId>
+    <version>0.6.0</version>
+</dependency>
+```
 
 The kotlin DSL based on the imperative API. It defines that following elements:
 
@@ -123,6 +131,8 @@ The kotlin DSL based on the imperative API. It defines that following elements:
 - `-`, `/`, `[]` operators on MutableNode which link, define ports, set attributes.
 - `-`, `/`, `[]` operators on String so that strings can be used directly to define nodes.
 - `-`, `[]` operators on Link which allow to chain links and set attributes.  
+
+To enable the functions, use `import guru.nidi.graphviz.*`
 
 [//]: # (kotlin)
 ```kotlin
