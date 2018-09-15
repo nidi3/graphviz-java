@@ -85,6 +85,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
                         In.locs("GraphvizCmdLineEngine", "EngineTest", "SystemUtils", "Renderer").ignore("PATH_TRAVERSAL_IN"),
                         In.loc("EngineTest").ignore("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
+                        In.loc("PortSource").ignore("NP_NONNULL_RETURN_VIOLATION"),
                         In.loc("Communicator").ignore("RR_NOT_CHECKED"));
         return new FindBugsAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector).analyze();
     }
@@ -123,8 +124,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("CommandRunnerTest", "AbstractJsGraphvizEngine").ignore("SimplifiedTernary"))
                 .because("I don't agree",
                         In.everywhere().ignore("SimplifyStartsWith"))
-                .because("It's wrapping an Exception with a RuntimeException", In.clazz(CreationContext.class)
-                        .ignore("AvoidCatchingGenericException"));
+                .because("It's wrapping an Exception with a RuntimeException",
+                        In.classes(Graphviz.class, CreationContext.class).ignore("AvoidCatchingGenericException"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)
                 .withRulesets(PredefConfig.defaultPmdRulesets())
                 .analyze();

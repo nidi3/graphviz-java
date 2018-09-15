@@ -13,39 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.attribute;
+package guru.nidi.graphviz.model;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class SimpleLabel {
-    final String value;
-    final boolean html;
+public class Port {
+    @Nullable
+    private final String record;
+    @Nullable
+    private final Compass compass;
 
-    SimpleLabel(String value, boolean html) {
-        this.value = value;
-        this.html = html;
+    Port(@Nullable String record, @Nullable Compass compass) {
+        this.record = record;
+        this.compass = compass;
     }
 
-    public static SimpleLabel of(String value) {
-        return new SimpleLabel(value, false);
+    @Nullable
+    public String record() {
+        return record;
     }
 
-    public static SimpleLabel of(Object value) {
-        return value instanceof SimpleLabel ? (SimpleLabel) value : of(value.toString());
-    }
-
-    public String serialized() {
-        return html
-                ? ("<" + value + ">")
-                : ("\"" + value.replace("\"", "\\\"").replace("\n", "\\n") + "\"");
-    }
-
-    public String value() {
-        return value;
-    }
-
-    public boolean isHtml() {
-        return html;
+    @Nullable
+    public Compass compass() {
+        return compass;
     }
 
     @Override
@@ -56,18 +47,18 @@ public class SimpleLabel {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final SimpleLabel that = (SimpleLabel) o;
-        return html == that.html
-                && Objects.equals(value, that.value);
+        final Port port = (Port) o;
+        return Objects.equals(record, port.record)
+                && compass == port.compass;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, html);
+        return Objects.hash(record, compass);
     }
 
     @Override
     public String toString() {
-        return value;
+        return ":" + (record == null ? "" : record) + ":" + (compass == null ? "" : compass);
     }
 }

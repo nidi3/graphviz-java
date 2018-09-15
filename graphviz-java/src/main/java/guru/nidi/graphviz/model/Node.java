@@ -16,15 +16,18 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributed;
+import guru.nidi.graphviz.attribute.Label;
+
+import javax.annotation.Nullable;
 
 public interface Node extends Attributed<Node>, LinkSource, LinkTarget {
-    PortNode port();
+    Label name();
 
-    PortNode port(String record);
+    PortNode port(@Nullable String record);
 
-    PortNode port(Compass compass);
+    PortNode port(@Nullable Compass compass);
 
-    PortNode port(String record, Compass compass);
+    PortNode port(@Nullable String record, @Nullable Compass compass);
 
     Node link(LinkTarget... targets);
 

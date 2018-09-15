@@ -16,9 +16,13 @@
 package guru.nidi.graphviz
 
 import guru.nidi.graphviz.attribute.*
+import guru.nidi.graphviz.attribute.Color.*
 import guru.nidi.graphviz.engine.Format.PNG
-import guru.nidi.graphviz.model.*
 import guru.nidi.graphviz.model.Compass.SOUTH
+import guru.nidi.graphviz.model.Compass.WEST
+import guru.nidi.graphviz.model.Factory.*
+import guru.nidi.graphviz.model.Link
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -28,31 +32,36 @@ class KraphvizTest {
         val g = graph(directed = true) {
             edge["color" eq "red"]
             edge[Arrow.TEE]
-            node[Color.GREEN]
-            graph[Color.GREY.background()]
+            node[GREEN]
+            graph[GREY.background()]
 
             "e" - "f"
 
-            ("a"[Color.RED] - "b")[Arrow.VEE]
-            "c" / "rec" / SOUTH - "d" / Compass.WEST
+            ("a"[RED] - "b")[Arrow.VEE]
+            ("c" / "rec" / SOUTH)[BLUE] - "d" / WEST
         }
-        println(g)
+        val h = mutGraph().setDirected(true)
+                .graphAttrs().add(GREY.background())
+                .add(node("e").with(GREEN).link(Link.to(node("f").with(GREEN)).with(RED, Arrow.TEE)))
+                .add(node("a").with(RED).link(Link.to(node("b").with(GREEN)).with(RED, Arrow.VEE)))
+                .add(node("c").with(BLUE).link(Link.between(port("rec", SOUTH), node("d").with(GREEN).port(WEST)).with(RED, Arrow.TEE)))
+        assertEquals(h.toString(), g.toString())
         g.toGraphviz().render(PNG).toFile(File("target/kt1.png"))
     }
 
     @Test
     fun complex() {
         val g = graph("example2", directed = true) {
-            val main = "<<b>main</b>>"[Color.rgb("1020d0").font()]
+            val main = "<<b>main</b>>"[rgb("1020d0").font()]
             main - ("parse" - "execute")["weight" eq 8]
             (main - "init")[Style.DOTTED]
             main - "cleanup"
-            (main - "printf")[Style.BOLD, Label.of("100 times"), Color.RED]
+            (main - "printf")[Style.BOLD, Label.of("100 times"), RED]
             "execute" - graph() {
                 -"make a\nstring"
                 -"printf"
             }
-            ("execute" - "compare"[Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)])[Color.RED]
+            ("execute" - "compare"[Shape.RECTANGLE, Style.FILLED, hsv(.7, .3, 1.0)])[RED]
             "init" - "make a\nstring"
         }
         g.toGraphviz().render(PNG).toFile(File("target/kt2.png"))

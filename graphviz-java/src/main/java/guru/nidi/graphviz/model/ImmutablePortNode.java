@@ -15,26 +15,104 @@
  */
 package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.attribute.Label;
+
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Objects;
 
-class ImmutablePortNode extends MutablePortNode implements PortNode {
-    ImmutablePortNode(@Nullable MutableNode node, @Nullable String record, @Nullable Compass compass) {
-        super(node, record, compass);
+class ImmutablePortNode implements PortNode, LinkSource, LinkTarget {
+    private final MutableNode node;
+    private final Port port;
+
+    ImmutablePortNode(MutableNode node, Port port) {
+        this.node = node;
+        this.port = port;
     }
 
-    public ImmutablePortNode port(String record) {
-        return new ImmutablePortNode(node, record, compass);
+    public ImmutablePortNode copy() {
+        return new ImmutablePortNode(node.copy(), port);
     }
 
-    public ImmutablePortNode port(Compass compass) {
-        return new ImmutablePortNode(node, record, compass);
+    @Override
+    public PortNode port(@Nullable String record) {
+        return new ImmutablePortNode(node, new Port(record, port.compass()));
     }
 
-    public ImmutablePortNode port(String record, Compass compass) {
-        return new ImmutablePortNode(node, record, compass);
+    @Override
+    public PortNode port(@Nullable Compass compass) {
+        return new ImmutablePortNode(node, new Port(port.record(), compass));
     }
 
-    public Node link(LinkTarget target) {
-        return (Node) new ImmutablePortNode(node.copy(), record, compass).addLink(target);
+    @Override
+    public PortNode port(@Nullable String record, @Nullable Compass compass) {
+        return new ImmutablePortNode(node, new Port(record, compass));
+    }
+
+    public Port port() {
+        return port;
+    }
+
+    @Override
+    public List<Link> links() {
+        return node.links;
+    }
+
+    @Override
+    public Link linkTo(LinkTarget target) {
+        return node.linkTo(target);
+    }
+
+    @Override
+    public Link linkTo() {
+        return Link.to(this);
+    }
+
+    @Override
+    public LinkTarget asLinkTarget() {
+        return node;
+    }
+
+    @Override
+    public LinkSource asLinkSource() {
+        return node;
+    }
+
+    @Override
+    public void addTo(MutableGraph graph) {
+        graph.nodes.add(node);
+    }
+
+    @Override
+    public MutableNode node() {
+        return node;
+    }
+
+    @Override
+    public Label name() {
+        return node.name();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final ImmutablePortNode that = (ImmutablePortNode) o;
+        return Objects.equals(node, that.node)
+                && Objects.equals(port, that.port);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(node, port);
+    }
+
+    @Override
+    public String toString() {
+        return node.name + port.toString();
     }
 }

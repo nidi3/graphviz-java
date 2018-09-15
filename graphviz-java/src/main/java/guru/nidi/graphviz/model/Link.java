@@ -26,30 +26,26 @@ public final class Link implements Attributed<Link>, LinkTarget {
     final MutableAttributed<Link> attributes;
 
     public static Link to(MutableNode node) {
-        return to(node.withRecord(null));
+        return to(node.port((String) null));
     }
 
     public static Link to(Node node) {
-        return to(node.port());
+        return to(node.port((String) null));
     }
 
     public static Link to(LinkTarget to) {
-        return objBetween(null, to);
+        return between((LinkSource) null, to);
     }
 
     public LinkTarget to() {
         return to;
     }
 
-    public static Link between(Node from, Node to) {
-        return between(from.port(), to.port());
+    public static Link between(Port port, LinkTarget to) {
+        return between(new PortSource(port), to);
     }
 
-    public static Link between(LinkSource from, LinkTarget to) {
-        return objBetween(from, to);
-    }
-
-    private static Link objBetween(@Nullable LinkSource from, LinkTarget to) {
+    static Link between(@Nullable LinkSource from, LinkTarget to) {
         return CreationContext.createLink(from, to);
     }
 

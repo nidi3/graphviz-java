@@ -33,31 +33,31 @@ class LabelTest {
 
     @Test
     void decorated() {
-        assertEquals(attrs(attr("label", label), attr("decorate", true)), attrs(label.decorated()));
+        assertEquals(attrs(attr("label", label.decorated()), attr("decorate", true)), attrs(label.decorated()));
     }
 
     @Test
     void external() {
-        assertEquals(attrs(attr("xlabel", label)), attrs(label.external()));
+        assertEquals(attrs(attr("xlabel", label.external())), attrs(label.external()));
     }
 
     @Test
     void floating() {
-        assertEquals(attrs(attr("label", label), attr("labelfloat", true)), attrs(label.floating()));
+        assertEquals(attrs(attr("label", label.floating()), attr("labelfloat", true)), attrs(label.floating()));
     }
 
     @Test
     void justify() {
-        assertEquals(attrs(attr("label", label), attr("labeljust", "l")), attrs(label.justify(LEFT)));
-        assertEquals(attrs(attr("label", label)), attrs(label.justify(MIDDLE)));
-        assertEquals(attrs(attr("label", label), attr("labeljust", "r")), attrs(label.justify(RIGHT)));
+        assertEquals(attrs(attr("label", label.justify(LEFT)), attr("labeljust", "l")), attrs(label.justify(LEFT)));
+        assertEquals(attrs(attr("label", label.justify(MIDDLE))), attrs(label.justify(MIDDLE)));
+        assertEquals(attrs(attr("label", label.justify(RIGHT)), attr("labeljust", "r")), attrs(label.justify(RIGHT)));
     }
 
     @Test
     void locate() {
-        assertEquals(attrs(attr("label", label), attr("labelloc", "t")), attrs(label.locate(TOP)));
-        assertEquals(attrs(attr("label", label)), attrs(label.locate(CENTER)));
-        assertEquals(attrs(attr("label", label), attr("labelloc", "b")), attrs(label.locate(BOTTOM)));
+        assertEquals(attrs(attr("label", label.locate(TOP)), attr("labelloc", "t")), attrs(label.locate(TOP)));
+        assertEquals(attrs(attr("label", label.locate(CENTER))), attrs(label.locate(CENTER)));
+        assertEquals(attrs(attr("label", label.locate(BOTTOM)), attr("labelloc", "b")), attrs(label.locate(BOTTOM)));
     }
 
 }

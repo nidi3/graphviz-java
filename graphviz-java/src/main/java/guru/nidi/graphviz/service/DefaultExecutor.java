@@ -30,7 +30,7 @@ import java.io.*;
 public class DefaultExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutor.class);
 
-    public void execute(CommandLine cmd,@Nullable File workingDirectory) throws InterruptedException, IOException {
+    public void execute(CommandLine cmd, @Nullable File workingDirectory) throws InterruptedException, IOException {
         LOG.info("executing command {}", cmd.toString());
 
         final ExecuteWatchdog watchdog = new ExecuteWatchdog(60 * 1000);

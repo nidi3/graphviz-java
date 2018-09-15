@@ -15,7 +15,8 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.*;
+import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.SimpleLabel;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -129,6 +130,11 @@ public class Serializer {
         }
     }
 
+    private void node(MutableNode node) {
+        str.append(node.name.serialized());
+        attrs(node.attributes);
+    }
+
     private boolean isLinked(MutableNode node, List<MutableNode> nodes) {
         for (final MutableNode m : nodes) {
             for (final Link link : m.links) {
@@ -152,7 +158,7 @@ public class Serializer {
     }
 
     private boolean isNode(LinkTarget target, MutableNode node) {
-        return target == node || (target instanceof MutablePortNode && ((MutablePortNode) target).node == node);
+        return target == node || (target instanceof ImmutablePortNode && ((ImmutablePortNode) target).node() == node);
     }
 
     private void graphs(List<MutableGraph> graphs, List<MutableNode> nodes) {
@@ -178,9 +184,9 @@ public class Serializer {
 
     private void linkTarget(Object linkable) {
         if (linkable instanceof MutableNode) {
-            node((MutableNode) linkable);
-        } else if (linkable instanceof MutablePortNode) {
-            port((MutablePortNode) linkable);
+            str.append(((MutableNode) linkable).name.serialized());
+        } else if (linkable instanceof ImmutablePortNode) {
+            port((ImmutablePortNode) linkable);
         } else if (linkable instanceof MutableGraph) {
             graph((MutableGraph) linkable, false);
         } else {
@@ -188,18 +194,15 @@ public class Serializer {
         }
     }
 
-    private void node(MutableNode node) {
-        str.append(node.name.serialized());
-        attrs(node.attributes);
-    }
-
-    private void port(MutablePortNode portNode) {
-        str.append(portNode.node.name.serialized());
-        if (portNode.record != null) {
-            str.append(':').append(SimpleLabel.of(portNode.record).serialized());
+    private void port(ImmutablePortNode portNode) {
+        str.append(portNode.name().serialized());
+        final String record = portNode.port().record();
+        if (record != null) {
+            str.append(':').append(SimpleLabel.of(record).serialized());
         }
-        if (portNode.compass != null) {
-            str.append(':').append(portNode.compass.value);
+        final Compass compass = portNode.port().compass();
+        if (compass != null) {
+            str.append(':').append(compass.value);
         }
     }
 

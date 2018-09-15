@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.attribute;
+package guru.nidi.graphviz.model;
+
+import guru.nidi.graphviz.attribute.Attributes;
 
 import java.util.Map.Entry;
 

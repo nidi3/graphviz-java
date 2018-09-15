@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.parse;
 
+import java.util.Objects;
+
 final class Token {
     public static final int
             EOF = 0,
@@ -86,25 +88,15 @@ final class Token {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         final Token token = (Token) o;
-
-        if (type != token.type) {
-            return false;
-        }
-        if (subtype != token.subtype) {
-            return false;
-        }
-        return value.equals(token.value);
-
+        return type == token.type
+                && subtype == token.subtype
+                && Objects.equals(value, token.value);
     }
 
     @Override
     public int hashCode() {
-        int result = type;
-        result = 31 * result + subtype;
-        result = 31 * result + value.hashCode();
-        return result;
+        return Objects.hash(type, subtype, value);
     }
 
     @Override

@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 public class MapAttributes implements Attributes, Iterable<Entry<String, Object>> {
     protected final Map<String, Object> attributes;
 
-    MapAttributes() {
+    public MapAttributes() {
         attributes = new HashMap<>();
     }
 
@@ -31,7 +31,7 @@ public class MapAttributes implements Attributes, Iterable<Entry<String, Object>
         return attrs;
     }
 
-    public MapAttributes add(String key,@Nullable Object value) {
+    public MapAttributes add(String key, @Nullable Object value) {
         if (value == null) {
             attributes.remove(key);
         } else {
@@ -67,15 +67,13 @@ public class MapAttributes implements Attributes, Iterable<Entry<String, Object>
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         final MapAttributes entries = (MapAttributes) o;
-
-        return attributes.equals(entries.attributes);
+        return Objects.equals(attributes, entries.attributes);
     }
 
     @Override
     public int hashCode() {
-        return attributes.hashCode();
+        return Objects.hash(attributes);
     }
 
     @Override

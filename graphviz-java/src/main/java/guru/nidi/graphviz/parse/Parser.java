@@ -15,14 +15,16 @@
  */
 package guru.nidi.graphviz.parse;
 
-import guru.nidi.graphviz.attribute.*;
+import guru.nidi.graphviz.attribute.Attributed;
+import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.model.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static guru.nidi.graphviz.model.Factory.*;
+import static guru.nidi.graphviz.model.Factory.mutGraph;
+import static guru.nidi.graphviz.model.Factory.mutNode;
 import static guru.nidi.graphviz.parse.Token.*;
 
 public final class Parser {
@@ -96,7 +98,7 @@ public final class Parser {
                     applyMutableAttributes(graph.graphAttrs(), Arrays.asList(base, nextToken(ID)));
                     nextToken();
                 } else {
-                    final MutablePortNode nodeId = nodeId(base);
+                    final PortNode nodeId = nodeId(base);
                     if (token.type == MINUS_MINUS || token.type == ARROW) {
                         edgeStatement(graph, nodeId);
                     } else {
@@ -162,7 +164,7 @@ public final class Parser {
         for (int i = 0; i < points.size() - 1; i++) {
             final LinkSource from = points.get(i);
             final LinkTarget to = (LinkTarget) points.get(i + 1);
-            from.links().add(applyAttributes(between(from, to), attrs));
+            from.links().add(applyAttributes(Link.to(to), attrs));
             graph.add(from);
         }
     }
@@ -172,31 +174,33 @@ public final class Parser {
                 new ParserException(lexer.pos, "Invalid compass value '" + name + "'"));
     }
 
-    private void nodeStatement(MutableGraph graph, MutablePortNode nodeId) throws IOException {
-        final MutableNode node = mutNode(nodeId.node().name()); //TODO ignore port and compass?
+    private void nodeStatement(MutableGraph graph, PortNode nodeId) throws IOException {
+        final MutableNode node = mutNode(nodeId.name());
         if (token.type == BRACKET_OPEN) {
             applyMutableAttributes(node, attributeList());
         }
         graph.add(node);
     }
 
-    private MutablePortNode nodeId(Token base) throws IOException {
-        final MutablePortNode node = new MutablePortNode().setNode(mutNode(label(base)));
+    private PortNode nodeId(Token base) throws IOException {
+        String record = null;
+        Compass compass = null;
         if (token.type == COLON) {
             final String second = nextToken(ID).value;
             nextToken();
             if (token.type == COLON) {
-                node.setRecord(second).setCompass(compass(nextToken(ID).value));
+                record = second;
+                compass = compass(nextToken(ID).value);
                 nextToken();
             } else {
                 if (Compass.of(second).isPresent()) {
-                    node.setCompass(compass(second));
+                    compass = compass(second);
                 } else {
-                    node.setRecord(second);
+                    record = second;
                 }
             }
         }
-        return node;
+        return mutNode(label(base)).port(record, compass);
     }
 
     private void attributeStatement(MutableGraph graph) throws IOException {

@@ -26,7 +26,7 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.function.Consumer;
 
-public class BatikRasterizer extends SvgRasterizer {
+class BatikRasterizer extends SvgRasterizer {
     @Override
     public BufferedImage doRasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String svg) {
         final BufferedImage[] image = new BufferedImage[1];

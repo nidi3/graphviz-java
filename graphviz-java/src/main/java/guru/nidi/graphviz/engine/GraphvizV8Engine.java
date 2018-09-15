@@ -37,14 +37,14 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
     }
 
     @Override
-    public void release() {
+    public void close() {
         releaseThread();
     }
 
     static void releaseThread() {
         final Env env = ENVS.get();
         if (env != null) {
-            env.release();
+            env.close();
             ENVS.remove();
         }
     }
@@ -67,7 +67,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
         return ENVS.get().execute(call);
     }
 
-    private static class Env {
+    private static class Env implements AutoCloseable {
         private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
         final V8 v8;
         final ResultHandler resultHandler = new ResultHandler();
@@ -94,7 +94,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
             }
         }
 
-        void release() {
+        public void close() {
             v8.release(true);
         }
     }

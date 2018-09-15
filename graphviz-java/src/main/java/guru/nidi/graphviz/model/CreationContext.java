@@ -15,7 +15,8 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.*;
+import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.Label;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -24,8 +25,8 @@ public final class CreationContext {
     private static final ThreadLocal<Stack<CreationContext>> CONTEXT = ThreadLocal.withInitial(Stack::new);
     @Nullable
     private final MutableGraph graph;
-    private final Map<Label, ImmutableNode> immutableNodes = new HashMap<>();
-    private final Map<Label, MutableNode> mutableNodes = new HashMap<>();
+    private final Map<String, ImmutableNode> immutableNodes = new HashMap<>();
+    private final Map<String, MutableNode> mutableNodes = new HashMap<>();
     private final MutableAttributed<CreationContext> nodeAttributes = new SimpleMutableAttributed<>(this);
     private final MutableAttributed<CreationContext> linkAttributes = new SimpleMutableAttributed<>(this);
     private final MutableAttributed<CreationContext> graphAttributes = new SimpleMutableAttributed<>(this);
@@ -66,17 +67,17 @@ public final class CreationContext {
         return cs.peek();
     }
 
-    public static CreationContext begin() {
+    static CreationContext begin() {
         return begin(null);
     }
 
-    public static CreationContext begin(@Nullable MutableGraph graph) {
+    static CreationContext begin(@Nullable MutableGraph graph) {
         final CreationContext ctx = new CreationContext(graph);
         CONTEXT.get().push(ctx);
         return ctx;
     }
 
-    public static void end() {
+    static void end() {
         final Stack<CreationContext> cs = CONTEXT.get();
         if (!cs.empty()) {
             final CreationContext ctx = cs.pop();
@@ -105,7 +106,7 @@ public final class CreationContext {
     }
 
     private ImmutableNode newNode(Label name) {
-        return immutableNodes.computeIfAbsent(name, ImmutableNode::new).with(nodeAttributes);
+        return immutableNodes.computeIfAbsent(name.value(), l -> new ImmutableNode(name)).with(nodeAttributes);
     }
 
     static MutableGraph createMutGraph() {
@@ -129,7 +130,7 @@ public final class CreationContext {
     }
 
     private MutableNode newMutNode(Label name) {
-        return mutableNodes.computeIfAbsent(name, l -> addMutNode(new MutableNode(l)).add(nodeAttributes));
+        return mutableNodes.computeIfAbsent(name.value(), l -> addMutNode(new MutableNode(name)).add(nodeAttributes));
     }
 
     private MutableNode addMutNode(MutableNode node) {

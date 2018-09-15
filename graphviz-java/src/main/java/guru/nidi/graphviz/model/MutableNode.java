@@ -17,7 +17,6 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
@@ -25,7 +24,6 @@ import java.util.Map.Entry;
 import static guru.nidi.graphviz.model.Factory.mutNode;
 import static java.util.stream.Collectors.joining;
 
-@Nonnull
 public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, LinkTarget {
     protected Label name;
     protected final LinkList links;
@@ -61,18 +59,22 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
         return setName(Label.of(name));
     }
 
-    public MutableNode merge(MutableNode n) {
+    MutableNode merge(MutableNode n) {
         links.addAll(n.links);
         attributes.add(n.attributes);
         return this;
     }
 
-    public MutablePortNode withRecord(@Nullable String record) {
-        return new MutablePortNode().setNode(this).setRecord(record);
+    public PortNode port(@Nullable String record) {
+        return port(record, null);
     }
 
-    public MutablePortNode withCompass(Compass compass) {
-        return new MutablePortNode().setNode(this).setCompass(compass);
+    public PortNode port(@Nullable Compass compass) {
+        return port(null, compass);
+    }
+
+    public PortNode port(@Nullable String record, @Nullable Compass compass) {
+        return new ImmutablePortNode(this, new Port(record, compass));
     }
 
     @Override
@@ -144,25 +146,27 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
     }
 
     private Link adjustLink(Link link) {
-        final MutablePortNode me = new MutablePortNode().setNode(this);
         if (link.from == null) {
-            return Link.between(me, link.to).with(link.attributes);
+            return Link.between(this, link.to).with(link.attributes);
         }
-        if (link.from instanceof MutablePortNode) {
-            final MutablePortNode f = (MutablePortNode) link.from;
-            return f.node != null && !f.node.name.equals(name)
-                    ? Link.between(me, link.from.asLinkTarget())
-                    : Link.between(me.setRecord(f.record()).setCompass(f.compass()), link.to).with(link.attributes);
+        if (link.from instanceof ImmutablePortNode) {
+            final ImmutablePortNode f = (ImmutablePortNode) link.from;
+            return f.node().name.equals(name)
+                    ? Link.between(new ImmutablePortNode(this, f.port()), link.to).with(link.attributes)
+                    : Link.between(this, link.from.asLinkTarget());
+        }
+        if (link.from instanceof PortSource) {
+            final PortSource f = (PortSource) link.from;
+            return Link.between(new ImmutablePortNode(this, f.port), link.to).with(link.attributes);
         }
         if (link.from instanceof MutableNode) {
-            return !((MutableNode) link.from).name.equals(name)
-                    ? Link.between(me, link.from.asLinkTarget())
-                    : Link.between(me, link.to).with(link.attributes);
+            return ((MutableNode) link.from).name.equals(name)
+                    ? Link.between(this, link.to).with(link.attributes)
+                    : Link.between(this, link.from.asLinkTarget());
         }
         throw new IllegalStateException("Unexpected element " + link.from + " in link");
     }
 
-    @Nullable
     public Label name() {
         return name;
     }
@@ -184,25 +188,15 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        final MutableNode node = (MutableNode) o;
-
-        if (!name.equals(node.name)) {
-            return false;
-        }
-        if (!links.equals(node.links)) {
-            return false;
-        }
-        return attributes.equals(node.attributes);
-
+        final MutableNode entries = (MutableNode) o;
+        return Objects.equals(name, entries.name)
+                && Objects.equals(links, entries.links)
+                && Objects.equals(attributes, entries.attributes);
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + links.hashCode();
-        result = 31 * result + attributes.hashCode();
-        return result;
+        return Objects.hash(name, links, attributes);
     }
 
     @Override

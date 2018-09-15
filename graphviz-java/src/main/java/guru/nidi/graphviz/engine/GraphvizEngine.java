@@ -17,10 +17,8 @@ package guru.nidi.graphviz.engine;
 
 import java.util.function.Consumer;
 
-public interface GraphvizEngine {
+public interface GraphvizEngine extends AutoCloseable {
     void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError);
 
     String execute(String src, Options options);
-
-    void release();
 }

@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.attribute;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 import static guru.nidi.graphviz.attribute.Label.Justification.LEFT;
 import static guru.nidi.graphviz.attribute.Label.Justification.RIGHT;
@@ -135,15 +136,20 @@ public final class Label extends SimpleLabel implements Attributes {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
+        if (!super.equals(o)) {
+            return false;
+        }
         final Label label = (Label) o;
-
-        return value.equals(label.value);
+        return external == label.external
+                && floating == label.floating
+                && decorated == label.decorated
+                && just == label.just
+                && loc == label.loc;
     }
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return Objects.hash(super.hashCode(), external, floating, decorated, just, loc);
     }
 
     @Override

@@ -16,9 +16,6 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Label;
-import guru.nidi.graphviz.attribute.MutableAttributed;
-
-import javax.annotation.Nullable;
 
 public final class Factory {
     private Factory() {
@@ -40,16 +37,16 @@ public final class Factory {
         return CreationContext.createNode(name);
     }
 
-    public static PortNode port(String record) {
-        return port(record, null);
+    public static Port port(String record) {
+        return new Port(record, null);
     }
 
-    public static PortNode port(Compass compass) {
-        return port(null, compass);
+    public static Port port(Compass compass) {
+        return new Port(null, compass);
     }
 
-    public static PortNode port(@Nullable String record, @Nullable Compass compass) {
-        return new ImmutablePortNode(null, record, compass);
+    public static Port port(String record, Compass compass) {
+        return new Port(record, compass);
     }
 
 
@@ -73,18 +70,6 @@ public final class Factory {
         return CreationContext.createMutNode(name);
     }
 
-    public static MutablePortNode mutPort(String record) {
-        return new MutablePortNode().setRecord(record);
-    }
-
-    public static MutablePortNode mutPort(Compass compass) {
-        return new MutablePortNode().setCompass(compass);
-    }
-
-    public static MutablePortNode mutPort(String record, Compass compass) {
-        return new MutablePortNode().setRecord(record).setCompass(compass);
-    }
-
 
     public static Link to(Node node) {
         return Link.to(node);
@@ -94,8 +79,8 @@ public final class Factory {
         return Link.to(node);
     }
 
-    public static Link between(LinkSource from, LinkTarget to) {
-        return Link.between(from, to);
+    public static Link between(Port port, LinkTarget to) {
+        return Link.between(port, to);
     }
 
 

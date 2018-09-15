@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.*;
+import guru.nidi.graphviz.attribute.Attributes;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -154,8 +154,8 @@ public class MutableGraph implements LinkSource, LinkTarget {
         if (!visited.contains(node)) {
             visited.add(node);
             for (final Link link : node.links()) {
-                if (link.to instanceof MutablePortNode) {
-                    collectNodes(((MutablePortNode) link.to).node, visited);
+                if (link.to instanceof ImmutablePortNode) {
+                    collectNodes(((ImmutablePortNode) link.to).node(), visited);
                 }
             }
         }
@@ -205,53 +205,22 @@ public class MutableGraph implements LinkSource, LinkTarget {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        final MutableGraph graph = (MutableGraph) o;
-
-        if (strict != graph.strict) {
-            return false;
-        }
-        if (directed != graph.directed) {
-            return false;
-        }
-        if (cluster != graph.cluster) {
-            return false;
-        }
-        if (!name.equals(graph.name)) {
-            return false;
-        }
-        if (!nodes.equals(graph.nodes)) {
-            return false;
-        }
-        if (!subgraphs.equals(graph.subgraphs)) {
-            return false;
-        }
-        if (!links.equals(graph.links)) {
-            return false;
-        }
-        if (!nodeAttrs.equals(graph.nodeAttrs)) {
-            return false;
-        }
-        if (!linkAttrs.equals(graph.linkAttrs)) {
-            return false;
-        }
-        return graphAttrs.equals(graph.graphAttrs);
-
+        final MutableGraph that = (MutableGraph) o;
+        return strict == that.strict
+                && directed == that.directed
+                && cluster == that.cluster
+                && Objects.equals(name, that.name)
+                && Objects.equals(nodes, that.nodes)
+                && Objects.equals(subgraphs, that.subgraphs)
+                && Objects.equals(links, that.links)
+                && Objects.equals(nodeAttrs, that.nodeAttrs)
+                && Objects.equals(linkAttrs, that.linkAttrs)
+                && Objects.equals(graphAttrs, that.graphAttrs);
     }
 
     @Override
     public int hashCode() {
-        int result = (strict ? 1 : 0);
-        result = 31 * result + (directed ? 1 : 0);
-        result = 31 * result + (cluster ? 1 : 0);
-        result = 31 * result + name.hashCode();
-        result = 31 * result + nodes.hashCode();
-        result = 31 * result + subgraphs.hashCode();
-        result = 31 * result + links.hashCode();
-        result = 31 * result + nodeAttrs.hashCode();
-        result = 31 * result + linkAttrs.hashCode();
-        result = 31 * result + graphAttrs.hashCode();
-        return result;
+        return Objects.hash(strict, directed, cluster, name, nodes, subgraphs, links, nodeAttrs, linkAttrs, graphAttrs);
     }
 
     @Override

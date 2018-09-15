@@ -15,11 +15,8 @@
  */
 package guru.nidi.graphviz.attribute;
 
-import java.util.Arrays;
-
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
-import static java.util.stream.Collectors.joining;
 
 public final class Records {
     private static final String SHAPE = "shape";

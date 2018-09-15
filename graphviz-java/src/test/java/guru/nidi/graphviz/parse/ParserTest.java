@@ -64,9 +64,9 @@ class ParserTest {
                 d = mutNode("d"),
                 full = mutNode("full");
         assertEquals(mutGraph().add(
-                simple.addLink(to(c.withRecord("2")).with("a", "b")),
-                c.withRecord("2").addLink(to(d.withCompass(SOUTH_WEST)).with("a", "b")),
-                d.addLink(between(port(SOUTH_WEST), full.withRecord("2").setCompass(NORTH_EAST)).with("a", "b"))),
+                simple.addLink(to(c.port("2")).with("a", "b")),
+                c.addLink(between(port("2"), d.port(SOUTH_WEST)).with("a", "b")),
+                d.addLink(between(port(SOUTH_WEST), full.port("2", NORTH_EAST)).with("a", "b"))),
                 Parser.read("graph { simple -- c:2 -- d:sw -- full:2:ne [a=b]}"));
     }
 

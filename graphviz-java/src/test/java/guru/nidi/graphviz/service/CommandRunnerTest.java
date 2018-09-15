@@ -34,7 +34,8 @@ import static org.mockito.Mockito.verify;
  */
 class CommandRunnerTest {
 
-    @Captor @Nullable
+    @Captor
+    @Nullable
     private ArgumentCaptor<CommandLine> runEchoCaptor;
 
     @BeforeEach

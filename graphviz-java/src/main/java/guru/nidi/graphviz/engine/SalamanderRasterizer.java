@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 
 import static java.awt.RenderingHints.*;
 
-public class SalamanderRasterizer extends SvgRasterizer {
+class SalamanderRasterizer extends SvgRasterizer {
     @Override
     public BufferedImage doRasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String svg) {
         final SVGDiagram diagram = createDiagram(svg);

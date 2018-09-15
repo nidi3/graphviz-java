@@ -18,7 +18,7 @@ package guru.nidi.graphviz.attribute;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 
-public class SingleAttributes<T> implements Attributes {
+class SingleAttributes<T> implements Attributes {
     protected final String key;
     protected final T value;
 

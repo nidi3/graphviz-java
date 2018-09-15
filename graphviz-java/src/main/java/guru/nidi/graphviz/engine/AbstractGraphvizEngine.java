@@ -25,7 +25,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
 
     private final boolean sync;
 
-    public AbstractGraphvizEngine(boolean sync) {
+    protected AbstractGraphvizEngine(boolean sync) {
         this.sync = sync;
     }
 
@@ -43,13 +43,13 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
             onOk.accept(this);
         } catch (Exception e) {
             LOG.info("Could not initialize {}", this, e);
-            release();
+            close();
             onError.accept(this);
         }
     }
 
     @Override
-    public void release() {
+    public void close() {
     }
 
     protected abstract void doInit() throws Exception;

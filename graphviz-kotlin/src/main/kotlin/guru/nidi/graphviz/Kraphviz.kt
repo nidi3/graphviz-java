@@ -21,8 +21,7 @@ import guru.nidi.graphviz.attribute.Attributes
 import guru.nidi.graphviz.attribute.Attributes.attr
 import guru.nidi.graphviz.engine.Graphviz
 import guru.nidi.graphviz.model.*
-import guru.nidi.graphviz.model.Factory.mutGraph
-import guru.nidi.graphviz.model.Factory.mutNode
+import guru.nidi.graphviz.model.Factory.*
 
 fun graph(name: String = "", strict: Boolean = false, directed: Boolean = false, cluster: Boolean = false, config: () -> Unit = { }) =
         mutGraph(name).apply {
@@ -63,20 +62,29 @@ val graph = object : AttributeContainer {
 
 operator fun MutableNode.minus(target: LinkTarget) = addLink(target).links().last()!!
 operator fun MutableNode.minus(node: String) = this - mutNode(node)
-operator fun MutableNode.div(record: String) = withRecord(record)
-operator fun MutableNode.div(compass: Compass) = withCompass(compass)
+operator fun MutableNode.div(record: String) = port(record)
+operator fun MutableNode.div(compass: Compass) = port(compass)
 operator fun MutableNode.get(vararg attrs: Attributes) = add(*attrs)
 
-operator fun MutablePortNode.minus(target: LinkTarget) = addLink(target).links().last()!!
-operator fun MutablePortNode.minus(node: String) = this - mutNode(node)
-operator fun MutablePortNode.div(record: String) = setRecord(record)
-operator fun MutablePortNode.div(compass: Compass) = setCompass(compass)
-operator fun MutablePortNode.get(vararg attrs: Attributes) = node()!!.add(*attrs)
+operator fun PortNode.minus(target: LinkTarget) = links().run {
+    add(between(port(), target))
+    last()!!
+}
+
+operator fun PortNode.minus(node: String) = this - mutNode(node)
+operator fun PortNode.div(record: String) = port(record)
+operator fun PortNode.div(compass: Compass) = port(compass)
+operator fun PortNode.get(vararg attrs: Attributes): PortNode {
+    (node() as MutableNode).add(*attrs)
+    return this
+}
 
 operator fun Link.minus(target: LinkTarget): Link {
     val source = to().asLinkSource()
-    source.links().add(source.linkTo(target))
-    return source.links().last()
+    return source.links().run {
+        add(source.linkTo(target))
+        last()!!
+    }
 }
 
 operator fun Link.minus(node: String) = this - mutNode(node)

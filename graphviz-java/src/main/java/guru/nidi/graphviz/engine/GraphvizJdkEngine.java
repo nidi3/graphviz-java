@@ -40,7 +40,8 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
             if (HANDLER.get() == null) {
                 HANDLER.set(new ResultHandler());
             }
-            ENGINE.eval("var handler = graphviz.resultHandler();" + jsCall);
+            ENGINE.getBindings(ScriptContext.ENGINE_SCOPE).put("handler", HANDLER.get());
+            ENGINE.eval(jsCall);
             return HANDLER.get().waitFor();
         } catch (ScriptException e) {
             throw new GraphvizException("Problem executing graphviz", e);
@@ -58,9 +59,5 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
                 + "function error(r){ handler.setError(r); }");
         ENGINE.eval(jsInitEnv());
         execute("digraph g { a -> b; }", Options.create());
-    }
-
-    public static ResultHandler resultHandler() {
-        return HANDLER.get();
     }
 }

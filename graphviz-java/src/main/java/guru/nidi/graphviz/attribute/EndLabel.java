@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.attribute;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public final class EndLabel extends SimpleLabel implements Attributes {
     private final String key;
@@ -51,4 +52,25 @@ public final class EndLabel extends SimpleLabel implements Attributes {
         return attributes;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        final EndLabel endLabel = (EndLabel) o;
+        return Objects.equals(key, endLabel.key)
+                && Objects.equals(angle, endLabel.angle)
+                && Objects.equals(distance, endLabel.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), key, angle, distance);
+    }
 }

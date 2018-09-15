@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.attribute;
+package guru.nidi.graphviz.model;
+
+import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.MapAttributes;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Objects;
 
-public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
+class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     private final E target;
-    final MapAttributes attributes = new MapAttributes();
+    private final MapAttributes attributes = new MapAttributes();
 
     public SimpleMutableAttributed(E target) {
         this.target = target;
@@ -63,16 +67,13 @@ public class SimpleMutableAttributed<E> implements MutableAttributed<E> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         final SimpleMutableAttributed<?> that = (SimpleMutableAttributed<?>) o;
-
-        return attributes.equals(that.attributes);
-
+        return Objects.equals(attributes, that.attributes);
     }
 
     @Override
     public int hashCode() {
-        return attributes.hashCode();
+        return Objects.hash(attributes);
     }
 
     @Override

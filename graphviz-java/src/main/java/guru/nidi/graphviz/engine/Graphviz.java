@@ -69,8 +69,8 @@ public final class Graphviz {
                     engineQueue = new ArrayBlockingQueue<>(1);
                 } else {
                     try {
-                        getEngine().release();
-                    } catch (GraphvizException e) {
+                        getEngine().close();
+                    } catch (Exception e) {
                         //ignore
                     }
                 }
@@ -113,7 +113,11 @@ public final class Graphviz {
     public static void releaseEngine() {
         GraphvizV8Engine.releaseThread(); //TODO remove this hard coupling
         if (engine != null) {
-            engine.release();
+            try {
+                engine.close();
+            } catch (Exception e) {
+                throw new GraphvizException("Problem closing engine", e);
+            }
         }
         engine = null;
         engineQueue = null;
@@ -188,14 +192,17 @@ public final class Graphviz {
 
 
     private static class ErrorGraphvizEngine implements GraphvizEngine {
+        @Override
         public void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError) {
         }
 
+        @Override
         public String execute(String src, Options options) {
             return "";
         }
 
-        public void release() {
+        @Override
+        public void close() {
         }
     }
 }
