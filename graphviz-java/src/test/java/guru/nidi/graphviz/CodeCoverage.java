@@ -24,9 +24,9 @@ import static guru.nidi.codeassert.jacoco.CoverageType.*;
 import static guru.nidi.codeassert.junit.CodeAssertMatchers.hasEnoughCoverage;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class CodeCoverage {
+class CodeCoverage {
     @Test
-    public void coverage() {
+    void coverage() {
         //TODO 75,75,75 should be the goal
         final JacocoAnalyzer analyzer = new JacocoAnalyzer(new CoverageCollector(BRANCH, LINE, METHOD)
                 .just(For.global().setMinima(0, 0, 0)) //TODO remove

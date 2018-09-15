@@ -14,6 +14,17 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>guru.nidi</groupId>
+                <artifactId>code-assert-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>assert</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>guru.nidi.maven.plugins</groupId>
                 <artifactId>snippets-maven-plugin</artifactId>
                 <executions>

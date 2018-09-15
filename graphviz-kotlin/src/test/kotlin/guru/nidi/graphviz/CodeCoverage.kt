@@ -26,12 +26,11 @@ import org.junit.jupiter.api.Test
 
 class CodeCoverage {
     @Test
-    @Disabled
     fun coverage() {
         //TODO 75,75,75 should be the goal
         val analyzer = JacocoAnalyzer(CoverageCollector(BRANCH, LINE, METHOD)
-                .just(For.global().setMinima(35, 70, 70))
-                .just(For.allPackages().setMinima(50, 50, 50))
+                .just(For.global().setMinima(70, 90, 80))
+                .just(For.allPackages().setMinima(70, 90, 80))
         )
         assertThat(analyzer.analyze(), hasEnoughCoverage())
     }
