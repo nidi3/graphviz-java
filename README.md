@@ -31,7 +31,7 @@ This project is available via Maven:
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-java</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
 </dependency>
 ```
 
@@ -121,7 +121,7 @@ digraph example1 {
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-kotlin</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
 </dependency>
 ```
 
