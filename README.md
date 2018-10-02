@@ -75,7 +75,7 @@ Graph g = graph("example1").directed()
 Graphviz.fromGraph(g).height(100).render(Format.PNG).toFile(new File("example/ex1.png"));
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1.png" width="100">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1.png" height="100">
 
 Global attributes are set using the `graphAttr`, `linkAttr` and `nodeAttr` methods.
 Nodes are styled using the `with` method. 
