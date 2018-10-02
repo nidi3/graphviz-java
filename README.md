@@ -66,14 +66,22 @@ The basic usage is as follows (assuming `import static guru.nidi.graphviz.model.
 ### Immutable
 [//]: # (basic)
 ```java
-Graph g = graph("example1").directed().with(
-        node("a").with(Color.RED).link(node("b")));
-Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1.png"));
+Graph g = graph("example1").directed()
+        .graphAttr().with(RankDir.LEFT_TO_RIGHT)
+        .with(
+                node("a").with(Color.RED).link(node("b")),
+                node("b").link(to(node("c")).with(Style.DASHED))
+        );
+Graphviz.fromGraph(g).height(100).render(Format.PNG).toFile(new File("example/ex1.png"));
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1.png" width="100">
 
-Attention: `Node a = node("a"); a.with(Color.RED);` Is not working as it might be expected. 
+Global attributes are set using the `graphAttr`, `linkAttr` and `nodeAttr` methods.
+Nodes are styled using the `with` method. 
+To style edges, use the static method `to` which returns a `Link` that also has a `with` method.
+ 
+**Attention:** `Node a = node("a"); a.with(Color.RED);` Is not working as it might be expected. 
 All "mutating" methods like `with` on nodes, links and graphs create new objects and leave the original object unchanged.
 So in the example above, variable `a` contains a node that is NOT red.
 If you want a red node, do `a = a.with(Color.RED)` or use the mutable API.

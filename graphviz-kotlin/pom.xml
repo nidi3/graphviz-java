@@ -11,6 +11,10 @@
     <artifactId>graphviz-kotlin</artifactId>
     <name>${project.artifactId}</name>
 
+    <properties>
+        <kotlin.version>1.2.71</kotlin.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
