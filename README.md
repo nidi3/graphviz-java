@@ -80,6 +80,9 @@ Graphviz.fromGraph(g).height(100).render(Format.PNG).toFile(new File("example/ex
 Global attributes are set using the `graphAttr`, `linkAttr` and `nodeAttr` methods.
 Nodes are styled using the `with` method. 
 To style edges, use the static method `to` which returns a `Link` that also has a `with` method.
+The `with` method accepts predefined attributes like `Style`, `Arrow` or `Shape` 
+as well as everything defined in the [Graphviz reference](https://graphviz.gitlab.io/_pages/doc/info/attrs.html)
+e.g. `with("weight", 5)`
  
 **Attention:** `Node a = node("a"); a.with(Color.RED);` Is not working as it might be expected. 
 All "mutating" methods like `with` on nodes, links and graphs create new objects and leave the original object unchanged.
