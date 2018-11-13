@@ -19,9 +19,10 @@ import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
 public final class Records {
-    private static final String SHAPE = "shape";
-    private static final String RECORD = "record";
-    private static final String LABEL = "label";
+    private static final String
+            SHAPE = "shape",
+            RECORD = "record",
+            LABEL = "label";
 
     private Records() {
     }

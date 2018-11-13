@@ -37,14 +37,16 @@ public final class Graphviz {
     final int width;
     final int height;
     final double scale;
+    final double fontAdjust;
 
     private Graphviz(String src, @Nullable Rasterizer rasterizer,
-                     int width, int height, double scale, Options options) {
+                     int width, int height, double scale, double fontAdjust, Options options) {
         this.src = src;
         this.rasterizer = rasterizer;
         this.width = width;
         this.height = height;
         this.scale = scale;
+        this.fontAdjust = fontAdjust;
         this.options = options;
     }
 
@@ -123,14 +125,8 @@ public final class Graphviz {
         engineQueue = null;
     }
 
-    public static void printFontNames() {
-        for (final String name : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
-            System.out.println(name);
-        }
-    }
-
     public static Graphviz fromString(String src) {
-        return new Graphviz(src, Rasterizer.DEFAULT, 0, 0, 1, Options.create());
+        return new Graphviz(src, Rasterizer.DEFAULT, 0, 0, 1, 1, Options.create());
     }
 
     public static Graphviz fromFile(File src) throws IOException {
@@ -148,48 +144,51 @@ public final class Graphviz {
     }
 
     public Graphviz engine(Engine engine) {
-        return new Graphviz(src, rasterizer, width, height, scale, options.engine(engine));
+        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.engine(engine));
     }
 
     public Graphviz totalMemory(@Nullable Integer totalMemory) {
-        return new Graphviz(src, rasterizer, width, height, scale, options.totalMemory(totalMemory));
+        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.totalMemory(totalMemory));
     }
 
     public Graphviz yInvert(@Nullable Boolean yInvert) {
-        return new Graphviz(src, rasterizer, width, height, scale, options.yInvert(yInvert));
+        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.yInvert(yInvert));
+    }
+
+    public Graphviz fontAdjust(double fontAdjust) {
+        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options);
     }
 
     public Graphviz width(int width) {
-        return new Graphviz(src, rasterizer, width, height, scale, options);
+        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options);
     }
 
     public Graphviz height(int height) {
-        return new Graphviz(src, rasterizer, width, height, scale, options);
+        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options);
     }
 
     public Graphviz scale(double scale) {
-        return new Graphviz(src, rasterizer, width, height, scale, options);
+        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options);
     }
 
     public Renderer rasterize(Rasterizer rasterizer) {
         final Options opts = options.format(rasterizer.format());
-        final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, opts);
+        final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, fontAdjust, opts);
         return new Renderer(graphviz, null, Format.PNG);
     }
 
     public Renderer render(Format format) {
-        final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, options.format(format));
-        return new Renderer(graphviz, null, format);
+        final Graphviz g = new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.format(format));
+        return new Renderer(g, null, format);
     }
 
     String execute() {
-        return options.format.postProcess(getEngine().execute(src, options));
+        return options.format.postProcess(getEngine().execute(src, options), fontAdjust);
     }
 
     Format format() {
         return options.format;
     }
-
 
     private static class ErrorGraphvizEngine implements GraphvizEngine {
         @Override

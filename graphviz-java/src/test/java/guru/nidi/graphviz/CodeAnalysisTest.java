@@ -54,13 +54,14 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     @Override
     protected DependencyResult analyzeDependencies() {
         class GuruNidiGraphviz extends DependencyRuler {
-            DependencyRule model, attribute, engine, parse, service;
+            DependencyRule model, attribute, engine, parse, service, use;
 
             public void defineRules() {
                 base().mayBeUsedBy(all());
                 engine.mayUse(model, service);
                 parse.mayUse(model, attribute);
                 model.mayUse(attribute);
+                use.mayUse(all());
             }
         }
         final DependencyRules rules = DependencyRules.denyAll()
@@ -144,7 +145,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(PredefConfig.minimalCheckstyleIgnore())
-                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style").ignore("empty.line.separator"));
+                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style", "Options", "Records", "SystemUtils").ignore("empty.line.separator"));
         final StyleChecks checks = PredefConfig.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }

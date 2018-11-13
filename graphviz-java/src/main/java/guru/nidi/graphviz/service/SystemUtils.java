@@ -33,9 +33,10 @@ public final class SystemUtils {
 
     @Nullable
     private static final String OS_NAME = getSystemProperty("os.name");
-    private static final boolean IS_OS_WINDOWS = getOsMatchesName("Windows");
-    private static final boolean IS_OS_MAC = getOsMatchesName("Mac");
-    private static final boolean IS_OS_LINUX = getOsMatchesName("Linux") || getOsMatchesName("LINUX");
+    private static final boolean
+            IS_OS_WINDOWS = getOsMatchesName("Windows"),
+            IS_OS_MAC = getOsMatchesName("Mac"),
+            IS_OS_LINUX = getOsMatchesName("Linux") || getOsMatchesName("LINUX");
 
     private SystemUtils() {
     }

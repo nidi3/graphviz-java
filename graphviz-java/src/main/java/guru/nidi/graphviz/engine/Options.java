@@ -37,10 +37,11 @@ import static java.util.Locale.ENGLISH;
  * limitations under the License.
  */
 public final class Options {
-    private static final Pattern FORMAT = Pattern.compile("format:'(.*?)'");
-    private static final Pattern ENGINE = Pattern.compile("engine:'(.*?)'");
-    private static final Pattern MEMORY = Pattern.compile("totalMemory:'(.*?)'");
-    private static final Pattern Y_INVERT = Pattern.compile("yInvert:(.*?)");
+    private static final Pattern
+            FORMAT = Pattern.compile("format:'(.*?)'"),
+            ENGINE = Pattern.compile("engine:'(.*?)'"),
+            MEMORY = Pattern.compile("totalMemory:'(.*?)'"),
+            Y_INVERT = Pattern.compile("yInvert:(.*?)");
 
     final Engine engine;
     final Format format;
@@ -89,6 +90,10 @@ public final class Options {
     }
 
     public Options yInvert(@Nullable Boolean yInvert) {
+        return new Options(engine, format, totalMemory, yInvert);
+    }
+
+    public Options fontAdjust(double fontAdjust) {
         return new Options(engine, format, totalMemory, yInvert);
     }
 
