@@ -290,7 +290,7 @@ The two environments are not guaranteed to calculate the width of text the same 
 This can lead to node labels that are too broad for their box or not correctly centered.
 To help with this, there is the `fontAdjust` option to adjust the font size _after_ the layout has been done.
 
-To help finding the correct `fontAdjust`, [FontTools.java](blob/master/graphviz-java/src/main/java/guru/nidi/graphviz/use/FontTools.java)
+To help finding the correct `fontAdjust`, [FontTools.java](graphviz-java/src/main/java/guru/nidi/graphviz/use/FontTools.java)
 can be used. 
 
 [//]: # (fontAdjust)
