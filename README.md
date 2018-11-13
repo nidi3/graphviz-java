@@ -283,3 +283,27 @@ BufferedImage image = viz.render(Format.PNG).toImage();
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5b.png" width="100">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5s.png" width="100">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5.svg" width="100">
+
+### Font size
+The layout of a graph is done with Javascript / natively and the rendering with Java.
+The two environments are not guaranteed to calculate the width of text the same way.
+This can lead to node labels that are too broad for their box or not correctly centered.
+To help with this, there is the `fontAdjust` option to adjust the font size _after_ the layout has been done.
+
+To help finding the correct `fontAdjust`, [FontTools.java](blob/master/graphviz-java/src/main/java/guru/nidi/graphviz/use/FontTools.java)
+can be used. 
+
+[//]: # (fontAdjust)
+```java
+Node width = node("Very long node labels can go over the border");
+Node center = node(Label.html("HTML labels on the other side, can get uncentered"));
+Graphviz g = Graphviz.fromGraph(graph()
+        .nodeAttr().with(Font.name("colibri"), Shape.RECTANGLE)
+        .with(width.link(center)));
+g.render(Format.PNG).toFile(new File("example/ex6d.png"));
+g.fontAdjust(.83).render(Format.PNG).toFile(new File("example/ex6a.png"));
+```
+[//]: # (end)
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex6d.png" width="400">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex6a.png" width="400">
+  

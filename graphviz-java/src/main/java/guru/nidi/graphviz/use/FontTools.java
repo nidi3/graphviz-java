@@ -40,9 +40,7 @@ public final class FontTools {
     }
 
     public static void createFontTest(String name, double adjust, File output) throws IOException {
-        final Node width = node(Label.html("A very long node label that should not go over the border<br/>"
-                + "If text is too narrow, increase fontAdjust.<br/>"
-                + "If it's too wide, decrease it."));
+        final Node width = node("If text is too narrow, increase fontAdjust. If it's too wide, decrease it.");
         final Node center = node(Label.html("A very long node label that should be centered inside the border<br/>"
                 + "If text is too much left, increase fontAdjust.<br/>"
                 + "If it's too much right, decrease it."));

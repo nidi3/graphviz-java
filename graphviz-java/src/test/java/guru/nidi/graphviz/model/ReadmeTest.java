@@ -156,4 +156,17 @@ class ReadmeTest {
         BufferedImage image = viz.render(Format.PNG).toImage();
         //## end
     }
+
+    @Test
+    void ex6() throws IOException {
+        //## fontAdjust
+        Node width = node("Very long node labels can go over the border");
+        Node center = node(Label.html("HTML labels on the other side, can get uncentered"));
+        Graphviz g = Graphviz.fromGraph(graph()
+                .nodeAttr().with(Font.name("casual"), Shape.RECTANGLE)
+                .with(width.link(center)));
+        g.render(Format.PNG).toFile(new File("example/ex6d.png"));
+        g.fontAdjust(.87).render(Format.PNG).toFile(new File("example/ex6a.png"));
+        //## end
+    }
 }
