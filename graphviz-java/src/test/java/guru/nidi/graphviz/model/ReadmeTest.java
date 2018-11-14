@@ -78,8 +78,8 @@ class ReadmeTest {
     void ex2() throws IOException {
         //## complex
         Node
-                main = node("main").with(Label.html("<b>main</b>"), Color.rgb("1020d0").font()),
-                init = node("init"),
+                main = node("main").with(Label.html("<b>main</b><br/>start"), Color.rgb("1020d0").font()),
+                init = node(Label.markdown("**_init_**")),
                 execute = node("execute"),
                 compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
                 mkString = node("mkString").with(Label.of("make a\nstring")),

@@ -50,14 +50,56 @@ public final class Label extends SimpleLabel implements Attributes {
         this.loc = loc;
     }
 
+    /**
+     * Create a simple label. Create newlines with \n.
+     *
+     * @param value The label text
+     * @return
+     */
     public static Label of(String value) {
         return new Label(value, false, false, false, false, null, null);
     }
 
+    /**
+     * Create a HTML label.
+     *
+     * @param value The HTML code
+     * @return
+     * @see <a href="http://www.graphviz.org/doc/info/shapes.html#html">www.graphviz.org</a>
+     */
     public static Label html(String value) {
         return new Label(value, true, false, false, false, null, null);
     }
 
+    /**
+     * Create a HTML label from markdown. The following patterns are allowed:<br>
+     * \n newline, **bold**, *italics*, ~~strike through~~, _underlined_, ^overlined^, __subscript__, ^^superscript^^.
+     *
+     * @param value
+     * @return
+     */
+    public static Label markdown(String value) {
+        return html(replaceMd(replaceMd(replaceMd(replaceMd(replaceMd(replaceMd(replaceMd(value.replace("\n", "<br/>"),
+                "\\*\\*", "b"),
+                "\\*", "i"),
+                "~~", "s"),
+                "__", "sub"),
+                "_", "u"),
+                "\\^\\^", "sup"),
+                "\\^", "o")
+                .replaceAll("\\\\([*~_^])", "$1"));
+    }
+
+    private static String replaceMd(String s, String from, String to) {
+        return s.replaceAll("([^\\\\])?" + from + "(.*?[^\\\\])" + from, "$1<" + to + ">$2</" + to + ">");
+    }
+
+    /**
+     * Create either a simple or HTML label. A HTML label is created for values of the form {@code '<' text '>'}, otherwise a simple label.
+     *
+     * @param value
+     * @return
+     */
     public static Label raw(String value) {
         return value.startsWith("<") && value.endsWith(">")
                 ? new Label(value.substring(1, value.length() - 1), true, false, false, false, null, null)

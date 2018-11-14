@@ -167,8 +167,8 @@ graph(directed = true) {
 [//]: # (complex)
 ```java
 Node
-        main = node("main").with(Label.html("<b>main</b>"), Color.rgb("1020d0").font()),
-        init = node("init"),
+        main = node("main").with(Label.html("<b>main</b><br/>start"), Color.rgb("1020d0").font()),
+        init = node(Label.markdown("**_init_**")),
         execute = node("execute"),
         compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
         mkString = node("mkString").with(Label.of("make a\nstring")),
@@ -298,10 +298,10 @@ can be used.
 Node width = node("Very long node labels can go over the border");
 Node center = node(Label.html("HTML labels on the other side, can get uncentered"));
 Graphviz g = Graphviz.fromGraph(graph()
-        .nodeAttr().with(Font.name("colibri"), Shape.RECTANGLE)
+        .nodeAttr().with(Font.name("casual"), Shape.RECTANGLE)
         .with(width.link(center)));
 g.render(Format.PNG).toFile(new File("example/ex6d.png"));
-g.fontAdjust(.83).render(Format.PNG).toFile(new File("example/ex6a.png"));
+g.fontAdjust(.87).render(Format.PNG).toFile(new File("example/ex6a.png"));
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex6d.png" width="400">
