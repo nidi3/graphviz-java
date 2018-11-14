@@ -53,8 +53,8 @@ public final class Label extends SimpleLabel implements Attributes {
     /**
      * Create a simple label. Create newlines with \n.
      *
-     * @param value The label text
-     * @return
+     * @param value the label text
+     * @return the Label
      */
     public static Label of(String value) {
         return new Label(value, false, false, false, false, null, null);
@@ -63,8 +63,8 @@ public final class Label extends SimpleLabel implements Attributes {
     /**
      * Create a HTML label.
      *
-     * @param value The HTML code
-     * @return
+     * @param value the HTML code
+     * @return the Label
      * @see <a href="http://www.graphviz.org/doc/info/shapes.html#html">www.graphviz.org</a>
      */
     public static Label html(String value) {
@@ -75,8 +75,8 @@ public final class Label extends SimpleLabel implements Attributes {
      * Create a HTML label from markdown. The following patterns are allowed:<br>
      * \n newline, **bold**, *italics*, ~~strike through~~, _underlined_, ^overlined^, __subscript__, ^^superscript^^.
      *
-     * @param value
-     * @return
+     * @param value the markdown code
+     * @return the Label
      */
     public static Label markdown(String value) {
         return html(replaceMd(replaceMd(replaceMd(replaceMd(replaceMd(replaceMd(replaceMd(value.replace("\n", "<br/>"),
@@ -95,15 +95,22 @@ public final class Label extends SimpleLabel implements Attributes {
     }
 
     /**
-     * Create either a simple or HTML label. A HTML label is created for values of the form {@code '<' text '>'}, otherwise a simple label.
+     * Create either a simple, HTML or markdown label.
+     * If the value is not surrounded by < and >, a simple Label is created.
+     * Otherwise if value contains some HTML tags, a HTML label is created.
+     * Otherwise a markdown label is created.
      *
-     * @param value
-     * @return
+     * @param value the raw label
+     * @return the Label
      */
     public static Label raw(String value) {
-        return value.startsWith("<") && value.endsWith(">")
-                ? new Label(value.substring(1, value.length() - 1), true, false, false, false, null, null)
-                : new Label(value, false, false, false, false, null, null);
+        final boolean isTagged = value.startsWith("<") && value.endsWith(">");
+        if (!isTagged) {
+            return of(value);
+        }
+        final String untagged = value.substring(1, value.length() - 1);
+        final boolean hasTags = value.contains("/>") || value.contains("</");
+        return hasTags ? html(untagged) : markdown(untagged);
     }
 
     public EndLabel head() {
