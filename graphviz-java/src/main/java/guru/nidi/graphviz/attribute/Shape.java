@@ -18,7 +18,7 @@ package guru.nidi.graphviz.attribute;
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
-public final class Shape extends SingleAttributes<String> {
+public final class Shape extends SingleAttributes<String, ForNode> {
     private static final String SHAPE = "shape";
 
     public static final Shape
@@ -48,19 +48,19 @@ public final class Shape extends SingleAttributes<String> {
         super(SHAPE, value);
     }
 
-    public static Attributes mDiamond(String topLabel, String bottomLabel) {
+    public static Attributes<ForNode> mDiamond(String topLabel, String bottomLabel) {
         return attrs(attr(SHAPE, "Mdiamond"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
     }
 
-    public static Attributes mSquare(String topLabel, String bottomLabel) {
+    public static Attributes<ForNode> mSquare(String topLabel, String bottomLabel) {
         return attrs(attr(SHAPE, "Msquare"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
     }
 
-    public static Attributes mCircle(String topLabel, String bottomLabel) {
+    public static Attributes<ForNode> mCircle(String topLabel, String bottomLabel) {
         return attrs(attr(SHAPE, "Mcircle"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
     }
 
-    public static Attributes polygon(int sides, double skew, double distortion) {
+    public static Attributes<ForNode> polygon(int sides, double skew, double distortion) {
         return attrs(attr(SHAPE, "polygon"), attr("sides", sides), attr("skew", skew), attr("distortion", distortion));
     }
 }

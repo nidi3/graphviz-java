@@ -24,16 +24,16 @@ import java.util.Map.Entry;
 import static guru.nidi.graphviz.model.Factory.mutNode;
 import static java.util.stream.Collectors.joining;
 
-public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, LinkTarget {
+public class MutableNode implements MutableAttributed<MutableNode, ForNode>, LinkSource, LinkTarget {
     protected Label name;
     protected final LinkList links;
-    protected final MutableAttributed<MutableNode> attributes;
+    protected final MutableAttributed<MutableNode, ForNode> attributes;
 
     MutableNode(Label name) {
         this(name, new ArrayList<>(), Attributes.attrs());
     }
 
-    protected MutableNode(Label name, List<Link> links, Attributes attributes) {
+    protected MutableNode(Label name, List<Link> links, Attributes<? extends ForNode> attributes) {
         this.links = new LinkList(this, links);
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
         this.name = name; //satisfy code analyzers
@@ -41,7 +41,7 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
     }
 
     public MutableNode copy() {
-        return new MutableNode(name, links, attributes.applyTo(Attributes.attrs()));
+        return new MutableNode(name, links, attributes.copy());
     }
 
     public final MutableNode setName(Label name) {
@@ -120,7 +120,7 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
         return this;
     }
 
-    public MutableNode add(Attributes attrs) {
+    public MutableNode add(Attributes<? extends ForNode> attrs) {
         attributes.add(attrs);
         return this;
     }
@@ -136,7 +136,7 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
     }
 
     @Override
-    public Attributes applyTo(MapAttributes attrs) {
+    public Attributes<? super ForNode> applyTo(MapAttributes<? super ForNode> attrs) {
         return attributes.applyTo(attrs);
     }
 
@@ -176,7 +176,7 @@ public class MutableNode implements MutableAttributed<MutableNode>, LinkSource, 
         return links;
     }
 
-    public MutableAttributed<MutableNode> attrs() {
+    public MutableAttributed<MutableNode, ForNode> attrs() {
         return attributes;
     }
 

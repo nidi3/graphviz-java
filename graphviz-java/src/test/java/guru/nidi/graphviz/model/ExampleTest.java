@@ -360,7 +360,7 @@ class ExampleTest {
                 succString = node("doOnSuccess print1"),
                 succNum = node("doOnSuccess print2"),
                 end = node("");
-        final Attributes attr = attrs(Color.rgb("bbbbbb"), Color.rgb("bbbbbb").font(), Font.name("Arial"));
+        final Attributes<ForAll> attr = attrs(Color.rgb("bbbbbb"), Color.rgb("bbbbbb").font(), Font.name("Arial"));
         final Graph g = graph("ex8").directed()
                 .graphAttr().with(Color.rgb("444444").background())
                 .nodeAttr().with(Style.FILLED.and(Style.ROUNDED), attr, Color.BLACK.font(), Color.rgb("bbbbbb").fill(), Shape.RECTANGLE)

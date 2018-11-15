@@ -17,7 +17,7 @@
 
 package guru.nidi.graphviz
 
-import guru.nidi.graphviz.attribute.Attributes
+import guru.nidi.graphviz.attribute.*
 import guru.nidi.graphviz.attribute.Attributes.attr
 import guru.nidi.graphviz.engine.Graphviz
 import guru.nidi.graphviz.model.*
@@ -33,28 +33,28 @@ fun graph(name: String = "", strict: Boolean = false, directed: Boolean = false,
             }
         }
 
-infix fun String.eq(value: Any) = attr(this, value)
+infix fun String.eq(value: Any): Attributes<ForAll> = attr(this, value)
 
-interface AttributeContainer {
-    operator fun get(vararg attrs: Attributes)
+interface AttributeContainer<F : For> {
+    operator fun get(vararg attrs: Attributes<out F>)
 }
 
-val edge = object : AttributeContainer {
-    override fun get(vararg attrs: Attributes) {
+val edge = object : AttributeContainer<ForLink> {
+    override fun get(vararg attrs: Attributes<out ForLink>) {
         val linkAttrs = CreationContext.get().linkAttrs()
         attrs.forEach { linkAttrs.add(it) }
     }
 }
 
-val node = object : AttributeContainer {
-    override fun get(vararg attrs: Attributes) {
+val node = object : AttributeContainer<ForNode> {
+    override fun get(vararg attrs: Attributes<out ForNode>) {
         val nodeAttrs = CreationContext.get().nodeAttrs()
         attrs.forEach { nodeAttrs.add(it) }
     }
 }
 
-val graph = object : AttributeContainer {
-    override fun get(vararg attrs: Attributes) {
+val graph = object : AttributeContainer<ForGraph> {
+    override fun get(vararg attrs: Attributes<out ForGraph>) {
         val graphAttrs = CreationContext.get().graphAttrs()
         attrs.forEach { graphAttrs.add(it) }
     }
@@ -64,7 +64,7 @@ operator fun MutableNode.minus(target: LinkTarget) = addLink(target).links().las
 operator fun MutableNode.minus(node: String) = this - mutNode(node)
 operator fun MutableNode.div(record: String) = port(record)
 operator fun MutableNode.div(compass: Compass) = port(compass)
-operator fun MutableNode.get(vararg attrs: Attributes) = add(*attrs)
+operator fun MutableNode.get(vararg attrs: Attributes<out ForNode>) = add(*attrs)
 
 operator fun PortNode.minus(target: LinkTarget) = links().run {
     add(between(port(), target))
@@ -74,7 +74,7 @@ operator fun PortNode.minus(target: LinkTarget) = links().run {
 operator fun PortNode.minus(node: String) = this - mutNode(node)
 operator fun PortNode.div(record: String) = port(record)
 operator fun PortNode.div(compass: Compass) = port(compass)
-operator fun PortNode.get(vararg attrs: Attributes): PortNode {
+operator fun PortNode.get(vararg attrs: Attributes<out ForNode>): PortNode {
     (node() as MutableNode).add(*attrs)
     return this
 }
@@ -88,13 +88,13 @@ operator fun Link.minus(target: LinkTarget): Link {
 }
 
 operator fun Link.minus(node: String) = this - mutNode(node)
-operator fun Link.get(vararg attrs: Attributes) = add(Attributes.attrs(*attrs))
+operator fun Link.get(vararg attrs: Attributes<out ForLink>) = add(Attributes.attrs(*attrs))
 
 operator fun String.unaryMinus() = mutNode(this, true)
 operator fun String.minus(target: LinkTarget) = -this - target
 operator fun String.minus(node: String) = -this - node
 operator fun String.div(record: String) = -this / record
 operator fun String.div(compass: Compass) = -this / compass
-operator fun String.get(vararg attrs: Attributes) = (-this).add(*attrs)
+operator fun String.get(vararg attrs: Attributes<out ForNode>) = (-this).add(*attrs)
 
 fun MutableGraph.toGraphviz() = Graphviz.fromGraph(this)

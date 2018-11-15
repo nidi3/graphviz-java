@@ -16,22 +16,37 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.For;
 
 import java.util.Map.Entry;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
-public interface MutableAttributed<T> extends Attributes, Iterable<Entry<String, Object>> {
+public interface MutableAttributed<T, F extends For> extends Attributes<F>, Iterable<Entry<String, Object>> {
     default T add(String name, Object value) {
         return add(attr(name, value));
     }
 
-    default T add(Attributes... attributes) {
+    default T add(Attributes<? extends F> attr1, Attributes<? extends F> attr2) {
+        return add(attrs(attr1, attr2));
+    }
+
+    default T add(Attributes<? extends F> attr1, Attributes<? extends F> attr2, Attributes<? extends F> attr3) {
+        return add(attrs(attr1, attr2, attr3));
+    }
+
+    default T add(Attributes<? extends F> attr1, Attributes<? extends F> attr2,
+                  Attributes<? extends F> attr3, Attributes<? extends F> attr4) {
+        return add(attrs(attr1, attr2, attr3, attr4));
+    }
+
+    //cannot use @SafeVarargs here, that's why we have the specializations for 2..4 attrs
+    default T add(Attributes<? extends F>... attributes) {
         return add(attrs(attributes));
     }
 
-    T add(Attributes attributes);
+    T add(Attributes<? extends F> attributes);
 
     Object get(String key);
 }

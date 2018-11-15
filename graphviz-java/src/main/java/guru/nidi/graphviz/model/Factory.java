@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.*;
 
 public final class Factory {
     private Factory() {
@@ -84,15 +84,15 @@ public final class Factory {
     }
 
 
-    public static MutableAttributed<?> nodeAttrs() {
+    public static MutableAttributed<?, ForNode> nodeAttrs() {
         return CreationContext.get().nodeAttrs();
     }
 
-    public static MutableAttributed<?> linkAttrs() {
+    public static MutableAttributed<?, ForLink> linkAttrs() {
         return CreationContext.get().linkAttrs();
     }
 
-    public static MutableAttributed<?> graphAttrs() {
+    public static MutableAttributed<?, ForGraph> graphAttrs() {
         return CreationContext.get().graphAttrs();
     }
 

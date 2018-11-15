@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public class RankDir extends SingleAttributes<String> {
+public class RankDir extends SingleAttributes<String, ForGraph> {
     public static final RankDir
             TOP_TO_BOTTOM = new RankDir("TB"),
             BOTTOM_TO_TOP = new RankDir("BT"),

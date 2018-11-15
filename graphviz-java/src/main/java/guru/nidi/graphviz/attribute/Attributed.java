@@ -18,14 +18,28 @@ package guru.nidi.graphviz.attribute;
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
-public interface Attributed<T> extends Attributes {
+public interface Attributed<T, F extends For> extends Attributes<F> {
     default T with(String name, Object value) {
         return with(attr(name, value));
     }
 
-    default T with(Attributes... attributes) {
+    default T with(Attributes<? extends F> attr1, Attributes<? extends F> attr2) {
+        return with(attrs(attr1, attr2));
+    }
+
+    default T with(Attributes<? extends F> attr1, Attributes<? extends F> attr2, Attributes<? extends F> attr3) {
+        return with(attrs(attr1, attr2, attr3));
+    }
+
+    default T with(Attributes<? extends F> attr1, Attributes<? extends F> attr2,
+                   Attributes<? extends F> attr3, Attributes<? extends F> attr4) {
+        return with(attrs(attr1, attr2, attr3, attr4));
+    }
+
+    //cannot use @SafeVarargs here, that's why we have the specializations for 2..4 attrs
+    default T with(Attributes<? extends F>... attributes) {
         return with(attrs(attributes));
     }
 
-    T with(Attributes attribute);
+    T with(Attributes<? extends F> attribute);
 }

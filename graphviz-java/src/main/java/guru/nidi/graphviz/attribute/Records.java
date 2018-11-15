@@ -27,19 +27,19 @@ public final class Records {
     private Records() {
     }
 
-    public static Attributes label(String label) {
+    public static Attributes<ForNode> label(String label) {
         return attrs(attr(SHAPE, RECORD), attr(LABEL, label));
     }
 
-    public static Attributes mLabel(String label) {
+    public static Attributes<ForNode> mLabel(String label) {
         return attrs(attr(SHAPE, "Mrecord"), attr(LABEL, label));
     }
 
-    public static Attributes of(String... recs) {
+    public static Attributes<ForNode> of(String... recs) {
         return attrs(attr(SHAPE, RECORD), attr(LABEL, String.join("|", recs)));
     }
 
-    public static Attributes mOf(String... recs) {
+    public static Attributes<ForNode> mOf(String... recs) {
         return attrs(attr(SHAPE, "Mrecord"), attr(LABEL, String.join("|", recs)));
     }
 

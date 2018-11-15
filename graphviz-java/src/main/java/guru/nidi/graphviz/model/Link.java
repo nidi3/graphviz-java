@@ -19,11 +19,11 @@ import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
 
-public final class Link implements Attributed<Link>, LinkTarget {
+public final class Link implements Attributed<Link, ForLink>, LinkTarget {
     @Nullable
     final LinkSource from;
     final LinkTarget to;
-    final MutableAttributed<Link> attributes;
+    final MutableAttributed<Link, ForLink> attributes;
 
     public static Link to(MutableNode node) {
         return to(node.port((String) null));
@@ -49,23 +49,25 @@ public final class Link implements Attributed<Link>, LinkTarget {
         return CreationContext.createLink(from, to);
     }
 
-    Link(@Nullable LinkSource from, LinkTarget to, Attributes attributes) {
+    Link(@Nullable LinkSource from, LinkTarget to, Attributes<? extends ForLink> attributes) {
         this.from = from;
         this.to = to;
         this.attributes = new SimpleMutableAttributed<>(this, attributes);
     }
 
-    public Link add(Attributes attrs) {
+    public Link add(Attributes<? extends ForLink> attrs) {
         attributes.add(attrs);
         return this;
     }
 
-    public Link with(Attributes attrs) {
-        return new Link(from, to, attrs.applyTo(attributes.applyTo(Attributes.attrs())));
+    public Link with(Attributes<? extends ForLink> attrs) {
+        @SuppressWarnings("unchecked") final Attributes<? extends ForLink> as =
+                (Attributes) attrs.applyTo(attributes.copy());
+        return new Link(from, to, as);
     }
 
     @Override
-    public Attributes applyTo(MapAttributes attrs) {
+    public Attributes<? super ForLink> applyTo(MapAttributes<? super ForLink> attrs) {
         return attributes.applyTo(attrs);
     }
 
@@ -89,7 +91,7 @@ public final class Link implements Attributed<Link>, LinkTarget {
     }
 
     //TODO differentiate between mutable and immutable
-    public MutableAttributed<Link> attrs() {
+    public MutableAttributed<Link, ForLink> attrs() {
         return attributes;
     }
 

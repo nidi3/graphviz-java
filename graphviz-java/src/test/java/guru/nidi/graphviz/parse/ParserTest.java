@@ -131,8 +131,8 @@ class ParserTest {
     void multiLinkAttr() throws IOException {
         final MutableNode b = mutNode("b");
         final MutableNode a = mutNode("a").addLink(to(b).with(Color.RED, attr("width", "1")))
-                .addLink(to(b).with(Color.BLUE, attr("width", "1"), Shape.EGG));
+                .addLink(to(b).with(Color.BLUE, attr("width", "1"), attr("a", "b")));
         assertEquals(mutGraph().add(a, b),
-                Parser.read("graph { edge[color=red, width=1] a -- b edge[color=blue, shape=egg] a -- b }"));
+                Parser.read("graph { edge[color=red, width=1] a -- b edge[color=blue, a=b] a -- b }"));
     }
 }

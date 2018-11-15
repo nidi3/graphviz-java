@@ -95,7 +95,7 @@ public class Serializer {
         return -1;
     }
 
-    private void attributes(String name, MutableAttributed<?> attributed) {
+    private void attributes(String name, MutableAttributed<?, ?> attributed) {
         if (!attributed.isEmpty()) {
             str.append(name);
             attrs(attributed);
@@ -206,7 +206,7 @@ public class Serializer {
         }
     }
 
-    private void attrs(MutableAttributed<?> attrs) {
+    private void attrs(MutableAttributed<?, ?> attrs) {
         if (!attrs.isEmpty()) {
             str.append(" [");
             boolean first = true;

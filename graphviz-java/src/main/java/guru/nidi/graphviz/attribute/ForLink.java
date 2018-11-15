@@ -15,15 +15,8 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public class Rank extends SingleAttributes<String, ForGraph> {
-    public static final Rank
-            SAME = new Rank("same"),
-            MIN = new Rank("min"),
-            MAX = new Rank("max"),
-            SOURCE = new Rank("source"),
-            SINK = new Rank("sink");
-
-    protected Rank(String value) {
-        super("rank", value);
-    }
+/**
+ * Marker for Attributes that can be used for links.
+ */
+public interface ForLink extends For {
 }

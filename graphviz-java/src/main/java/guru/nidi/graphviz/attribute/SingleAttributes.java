@@ -18,7 +18,7 @@ package guru.nidi.graphviz.attribute;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 
-class SingleAttributes<T> implements Attributes {
+class SingleAttributes<T, F extends For> implements Attributes<F> {
     protected final String key;
     protected final T value;
 
@@ -48,7 +48,7 @@ class SingleAttributes<T> implements Attributes {
     }
 
     @Override
-    public Attributes applyTo(MapAttributes attrs) {
+    public Attributes<? super F> applyTo(MapAttributes<? super F> attrs) {
         return attrs.add(key, value);
     }
 }

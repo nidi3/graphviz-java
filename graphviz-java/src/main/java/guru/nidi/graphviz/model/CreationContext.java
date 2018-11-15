@@ -15,8 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attributes;
-import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -27,9 +26,9 @@ public final class CreationContext {
     private final MutableGraph graph;
     private final Map<String, ImmutableNode> immutableNodes = new HashMap<>();
     private final Map<String, MutableNode> mutableNodes = new HashMap<>();
-    private final MutableAttributed<CreationContext> nodeAttributes = new SimpleMutableAttributed<>(this);
-    private final MutableAttributed<CreationContext> linkAttributes = new SimpleMutableAttributed<>(this);
-    private final MutableAttributed<CreationContext> graphAttributes = new SimpleMutableAttributed<>(this);
+    private final MutableAttributed<CreationContext, ForNode> nodeAttributes = new SimpleMutableAttributed<>(this);
+    private final MutableAttributed<CreationContext, ForLink> linkAttributes = new SimpleMutableAttributed<>(this);
+    private final MutableAttributed<CreationContext, ForGraph> graphAttributes = new SimpleMutableAttributed<>(this);
 
     private CreationContext() {
         this(null);
@@ -87,15 +86,15 @@ public final class CreationContext {
         }
     }
 
-    public MutableAttributed<CreationContext> nodeAttrs() {
+    public MutableAttributed<CreationContext, ForNode> nodeAttrs() {
         return nodeAttributes;
     }
 
-    public MutableAttributed<CreationContext> linkAttrs() {
+    public MutableAttributed<CreationContext, ForLink> linkAttrs() {
         return linkAttributes;
     }
 
-    public MutableAttributed<CreationContext> graphAttrs() {
+    public MutableAttributed<CreationContext, ForGraph> graphAttrs() {
         return graphAttributes;
     }
 

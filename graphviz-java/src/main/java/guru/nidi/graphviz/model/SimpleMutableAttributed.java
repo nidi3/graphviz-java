@@ -15,23 +15,22 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attributes;
-import guru.nidi.graphviz.attribute.MapAttributes;
+import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-class SimpleMutableAttributed<E> implements MutableAttributed<E> {
-    private final E target;
-    private final MapAttributes attributes = new MapAttributes();
+class SimpleMutableAttributed<T, F extends For> implements MutableAttributed<T, F> {
+    private final T target;
+    private final MapAttributes<F> attributes = new MapAttributes<>();
 
-    public SimpleMutableAttributed(E target) {
+    public SimpleMutableAttributed(T target) {
         this.target = target;
     }
 
-    public SimpleMutableAttributed(E target, @Nullable Attributes attributes) {
+    public SimpleMutableAttributed(T target, @Nullable Attributes<? extends F> attributes) {
         this.target = target;
         if (attributes != null) {
             attributes.applyTo(this.attributes);
@@ -39,7 +38,7 @@ class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     }
 
     @Override
-    public Attributes applyTo(MapAttributes attrs) {
+    public Attributes<? super F> applyTo(MapAttributes<? super F> attrs) {
         return attrs.add(attributes);
     }
 
@@ -54,7 +53,7 @@ class SimpleMutableAttributed<E> implements MutableAttributed<E> {
     }
 
     @Override
-    public E add(Attributes attributes) {
+    public T add(Attributes<? extends F> attributes) {
         attributes.applyTo(this.attributes);
         return target;
     }
@@ -67,7 +66,7 @@ class SimpleMutableAttributed<E> implements MutableAttributed<E> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final SimpleMutableAttributed<?> that = (SimpleMutableAttributed<?>) o;
+        final SimpleMutableAttributed<?, ?> that = (SimpleMutableAttributed<?, ?>) o;
         return Objects.equals(attributes, that.attributes);
     }
 

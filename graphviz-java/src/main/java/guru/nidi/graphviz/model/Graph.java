@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attributed;
+import guru.nidi.graphviz.attribute.*;
 
 public interface Graph extends LinkSource, LinkTarget {
     Graph strict();
@@ -30,9 +30,9 @@ public interface Graph extends LinkSource, LinkTarget {
 
     Graph with(LinkSource... sources);
 
-    Attributed<Graph> nodeAttr();
+    Attributed<Graph, ForNode> nodeAttr();
 
-    Attributed<Graph> linkAttr();
+    Attributed<Graph, ForLink> linkAttr();
 
-    Attributed<Graph> graphAttr();
+    Attributed<Graph, ForGraph> graphAttr();
 }

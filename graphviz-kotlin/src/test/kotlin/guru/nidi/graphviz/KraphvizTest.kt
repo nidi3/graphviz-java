@@ -57,7 +57,7 @@ class KraphvizTest {
             (main - "init")[Style.DOTTED]
             main - "cleanup"
             (main - "printf")[Style.BOLD, Label.of("100 times"), RED]
-            "execute" - graph() {
+            "execute" - graph {
                 -"make a\nstring"
                 -"printf"
             }

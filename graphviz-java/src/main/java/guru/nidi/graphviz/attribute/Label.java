@@ -23,7 +23,7 @@ import static guru.nidi.graphviz.attribute.Label.Justification.RIGHT;
 import static guru.nidi.graphviz.attribute.Label.Location.BOTTOM;
 import static guru.nidi.graphviz.attribute.Label.Location.TOP;
 
-public final class Label extends SimpleLabel implements Attributes {
+public final class Label extends SimpleLabel implements Attributes<ForAll> {
     public enum Justification {
         LEFT, MIDDLE, RIGHT
     }
@@ -154,7 +154,7 @@ public final class Label extends SimpleLabel implements Attributes {
     }
 
     @Override
-    public Attributes applyTo(MapAttributes attributes) {
+    public Attributes<? super ForAll> applyTo(MapAttributes<? super ForAll> attributes) {
         attributes.add(external ? "xlabel" : "label", this);
         if (floating) {
             attributes.add("labelfloat", true);

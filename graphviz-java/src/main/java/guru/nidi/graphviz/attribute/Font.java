@@ -22,15 +22,15 @@ public final class Font {
     private Font() {
     }
 
-    public static Attributes config(String name, int size) {
+    public static Attributes<ForAll> config(String name, int size) {
         return attrs(name(name), size(size));
     }
 
-    public static Attributes name(String name) {
+    public static Attributes<ForAll> name(String name) {
         return attr("fontname", name);
     }
 
-    public static Attributes size(int size) {
+    public static Attributes<ForAll> size(int size) {
         return attr("fontsize", size);
     }
 }

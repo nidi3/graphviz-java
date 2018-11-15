@@ -17,7 +17,7 @@ package guru.nidi.graphviz.attribute;
 
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
-public class Color extends SingleAttributes<String> {
+public class Color extends SingleAttributes<String, ForAll> {
     private Color(String key, String value) {
         super(key, value);
     }
@@ -50,15 +50,15 @@ public class Color extends SingleAttributes<String> {
         return new Color(value + ":" + c.value + ";" + at);
     }
 
-    public Attributes angle(int angle) {
+    public Attributes<ForAll> angle(int angle) {
         return attrs(this, new SingleAttributes<>("gradientangle", angle));
     }
 
-    public Attributes radial() {
+    public Attributes<ForAll> radial() {
         return radial(0);
     }
 
-    public Attributes radial(int angle) {
+    public Attributes<ForAll> radial(int angle) {
         return attrs(this, new SingleAttributes<>("gradientangle", angle), Style.RADIAL);
     }
 

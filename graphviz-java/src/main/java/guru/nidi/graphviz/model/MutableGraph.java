@@ -15,7 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -28,9 +28,9 @@ public class MutableGraph implements LinkSource, LinkTarget {
     protected final Set<MutableNode> nodes;
     protected final Set<MutableGraph> subgraphs;
     protected final LinkList links;
-    protected final MutableAttributed<MutableGraph> nodeAttrs;
-    protected final MutableAttributed<MutableGraph> linkAttrs;
-    protected final MutableAttributed<MutableGraph> graphAttrs;
+    protected final MutableAttributed<MutableGraph, ForNode> nodeAttrs;
+    protected final MutableAttributed<MutableGraph, ForLink> linkAttrs;
+    protected final MutableAttributed<MutableGraph, ForGraph> graphAttrs;
 
     MutableGraph() {
         this(false, false, false, "", new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
@@ -40,9 +40,9 @@ public class MutableGraph implements LinkSource, LinkTarget {
 
     protected MutableGraph(boolean strict, boolean directed, boolean cluster, String name,
                            LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
-                           @Nullable Attributes nodeAttrs,
-                           @Nullable Attributes linkAttrs,
-                           @Nullable Attributes graphAttrs) {
+                           @Nullable Attributes<? extends ForNode> nodeAttrs,
+                           @Nullable Attributes<? extends ForLink> linkAttrs,
+                           @Nullable Attributes<? extends ForGraph> graphAttrs) {
         this.strict = strict;
         this.directed = directed;
         this.cluster = cluster;
@@ -185,15 +185,15 @@ public class MutableGraph implements LinkSource, LinkTarget {
         return name;
     }
 
-    public MutableAttributed<MutableGraph> nodeAttrs() {
+    public MutableAttributed<MutableGraph, ForNode> nodeAttrs() {
         return nodeAttrs;
     }
 
-    public MutableAttributed<MutableGraph> linkAttrs() {
+    public MutableAttributed<MutableGraph, ForLink> linkAttrs() {
         return linkAttrs;
     }
 
-    public MutableAttributed<MutableGraph> graphAttrs() {
+    public MutableAttributed<MutableGraph, ForGraph> graphAttrs() {
         return graphAttrs;
     }
 

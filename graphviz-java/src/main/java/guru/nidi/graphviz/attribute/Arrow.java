@@ -21,7 +21,7 @@ import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 import static java.util.Locale.ENGLISH;
 
-public final class Arrow extends SingleAttributes<String> {
+public final class Arrow extends SingleAttributes<String, ForLink> {
     public enum DirType {
         FORWARD, BACK, BOTH, NONE
     }
@@ -67,16 +67,16 @@ public final class Arrow extends SingleAttributes<String> {
         return value(arrow.value + value);
     }
 
-    public Attributes size(double size) {
+    public Attributes<ForLink> size(double size) {
         return config(size, null);
     }
 
-    public Attributes dir(DirType type) {
+    public Attributes<ForLink> dir(DirType type) {
         return config(0, type);
     }
 
-    public Attributes config(double size, @Nullable DirType type) {
-        Attributes a = this;
+    public Attributes<ForLink> config(double size, @Nullable DirType type) {
+        Attributes<ForLink> a = this;
         if (size > 0) {
             a = attrs(a, attr("arrowsize", size));
         }

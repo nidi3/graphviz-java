@@ -15,33 +15,50 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public interface Attributes {
-    Attributes applyTo(MapAttributes attrs);
+public interface Attributes<F extends For> {
+    //    Attributes
+    //            COMPOUND = new SingleAttributes<ForGraph, Boolean>("compound", true),
+    //            CONCENTRATE = new SingleAttributes<ForGraph, Boolean>("concentrate", true),
+    //            NOT_CONSTRAINT = new SingleAttributes<ForLink, Boolean>("constraint", false),
+    //            DECORATE = new SingleAttributes<ForLink, Boolean>("decorate", true);
 
-    default Attributes applyTo(Attributes attrs) {
+    Attributes<? super F> applyTo(MapAttributes<? super F> attrs);
+
+    default Attributes<? super F> applyTo(Attributes<? super F> attrs) {
         if (!(attrs instanceof MapAttributes)) {
             throw new UnsupportedOperationException("attributes must be a MapAttributes");
         }
-        return applyTo((MapAttributes) attrs);
+        @SuppressWarnings("unchecked") final MapAttributes<? super F> as = (MapAttributes<? super F>) attrs;
+        return applyTo(as);
     }
 
-    static Attributes attr(String key, Object value) {
-        return new MapAttributes().add(key, value);
+    default Attributes<F> copy() {
+        @SuppressWarnings("unchecked") final Attributes<F> copy = (Attributes<F>) applyTo(attrs());
+        return copy;
     }
 
-    static Attributes attrs(Attributes... attributes) {
-        final MapAttributes res = new MapAttributes();
-        for (Attributes attribute : attributes) {
+    static <F extends For> Attributes<F> attr(String key, Object value) {
+        return new MapAttributes<F>().add(key, value);
+    }
+
+    static <F extends For> Attributes<F> attrs() {
+        return new MapAttributes<>();
+    }
+
+    @SafeVarargs
+    static <F extends For> Attributes<F> attrs(Attributes<? extends F>... attributes) {
+        final MapAttributes<F> res = new MapAttributes<>();
+        for (Attributes<? extends F> attribute : attributes) {
             attribute.applyTo(res);
         }
         return res;
     }
 
     default Object get(String key) {
-        return applyTo(new MapAttributes()).get(key);
+        return applyTo(new MapAttributes<>()).get(key);
     }
 
     default boolean isEmpty() {
-        return applyTo(new MapAttributes()).isEmpty();
+        return applyTo(new MapAttributes<>()).isEmpty();
     }
 }

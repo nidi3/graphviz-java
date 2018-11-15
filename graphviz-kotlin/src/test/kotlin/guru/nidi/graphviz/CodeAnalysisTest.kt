@@ -18,12 +18,9 @@ package guru.nidi.graphviz
 import guru.nidi.codeassert.checkstyle.CheckstyleAnalyzer
 import guru.nidi.codeassert.checkstyle.StyleEventCollector
 import guru.nidi.codeassert.config.AnalyzerConfig
-import guru.nidi.codeassert.config.CollectorConfig.just
 import guru.nidi.codeassert.config.In
 import guru.nidi.codeassert.config.Language.KOTLIN
 import guru.nidi.codeassert.dependency.*
-import guru.nidi.codeassert.findbugs.BugCollector
-import guru.nidi.codeassert.findbugs.FindBugsAnalyzer
 import guru.nidi.codeassert.junit.CodeAssertJunit5Test
 import guru.nidi.codeassert.junit.PredefConfig
 import guru.nidi.codeassert.junit.kotlin.KotlinCodeAssertMatchers.hasNoKtlintIssues

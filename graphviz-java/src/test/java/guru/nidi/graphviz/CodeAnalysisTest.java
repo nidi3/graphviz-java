@@ -138,7 +138,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .apply(PredefConfig.cpdIgnoreEqualsHashCodeToString())
                 .because("It's java",
                         In.loc("*Graph").ignore("Graph(strict, directed, cluster, name,", "if (strict != graph.strict) {"));
-        return new CpdAnalyzer(AnalyzerConfig.maven().main(), 35, collector).analyze();
+        return new CpdAnalyzer(AnalyzerConfig.maven().main(), 36, collector).analyze();
     }
 
     @Override

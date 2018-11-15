@@ -26,9 +26,9 @@ class ImmutableGraph extends MutableGraph implements Graph {
 
     private ImmutableGraph(boolean strict, boolean directed, boolean cluster, String name,
                            LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
-                           MutableAttributed<MutableGraph> nodeAttributes,
-                           MutableAttributed<MutableGraph> linkAttributes,
-                           MutableAttributed<MutableGraph> graphAttributes) {
+                           MutableAttributed<MutableGraph, ForNode> nodeAttributes,
+                           MutableAttributed<MutableGraph, ForLink> linkAttributes,
+                           MutableAttributed<MutableGraph, ForGraph> graphAttributes) {
         super(strict, directed, cluster, name, nodes, subgraphs, links,
                 nodeAttributes, linkAttributes, graphAttributes);
     }
@@ -67,16 +67,16 @@ class ImmutableGraph extends MutableGraph implements Graph {
         return (ImmutableGraph) copyOfMut().addLink(target);
     }
 
-    public Attributed<Graph> nodeAttr() {
-        return new GraphAttributed(MutableGraph::nodeAttrs);
+    public Attributed<Graph, ForNode> nodeAttr() {
+        return new GraphAttributed<>(MutableGraph::nodeAttrs);
     }
 
-    public Attributed<Graph> linkAttr() {
-        return new GraphAttributed(MutableGraph::linkAttrs);
+    public Attributed<Graph, ForLink> linkAttr() {
+        return new GraphAttributed<>(MutableGraph::linkAttrs);
     }
 
-    public Attributed<Graph> graphAttr() {
-        return new GraphAttributed(MutableGraph::graphAttrs);
+    public Attributed<Graph, ForGraph> graphAttr() {
+        return new GraphAttributed<>(MutableGraph::graphAttrs);
     }
 
     @Override
@@ -115,20 +115,20 @@ class ImmutableGraph extends MutableGraph implements Graph {
         return new Serializer(this).serialize();
     }
 
-    private class GraphAttributed implements Attributed<Graph> {
-        private final Function<ImmutableGraph, MutableAttributed<MutableGraph>> attributeSource;
+    private class GraphAttributed<F extends For> implements Attributed<Graph, F> {
+        private final Function<ImmutableGraph, MutableAttributed<MutableGraph, F>> attributeSource;
 
-        public GraphAttributed(Function<ImmutableGraph, MutableAttributed<MutableGraph>> attributeSource) {
+        public GraphAttributed(Function<ImmutableGraph, MutableAttributed<MutableGraph, F>> attributeSource) {
             this.attributeSource = attributeSource;
         }
 
         @Override
-        public Graph with(Attributes attrs) {
+        public Graph with(Attributes<? extends F> attrs) {
             return (ImmutableGraph) attributeSource.apply(copyOfMut()).add(attrs);
         }
 
         @Override
-        public Attributes applyTo(MapAttributes attrs) {
+        public Attributes<? super F> applyTo(MapAttributes<? super F> attrs) {
             return attributeSource.apply(ImmutableGraph.this).applyTo(attrs);
         }
     }

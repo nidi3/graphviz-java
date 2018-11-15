@@ -18,7 +18,7 @@ package guru.nidi.graphviz.attribute;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public final class EndLabel extends SimpleLabel implements Attributes {
+public final class EndLabel extends SimpleLabel implements Attributes<ForLink> {
     private final String key;
     @Nullable
     private final Double angle;
@@ -41,7 +41,7 @@ public final class EndLabel extends SimpleLabel implements Attributes {
     }
 
     @Override
-    public Attributes applyTo(MapAttributes attributes) {
+    public Attributes<? super ForLink> applyTo(MapAttributes<? super ForLink> attributes) {
         attributes.add(key, this);
         if (angle != null) {
             attributes.add("labelangle", angle);

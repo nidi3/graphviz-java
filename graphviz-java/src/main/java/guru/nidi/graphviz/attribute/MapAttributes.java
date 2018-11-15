@@ -19,28 +19,29 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class MapAttributes implements Attributes, Iterable<Entry<String, Object>> {
+public class MapAttributes<F extends For> implements Attributes<F>, Iterable<Entry<String, Object>> {
     protected final Map<String, Object> attributes;
 
     public MapAttributes() {
         attributes = new HashMap<>();
     }
 
-    public Attributes applyTo(MapAttributes attrs) {
+    public Attributes<? super F> applyTo(MapAttributes<? super F> attrs) {
         attrs.attributes.putAll(attributes);
         return attrs;
     }
 
-    public MapAttributes add(String key, @Nullable Object value) {
+    public <G extends For> MapAttributes<G> add(String key, @Nullable Object value) {
         if (value == null) {
             attributes.remove(key);
         } else {
             attributes.put(key, value);
         }
-        return this;
+        @SuppressWarnings("unchecked") final MapAttributes<G> map = (MapAttributes<G>) this;
+        return map;
     }
 
-    public MapAttributes add(MapAttributes attributes) {
+    public MapAttributes<F> add(MapAttributes<? extends F> attributes) {
         this.attributes.putAll(attributes.attributes);
         return this;
     }

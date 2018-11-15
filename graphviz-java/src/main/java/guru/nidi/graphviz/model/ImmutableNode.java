@@ -15,8 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Attributes;
-import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.*;
 
 import java.util.*;
 
@@ -25,7 +24,7 @@ class ImmutableNode extends MutableNode implements Node {
         this(name, new ArrayList<>(), Attributes.attrs());
     }
 
-    private ImmutableNode(Label name, List<Link> links, Attributes attributes) {
+    private ImmutableNode(Label name, List<Link> links, Attributes<? extends ForNode> attributes) {
         super(name, links, attributes);
     }
 
@@ -45,12 +44,12 @@ class ImmutableNode extends MutableNode implements Node {
         return (ImmutableNode) copyOfMut().addLink(nodes);
     }
 
-    public ImmutableNode with(Attributes attrs) {
+    public ImmutableNode with(Attributes<? extends ForNode> attrs) {
         return (ImmutableNode) copyOfMut().add(attrs);
     }
 
     private ImmutableNode copyOfMut() {
-        return new ImmutableNode(name, new ArrayList<>(links), attributes.applyTo(Attributes.attrs()));
+        return new ImmutableNode(name, new ArrayList<>(links), attributes.copy());
     }
 
     @Override

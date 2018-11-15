@@ -204,12 +204,12 @@ public final class Parser {
     }
 
     private void attributeStatement(MutableGraph graph) throws IOException {
-        final MutableAttributed<?> target = attributes(graph, token);
+        final MutableAttributed<?, ?> target = attributes(graph, token);
         nextToken();
         applyMutableAttributes(target, attributeList());
     }
 
-    private void applyMutableAttributes(MutableAttributed<?> attributed, List<Token> tokens) {
+    private void applyMutableAttributes(MutableAttributed<?, ?> attributed, List<Token> tokens) {
         for (int i = 0; i < tokens.size(); i += 2) {
             final String key = tokens.get(i).value;
             final Token value = tokens.get(i + 1);
@@ -221,7 +221,7 @@ public final class Parser {
         }
     }
 
-    private <T extends Attributed<T>> T applyAttributes(T attributed, List<Token> tokens) {
+    private <T extends Attributed<T, ?>> T applyAttributes(T attributed, List<Token> tokens) {
         T res = attributed;
         for (int i = 0; i < tokens.size(); i += 2) {
             res = res.with(tokens.get(i).value, tokens.get(i + 1).value);
@@ -229,7 +229,7 @@ public final class Parser {
         return res;
     }
 
-    private MutableAttributed<?> attributes(MutableGraph graph, Token token) {
+    private MutableAttributed<?, ?> attributes(MutableGraph graph, Token token) {
         switch (token.type) {
             case GRAPH:
                 return graph.graphAttrs();

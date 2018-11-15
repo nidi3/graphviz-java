@@ -21,7 +21,6 @@ import guru.nidi.codeassert.jacoco.CoverageType.*
 import guru.nidi.codeassert.jacoco.JacocoAnalyzer
 import guru.nidi.codeassert.junit.CodeAssertMatchers.hasEnoughCoverage
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class CodeCoverage {
