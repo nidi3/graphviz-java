@@ -23,8 +23,7 @@ import guru.nidi.codeassert.dependency.*;
 import guru.nidi.codeassert.findbugs.*;
 import guru.nidi.codeassert.junit.*;
 import guru.nidi.codeassert.pmd.*;
-import guru.nidi.graphviz.attribute.Color;
-import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.*;
 import guru.nidi.graphviz.parse.Parser;
@@ -145,7 +144,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(PredefConfig.minimalCheckstyleIgnore())
-                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style", "Options", "Records", "SystemUtils").ignore("empty.line.separator"));
+                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style", "Options", "Records", "SystemUtils").ignore("empty.line.separator"))
+                .just(In.clazz(For.class).ignore("one.top.level.class"));
         final StyleChecks checks = PredefConfig.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }
