@@ -97,7 +97,7 @@ class ExampleTest {
                 .nodeAttr().with(Font.config("Arial", 14), Color.rgb("bbbbbb").fill(), Style.FILLED)
                 .with(
                         node("main").with(Shape.RECTANGLE).link(
-                                to(node("parse").link(execute)).with("weight", 8),
+                                to(node("parse").link(execute)).with(LinkAttr.weight(8)),
                                 to(init).with(Style.DOTTED),
                                 node("cleanup"),
                                 to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
@@ -137,10 +137,10 @@ class ExampleTest {
     @Test
     void ex3() throws IOException {
         final Node
-                a = node("a").with(Shape.polygon(5, 0, 0), attr("peripheries", 3), Color.LIGHTBLUE, Style.FILLED),
-                c = node("c").with(Shape.polygon(4, .4, 0), Label.html("hello world")),
+                a = node("a").with(Shape.polygon(5).rotation(20), attr("peripheries", 3), Color.LIGHTBLUE, Style.FILLED),
+                c = node("c").with(Shape.polygon(4).skew(.4), Label.html("hello world")),
                 d = node("d").with(Shape.INV_TRIANGLE),
-                e = node("e").with(Shape.polygon(4, 0, .7));
+                e = node("e").with(Shape.polygon(4).distortion(.7));
         final Graph g = graph("ex3").directed().with(
                 a.link(node("b").link(c, d)),
                 e);
@@ -216,7 +216,7 @@ class ExampleTest {
                 proc = node("Process"), adv = node("Adv. Software Technology");
 
         final Graph g = graph("ex5").directed()
-                .graphAttr().with(attr("ranksep", .75), attr("size", "7.5,7.5"))
+                .graphAttr().with(attr("ranksep", .75), GraphAttr.sizeMax(7.5, 7.5))
                 .nodeAttr().with(Shape.RECTANGLE)
                 .with(
                         graph().nodeAttr().with(Shape.NONE).with(
@@ -414,4 +414,15 @@ class ExampleTest {
         })).render(Format.PNG).toFile(new File("target/ex11"));
     }
 
+    @Test
+    void ex12() throws IOException {
+        final Graph g = graph().nodeAttr().with(Shape.RECTANGLE).with(
+                node("fixed size").with(Size.mode(Size.Mode.FIXED).size(.5, .5)),
+                node("min").with(Size.mode(Size.Mode.MINIMUM).size(1, .5)),
+                node("min long label").with(Size.mode(Size.Mode.MINIMUM).size(.5, .5)),
+                node("min margin").with(Size.mode(Size.Mode.MINIMUM).size(.5, .5).margin(0, .5)),
+                node("shape size").with(Size.mode(Size.Mode.SHAPE).size(.5, .5))
+        );
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex12.png"));
+    }
 }

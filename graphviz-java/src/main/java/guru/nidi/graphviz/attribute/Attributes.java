@@ -16,12 +16,6 @@
 package guru.nidi.graphviz.attribute;
 
 public interface Attributes<F extends For> {
-    //    Attributes
-    //            COMPOUND = new SingleAttributes<ForGraph, Boolean>("compound", true),
-    //            CONCENTRATE = new SingleAttributes<ForGraph, Boolean>("concentrate", true),
-    //            NOT_CONSTRAINT = new SingleAttributes<ForLink, Boolean>("constraint", false),
-    //            DECORATE = new SingleAttributes<ForLink, Boolean>("decorate", true);
-
     Attributes<? super F> applyTo(MapAttributes<? super F> attrs);
 
     default Attributes<? super F> applyTo(Attributes<? super F> attrs) {

@@ -15,8 +15,11 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import javax.annotation.Nullable;
+
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
+import static guru.nidi.graphviz.attribute.NodeAttr.nodeAttr;
 
 public final class Shape extends SingleAttributes<String, ForNode> {
     private static final String SHAPE = "shape";
@@ -60,8 +63,53 @@ public final class Shape extends SingleAttributes<String, ForNode> {
         return attrs(attr(SHAPE, "Mcircle"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
     }
 
-    public static Attributes<ForNode> polygon(int sides, double skew, double distortion) {
-        return attrs(attr(SHAPE, "polygon"), attr("sides", sides), attr("skew", skew), attr("distortion", distortion));
+    public static Polygon polygon(int sides) {
+        return new Polygon(sides, null, null, null);
+    }
+
+    public static class Polygon implements Attributes<ForNode> {
+        private final int sides;
+        @Nullable
+        private final Double skew;
+        @Nullable
+        private final Double distortion;
+        @Nullable
+        private final Double rotation;
+
+        Polygon(int sides, @Nullable Double skew, @Nullable Double distortion, @Nullable Double rotation) {
+            this.sides = sides;
+            this.skew = skew;
+            this.distortion = distortion;
+            this.rotation = rotation;
+        }
+
+        public Polygon skew(double skew) {
+            return new Polygon(sides, skew, distortion, rotation);
+        }
+
+        public Polygon distortion(double distortion) {
+            return new Polygon(sides, skew, distortion, rotation);
+        }
+
+        public Polygon rotation(double rotation) {
+            return new Polygon(sides, skew, distortion, rotation);
+        }
+
+        @Override
+        public Attributes<? super ForNode> applyTo(MapAttributes<? super ForNode> attrs) {
+            nodeAttr("shape", "polygon").applyTo(attrs);
+            nodeAttr("sides", sides).applyTo(attrs);
+            if (skew != null) {
+                nodeAttr("skew", skew).applyTo(attrs);
+            }
+            if (distortion != null) {
+                nodeAttr("distortion", distortion).applyTo(attrs);
+            }
+            if (rotation != null) {
+                nodeAttr("orientation", rotation).applyTo(attrs);
+            }
+            return attrs;
+        }
     }
 }
 

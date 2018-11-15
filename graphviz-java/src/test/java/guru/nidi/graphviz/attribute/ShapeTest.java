@@ -48,7 +48,7 @@ class ShapeTest {
     @Test
     void polygon() {
         assertEquals(attrs(attr("sides", 4), attr("shape", "polygon"), attr("skew", 2.5), attr("distortion", .66)),
-                Shape.polygon(4, 2.5, .66));
+                Shape.polygon(4).skew(2.5).distortion(.66).applyTo(attrs()));
     }
 
 }

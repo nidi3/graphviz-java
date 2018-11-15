@@ -124,10 +124,10 @@ public class PerformanceTest {
 
     void ex3() {
         final Node
-                a = node("a").with(Shape.polygon(5, 0, 0), attr("peripheries", 3), Color.LIGHTBLUE, Style.FILLED),
-                c = node("c").with(Shape.polygon(4, .4, 0), Label.of("hello world")),
+                a = node("a").with(Shape.polygon(5).rotation(10), attr("peripheries", 3), Color.LIGHTBLUE, Style.FILLED),
+                c = node("c").with(Shape.polygon(4).skew(.4), Label.of("hello world")),
                 d = node("d").with(Shape.INV_TRIANGLE),
-                e = node("e").with(Shape.polygon(4, 0, .7));
+                e = node("e").with(Shape.polygon(4).distortion(.7));
         final Graph g = graph("ex3").directed().with(
                 a.link(node("b").link(c, d)),
                 e);
@@ -178,7 +178,7 @@ public class PerformanceTest {
                 proc = node("Process"), adv = node("Adv. Software Technology");
 
         final Graph g = graph("ex5").directed()
-                .graphAttr().with(attr("ranksep", .75), attr("size", "7.5,7.5"))
+                .graphAttr().with(attr("ranksep", .75), GraphAttr.sizeMax(7.5, 7.5))
                 .nodeAttr().with(Shape.RECTANGLE)
                 .with(
                         graph().nodeAttr().with(Shape.NONE)

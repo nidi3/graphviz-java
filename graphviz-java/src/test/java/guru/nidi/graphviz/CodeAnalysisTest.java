@@ -144,7 +144,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(PredefConfig.minimalCheckstyleIgnore())
-                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style", "Options", "Records", "SystemUtils").ignore("empty.line.separator"))
+                .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style", "Options", "Records", "SystemUtils","GraphAttr").ignore("empty.line.separator"))
                 .just(In.clazz(For.class).ignore("one.top.level.class"));
         final StyleChecks checks = PredefConfig.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
