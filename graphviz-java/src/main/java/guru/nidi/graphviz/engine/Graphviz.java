@@ -18,10 +18,8 @@ package guru.nidi.graphviz.engine;
 import guru.nidi.graphviz.model.*;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.io.*;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 

@@ -113,7 +113,7 @@ public class PerformanceTest {
                 printf = node("printf");
         final Graph g = graph("ex2").directed().with(
                 node("main").with(Shape.RECTANGLE).link(
-                        to(node("parse").link(execute)).with("weight", 8),
+                        to(node("parse").link(execute)).with(LinkAttr.weight(8)),
                         to(init).with(Style.DOTTED),
                         node("cleanup"),
                         to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
