@@ -53,7 +53,7 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
         try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
             ENGINE.eval(IoUtils.readStream(api));
         }
-        ENGINE.eval(jsVizCode("2.0.0"));
+        ENGINE.eval(jsVizCode());
         ENGINE.eval("var graphviz = Java.type('guru.nidi.graphviz.engine.GraphvizJdkEngine');"
                 + "function result(r){ handler.setResult(r); }"
                 + "function error(r){ handler.setError(r); }");

@@ -38,9 +38,11 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         return js.replaceAll("\\R", " ").replace("\\", "\\\\").replace("'", "\\'");
     }
 
-    protected String jsVizCode(String version) throws IOException {
-        try (final InputStream api = getClass().getResourceAsStream("/viz-" + version + ".js");
-             final InputStream engine = getClass().getResourceAsStream("/viz-full.render-" + version + ".js")) {
+    protected String jsVizCode() throws IOException {
+        try (final InputStream api = getClass()
+                    .getResourceAsStream("/META-INF/resources/webjars/viz.js/2.0.0/viz.js");
+             final InputStream engine = getClass()
+                    .getResourceAsStream("/META-INF/resources/webjars/viz.js/2.0.0/full.render.js")) {
             return IoUtils.readStream(api) + IoUtils.readStream(engine);
         }
     }
