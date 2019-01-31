@@ -284,6 +284,16 @@ BufferedImage image = viz.render(Format.PNG).toImage();
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5s.png" width="100">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5.svg" width="100">
 
+To rasterize with batik, provide this library on the classpath: 
+
+```xml
+<dependency>
+    <groupId>org.apache.xmlgraphics</groupId>
+    <artifactId>batik-rasterizer</artifactId>
+    <version>1.10</version>
+</dependency>
+```
+
 ### Font size
 The layout of a graph is done with Javascript / natively and the rendering with Java.
 The two environments are not guaranteed to calculate the width of text the same way.

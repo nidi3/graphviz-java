@@ -26,7 +26,7 @@ public interface Rasterizer {
     @Nullable
     Rasterizer SALAMANDER = IoUtils.isOnClasspath("com.kitfox.svg.SVGDiagram") ? new SalamanderRasterizer() : null;
     @Nullable
-    Rasterizer DEFAULT = BATIK == null ? SALAMANDER : BATIK;
+    Rasterizer DEFAULT = BATIK != null ? BATIK : SALAMANDER;
 
     Format format();
 
