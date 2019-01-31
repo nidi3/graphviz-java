@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import static guru.nidi.graphviz.attribute.Label.Justification.LEFT;
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
 import static guru.nidi.graphviz.model.Compass.*;
@@ -82,7 +83,7 @@ class ReadmeTest {
                 init = node(Label.markdown("**_init_**")),
                 execute = node("execute"),
                 compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
-                mkString = node("mkString").with(Label.of("make\\la\\rmulti-line")),
+                mkString = node("mkString").with(Label.lines(LEFT, "make", "a", "multi-line")),
                 printf = node("printf");
 
         Graph g = graph("example2").directed().with(

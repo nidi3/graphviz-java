@@ -17,11 +17,12 @@ package guru.nidi.graphviz.attribute;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.stream.Stream;
 
-import static guru.nidi.graphviz.attribute.Label.Justification.LEFT;
-import static guru.nidi.graphviz.attribute.Label.Justification.RIGHT;
+import static guru.nidi.graphviz.attribute.Label.Justification.*;
 import static guru.nidi.graphviz.attribute.Label.Location.BOTTOM;
 import static guru.nidi.graphviz.attribute.Label.Location.TOP;
+import static java.util.stream.Collectors.joining;
 
 public final class Label extends SimpleLabel implements Attributes<ForAll> {
     public enum Justification {
@@ -61,6 +62,29 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
     }
 
     /**
+     * Create a simple multiline label.
+     *
+     * @param lines the text lines
+     * @return the Label
+     */
+    public static Label lines(String... lines) {
+        return lines(Justification.MIDDLE, lines);
+    }
+
+    /**
+     * Create a simple multiline label.
+     *
+     * @param just  the text justification
+     * @param lines the text lines
+     * @return the Label
+     */
+    public static Label lines(Justification just, String... lines) {
+        final String sep = just == LEFT ? "\\l" : just == RIGHT ? "\\r" : "\n";
+        final String value = Stream.of(lines).map(line -> line + sep).collect(joining());
+        return new Label(value, false, false, false, false, null, null);
+    }
+
+    /**
      * Create a HTML label.
      *
      * @param value the HTML code
@@ -68,6 +92,31 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
      * @see <a href="http://www.graphviz.org/doc/info/shapes.html#html">www.graphviz.org</a>
      */
     public static Label html(String value) {
+        return new Label(value, true, false, false, false, null, null);
+    }
+
+    /**
+     * Create a multiline HTML label.
+     *
+     * @param lines the lines in HTML format
+     * @return the Label
+     * @see <a href="http://www.graphviz.org/doc/info/shapes.html#html">www.graphviz.org</a>
+     */
+    public static Label htmlLines(String... lines) {
+        return htmlLines(MIDDLE, lines);
+    }
+
+    /**
+     * Create a multiline HTML label.
+     *
+     * @param just  the test justification
+     * @param lines the lines in HTML format
+     * @return the Label
+     * @see <a href="http://www.graphviz.org/doc/info/shapes.html#html">www.graphviz.org</a>
+     */
+    public static Label htmlLines(Justification just, String... lines) {
+        final String sep = just == LEFT ? "<br align=\"left\"/>" : just == RIGHT ? "<br align=\"right\"/>" : "<br/>";
+        final String value = Stream.of(lines).map(line -> line + sep).collect(joining());
         return new Label(value, true, false, false, false, null, null);
     }
 
