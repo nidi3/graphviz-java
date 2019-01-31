@@ -82,7 +82,7 @@ class ReadmeTest {
                 init = node(Label.markdown("**_init_**")),
                 execute = node("execute"),
                 compare = node("compare").with(Shape.RECTANGLE, Style.FILLED, Color.hsv(.7, .3, 1.0)),
-                mkString = node("mkString").with(Label.of("make a\nstring")),
+                mkString = node("mkString").with(Label.of("make\\la\\rmulti-line")),
                 printf = node("printf");
 
         Graph g = graph("example2").directed().with(
