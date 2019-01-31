@@ -64,7 +64,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
             }
         }
         final DependencyRules rules = DependencyRules.denyAll()
-                .withExternals("java*", "com.*", "org.*")
+                .withExternals("java.*", "javax.*", "com.*", "org.*")
                 .withRelativeRules(new GuruNidiGraphviz());
         return new DependencyAnalyzer(AnalyzerConfig.maven().main()).rules(rules).analyze();
     }
@@ -116,7 +116,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.classes(MutableGraph.class, Serializer.class, Parser.class).ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
-                        In.clazz(MutableNode.class).ignore("ConfusingTernary"),
+                        In.classes(MutableNode.class, Rasterizer.class).ignore("ConfusingTernary"),
                         In.classes(ThrowingFunction.class, ThrowingBiConsumer.class).ignore("SignatureDeclareThrowsException"))
                 .because("It's command line tool", In.loc("GraphvizServer")
                         .ignore("AvoidCatchingGenericException", "PreserveStackTrace"))
