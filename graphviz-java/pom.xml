@@ -76,6 +76,11 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>viz.js</artifactId>
+            <version>2.0.0</version>
+        </dependency>
         <!-- this must come before batik because code-assert->bcel-findbugs
         conflicts with batik->xalan which inlines another version of bcel-->
         <dependency>
