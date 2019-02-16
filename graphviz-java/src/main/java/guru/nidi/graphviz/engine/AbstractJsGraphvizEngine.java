@@ -58,7 +58,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     protected String jsVizCode() throws IOException {
-        final String path = "/META-INF/resources/webjars/viz.js/2.0.0/";
+        final String path = "/META-INF/resources/webjars/viz.js/2.1.2/";
         try (final InputStream api = getClass().getResourceAsStream(path + "viz.js");
              final InputStream engine = getClass().getResourceAsStream(path + "full.render.js")) {
             return IoUtils.readStream(api) + IoUtils.readStream(engine);
