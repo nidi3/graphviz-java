@@ -17,6 +17,8 @@ package guru.nidi.graphviz.engine;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -45,7 +47,8 @@ class AbstractGraphvizEngineTest {
 
         final String vizResult = engineUnderTest.jsVizExec("digraph{ a -> b}", options);
 
-        assertThat(vizResult, is("render('digraph{ a -> b}',{format:'svg',engine:'dot',totalMemory:'320000',yInvert:true});"));
+        assertThat(vizResult, is("render('digraph{ a -> b}',{format:'svg',engine:'dot',totalMemory:'320000',"
+                + "yInvert:true,basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
     }
 
     @Test
@@ -55,6 +58,7 @@ class AbstractGraphvizEngineTest {
 
         final String vizResult = engineUnderTest.jsVizExec("digraph{ a -> b}", options);
 
-        assertThat(vizResult, is("render('digraph{ a -> b}',{format:'svg',engine:'dot'});"));
+        assertThat(vizResult, is("render('digraph{ a -> b}',{format:'svg',engine:'dot',"
+                + "basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
     }
 }

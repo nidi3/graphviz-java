@@ -18,6 +18,8 @@ package guru.nidi.graphviz.engine;
 import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.*;
 
+import java.io.File;
+
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static org.hamcrest.CoreMatchers.is;
@@ -63,7 +65,8 @@ class GraphvizTest {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph).totalMemory(32000).render(Format.SVG).toString();
 
-        assertThat(result, is("render('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot',totalMemory:'32000'});"));
+        assertThat(result, is("render('graph { \"a\" -- \"b\" }',"
+                + "{format:'svg',engine:'dot',totalMemory:'32000',basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
     }
 
     @Test
@@ -71,7 +74,8 @@ class GraphvizTest {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph).render(Format.SVG).toString();
 
-        assertThat(result, is("render('graph { \"a\" -- \"b\" }',{format:'svg',engine:'dot'});"));
+        assertThat(result, is("render('graph { \"a\" -- \"b\" }',"
+                + "{format:'svg',engine:'dot',basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
     }
 
     private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {

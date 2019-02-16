@@ -170,4 +170,24 @@ class ReadmeTest {
         g.fontAdjust(.87).render(Format.PNG).toFile(new File("example/ex6a.png"));
         //## end
     }
+
+    @Test
+    void ex7() throws IOException {
+        //## img
+        Graphviz.useEngine(new GraphvizCmdLineEngine());
+        Graphviz g = Graphviz.fromGraph(graph()
+                .with(node(Label.html("<table border='0'><tr><td><img src='graphviz.png' /></td></tr></table>"))));
+        g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex7.png"));
+        //## img
+    }
+
+    @Test
+    void ex8() throws IOException {
+        //## image
+        Graphviz.useEngine(new GraphvizV8Engine());
+        Graphviz g = Graphviz.fromGraph(graph()
+                .with(node(" ").with(Size.std().margin(.8, .7), Image.of("graphviz.png"))));
+        g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex8.png"));
+        //## image
+    }
 }

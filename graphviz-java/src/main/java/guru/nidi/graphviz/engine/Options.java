@@ -89,7 +89,7 @@ public final class Options {
         final Matcher basedir = BASE_DIR.matcher(json);
         final boolean hasBasedir = basedir.find();
         final Matcher imgs = IMAGES.matcher(json);
-        final boolean hasImgs = imgs.find();
+        final boolean hasImgs = imgs.find() && imgs.group(1).length() > 0;
         final String[] imgList = hasImgs ? imgs.group(1).split("},\\{") : new String[0];
 
         return new Options(
