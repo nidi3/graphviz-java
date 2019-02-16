@@ -270,7 +270,7 @@ results in this graphics:
 ## Images
 Images can be included in graphviz in two ways.
 
-One possibility is using the <img> tag inside a HTML label:
+One possibility is using the \<img> tag inside a HTML label:
 
 [//]: # (img)
 ```java
@@ -285,11 +285,10 @@ g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex7.p
 Because viz.js [does not support \<img> tags](https://github.com/mdaines/viz.js/issues/125),
 **this works only when using the command line engine**. 
 
-The other way is the image attribute of a node:
+The other possibility is the `image` attribute of a node:
 
 [//]: # (image)
 ```java
-Graphviz.useEngine(new GraphvizV8Engine());
 Graphviz g = Graphviz.fromGraph(graph()
         .with(node(" ").with(Size.std().margin(.8, .7), Image.of("graphviz.png"))));
 g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex8.png"));
