@@ -17,6 +17,8 @@ package guru.nidi.graphviz.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     public AbstractJsGraphvizEngine(boolean sync) {
@@ -31,12 +33,24 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     protected abstract String jsExecute(String jsCall);
 
     protected String jsVizExec(String src, Options options) {
-        return src.startsWith("render") ? src : ("render('" + preprocessCode(src) + "'," + options.toJson(false) + ");");
+        final Entry<String, Options> srcAndOptions = preprocessCode(src, options);
+        return src.startsWith("render")
+                ? src
+                : ("render('" + srcAndOptions.getKey() + "'," + srcAndOptions.getValue().toJson(false) + ");");
     }
 
-    protected String preprocessCode(String src) {
-        if (src.contains("<img")) throw new IllegalArgumentException("Found <img> tag. This is not supported by JS engines. Either use the GraphvizCmdLineEngine or a node with image attribute.");
-        return jsEscape(src);
+    protected Entry<String, Options> preprocessCode(String src, Options options) {
+        if (src.contains("<img")) {
+            throw new GraphvizException("Found <img> tag. This is not supported by JS engines. "
+                    + "Either use the GraphvizCmdLineEngine or a node with image attribute.");
+        }
+        final Options[] opts = new Options[]{options};
+        final String pathsReplaced = replacePaths(src, IMAGE_ATTR, path -> {
+            final String realPath = replacePath(path, options.basedir);
+            opts[0] = opts[0].image(realPath);
+            return realPath;
+        });
+        return new SimpleEntry<>(jsEscape(pathsReplaced), opts[0]);
     }
 
     protected String jsEscape(String js) {

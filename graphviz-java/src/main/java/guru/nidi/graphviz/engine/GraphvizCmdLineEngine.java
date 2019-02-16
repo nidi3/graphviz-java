@@ -26,8 +26,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.util.Locale.ENGLISH;
 
@@ -38,7 +36,6 @@ import static java.util.Locale.ENGLISH;
  */
 public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
-    private static final Pattern IMG_SRC = Pattern.compile("<img .*?src\\s*=\\s*['\"]([^'\"]*)");
 
     private final String envPath;
     private final CommandRunner cmdRunner;
@@ -97,18 +94,8 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     protected String preprocessCode(String src, Options options) {
-        final Matcher matcher = IMG_SRC.matcher(src);
-        final StringBuilder s = new StringBuilder();
-        int last = 0;
-        while (matcher.find()) {
-            final String attr = matcher.group(1);
-            s.append(src, last, matcher.start(1));
-            s.append((attr.startsWith("http://") || attr.startsWith("https://") || new File(attr).isAbsolute())
-                    ? attr
-                    : new File(options.basedir, attr).getAbsolutePath());
-            last = matcher.end(1);
-        }
-        return s.append(src.substring(last)).toString();
+        final String imgReplaced = replacePaths(src, IMG_SRC, path -> replacePath(path, options.basedir));
+        return replacePaths(imgReplaced, IMAGE_ATTR, path -> replacePath(path, options.basedir));
     }
 
     private String getEngineExecutable(@Nullable Engine engine) {
