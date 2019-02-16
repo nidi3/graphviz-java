@@ -9,6 +9,7 @@ Use graphviz with pure java. Create graphviz models using java code and convert 
 #### [Prerequisites ](#user-content-prerequisites)
 #### [API ](#user-content-api)
 #### [Examples ](#user-content-examples)
+#### [Images ](#user-content-images)
 #### [Configuration ](#user-content-configuration)
 
 
@@ -265,6 +266,40 @@ Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4
 results in this graphics:
 
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-2.png" width="400">
+
+## Images
+Images can be included in graphviz in two ways.
+
+One possibility is using the <img> tag inside a HTML label:
+
+[//]: # (img)
+```java
+Graphviz.useEngine(new GraphvizCmdLineEngine());
+Graphviz g = Graphviz.fromGraph(graph()
+        .with(node(Label.html("<table border='0'><tr><td><img src='graphviz.png' /></td></tr></table>"))));
+g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex7.png"));
+```
+[//]: # (end)
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex7.png" width="200">
+
+Because viz.js [does not support \<img> tags](https://github.com/mdaines/viz.js/issues/125),
+**this works only when using the command line engine**. 
+
+The other way is the image attribute of a node:
+
+[//]: # (image)
+```java
+Graphviz.useEngine(new GraphvizV8Engine());
+Graphviz g = Graphviz.fromGraph(graph()
+        .with(node(" ").with(Size.std().margin(.8, .7), Image.of("graphviz.png"))));
+g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex8.png"));
+```
+[//]: # (end)
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex8.png" width="200">
+
+This works with all engines.
+
+In both cases, the `basedir()` method can be used to define where relative paths are looked up.
 
 ## Configuration
 The size of the resulting image, the rendering engine and the output format can be configured:
