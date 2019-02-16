@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.engine;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +42,8 @@ public final class Options {
             FORMAT = Pattern.compile("format:'(.*?)'"),
             ENGINE = Pattern.compile("engine:'(.*?)'"),
             MEMORY = Pattern.compile("totalMemory:'(.*?)'"),
-            Y_INVERT = Pattern.compile("yInvert:(.*?)");
+            Y_INVERT = Pattern.compile("yInvert:(.*?)"),
+            BASE_DIR = Pattern.compile("basedir:'(.*?)'");
 
     final Engine engine;
     final Format format;
@@ -49,16 +51,18 @@ public final class Options {
     final Integer totalMemory;
     @Nullable
     final Boolean yInvert;
+    final File basedir;
 
-    private Options(Engine engine, Format format, @Nullable Integer totalMemory, @Nullable Boolean yInvert) {
+    private Options(Engine engine, Format format, @Nullable Integer totalMemory, @Nullable Boolean yInvert, File basedir) {
         this.engine = engine;
         this.format = format;
         this.totalMemory = totalMemory;
         this.yInvert = yInvert;
+        this.basedir = basedir;
     }
 
     public static Options create() {
-        return new Options(Engine.DOT, Format.SVG, null, null);
+        return new Options(Engine.DOT, Format.SVG, null, null, new File("."));
     }
 
     public static Options fromJson(String json) {
@@ -70,31 +74,35 @@ public final class Options {
         final boolean hasMemory = memory.find();
         final Matcher yInvert = Y_INVERT.matcher(json);
         final boolean hasYInvert = yInvert.find();
+        final Matcher basedir = BASE_DIR.matcher(json);
+        basedir.find();
+
         return new Options(
                 Engine.valueOf(engine.group(1)),
                 Format.valueOf(format.group(1)),
                 hasMemory ? Integer.parseInt(memory.group(1)) : null,
-                hasYInvert ? Boolean.parseBoolean(yInvert.group(1)) : null);
+                hasYInvert ? Boolean.parseBoolean(yInvert.group(1)) : null,
+                new File(basedir.group(1)));
     }
 
     public Options engine(Engine engine) {
-        return new Options(engine, format, totalMemory, yInvert);
+        return new Options(engine, format, totalMemory, yInvert, basedir);
     }
 
     public Options format(Format format) {
-        return new Options(engine, format, totalMemory, yInvert);
+        return new Options(engine, format, totalMemory, yInvert, basedir);
     }
 
     public Options totalMemory(@Nullable Integer totalMemory) {
-        return new Options(engine, format, totalMemory, yInvert);
+        return new Options(engine, format, totalMemory, yInvert, basedir);
     }
 
     public Options yInvert(@Nullable Boolean yInvert) {
-        return new Options(engine, format, totalMemory, yInvert);
+        return new Options(engine, format, totalMemory, yInvert, basedir);
     }
 
-    public Options fontAdjust(double fontAdjust) {
-        return new Options(engine, format, totalMemory, yInvert);
+    public Options basedir(File basedir) {
+        return new Options(engine, format, totalMemory, yInvert, basedir);
     }
 
     public String toJson(boolean raw) {
@@ -102,6 +110,7 @@ public final class Options {
         final String eng = ",engine:'" + (raw ? engine : engine.toString().toLowerCase(ENGLISH)) + "'";
         final String mem = totalMemory == null ? "" : (",totalMemory:'" + totalMemory + "'");
         final String yInv = yInvert == null ? "" : (",yInvert:" + yInvert);
-        return "{" + form + eng + mem + yInv + "}";
+        final String base = ",basedir:'" + basedir.getAbsolutePath() + "'";
+        return "{" + form + eng + mem + yInv + base + ",images: [ { path: '/Users/nidi/idea/graphviz-java-parent/out2.png', width: '400px', height: '300px' }]}";
     }
 }

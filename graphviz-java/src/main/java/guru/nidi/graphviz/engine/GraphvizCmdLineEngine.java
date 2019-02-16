@@ -26,6 +26,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.Locale.ENGLISH;
 
@@ -36,6 +38,7 @@ import static java.util.Locale.ENGLISH;
  */
 public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
+    private static final Pattern IMG_SRC = Pattern.compile("<img .*?src\\s*=\\s*['\"]([^'\"]*)");
 
     private final String envPath;
     private final CommandRunner cmdRunner;
@@ -74,7 +77,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
             final File dotfile = getDotFile(tempDirPath.toString());
             try (final BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(dotfile), StandardCharsets.UTF_8))) {
-                bw.write(src);
+                bw.write(preprocessCode(src, options));
             }
             final String command = engine
                     + (options.yInvert != null && options.yInvert ? " -y" : "")
@@ -91,6 +94,21 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         } catch (IOException | InterruptedException e) {
             throw new GraphvizException(e.getMessage(), e);
         }
+    }
+
+    protected String preprocessCode(String src, Options options) {
+        final Matcher matcher = IMG_SRC.matcher(src);
+        final StringBuilder s = new StringBuilder();
+        int last = 0;
+        while (matcher.find()) {
+            final String attr = matcher.group(1);
+            s.append(src, last, matcher.start(1));
+            s.append((attr.startsWith("http://") || attr.startsWith("https://") || new File(attr).isAbsolute())
+                    ? attr
+                    : new File(options.basedir, attr).getAbsolutePath());
+            last = matcher.end(1);
+        }
+        return s.append(src.substring(last)).toString();
     }
 
     private String getEngineExecutable(@Nullable Engine engine) {

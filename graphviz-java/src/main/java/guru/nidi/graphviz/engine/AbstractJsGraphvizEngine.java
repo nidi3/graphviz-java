@@ -31,7 +31,12 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     protected abstract String jsExecute(String jsCall);
 
     protected String jsVizExec(String src, Options options) {
-        return src.startsWith("render") ? src : ("render('" + jsEscape(src) + "'," + options.toJson(false) + ");");
+        return src.startsWith("render") ? src : ("render('" + preprocessCode(src) + "'," + options.toJson(false) + ");");
+    }
+
+    protected String preprocessCode(String src) {
+        if (src.contains("<img")) throw new IllegalArgumentException("Found <img> tag. This is not supported by JS engines. Either use the GraphvizCmdLineEngine or a node with image attribute.");
+        return jsEscape(src);
     }
 
     protected String jsEscape(String js) {

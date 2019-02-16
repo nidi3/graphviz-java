@@ -153,8 +153,8 @@ public final class Graphviz {
         return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.yInvert(yInvert));
     }
 
-    public Graphviz fontAdjust(double fontAdjust) {
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options);
+    public Graphviz basedir(File basedir) {
+        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.basedir(basedir));
     }
 
     public Graphviz width(int width) {
@@ -166,6 +166,10 @@ public final class Graphviz {
     }
 
     public Graphviz scale(double scale) {
+        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options);
+    }
+
+    public Graphviz fontAdjust(double fontAdjust) {
         return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options);
     }
 
