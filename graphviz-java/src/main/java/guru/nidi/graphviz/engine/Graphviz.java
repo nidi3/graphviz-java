@@ -129,7 +129,7 @@ public final class Graphviz {
 
     public static Graphviz fromFile(File src) throws IOException {
         try (final InputStream in = new FileInputStream(src)) {
-            return fromString(IoUtils.readStream(in));
+            return fromString(IoUtils.readStream(in)).basedir(src.getParentFile());
         }
     }
 
