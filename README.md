@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/nidi3/graphviz-java.svg)](https://travis-ci.org/nidi3/graphviz-java)
 [![codecov](https://codecov.io/gh/nidi3/graphviz-java/branch/master/graph/badge.svg)](https://codecov.io/gh/nidi3/graphviz-java)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/guru.nidi/graphviz-java/badge.svg)](https://maven-badges.herokuapp.com/maven-central/guru.nidi/graphviz-java)
 
 Use graphviz with pure java. Create graphviz models using java code and convert them into nice graphics.
 
