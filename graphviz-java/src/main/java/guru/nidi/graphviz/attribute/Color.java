@@ -74,6 +74,10 @@ public class Color extends SingleAttributes<String, ForAll> {
         return rgb(hex(rgb >> 16) + hex(rgb >> 8) + hex(rgb));
     }
 
+    public static Color rgb(int r, int g, int b) {
+        return rgb(hex(r) + hex(g) + hex(b));
+    }
+
     public static Color rgba(String rgba) {
         final String val = rgba.startsWith("#") ? rgba.substring(1) : rgba;
         if (val.length() != 8) {
@@ -84,6 +88,10 @@ public class Color extends SingleAttributes<String, ForAll> {
 
     public static Color rgba(int rgba) {
         return rgba(hex(rgba >> 16) + hex(rgba >> 8) + hex(rgba) + hex(rgba >> 24));
+    }
+
+    public static Color rgba(int r, int g, int b, int a) {
+        return rgb(hex(r) + hex(g) + hex(b) + hex(a));
     }
 
     private static String hex(int value) {
