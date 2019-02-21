@@ -37,14 +37,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 class CodeAnalysisTest extends CodeAssertJunit5Test {
 
-    //TODO un-overwrite as soon as svg salamander is available from maven
-    @Override
-    protected EnumSet<CodeAssertTestType> defaultTests() {
-        final EnumSet<CodeAssertTestType> types = super.defaultTests();
-        types.remove(CodeAssertTestType.CIRCULAR_DEPENDENCIES);
-        return types;
-    }
-
     @Test
     void dependencies() {
         assertThat(dependencyResult(), matchesRulesExactly());

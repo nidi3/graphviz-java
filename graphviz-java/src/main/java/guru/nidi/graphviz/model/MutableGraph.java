@@ -20,6 +20,8 @@ import guru.nidi.graphviz.attribute.*;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static java.util.Arrays.asList;
+
 public class MutableGraph implements LinkSource, LinkTarget {
     protected boolean strict;
     protected boolean directed;
@@ -89,10 +91,7 @@ public class MutableGraph implements LinkSource, LinkTarget {
     }
 
     public MutableGraph add(LinkSource... sources) {
-        for (final LinkSource source : sources) {
-            add(source);
-        }
-        return this;
+        return add(asList(sources));
     }
 
     public MutableGraph add(List<? extends LinkSource> sources) {

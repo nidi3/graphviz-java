@@ -17,6 +17,8 @@ package guru.nidi.graphviz.attribute;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 public interface Attributes<F extends For> {
     Attributes<? super F> applyTo(MapAttributes<? super F> attrs);
 
@@ -43,11 +45,7 @@ public interface Attributes<F extends For> {
 
     @SafeVarargs
     static <F extends For> Attributes<F> attrs(Attributes<? extends F>... attributes) {
-        final MapAttributes<F> res = new MapAttributes<>();
-        for (Attributes<? extends F> attribute : attributes) {
-            attribute.applyTo(res);
-        }
-        return res;
+        return attrs(asList(attributes));
     }
 
     static <F extends For> Attributes<F> attrs(List<Attributes<? extends F>> attributes) {
