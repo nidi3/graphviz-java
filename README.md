@@ -33,7 +33,7 @@ This project is available via Maven:
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-java</artifactId>
-    <version>0.8.2</version>
+    <version>0.8.3</version>
 </dependency>
 ```
 
