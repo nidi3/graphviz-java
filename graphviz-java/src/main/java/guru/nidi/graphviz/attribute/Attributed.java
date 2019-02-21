@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import java.util.List;
+
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
@@ -38,6 +40,10 @@ public interface Attributed<T, F extends For> extends Attributes<F> {
 
     //cannot use @SafeVarargs here, that's why we have the specializations for 2..4 attrs
     default T with(Attributes<? extends F>... attributes) {
+        return with(attrs(attributes));
+    }
+
+    default T with(List<Attributes<? extends F>> attributes) {
         return with(attrs(attributes));
     }
 

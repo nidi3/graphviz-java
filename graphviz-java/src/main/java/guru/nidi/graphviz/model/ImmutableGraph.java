@@ -59,6 +59,10 @@ class ImmutableGraph extends MutableGraph implements Graph {
         return (ImmutableGraph) copyOfMut().add(sources);
     }
 
+    public Graph with(List<? extends LinkSource> sources) {
+        return (ImmutableGraph) copyOfMut().add(sources);
+    }
+
     public Graph link(LinkTarget... targets) {
         return (ImmutableGraph) copyOfMut().addLink(targets);
     }

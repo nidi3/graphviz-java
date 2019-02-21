@@ -95,6 +95,13 @@ public class MutableGraph implements LinkSource, LinkTarget {
         return this;
     }
 
+    public MutableGraph add(List<? extends LinkSource> sources) {
+        for (final LinkSource source : sources) {
+            add(source);
+        }
+        return this;
+    }
+
     public MutableGraph add(LinkSource source) {
         source.addTo(this);
         return this;

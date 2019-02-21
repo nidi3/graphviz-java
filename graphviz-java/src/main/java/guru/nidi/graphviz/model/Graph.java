@@ -17,6 +17,8 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.*;
 
+import java.util.List;
+
 public interface Graph extends LinkSource, LinkTarget {
     Graph strict();
 
@@ -29,6 +31,8 @@ public interface Graph extends LinkSource, LinkTarget {
     Graph link(LinkTarget... targets);
 
     Graph with(LinkSource... sources);
+
+    Graph with(List<? extends LinkSource> sources);
 
     Attributed<Graph, ForNode> nodeAttr();
 
