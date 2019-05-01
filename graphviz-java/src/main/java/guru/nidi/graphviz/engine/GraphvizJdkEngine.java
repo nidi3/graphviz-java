@@ -15,49 +15,30 @@
  */
 package guru.nidi.graphviz.engine;
 
-import javax.script.*;
-import java.io.InputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
-    private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
-    private static final ThreadLocal<ResultHandler> HANDLER = new ThreadLocal<>();
-    private static final Pattern JAVA_18_PATTERN = Pattern.compile("1.8.0_(\\d+).*");
+public class GraphvizJdkEngine extends AbstractGraphvizEngine {
+    private final AbstractJsGraphvizEngine engine;
 
     public GraphvizJdkEngine() {
         super(false);
-        final String version = System.getProperty("java.version");
-        final Matcher matcher = JAVA_18_PATTERN.matcher(version);
-        if (matcher.matches() && Integer.parseInt(matcher.group(1)) < 40) {
-            throw new GraphvizException("You are using an old version of java 1.8. Please update it.");
-        }
+        engine = newEngine();
     }
 
-    @Override
-    protected String jsExecute(String jsCall) {
+    private AbstractJsGraphvizEngine newEngine() {
         try {
-            if (HANDLER.get() == null) {
-                HANDLER.set(new ResultHandler());
-            }
-            ENGINE.getBindings(ScriptContext.ENGINE_SCOPE).put("handler", HANDLER.get());
-            ENGINE.eval(jsCall);
-            return HANDLER.get().waitFor();
-        } catch (ScriptException e) {
-            throw new GraphvizException("Problem executing graphviz", e);
+            Class.forName("org.graalvm.polyglot.Context");
+            return new GraphvizGraalEngine();
+        } catch (ClassNotFoundException e) {
+            return new GraphvizNashornEngine();
         }
     }
 
     @Override
     protected void doInit() throws Exception {
-        try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
-            ENGINE.eval(IoUtils.readStream(api));
-        }
-        ENGINE.eval(jsVizCode());
-        ENGINE.eval("var graphviz = Java.type('guru.nidi.graphviz.engine.GraphvizJdkEngine');"
-                + "function result(r){ handler.setResult(r); }"
-                + "function error(r){ handler.setError(r); }");
-        ENGINE.eval(jsInitEnv());
-        execute("digraph g { a -> b; }", Options.create());
+        engine.doInit();
+    }
+
+    @Override
+    public String execute(String src, Options options) {
+        return engine.execute(src,options);
     }
 }
