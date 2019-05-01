@@ -21,7 +21,8 @@ import guru.nidi.codeassert.config.AnalyzerConfig;
 import guru.nidi.codeassert.config.In;
 import guru.nidi.codeassert.dependency.*;
 import guru.nidi.codeassert.findbugs.*;
-import guru.nidi.codeassert.junit.*;
+import guru.nidi.codeassert.junit.CodeAssertJunit5Test;
+import guru.nidi.codeassert.junit.PredefConfig;
 import guru.nidi.codeassert.pmd.*;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
@@ -29,8 +30,6 @@ import guru.nidi.graphviz.model.*;
 import guru.nidi.graphviz.parse.Parser;
 import net.sourceforge.pmd.RulePriority;
 import org.junit.jupiter.api.Test;
-
-import java.util.EnumSet;
 
 import static guru.nidi.codeassert.junit.CodeAssertMatchers.matchesRulesExactly;
 import static org.hamcrest.MatcherAssert.assertThat;

@@ -19,7 +19,7 @@ To execute the graphviz layout engine, one of these options is used:
 - If the machine has graphviz installed and a `dot` command is available, spawn a new process running `dot`.
 - Use this [javascript version](https://github.com/mdaines/viz.js) of graphviz and execute it on the V8 javascript engine.
 This is done with the bundled [J2V8](https://github.com/eclipsesource/J2V8) library.
-- Alternatively, the javascript can be executed on Java's own Nashorn engine.
+- Alternatively, the javascript can be executed on Java's own Nashorn or GraalVM engine.
 
 The method(s) to be used can be configured with the `Graphviz.useEngine()` method. 
 

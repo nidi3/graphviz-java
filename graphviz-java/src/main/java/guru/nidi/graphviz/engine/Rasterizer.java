@@ -20,11 +20,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
+import static guru.nidi.graphviz.engine.IoUtils.*;
+
 public interface Rasterizer {
     @Nullable
-    Rasterizer BATIK = IoUtils.isOnClasspath("org.apache.batik.transcoder.Transcoder") ? new BatikRasterizer() : null;
+    Rasterizer BATIK = isOnClasspath("org.apache.batik.transcoder.Transcoder") ? new BatikRasterizer() : null;
     @Nullable
-    Rasterizer SALAMANDER = IoUtils.isOnClasspath("com.kitfox.svg.SVGDiagram") ? new SalamanderRasterizer() : null;
+    Rasterizer SALAMANDER = isOnClasspath("com.kitfox.svg.SVGDiagram") ? new SalamanderRasterizer() : null;
     @Nullable
     Rasterizer DEFAULT = BATIK != null ? BATIK : SALAMANDER;
 

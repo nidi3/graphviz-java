@@ -15,21 +15,14 @@
  */
 package guru.nidi.graphviz.engine;
 
+import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
+
 public class GraphvizJdkEngine extends AbstractGraphvizEngine {
     private final AbstractJsGraphvizEngine engine;
 
     public GraphvizJdkEngine() {
         super(false);
-        engine = newEngine();
-    }
-
-    private AbstractJsGraphvizEngine newEngine() {
-        try {
-            Class.forName("org.graalvm.polyglot.Context");
-            return new GraphvizGraalEngine();
-        } catch (ClassNotFoundException e) {
-            return new GraphvizNashornEngine();
-        }
+        engine = isOnClasspath("org.graalvm.polyglot.Context") ? new GraphvizGraalEngine() : new GraphvizNashornEngine();
     }
 
     @Override
@@ -39,6 +32,6 @@ public class GraphvizJdkEngine extends AbstractGraphvizEngine {
 
     @Override
     public String execute(String src, Options options) {
-        return engine.execute(src,options);
+        return engine.execute(src, options);
     }
 }

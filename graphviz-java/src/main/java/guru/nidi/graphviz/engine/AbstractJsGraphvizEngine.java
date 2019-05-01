@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 
+import static guru.nidi.graphviz.engine.IoUtils.*;
+
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     public AbstractJsGraphvizEngine(boolean sync) {
         super(sync);
@@ -61,7 +63,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         final String path = "/META-INF/resources/webjars/viz.js/2.1.2/";
         try (final InputStream api = getClass().getResourceAsStream(path + "viz.js");
              final InputStream engine = getClass().getResourceAsStream(path + "full.render.js")) {
-            return IoUtils.readStream(api) + IoUtils.readStream(engine);
+            return readStream(api) + readStream(engine);
         }
     }
 

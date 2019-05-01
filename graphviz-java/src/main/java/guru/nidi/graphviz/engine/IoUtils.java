@@ -22,7 +22,7 @@ final class IoUtils {
     private IoUtils() {
     }
 
-    public static String readStream(InputStream in) throws IOException {
+    static String readStream(InputStream in) throws IOException {
         final byte[] buf = new byte[in.available()];
         int read, total = 0;
         while ((read = in.read(buf, total, Math.min(100000, buf.length - total))) > 0) {
@@ -31,7 +31,7 @@ final class IoUtils {
         return new String(buf, StandardCharsets.UTF_8);
     }
 
-    public static boolean isOnClasspath(String clazz) {
+    static boolean isOnClasspath(String clazz) {
         try {
             Class.forName(clazz);
             return true;
@@ -40,7 +40,7 @@ final class IoUtils {
         }
     }
 
-    public static void closeQuietly(Closeable c) {
+    static void closeQuietly(Closeable c) {
         try {
             c.close();
         } catch (IOException e) {

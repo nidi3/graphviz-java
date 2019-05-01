@@ -23,6 +23,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
+import static guru.nidi.graphviz.engine.IoUtils.*;
+
 public final class Graphviz {
     @Nullable
     private static volatile BlockingQueue<GraphvizEngine> engineQueue;
@@ -129,7 +131,7 @@ public final class Graphviz {
 
     public static Graphviz fromFile(File src) throws IOException {
         try (final InputStream in = new FileInputStream(src)) {
-            return fromString(IoUtils.readStream(in)).basedir(src.getParentFile());
+            return fromString(readStream(in)).basedir(src.getParentFile());
         }
     }
 

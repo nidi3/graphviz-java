@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static guru.nidi.graphviz.engine.IoUtils.*;
+
 class GraphvizNashornEngine extends AbstractJsGraphvizEngine {
     private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
     private static final ThreadLocal<ResultHandler> HANDLER = new ThreadLocal<>();
@@ -51,7 +53,7 @@ class GraphvizNashornEngine extends AbstractJsGraphvizEngine {
     @Override
     protected void doInit() throws Exception {
         try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
-            ENGINE.eval(IoUtils.readStream(api));
+            ENGINE.eval(readStream(api));
         }
         ENGINE.eval(jsVizCode());
         ENGINE.eval("var graphviz = Java.type('guru.nidi.graphviz.engine.GraphvizJdkEngine');"

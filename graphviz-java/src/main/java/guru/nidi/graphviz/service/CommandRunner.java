@@ -55,7 +55,7 @@ public class CommandRunner {
     }
 
     private void exec(String cmd, @Nullable File workDir, List<String> args) throws IOException, InterruptedException {
-        exec(cmd, workDir, args.toArray(new String[args.size()]));
+        exec(cmd, workDir, args.toArray(new String[0]));
     }
 
     void exec(String cmd, List<String> args) throws IOException, InterruptedException {

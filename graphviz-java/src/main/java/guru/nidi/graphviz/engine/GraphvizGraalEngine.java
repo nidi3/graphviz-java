@@ -20,6 +20,8 @@ import org.graalvm.polyglot.PolyglotException;
 
 import java.io.InputStream;
 
+import static guru.nidi.graphviz.engine.IoUtils.*;
+
 class GraphvizGraalEngine extends AbstractJsGraphvizEngine {
     private static final Context CTX = Context.newBuilder("js").allowAllAccess(true).build();
     private static final ThreadLocal<ResultHandler> HANDLER = new ThreadLocal<>();
@@ -45,7 +47,7 @@ class GraphvizGraalEngine extends AbstractJsGraphvizEngine {
     @Override
     protected void doInit() throws Exception {
         try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
-            eval(IoUtils.readStream(api));
+            eval(readStream(api));
         }
         eval(jsVizCode());
         eval("function result(r){ Polyglot.import('handler').setResult(r); }"

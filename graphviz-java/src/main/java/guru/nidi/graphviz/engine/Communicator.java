@@ -19,6 +19,8 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import static guru.nidi.graphviz.engine.IoUtils.closeQuietly;
+
 class Communicator implements Closeable {
     private final Socket socket;
     private final BufferedReader in;
@@ -66,8 +68,8 @@ class Communicator implements Closeable {
 
     @Override
     public void close() {
-        IoUtils.closeQuietly(in);
-        IoUtils.closeQuietly(out);
-        IoUtils.closeQuietly(socket);
+        closeQuietly(in);
+        closeQuietly(out);
+        closeQuietly(socket);
     }
 }
