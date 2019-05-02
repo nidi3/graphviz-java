@@ -15,15 +15,20 @@
  */
 package guru.nidi.graphviz.engine;
 
-import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
-
 public class GraphvizJdkEngine extends AbstractGraphvizEngine {
-    private final AbstractJsGraphvizEngine engine;
+    private final AbstractGraphvizEngine engine;
 
     public GraphvizJdkEngine() {
         super(false);
-        engine = isOnClasspath("org.graalvm.polyglot.Context")
-                ? new GraphvizGraalEngine() : new GraphvizNashornEngine();
+        engine = newEngine();
+    }
+
+    private AbstractGraphvizEngine newEngine() {
+        try {
+            return new GraphvizGraalEngine();
+        } catch (ExceptionInInitializerError | NoClassDefFoundError e) {
+            return new GraphvizNashornEngine();
+        }
     }
 
     @Override
