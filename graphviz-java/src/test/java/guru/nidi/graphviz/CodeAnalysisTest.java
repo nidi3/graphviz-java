@@ -28,6 +28,7 @@ import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.*;
 import guru.nidi.graphviz.parse.Parser;
+import guru.nidi.graphviz.service.CommandRunner;
 import net.sourceforge.pmd.RulePriority;
 import org.junit.jupiter.api.Test;
 
@@ -69,7 +70,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("GraphvizServer", "GraphvizServerEngine")
                                 .ignore("UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"))
                 .because("We don't execute user submitted JS code",
-                        In.clazz(GraphvizJdkEngine.class).ignore("SCRIPT_ENGINE_INJECTION"))
+                        In.loc("GraphvizNashornEngine").ignore("SCRIPT_ENGINE_INJECTION"))
                 .because("It's ok",
                         In.loc("DefaultExecutor").ignore("DM_DEFAULT_ENCODING"),
                         In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
@@ -114,6 +115,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("I don't understand the message",
                         In.locs("CommandRunnerTest", "AbstractJsGraphvizEngine").ignore("SimplifiedTernary"))
                 .because("I don't agree",
+                        In.clazz(CommandRunner.class).ignore("OptimizableToArrayCall"),
                         In.everywhere().ignore("SimplifyStartsWith"))
                 .because("It's wrapping an Exception with a RuntimeException",
                         In.classes(Graphviz.class, CreationContext.class).ignore("AvoidCatchingGenericException"));
@@ -127,7 +129,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
         final CpdMatchCollector collector = new CpdMatchCollector()
                 .apply(PredefConfig.cpdIgnoreEqualsHashCodeToString())
                 .because("It's java",
-                        In.loc("*Graph").ignore("Graph(strict, directed, cluster, name,", "if (strict != graph.strict) {"));
+                        In.loc("*Graph").ignore("Graph(strict, directed, cluster, name,", "if (strict != graph.strict) {"))
+                .just(In.locs("GraphvizGraalEngine","GraphvizNashornEngine").ignore("void doInit()"));
         return new CpdAnalyzer(AnalyzerConfig.maven().main(), 36, collector).analyze();
     }
 

@@ -22,7 +22,8 @@ public class GraphvizJdkEngine extends AbstractGraphvizEngine {
 
     public GraphvizJdkEngine() {
         super(false);
-        engine = isOnClasspath("org.graalvm.polyglot.Context") ? new GraphvizGraalEngine() : new GraphvizNashornEngine();
+        engine = isOnClasspath("org.graalvm.polyglot.Context")
+                ? new GraphvizGraalEngine() : new GraphvizNashornEngine();
     }
 
     @Override
