@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz.engine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +50,10 @@ public enum Format {
     JSON("json", "json", false, false),
     JSON0("json0", "json", false, false);
 
+    private static final Logger LOG = LoggerFactory.getLogger(Format.class);
     private static final Pattern FONT_PATTERN = Pattern.compile("font-size=\"(.*?)\"");
+    private static final Pattern SVG_PATTERN = Pattern.compile("<svg width=\"(\\d+)p[tx]\" height=\"(\\d+)p[tx]\"(.*?)>\n"
+            + "<g(.*?)transform=\"(scale\\(.*?\\))?", Pattern.DOTALL);
     final String vizName;
     final String fileExtension;
     final boolean image;
@@ -65,8 +71,18 @@ public enum Format {
     }
 
     private static String postProcessSvg(String result, boolean prefix, double fontAdjust) {
-        final String prefixed = prefix ? withoutPrefix(result) : result;
-        return fontAdjust == 1 ? prefixed : fontAdjusted(prefixed, fontAdjust);
+        final String unprefixed = prefix ? withoutPrefix(result) : result;
+        final String scaled = adjustScale(unprefixed);
+        return fontAdjust == 1 ? scaled : fontAdjusted(scaled, fontAdjust);
+    }
+
+    private static String adjustScale(String svg) {
+        final Matcher m = SVG_PATTERN.matcher(svg);
+        if (!m.find()) {
+            LOG.warn("Generated SVG has not the expected format. There might be image size problems.");
+            return svg;
+        }
+        return m.replaceFirst("<svg width=\"$1px\" height=\"$2px\"$3>\n<g$4transform=\"");
     }
 
     private static String withoutPrefix(String svg) {

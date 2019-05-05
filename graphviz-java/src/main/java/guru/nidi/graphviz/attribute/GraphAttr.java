@@ -31,6 +31,10 @@ public final class GraphAttr {
     private GraphAttr() {
     }
 
+    public static Attributes<ForGraph> dpi(int dpi) {
+        return new SingleAttributes<>("dpi", dpi);
+    }
+
     public static Attributes<ForGraph> sizeMax(double size) {
         return new SingleAttributes<>(SIZE, size);
     }

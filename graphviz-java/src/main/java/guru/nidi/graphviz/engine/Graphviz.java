@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.attribute.ForGraph;
 import guru.nidi.graphviz.model.*;
 
 import javax.annotation.Nullable;
@@ -22,8 +23,9 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-import static guru.nidi.graphviz.engine.IoUtils.*;
+import static guru.nidi.graphviz.engine.IoUtils.readStream;
 
 public final class Graphviz {
     @Nullable
@@ -140,7 +142,20 @@ public final class Graphviz {
     }
 
     public static Graphviz fromGraph(MutableGraph graph) {
-        return fromString(new Serializer(graph).serialize());
+        return withDefaultDpi(graph, g -> fromString(new Serializer(g).serialize()));
+    }
+
+    private static <T> T withDefaultDpi(MutableGraph graph, Function<MutableGraph, T> action) {
+        final MutableAttributed<MutableGraph, ForGraph> attrs = graph.graphAttrs();
+        final Object oldDpi = attrs.get("dpi");
+        if (oldDpi == null) {
+            attrs.add("dpi", 96);
+        }
+        try {
+            return action.apply(graph);
+        } finally {
+            attrs.add("dpi", oldDpi);
+        }
     }
 
     public Graphviz engine(Engine engine) {
