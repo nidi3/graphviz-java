@@ -52,8 +52,9 @@ public enum Format {
 
     private static final Logger LOG = LoggerFactory.getLogger(Format.class);
     private static final Pattern FONT_PATTERN = Pattern.compile("font-size=\"(.*?)\"");
-    private static final Pattern SVG_PATTERN = Pattern.compile("<svg width=\"(\\d+)p[tx]\" height=\"(\\d+)p[tx]\"(.*?)>\n"
-            + "<g(.*?)transform=\"(scale\\(.*?\\))?", Pattern.DOTALL);
+    private static final Pattern SVG_PATTERN = Pattern.compile(
+            "<svg width=\"(\\d+)p[tx]\" height=\"(\\d+)p[tx]\"(.*?)>\n"
+                    + "<g(.*?)transform=\"(scale\\(.*?\\))?", Pattern.DOTALL);
     final String vizName;
     final String fileExtension;
     final boolean image;
