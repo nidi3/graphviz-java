@@ -15,14 +15,12 @@
  */
 package guru.nidi.graphviz
 
-import guru.nidi.codeassert.checkstyle.CheckstyleAnalyzer
-import guru.nidi.codeassert.checkstyle.StyleEventCollector
+import guru.nidi.codeassert.checkstyle.*
 import guru.nidi.codeassert.config.AnalyzerConfig
 import guru.nidi.codeassert.config.In
 import guru.nidi.codeassert.config.Language.KOTLIN
 import guru.nidi.codeassert.dependency.*
 import guru.nidi.codeassert.junit.CodeAssertJunit5Test
-import guru.nidi.codeassert.junit.PredefConfig
 import guru.nidi.codeassert.junit.kotlin.KotlinCodeAssertMatchers.hasNoKtlintIssues
 import guru.nidi.codeassert.ktlint.KtlintAnalyzer
 import guru.nidi.codeassert.ktlint.KtlintCollector
@@ -45,15 +43,15 @@ class CodeAnalysisTest : CodeAssertJunit5Test() {
                 .analyze()
     }
 
-    override fun analyzeCheckstyle() = CheckstyleAnalyzer(config, PredefConfig.adjustedGoogleStyleChecks(), StyleEventCollector()
-            .apply(PredefConfig.minimalCheckstyleIgnore()))
+    override fun analyzeCheckstyle() = CheckstyleAnalyzer(config, CheckstyleConfigs.adjustedGoogleStyleChecks(), StyleEventCollector()
+            .apply(CheckstyleConfigs.minimalCheckstyleIgnore()))
             .analyze()!!
 
     override fun analyzeCpd() = CpdAnalyzer(config, 25, CpdMatchCollector()).analyze()!!
 
     override fun analyzePmd() = PmdAnalyzer(config, PmdViolationCollector()
-            .apply(PredefConfig.minimalPmdIgnore()))
-            .withRulesets(*PredefConfig.defaultPmdRulesets())
+            .apply(PmdConfigs.minimalPmdIgnore()))
+            .withRulesets(*PmdConfigs.defaultPmdRulesets())
             .analyze()!!
 
     //TODO findbugs crashed the JVM! WTF!?

@@ -22,7 +22,6 @@ import guru.nidi.codeassert.config.In;
 import guru.nidi.codeassert.dependency.*;
 import guru.nidi.codeassert.findbugs.*;
 import guru.nidi.codeassert.junit.CodeAssertJunit5Test;
-import guru.nidi.codeassert.junit.PredefConfig;
 import guru.nidi.codeassert.pmd.*;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
@@ -64,7 +63,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     @Override
     protected FindBugsResult analyzeFindBugs() {
         final BugCollector collector = new BugCollector().minPriority(Priorities.NORMAL_PRIORITY)
-                .apply(PredefConfig.dependencyTestIgnore(CodeAnalysisTest.class))
+                .apply(FindBugsConfigs.dependencyTestIgnore(CodeAnalysisTest.class))
                 .because("It's examples", In.loc("ReadmeTest").ignore("DLS_DEAD_LOCAL_STORE"))
                 .because("GraphvizServer is on localhost",
                         In.locs("GraphvizServer", "GraphvizServerEngine")
@@ -85,7 +84,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     @Override
     protected PmdResult analyzePmd() {
         final PmdViolationCollector collector = new PmdViolationCollector().minPriority(RulePriority.MEDIUM)
-                .apply(PredefConfig.minimalPmdIgnore())
+                .apply(PmdConfigs.minimalPmdIgnore())
                 .because("It's examples", In.locs("ExampleTest", "ReadmeTest")
                         .ignore("JUnitTestsShouldIncludeAssert", "LocalVariableCouldBeFinal", "UnusedLocalVariable"))
                 .because("It's a test", In.loc("*Test")
@@ -120,14 +119,14 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("It's wrapping an Exception with a RuntimeException",
                         In.classes(Graphviz.class, CreationContext.class).ignore("AvoidCatchingGenericException"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)
-                .withRulesets(PredefConfig.defaultPmdRulesets())
+                .withRulesets(PmdConfigs.defaultPmdRulesets())
                 .analyze();
     }
 
     @Override
     protected CpdResult analyzeCpd() {
         final CpdMatchCollector collector = new CpdMatchCollector()
-                .apply(PredefConfig.cpdIgnoreEqualsHashCodeToString())
+                .apply(PmdConfigs.cpdIgnoreEqualsHashCodeToString())
                 .because("It's java",
                         In.loc("*Graph").ignore("Graph(strict, directed, cluster, name,", "if (strict != graph.strict) {"))
                 .just(In.locs("GraphvizGraalEngine","GraphvizNashornEngine").ignore("void doInit()"));
@@ -137,10 +136,10 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     @Override
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
-                .apply(PredefConfig.minimalCheckstyleIgnore())
+                .apply(CheckstyleConfigs.minimalCheckstyleIgnore())
                 .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr").ignore("empty.line.separator"))
                 .just(In.clazz(For.class).ignore("one.top.level.class"));
-        final StyleChecks checks = PredefConfig.adjustedGoogleStyleChecks();
+        final StyleChecks checks = CheckstyleConfigs.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }
 }
