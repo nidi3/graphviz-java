@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -35,7 +36,7 @@ public interface Attributes<F extends For> {
         return copy;
     }
 
-    static <F extends For> Attributes<F> attr(String key, Object value) {
+    static <F extends For> Attributes<F> attr(String key, @Nullable Object value) {
         return new MapAttributes<F>().add(key, value);
     }
 
@@ -56,6 +57,7 @@ public interface Attributes<F extends For> {
         return res;
     }
 
+    @Nullable
     default Object get(String key) {
         return applyTo(new MapAttributes<>()).get(key);
     }

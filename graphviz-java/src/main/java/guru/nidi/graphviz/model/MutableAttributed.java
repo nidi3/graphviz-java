@@ -18,13 +18,14 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.Attributes;
 import guru.nidi.graphviz.attribute.For;
 
+import javax.annotation.Nullable;
 import java.util.Map.Entry;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
 public interface MutableAttributed<T, F extends For> extends Attributes<F>, Iterable<Entry<String, Object>> {
-    default T add(String name, Object value) {
+    default T add(String name, @Nullable Object value) {
         return add(attr(name, value));
     }
 
@@ -47,6 +48,4 @@ public interface MutableAttributed<T, F extends For> extends Attributes<F>, Iter
     }
 
     T add(Attributes<? extends F> attributes);
-
-    Object get(String key);
 }

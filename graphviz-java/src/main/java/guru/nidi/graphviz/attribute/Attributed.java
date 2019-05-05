@@ -15,13 +15,14 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
 public interface Attributed<T, F extends For> extends Attributes<F> {
-    default T with(String name, Object value) {
+    default T with(String name, @Nullable Object value) {
         return with(attr(name, value));
     }
 
