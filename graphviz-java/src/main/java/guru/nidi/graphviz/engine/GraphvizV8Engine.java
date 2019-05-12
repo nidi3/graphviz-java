@@ -85,7 +85,8 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
             v8.registerJavaMethod((receiver, parameters) -> {
                 final String rawMsg = parameters.getString(0);
                 final String msg = rawMsg.matches("TypeError: Module\\..*? is not a function")
-                        ? "Got Error: '" + rawMsg + "'. This is probably an out of memory error. Try using the totalMemory method."
+                        ? "Got Error: '" + rawMsg + "'. This is probably an out of memory error."
+                        + " Try using the totalMemory method."
                         : rawMsg;
                 resultHandler.setError(msg);
             }, "error");

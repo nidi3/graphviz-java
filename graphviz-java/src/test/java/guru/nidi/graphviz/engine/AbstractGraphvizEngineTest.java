@@ -47,7 +47,7 @@ class AbstractGraphvizEngineTest {
 
         final String vizResult = engineUnderTest.jsVizExec("digraph{ a -> b}", options);
 
-        assertThat(vizResult, is("render('digraph{ a -> b}',{format:'svg',engine:'dot',totalMemory:'320000',"
+        assertThat(vizResult, is("totalMemory=320000;render('digraph{ a -> b}',{format:'svg',engine:'dot',totalMemory:'320000',"
                 + "yInvert:true,basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
     }
 

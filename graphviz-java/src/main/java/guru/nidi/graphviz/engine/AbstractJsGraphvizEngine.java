@@ -35,10 +35,13 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     protected abstract String jsExecute(String jsCall);
 
     protected String jsVizExec(String src, Options options) {
-        final Entry<String, Options> srcAndOptions = preprocessCode(src, options);
+        if (src.startsWith("totalMemory") || src.startsWith("render")) {
+            return src;
+        }
         final String memory = options.totalMemory == null ? "" : "totalMemory=" + options.totalMemory + ";";
-        final String render = "render('" + srcAndOptions.getKey() + "'," + srcAndOptions.getValue().toJson(false) + ");";
-        return src.startsWith("render") ? src : (memory + render);
+        final Entry<String, Options> srcAndOpts = preprocessCode(src, options);
+        final String render = "render('" + srcAndOpts.getKey() + "'," + srcAndOpts.getValue().toJson(false) + ");";
+        return memory + render;
     }
 
     protected Entry<String, Options> preprocessCode(String src, Options options) {
@@ -71,7 +74,10 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         return "var viz; var totalMemory = 16777216;"
                 + "function initViz(force){"
                 + "  if (force || !viz || viz.totalMemory !== totalMemory){"
-                + "    viz = new Viz({Module: function(){ return Viz.Module({TOTAL_MEMORY: totalMemory}); }, render: Viz.render});"
+                + "    viz = new Viz({"
+                + "      Module: function(){ return Viz.Module({TOTAL_MEMORY: totalMemory}); },"
+                + "      render: Viz.render"
+                + "    });"
                 + "    viz.totalMemory = totalMemory;"
                 + "  }"
                 + "  return viz;"
