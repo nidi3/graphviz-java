@@ -20,7 +20,7 @@ import org.graalvm.polyglot.PolyglotException;
 
 import java.io.InputStream;
 
-import static guru.nidi.graphviz.engine.IoUtils.*;
+import static guru.nidi.graphviz.engine.IoUtils.readStream;
 
 class GraphvizGraalEngine extends AbstractJsGraphvizEngine {
     private static final Context CTX = Context.newBuilder("js").allowAllAccess(true).build();

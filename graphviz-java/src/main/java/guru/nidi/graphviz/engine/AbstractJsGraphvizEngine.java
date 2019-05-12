@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 
-import static guru.nidi.graphviz.engine.IoUtils.*;
+import static guru.nidi.graphviz.engine.IoUtils.readStream;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     public AbstractJsGraphvizEngine(boolean sync) {
@@ -36,9 +36,9 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
 
     protected String jsVizExec(String src, Options options) {
         final Entry<String, Options> srcAndOptions = preprocessCode(src, options);
-        return src.startsWith("render")
-                ? src
-                : ("render('" + srcAndOptions.getKey() + "'," + srcAndOptions.getValue().toJson(false) + ");");
+        final String memory = options.totalMemory == null ? "" : "totalMemory=" + options.totalMemory + ";";
+        final String render = "render('" + srcAndOptions.getKey() + "'," + srcAndOptions.getValue().toJson(false) + ");";
+        return src.startsWith("render") ? src : (memory + render);
     }
 
     protected Entry<String, Options> preprocessCode(String src, Options options) {
@@ -68,12 +68,19 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     protected String jsInitEnv() {
-        return "var viz = new Viz();"
+        return "var viz; var totalMemory = 16777216;"
+                + "function initViz(force){"
+                + "  if (force || !viz || viz.totalMemory !== totalMemory){"
+                + "    viz = new Viz({Module: function(){ return Viz.Module({TOTAL_MEMORY: totalMemory}); }, render: Viz.render});"
+                + "    viz.totalMemory = totalMemory;"
+                + "  }"
+                + "  return viz;"
+                + "}"
                 + "function render(src, options){"
                 + "  try {"
-                + "    viz.renderString(src, options)"
+                + "    initViz().renderString(src, options)"
                 + "      .then(function(res) { result(res); })"
-                + "      .catch(function(err) { viz = new Viz(); error(err.toString()); });"
+                + "      .catch(function(err) { initViz(true); error(err.toString()); });"
                 + "  } catch(e) { error(e.toString()); }"
                 + "}";
     }

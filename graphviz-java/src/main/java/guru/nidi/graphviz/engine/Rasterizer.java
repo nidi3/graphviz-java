@@ -20,7 +20,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
-import static guru.nidi.graphviz.engine.IoUtils.*;
+import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
 
 public interface Rasterizer {
     @Nullable

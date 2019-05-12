@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static guru.nidi.graphviz.engine.IoUtils.*;
+import static guru.nidi.graphviz.engine.IoUtils.readStream;
 
 class GraphvizNashornEngine extends AbstractJsGraphvizEngine {
     private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");

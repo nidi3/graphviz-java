@@ -74,7 +74,7 @@ class ExampleTest {
         final Node
                 printf = node("printf"),
                 make_string = node("make_string");
-        final Graph g = graph().graphAttr().with("dpi",300).directed().with(
+        final Graph g = graph().graphAttr().with("dpi", 300).directed().with(
                 node("main").with(Color.rgb("ffcc00"), Style.FILLED).link(
                         node("parse").link(node("execute")
                                 .link(make_string, printf, node("compare"))),
