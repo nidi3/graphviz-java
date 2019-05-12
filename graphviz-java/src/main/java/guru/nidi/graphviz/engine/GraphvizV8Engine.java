@@ -15,7 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
-import com.eclipsesource.v8.*;
+import com.eclipsesource.v8.V8;
+import com.eclipsesource.v8.V8RuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,10 +79,16 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
             LOG.info("Started V8 runtime. Initializing graphviz...");
             v8.executeVoidScript(viz);
             v8.executeVoidScript(init);
-            v8.registerJavaMethod((JavaVoidCallback) (receiver, parameters) ->
-                    resultHandler.setResult(parameters.getString(0)), "result");
-            v8.registerJavaMethod((JavaVoidCallback) (receiver, parameters) ->
-                    resultHandler.setError(parameters.getString(0)), "error");
+            v8.registerJavaMethod((receiver, parameters) -> {
+                resultHandler.setResult(parameters.getString(0));
+            }, "result");
+            v8.registerJavaMethod((receiver, parameters) -> {
+                final String rawMsg = parameters.getString(0);
+                final String msg = rawMsg.matches("TypeError: Module\\..*? is not a function")
+                        ? "Got Error: '" + rawMsg + "'. This is probably an out of memory error. Try using the totalMemory method."
+                        : rawMsg;
+                resultHandler.setError(msg);
+            }, "error");
             LOG.info("Initialized graphviz.");
         }
 
