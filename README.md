@@ -134,7 +134,7 @@ digraph example1 {
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-kotlin</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.5</version>
 </dependency>
 ```
 
