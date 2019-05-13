@@ -373,5 +373,5 @@ To use graphviz inside javadoc comments, add this to `pom.xml`:
   </plugins>
 </build>
 ```
-To use this with JDK 9 or later, replace `<artifactId>graphviz-taglet</artifactId>`
-with `<artifactId>graphviz-taglet9</artifactId>`.
+To use this with JDK 9 or later, replace `graphviz-taglet`
+with `graphviz-taglet9`.
