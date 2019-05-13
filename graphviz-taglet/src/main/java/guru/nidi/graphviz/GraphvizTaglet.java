@@ -30,11 +30,18 @@ import java.util.regex.Pattern;
  * Support graphviz inside javadoc.
  * <p>
  * {@graphviz
- * graph test {a -- b}
+ * graph test {
+ * rankdir=LR
+ * a -- b
+ * b -- c [color=red]
  * }
+ * }
+ * </p>
  * end
  */
 public class GraphvizTaglet implements Taglet {
+    private static final Pattern START_PATTERN = Pattern.compile("^\\s*(di)?graph\\s*(.*?)\\s\\{");
+
     public static void register(Map<String, Taglet> taglets) {
         final GraphvizTaglet taglet = new GraphvizTaglet();
         taglets.put(taglet.getName(), taglet);
@@ -92,8 +99,7 @@ public class GraphvizTaglet implements Taglet {
     }
 
     private String imageTitleOf(Tag tag) {
-        final Pattern startPattern = Pattern.compile("^\\s*(di)?graph\\s*(.*?)\\s\\{");
-        final Matcher matcher = startPattern.matcher(tag.text());
+        final Matcher matcher = START_PATTERN.matcher(tag.text());
         return matcher.find() ? matcher.group(2) : "";
     }
 

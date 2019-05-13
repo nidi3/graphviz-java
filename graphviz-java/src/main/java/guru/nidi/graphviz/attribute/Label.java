@@ -145,7 +145,7 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
 
     /**
      * Create either a simple, HTML or markdown label.
-     * If the value is not surrounded by < and >, a simple Label is created.
+     * If the value is not surrounded by &lt; and &gt;, a simple Label is created.
      * Otherwise if value contains some HTML tags, a HTML label is created.
      * Otherwise a markdown label is created.
      *
