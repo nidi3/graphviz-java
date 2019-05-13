@@ -46,7 +46,7 @@ public class Renderer {
         return graphviz.execute();
     }
 
-    public void toFile(File file) throws IOException {
+    public File toFile(File file) throws IOException {
         Files.createDirectories(file.getAbsoluteFile().getParentFile().toPath());
         final File target = file.getName().contains(".")
                 ? file
@@ -58,6 +58,7 @@ public class Renderer {
                 out.write(toString());
             }
         }
+        return target;
     }
 
     public void toOutputStream(OutputStream outputStream) throws IOException {
