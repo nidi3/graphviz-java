@@ -375,3 +375,17 @@ To use graphviz inside javadoc comments, add this to `pom.xml`:
 ```
 To use this with JDK 9 or later, replace `graphviz-taglet`
 with `graphviz-taglet9`.
+
+The usage inside javadoc is then as follows:
+```java
+/**
+ * Support graphviz inside javadoc.
+ * <p>
+ * {@graphviz
+ * graph test { a -- b }
+ * }
+ * </p>
+ * So easy.
+ */
+public class GraphvizTaglet implements Taglet {}
+```
