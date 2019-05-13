@@ -12,6 +12,7 @@ Use graphviz with pure java. Create graphviz models using java code and convert 
 #### [Examples ](#user-content-examples)
 #### [Images ](#user-content-images)
 #### [Configuration ](#user-content-configuration)
+#### [Javadoc ](#javadoc)
 
 
 ## How it works
@@ -352,3 +353,25 @@ g.fontAdjust(.87).render(Format.PNG).toFile(new File("example/ex6a.png"));
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex6d.png" width="400">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex6a.png" width="400">
   
+## Javadoc
+To use graphviz inside javadoc comments, add this to `pom.xml`:
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <artifactId>maven-javadoc-plugin</artifactId>
+      <version>3.1.0</version>
+      <configuration>
+        <taglet>guru.nidi.graphviz.GraphvizTaglet</taglet>
+        <tagletArtifact>
+          <groupId>guru.nidi</groupId>
+          <artifactId>graphviz-taglet</artifactId>
+          <version>0.8.6</version>
+        </tagletArtifact>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+```
+To use this with JDK 9 or later, replace `<artifactId>graphviz-taglet</artifactId>`
+with `<artifactId>graphviz-taglet9</artifactId>`.
