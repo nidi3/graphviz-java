@@ -135,4 +135,10 @@ class ParserTest {
         assertEquals(mutGraph().add(a, b),
                 Parser.read("graph { edge[color=red, width=1] a -- b edge[color=blue, a=b] a -- b }"));
     }
+
+    @Test
+    void cluster() throws IOException {
+        assertEquals(mutGraph().add(mutGraph("sub").setCluster(true)),
+                Parser.read("graph { subgraph cluster_sub {} }"));
+    }
 }

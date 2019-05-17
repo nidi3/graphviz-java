@@ -131,7 +131,13 @@ public final class Parser {
             if (token.type == SUBGRAPH) {
                 nextToken();
                 if (token.type == ID) {
-                    sub.setName(label(token).toString());
+                    final String name = label(token).toString();
+                    if (name.startsWith("cluster_")) {
+                        sub.setName(name.substring(8));
+                        sub.setCluster(true);
+                    } else {
+                        sub.setName(name);
+                    }
                     nextToken();
                 }
             }
