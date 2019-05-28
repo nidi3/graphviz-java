@@ -41,9 +41,7 @@ public class Serializer {
         if (!graph.name.isEmpty()) {
             str.append(SimpleLabel.of(graph.name).serialized()).append(' ');
         }
-        str.append("{\n");
         doGraph(graph, useDir);
-        str.append('}');
     }
 
     private void subGraph(MutableGraph graph, boolean useDir) {
@@ -52,12 +50,11 @@ public class Serializer {
                     .append(Label.of((graph.cluster ? "cluster_" : "") + graph.name).serialized())
                     .append(' ');
         }
-        str.append("{\n");
         doGraph(graph, useDir);
-        str.append('}');
     }
 
     private void doGraph(MutableGraph graph, boolean useDir) {
+        str.append("{\n");
         if (useDir && graph.graphAttrs.get("dir") == null) {
             attributes("edge", Attributes.attr("dir", graph.directed ? "forward" : "none"));
         }
@@ -86,6 +83,7 @@ public class Serializer {
 
         edges(nodes, useDir);
         edges(graphs, useDir);
+        str.append('}');
     }
 
     private boolean hasDifferentlyDirectedSubgraphs(MutableGraph graph) {

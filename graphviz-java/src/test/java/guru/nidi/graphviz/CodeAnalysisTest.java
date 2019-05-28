@@ -89,7 +89,9 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("JUnitTestsShouldIncludeAssert", "LocalVariableCouldBeFinal", "UnusedLocalVariable"))
                 .because("It's a test", In.loc("*Test")
                         .ignore("ExcessiveMethodLength"))
-                .because("It's a bug in PMD?", In.clazz(MutableNode.class).ignore("ConstructorCallsOverridableMethod"))
+                .because("It's a bug in PMD?",
+                        In.clazz(MutableNode.class).ignore("ConstructorCallsOverridableMethod"),
+                        In.loc("Serializer#doGraph").ignore("ConsecutiveLiteralAppends"))
                 .because("There are a lot of colors", In.clazz(Color.class)
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
@@ -129,7 +131,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .apply(PmdConfigs.cpdIgnoreEqualsHashCodeToString())
                 .because("It's java",
                         In.loc("*Graph").ignore("Graph(strict, directed, cluster, name,", "if (strict != graph.strict) {"))
-                .just(In.locs("GraphvizGraalEngine","GraphvizNashornEngine").ignore("void doInit()"));
+                .just(In.locs("GraphvizGraalEngine", "GraphvizNashornEngine").ignore("void doInit()"));
         return new CpdAnalyzer(AnalyzerConfig.maven().main(), 36, collector).analyze();
     }
 
