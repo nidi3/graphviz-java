@@ -43,11 +43,6 @@ class SimpleMutableAttributed<T, F extends For> implements MutableAttributed<T, 
     }
 
     @Override
-    public Iterator<Entry<String, Object>> iterator() {
-        return attributes.iterator();
-    }
-
-    @Override
     public Object get(String key) {
         return attributes.get(key);
     }

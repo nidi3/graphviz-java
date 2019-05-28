@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 
-public interface MutableAttributed<T, F extends For> extends Attributes<F>, Iterable<Entry<String, Object>> {
+public interface MutableAttributed<T, F extends For> extends Attributes<F> {
     default T add(String name, @Nullable Object value) {
         return add(attr(name, value));
     }

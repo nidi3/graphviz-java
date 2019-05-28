@@ -16,11 +16,13 @@
 package guru.nidi.graphviz.attribute;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import static java.util.Arrays.asList;
 
-public interface Attributes<F extends For> {
+public interface Attributes<F extends For> extends Iterable<Entry<String, Object>> {
     Attributes<? super F> applyTo(MapAttributes<? super F> attrs);
 
     default Attributes<? super F> applyTo(Attributes<? super F> attrs) {
@@ -60,6 +62,11 @@ public interface Attributes<F extends For> {
     @Nullable
     default Object get(String key) {
         return applyTo(new MapAttributes<>()).get(key);
+    }
+
+    @Override
+    default Iterator<Entry<String, Object>> iterator() {
+        return applyTo(new MapAttributes<>()).iterator();
     }
 
     default boolean isEmpty() {
