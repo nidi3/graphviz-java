@@ -15,11 +15,11 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Label;
-import guru.nidi.graphviz.attribute.SimpleLabel;
+import guru.nidi.graphviz.attribute.*;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 public class Serializer {
     private final MutableGraph graph;
@@ -31,12 +31,36 @@ public class Serializer {
     }
 
     public String serialize() {
-        graph(graph, true);
+        toplevelGraph(graph);
         return str.toString();
     }
 
-    private void graph(MutableGraph graph, boolean toplevel) {
-        graphInit(graph, toplevel);
+    private void toplevelGraph(MutableGraph graph) {
+        final boolean useDir = hasDifferentlyDirectedSubgraphs(graph);
+        str.append(graph.strict ? "strict " : "").append(graph.directed || useDir ? "digraph " : "graph ");
+        if (!graph.name.isEmpty()) {
+            str.append(SimpleLabel.of(graph.name).serialized()).append(' ');
+        }
+        str.append("{\n");
+        doGraph(graph, useDir);
+        str.append('}');
+    }
+
+    private void subGraph(MutableGraph graph, boolean useDir) {
+        if (!graph.name.isEmpty() || graph.cluster) {
+            str.append("subgraph ")
+                    .append(Label.of((graph.cluster ? "cluster_" : "") + graph.name).serialized())
+                    .append(' ');
+        }
+        str.append("{\n");
+        doGraph(graph, useDir);
+        str.append('}');
+    }
+
+    private void doGraph(MutableGraph graph, boolean useDir) {
+        if (useDir && graph.graphAttrs.get("dir") == null) {
+            attributes("edge", Attributes.attr("dir", graph.directed ? "forward" : "none"));
+        }
         graphAttrs(graph);
 
         final List<MutableNode> nodes = new ArrayList<>();
@@ -58,32 +82,23 @@ public class Serializer {
         }
 
         nodes(graph, nodes);
-        graphs(graphs, nodes);
+        graphs(graphs, nodes, useDir);
 
-        edges(nodes);
-        edges(graphs);
+        edges(nodes, useDir);
+        edges(graphs, useDir);
+    }
 
-        str.append('}');
+    private boolean hasDifferentlyDirectedSubgraphs(MutableGraph graph) {
+        return Stream.concat(linkedNodes(graph.nodes).stream(), linkedNodes(graph.subgraphs).stream())
+                .filter(n -> n instanceof MutableGraph)
+                .map(n -> (MutableGraph) n)
+                .anyMatch(sub -> sub.directed != graph.directed);
     }
 
     private void graphAttrs(MutableGraph graph) {
         attributes("graph", graph.graphAttrs);
         attributes("node", graph.nodeAttrs);
         attributes("edge", graph.linkAttrs);
-    }
-
-    private void graphInit(MutableGraph graph, boolean toplevel) {
-        if (toplevel) {
-            str.append(graph.strict ? "strict " : "").append(graph.directed ? "digraph " : "graph ");
-            if (!graph.name.isEmpty()) {
-                str.append(SimpleLabel.of(graph.name).serialized()).append(' ');
-            }
-        } else if (!graph.name.isEmpty() || graph.cluster) {
-            str.append("subgraph ")
-                    .append(Label.of((graph.cluster ? "cluster_" : "") + graph.name).serialized())
-                    .append(' ');
-        }
-        str.append("{\n");
     }
 
     private int indexOfName(List<MutableNode> nodes, Label name) {
@@ -95,7 +110,7 @@ public class Serializer {
         return -1;
     }
 
-    private void attributes(String name, MutableAttributed<?, ?> attributed) {
+    private void attributes(String name, Attributes<?> attributed) {
         if (!attributed.isEmpty()) {
             str.append(name);
             attrs(attributed);
@@ -161,34 +176,34 @@ public class Serializer {
         return target == node || (target instanceof ImmutablePortNode && ((ImmutablePortNode) target).node() == node);
     }
 
-    private void graphs(List<MutableGraph> graphs, List<MutableNode> nodes) {
+    private void graphs(List<MutableGraph> graphs, List<MutableNode> nodes, boolean useDir) {
         for (final MutableGraph graph : graphs) {
             if (graph.links.isEmpty() && !isLinked(graph, nodes) && !isLinked(graph, graphs)) {
-                graph(graph, false);
+                subGraph(graph, useDir);
                 str.append('\n');
             }
         }
     }
 
-    private void edges(List<? extends LinkSource> linkSources) {
+    private void edges(List<? extends LinkSource> linkSources, boolean useDir) {
         for (final LinkSource linkSource : linkSources) {
             for (final Link link : linkSource.links()) {
-                linkTarget(link.from);
-                str.append(graph.directed ? " -> " : " -- ");
-                linkTarget(link.to);
+                linkTarget(link.from, useDir);
+                str.append(graph.directed || useDir ? " -> " : " -- ");
+                linkTarget(link.to, useDir);
                 attrs(link.attributes);
                 str.append('\n');
             }
         }
     }
 
-    private void linkTarget(Object linkable) {
+    private void linkTarget(Object linkable, boolean useDir) {
         if (linkable instanceof MutableNode) {
             str.append(((MutableNode) linkable).name.serialized());
         } else if (linkable instanceof ImmutablePortNode) {
             port((ImmutablePortNode) linkable);
         } else if (linkable instanceof MutableGraph) {
-            graph((MutableGraph) linkable, false);
+            subGraph((MutableGraph) linkable, useDir);
         } else {
             throw new IllegalStateException("unexpected link target " + linkable);
         }
@@ -206,7 +221,7 @@ public class Serializer {
         }
     }
 
-    private void attrs(MutableAttributed<?, ?> attrs) {
+    private void attrs(Attributes<?> attrs) {
         if (!attrs.isEmpty()) {
             str.append(" [");
             boolean first = true;

@@ -162,6 +162,13 @@ class SerializerTest {
                 .with(node("a").link(node("x"))));
     }
 
+    @Test
+    void mixedDirected() {
+        assertGraph("digraph {\nedge ['dir'='none']\n'a' -> {\nedge ['dir'='forward']\n'b' -> 'c'\n}\n}",
+                graph().with(node("a").link(
+                        graph().directed().with(node("b").link(node("c"))))));
+    }
+
     private void assertGraph(String expected, Graph graph) {
         assertEquals(expected.replace("'", "\""), new Serializer((MutableGraph) graph).serialize());
     }
