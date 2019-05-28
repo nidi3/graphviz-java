@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import static guru.nidi.graphviz.model.Factory.mutNode;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 public class MutableNode implements MutableAttributed<MutableNode, ForNode>, LinkSource, LinkTarget {
@@ -93,6 +94,10 @@ public class MutableNode implements MutableAttributed<MutableNode, ForNode>, Lin
     }
 
     public MutableNode addLink(LinkTarget... targets) {
+        return addLink(asList(targets));
+    }
+
+    public MutableNode addLink(List<? extends LinkTarget> targets) {
         for (final LinkTarget target : targets) {
             addLink(target);
         }
@@ -128,11 +133,6 @@ public class MutableNode implements MutableAttributed<MutableNode, ForNode>, Lin
     @Override
     public void addTo(MutableGraph graph) {
         graph.nodes.add(this);
-    }
-
-    @Override
-    public Iterator<Entry<String, Object>> iterator() {
-        return attributes.iterator();
     }
 
     @Override

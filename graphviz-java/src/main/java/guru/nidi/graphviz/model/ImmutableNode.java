@@ -36,6 +36,10 @@ class ImmutableNode extends MutableNode implements Node {
         return (ImmutableNode) copyOfMut().addLink(targets);
     }
 
+    public ImmutableNode link(List<? extends LinkTarget> targets) {
+        return (ImmutableNode) copyOfMut().addLink(targets);
+    }
+
     public ImmutableNode link(String node) {
         return (ImmutableNode) copyOfMut().addLink(node);
     }

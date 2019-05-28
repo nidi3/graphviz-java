@@ -18,6 +18,7 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public interface Node extends Attributed<Node, ForNode>, LinkSource, LinkTarget {
     Label name();
@@ -29,6 +30,8 @@ public interface Node extends Attributed<Node, ForNode>, LinkSource, LinkTarget 
     PortNode port(@Nullable String record, @Nullable Compass compass);
 
     Node link(LinkTarget... targets);
+
+    Node link(List<? extends LinkTarget> targets);
 
     Node link(String node);
 
