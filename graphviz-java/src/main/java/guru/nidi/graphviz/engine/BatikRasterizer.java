@@ -30,7 +30,7 @@ class BatikRasterizer extends SvgRasterizer {
     @Override
     public BufferedImage doRasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String svg) {
         final BufferedImage[] image = new BufferedImage[1];
-        final TranscoderInput in = new TranscoderInput(new StringReader(svg.replace("fill=\"transparent\"", "fill-opacity=\"0\"")));
+        final TranscoderInput in = new TranscoderInput(new StringReader(svg));
         try {
             final TranscoderOutput out = new TranscoderOutput(new OutputStream() {
                 @Override

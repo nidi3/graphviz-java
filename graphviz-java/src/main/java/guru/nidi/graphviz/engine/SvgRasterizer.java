@@ -28,7 +28,10 @@ abstract class SvgRasterizer implements Rasterizer {
 
     @Override
     public BufferedImage rasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String input) {
-        final String svg = input.replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"");
+        final String svg = input
+                .replace("xlink:href=\"", "xlink:href=\"file://")
+                .replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"")
+                .replace("fill=\"transparent\"", "fill=\"#fff\" fill-opacity=\"0.0\"");
         return doRasterize(graphviz, graphicsConfigurer, svg);
     }
 
