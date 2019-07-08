@@ -10,7 +10,7 @@ cache:
 #    - /c/bin
 
 before_install:
-  - if [[ $TRAVIS_OS_NAME = windows ]]; then choco install jdk8 -params 'installdir=c:\\bin\\jdk' -y; export JAVA_HOME=/c/bin/jdk; else sudo add-apt-repository ppa:openjdk-r/ppa -y; sudo apt update; sudo apt-get install -y openjdk-8-jdk; export $JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::"); fi
+  - if [[ $TRAVIS_OS_NAME = windows ]]; then choco install jdk8 -params 'installdir=c:\\bin\\jdk' -y; export JAVA_HOME=/c/bin/jdk; else sudo add-apt-repository ppa:openjdk-r/ppa -y; sudo apt update; sudo apt-get install -y openjdk-8-jdk; export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::"); fi
   - if [[ $TRAVIS_OS_NAME = windows ]]; then choco install maven --version 3.6.0 -y; else sudo apt-get install -y maven2; fi
   - echo $JAVA_HOME
 
