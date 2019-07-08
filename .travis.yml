@@ -8,9 +8,9 @@ cache:
     - $HOME/bin
 
 before_install:
-  - choco install jdk8 -params 'installdir=$HOME\\jdk' -y
-  - choco install maven -params 'installdir=$HOME\\mvn' --version 3.6.0 -y
-  - export JAVA_HOME=${JAVA_HOME:-$HOME/jdk}
+  - choco install jdk8 -params 'installdir=$HOME\\bin\\jdk' -y
+  - choco install maven -params 'installdir=$HOME\\bin\\mvn' --version 3.6.0 -y
+  - export JAVA_HOME=${JAVA_HOME:-$HOME/bin/jdk}
   - echo $JAVA_HOME
 script:
   mvn install
