@@ -5,17 +5,17 @@ os:
   - linux
 
 env:
-    - MAVIS="https://raw.githubusercontent.com/nidi3/Mavis-CI/master/" JDK="adopt@1.8.212-04"
+    - MAVIS="https://raw.githubusercontent.com/nidi3/Mavis-CI/master" JDK="adopt@1.8.212-04"
 cache:
   directories:
     - $HOME/.m2
 #    - /c/bin
 
 before_install:
-  - curl "${MAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
-  - source .install-jdk-travis.sh
-  - curl "${MAVIS}.install-maven-travis.sh"
-  - source .install-maven-travis.sh
+  - curl "${MAVIS}/mavis.sh" --output mavis.sh
+  - source mavis.sh
+  - install_jdk
+  - install_maven
 
 before_script:
   mvn install -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
