@@ -198,6 +198,6 @@ class EngineTest {
     }
 
     private static String line(String s) {
-        return s + System.getProperty("line.separator");
+        return s + "\n";
     }
 }
