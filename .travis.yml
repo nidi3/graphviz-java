@@ -10,11 +10,15 @@ cache:
     - /c/bin
 
 before_install:
-  - "if [[ -d /c/bin/jdk && $TRAVIS_OS_NAME==windows ]]; then choco install jdk8 -params 'installdir=/c/bin/jdk' -y; fi"
-  - "if [[ -d /c/bin/mvn && $TRAVIS_OS_NAME==windows ]]; then choco install maven -params 'installdir=/c/bin/mvn' --version 3.6.0 -y; fi"
+  - "if [[ $TRAVIS_OS_NAME==windows ]]; then choco install jdk8 -params 'installdir=/c/bin/jdk' -y; else sudo apt-get install -y jdk8; fi"
+  - "if [[ $TRAVIS_OS_NAME==windows ]]; then choco install maven -params 'installdir=/c/bin/mvn' --version 3.6.0 -y; else sudo apt-get install -y maven2; fi"
   - export JAVA_HOME=${JAVA_HOME:-/c/bin/jdk}
+
+before_script:
+  mvn install -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
 script:
-  mvn install -P -jdeps
+  mvn test -B
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
