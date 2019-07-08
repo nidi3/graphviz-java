@@ -41,21 +41,34 @@ final class GraphvizServer {
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()));
         cmd.addAll(engines.stream().map(e -> e.getClass().getName()).collect(toList()));
         System.out.println(cmd);
-        final Process process = new ProcessBuilder(cmd).inheritIO().start();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println(process.isAlive()+" "+process.exitValue());
+        final Process process = new ProcessBuilder(cmd).start();
+        new Thread(() -> {
+            final byte[] buf = new byte[10000];
+            for(;;) {
+                try {
+//                final int a = process.getInputStream().available();
+                    final int read = process.getInputStream().read(buf);
+                    if (read>0) {
+                        System.out.println("&&&&" + new String(buf, 0, read));
+                    }
+                    Thread.sleep(100);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     public static void main(String... args) throws IOException {
         LOG.info("starting graphviz server...");
+        System.out.println("starting graphviz server...");
         if (args.length > 0) {
             Graphviz.useEngine(Arrays.stream(args).map(GraphvizServer::engineFromString).collect(toList()));
         }
         LOG.info("started, using engines " + Arrays.toString(args));
+        System.out.println("started, using engines " + Arrays.toString(args));
         try (final ServerSocket ss = new ServerSocket(PORT)) {
             while (true) {
                 try (final Socket socket = ss.accept();
