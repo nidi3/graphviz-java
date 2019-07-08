@@ -15,6 +15,7 @@ before_install:
   - echo $JAVA_HOME
   - ls /etc/java*
   - cat /etc/java-8-openjdk/management/management.properties
+  - update-ca-certificates -f
   - ls /etc/ssl/certs/java/cacerts
 
 
