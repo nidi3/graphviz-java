@@ -18,7 +18,6 @@ package guru.nidi.graphviz.engine;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,18 +43,18 @@ class OptionsTest {
     }
 
     @Test
-    void fromJsonOneImage() throws IOException {
+    void fromJsonOneImage() {
         final Options options = Options.fromJson("{engine:'DOT',format:'PNG',images:["
-                + "{path:'" + new File(".").getAbsolutePath() + "/example/ex1.png',width:'547px',height:'100px'}]}");
+                + "{path:'" + new File("./example/ex1.png").getAbsolutePath() + "',width:'547px',height:'100px'}]}");
         final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image("example/ex1.png");
         assertEquals(expected, options);
     }
 
     @Test
-    void fromJsonTwoImages() throws IOException {
+    void fromJsonTwoImages() {
         final Options options = Options.fromJson("{engine:'DOT',format:'PNG',images:["
-                + "{path:'" + new File(".").getAbsolutePath() + "/example/ex1.png',width:'547px',height:'100px'},"
-                + "{path:'" + new File(".").getAbsolutePath() + "/example/ex2.png',width:'900px',height:'962px']}");
+                + "{path:'" + new File("./example/ex1.png").getAbsolutePath() + "',width:'547px',height:'100px'},"
+                + "{path:'" + new File("./example/ex2.png").getAbsolutePath() + "',width:'900px',height:'962px']}");
         final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image("example/ex1.png").image("example/ex2.png");
         assertEquals(expected, options);
     }
@@ -68,8 +67,9 @@ class OptionsTest {
 
     @Test
     void toJsonEmptyImages() {
-        final String s = Options.create().engine(Engine.DOT).format(Format.PNG).totalMemory(42).yInvert(true).basedir(new File("/hula")).toJson(false);
-        assertEquals("{format:'svg',engine:'dot',totalMemory:'42',yInvert:true,basedir:'/hula',images:[]}", s);
+        final File basedir = new File("/hula");
+        final String s = Options.create().engine(Engine.DOT).format(Format.PNG).totalMemory(42).yInvert(true).basedir(basedir).toJson(false);
+        assertEquals("{format:'svg',engine:'dot',totalMemory:'42',yInvert:true,basedir:'" + basedir.getAbsolutePath() + "',images:[]}", s);
     }
 
     @Test

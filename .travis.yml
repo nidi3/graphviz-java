@@ -18,10 +18,10 @@ before_install:
 
 
 before_script:
-  mvn install -s settings.xml -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  mvn install -Djavax.net.ssl.trustStorePassword=changeit -s settings.xml -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
-  mvn test -s settings.xml -P -jdeps -B
+  mvn test javax.net.ssl.trustStorePassword=changeit -s settings.xml -P -jdeps -B
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
