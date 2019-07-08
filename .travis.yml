@@ -12,8 +12,9 @@ cache:
 #    - /c/bin
 
 before_install:
+  - echo "${GRAVIS}.install-jdk-travis.sh"
   - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
-  - cat ~/.install-jdk-travis.sh
+  - cat .install-jdk-travis.sh
   # Download, install, configue the JDK, and export the configuration to the current shell
   - source ~/.install-jdk-travis.sh
 
