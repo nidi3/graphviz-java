@@ -7,7 +7,7 @@ os:
 cache:
   directories:
     - $HOME/.m2
-    - /c/bin
+#    - /c/bin
 
 before_install:
   - echo $TRAVIS_OS_NAME
