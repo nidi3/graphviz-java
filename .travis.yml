@@ -31,6 +31,7 @@ before_install:
 #  - ls /etc/ssl/certs/java/cacerts
 
 
+
 before_script:
   mvn install -s settings.xml -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
