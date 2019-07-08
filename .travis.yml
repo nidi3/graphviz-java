@@ -1,10 +1,8 @@
 sudo: false
-language: java
-jdk:
-- oraclejdk8
-cache:
-  directories:
-  - $HOME/.m2
-
-after_success:
-- bash <(curl -s https://codecov.io/bash)
+language: shell
+os: windows
+before_install:
+  - choco install jdk8 -params 'installdir=c:\\jdk' -y
+  - choco install maven -params 'installdir=c:\\mvn' --version 3.6.0 -y
+script:
+  mvn install
