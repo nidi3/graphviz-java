@@ -14,7 +14,7 @@ cache:
 before_install:
   - curl "${MAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
   - source .install-jdk-travis.sh
-  - curl "${MAVIS}.install-maven-travis.sh" | source
+  - source /dev/stdin  <<< "$(curl ${MAVIS}.install-maven-travis.sh)"
 
 before_script:
   mvn install -s settings.xml -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
