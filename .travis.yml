@@ -10,7 +10,7 @@ cache:
     - /c/bin
 
 before_install:
-  - "[ -d /c/bin/jdk ] || choco install jdk8 -params 'installdir=/c/bin/jdk' -y"
+  - '[ -d /c/bin/jdk && "$TRAVIS_OS_NAME"="windows" ] || choco install jdk8 -params "installdir=/c/bin/jdk" -y'
   - "[ -d /c/bin/mvn ] || choco install maven -params 'installdir=/c/bin/mvn' --version 3.6.0 -y"
   - export JAVA_HOME=${JAVA_HOME:-/c/bin/jdk}
 script:
