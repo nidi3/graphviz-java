@@ -1,4 +1,3 @@
-sudo: false
 language: bash
 dist: xenial
 os:
@@ -16,7 +15,9 @@ before_install:
   - curl "https://raw.githubusercontent.com/nidi3/Mavis-CI/master/mavis.sh" --output mavis.sh
   - source mavis.sh
   - install_jdk
+  - echo $PATH
   - install_maven
+  - echo $PATH
 
 before_script:
   before_script -P -jdeps
