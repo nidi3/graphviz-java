@@ -149,13 +149,7 @@ class EngineTest {
         Graphviz.useEngine(new GraphvizCmdLineEngine(envPath, cmdExecutor));
 
         final String actual = Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
-        for (int i = 0; i < START1_7.length(); i++) {
-            if (START1_7.charAt(i) != actual.charAt(i)) {
-                System.out.println("%%%" + i + START1_7.substring(i - 3, i + 3) + "-" + actual.substring(i - 3, i + 3));
-                break;
-            }
-        }
-        assertThat(actual, startsWith(START1_7));
+        assertThat(actual, startsWith(START1_7.replace("\n", System.lineSeparator())));
     }
 
     /**
@@ -205,6 +199,6 @@ class EngineTest {
     }
 
     private static String line(String s) {
-        return s + System.lineSeparator();
+        return s + "\n";
     }
 }
