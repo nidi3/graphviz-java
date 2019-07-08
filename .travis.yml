@@ -5,30 +5,16 @@ os:
   - linux
 
 env:
-    - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/" JDK="adopt@1.8.212-04"
+    - MAVIS="https://raw.githubusercontent.com/nidi3/Mavis-CI/master/" JDK="adopt@1.8.212-04" MAVEN_VERSION=3.6.0
 cache:
   directories:
     - $HOME/.m2
 #    - /c/bin
 
 before_install:
-  - echo "${GRAVIS}.install-jdk-travis.sh"
-  - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
-  - ls -la
-  - cat .install-jdk-travis.sh
-  - pwd
-  # Download, install, configue the JDK, and export the configuration to the current shell
+  - curl "${MAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
   - source .install-jdk-travis.sh
-
-#  - if [[ $TRAVIS_OS_NAME = windows ]]; then choco install jdk8 -params 'installdir=c:\\bin\\jdk' -y; export JAVA_HOME=/c/bin/jdk; else sudo add-apt-repository ppa:openjdk-r/ppa -y; sudo apt update; sudo apt-get install -y openjdk-8-jdk; export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::"); fi
-  - if [[ $TRAVIS_OS_NAME = windows ]]; then choco install maven --version 3.6.0 -y; else sudo apt-get install -y maven2; fi
-#  - echo $JAVA_HOME
-#  - ls /etc/java*
-#  - cat /etc/java-8-openjdk/management/management.properties
-#  - update-ca-certificates -f
-#  - ls /etc/ssl/certs/java/cacerts
-
-
+  - curl "${MAVIS}.install-maven-travis.sh" | source
 
 before_script:
   mvn install -s settings.xml -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
