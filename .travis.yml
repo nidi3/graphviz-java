@@ -15,6 +15,7 @@ before_install:
   - echo $JAVA_HOME
   - ls -la $JAVA_HOME
   - ls -la /etc/alternatives/java
+  - echo $(readlink -f /usr/bin/java | sed "s:/bin/java::")
 
 before_script:
   mvn install -s settings.xml -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
