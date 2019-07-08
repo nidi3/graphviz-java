@@ -40,6 +40,7 @@ final class GraphvizServer {
                 System.getProperty("java.home") + "/bin/" + executable,
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()));
         cmd.addAll(engines.stream().map(e -> e.getClass().getName()).collect(toList()));
+        System.out.println(cmd);
         new ProcessBuilder(cmd).inheritIO().start();
     }
 
