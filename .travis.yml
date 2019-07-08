@@ -10,9 +10,8 @@ cache:
 #    - /c/bin
 
 before_install:
-  - "if [[ $TRAVIS_OS_NAME = windows ]]; then choco install jdk8 -params 'installdir=/c/bin/jdk' -y; else sudo apt-get install -y jdk8; fi"
+  - "if [[ $TRAVIS_OS_NAME = windows ]]; then choco install jdk8 -params 'installdir=/c/bin/jdk' -y; else sudo apt-get install -y openjdk-8-jdk; fi"
   - "if [[ $TRAVIS_OS_NAME = windows ]]; then choco install maven -params 'installdir=/c/bin/mvn' --version 3.6.0 -y; else sudo apt-get install -y maven2; fi"
-  - cat /c/ProgramData/chocolatey/logs/chocolatey.log
   - export JAVA_HOME=${JAVA_HOME:-/c/bin/jdk}
 
 before_script:
@@ -23,3 +22,6 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+after_failure:
+  - cat /c/ProgramData/chocolatey/logs/chocolatey.log
