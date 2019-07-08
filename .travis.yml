@@ -10,6 +10,7 @@ cache:
 #    - /c/bin
 
 before_install:
+  - rm -R /c/bin
   - echo $TRAVIS_OS_NAME
   - "if [[ $TRAVIS_OS_NAME=windows ]]; then echo 'w'; else echo 'nw'; fi"
   - "if [[ $TRAVIS_OS_NAME=windows ]]; then choco install jdk8 -params 'installdir=/c/bin/jdk' -y; else sudo apt-get install -y jdk8; fi"
