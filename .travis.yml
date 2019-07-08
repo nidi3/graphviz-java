@@ -19,10 +19,10 @@ before_install:
   - install_maven
 
 before_script:
-  mvn install -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  before_script -P -jdeps
 
 script:
-  mvn test -s settings.xml -P -jdeps -B
+  script -P -jdeps
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
