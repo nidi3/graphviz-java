@@ -4,26 +4,38 @@ os:
   - windows
   - linux
 
+env:
+  # This is a convenience variable for shortening download commands
+  - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/"
+  matrix:
+    # List any JDK you want to build your software with.
+    # You can see the list of supported environments by installing Jabba and using ls-remote:
+    # https://github.com/shyiko/jabba#usage
+    - JDK="adopt@1.8.212-04"
 cache:
   directories:
     - $HOME/.m2
 #    - /c/bin
 
 before_install:
-  - if [[ $TRAVIS_OS_NAME = windows ]]; then choco install jdk8 -params 'installdir=c:\\bin\\jdk' -y; export JAVA_HOME=/c/bin/jdk; else sudo add-apt-repository ppa:openjdk-r/ppa -y; sudo apt update; sudo apt-get install -y openjdk-8-jdk; export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::"); fi
-  - if [[ $TRAVIS_OS_NAME = windows ]]; then choco install maven --version 3.6.0 -y; else sudo apt-get install -y maven2; fi
-  - echo $JAVA_HOME
-  - ls /etc/java*
-  - cat /etc/java-8-openjdk/management/management.properties
-  - update-ca-certificates -f
-  - ls /etc/ssl/certs/java/cacerts
+  - curl "${GRAVIS}.install-jdk-travis.sh" --output .install-jdk-travis.sh
+  # Download, install, configue the JDK, and export the configuration to the current shell
+  - source ~/.install-jdk-travis.sh
+
+#  - if [[ $TRAVIS_OS_NAME = windows ]]; then choco install jdk8 -params 'installdir=c:\\bin\\jdk' -y; export JAVA_HOME=/c/bin/jdk; else sudo add-apt-repository ppa:openjdk-r/ppa -y; sudo apt update; sudo apt-get install -y openjdk-8-jdk; export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::"); fi
+#  - if [[ $TRAVIS_OS_NAME = windows ]]; then choco install maven --version 3.6.0 -y; else sudo apt-get install -y maven2; fi
+#  - echo $JAVA_HOME
+#  - ls /etc/java*
+#  - cat /etc/java-8-openjdk/management/management.properties
+#  - update-ca-certificates -f
+#  - ls /etc/ssl/certs/java/cacerts
 
 
 before_script:
-  mvn install -Djavax.net.ssl.trustStorePassword=changeit -D-Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -s settings.xml -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  mvn install -s settings.xml -P -jdeps -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
-  mvn test javax.net.ssl.trustStorePassword=changeit -s settings.xml -P -jdeps -B
+  mvn test -s settings.xml -P -jdeps -B
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
