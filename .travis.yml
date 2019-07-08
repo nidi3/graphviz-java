@@ -18,10 +18,10 @@ before_install:
   - install_maven
 
 before_script:
-  before_script -P -jdeps
+  before_script
 
 script:
-  script -P -jdeps
+  script
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
