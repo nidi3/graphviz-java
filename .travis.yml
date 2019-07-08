@@ -4,5 +4,7 @@ os: windows
 before_install:
   - choco install jdk8 -params 'installdir=c:\\jdk' -y
   - choco install maven -params 'installdir=c:\\mvn' --version 3.6.0 -y
+  - export JAVA_HOME=${JAVA_HOME:-/c/jdk}
+  - echo $JAVA_HOME
 script:
   mvn install
