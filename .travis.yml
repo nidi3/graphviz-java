@@ -1,5 +1,5 @@
 sudo: false
-language: shell
+language: bash
 os:
   - windows
   - linux
