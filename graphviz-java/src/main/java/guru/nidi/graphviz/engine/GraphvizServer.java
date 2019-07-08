@@ -41,7 +41,13 @@ final class GraphvizServer {
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()));
         cmd.addAll(engines.stream().map(e -> e.getClass().getName()).collect(toList()));
         System.out.println(cmd);
-        new ProcessBuilder(cmd).inheritIO().start();
+        final Process process = new ProcessBuilder(cmd).inheritIO().start();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(process.isAlive()+" "+process.exitValue());
     }
 
     public static void main(String... args) throws IOException {
