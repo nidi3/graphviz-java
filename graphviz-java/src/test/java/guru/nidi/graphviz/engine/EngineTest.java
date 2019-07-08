@@ -197,7 +197,6 @@ class EngineTest {
         doAnswer(invocationOnMock -> {
             final File workingDirectory = invocationOnMock.getArgumentAt(1, File.class);
             final File svgInput = new File(getClass().getClassLoader().getResource("outfile1.svg").getFile());
-            System.out.println("ççç"+new String(Files.readAllBytes(svgInput.toPath())).indexOf("\r\n"));
             final File svgOutputFile = new File(workingDirectory.getAbsolutePath() + "/outfile.svg");
             Files.copy(svgInput.toPath(), svgOutputFile.toPath());
             return null;
@@ -206,6 +205,6 @@ class EngineTest {
     }
 
     private static String line(String s) {
-        return s + "\n";
+        return s + System.lineSeparator();
     }
 }
