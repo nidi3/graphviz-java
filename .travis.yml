@@ -5,8 +5,7 @@ os:
   - linux
 
 env:
-    - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/"
-    - JDK="adopt@1.8.212-04"
+    - GRAVIS="https://raw.githubusercontent.com/DanySK/Gravis-CI/master/" JDK="adopt@1.8.212-04"
 cache:
   directories:
     - $HOME/.m2
