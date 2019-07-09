@@ -65,6 +65,7 @@ public final class Graphviz {
     }
 
     public static void useEngine(List<GraphvizEngine> engines) {
+        System.out.println("////" + engines);
         if (engines.isEmpty()) {
             useDefaultEngines();
         } else {
