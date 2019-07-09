@@ -64,7 +64,6 @@ final class GraphvizServer {
                             com.writeStatus("ok");
                             com.writeContent(svg);
                         } catch (GraphvizException e) {
-                            e.printStackTrace();
                             com.writeStatus("fail");
                             com.writeContent(e.getMessage());
                         }
