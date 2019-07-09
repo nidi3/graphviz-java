@@ -40,23 +40,7 @@ final class GraphvizServer {
                 System.getProperty("java.home") + "/bin/" + executable,
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()));
         cmd.addAll(engines.stream().map(e -> e.getClass().getName()).collect(toList()));
-        final Process process = new ProcessBuilder(cmd).start();
-        new Thread(() -> {
-            final byte[] buf = new byte[10000];
-            for (; ; ) {
-                try {
-                    final int read = process.getInputStream().read(buf);
-                    if (read > 0) {
-                        System.out.println("&&&&" + new String(buf, 0, read));
-                    }
-                    Thread.sleep(100);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        final Process process = new ProcessBuilder(cmd).inheritIO().start();
     }
 
     public static void main(String... args) throws IOException {
