@@ -17,6 +17,7 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Font;
+import guru.nidi.graphviz.attribute.Image;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.*;
@@ -425,4 +426,13 @@ class ExampleTest {
         );
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex12.png"));
     }
+
+    @Test
+    void ex13() throws IOException {
+        Graphviz g = Graphviz.fromGraph(graph()
+                .with(node(" ").with(Size.std().margin(.8, .7), Image.of("graphviz.png"))));
+        g.basedir(new File("example")).render(Format.PNG).toFile(new File("target/ex13.png"));
+        System.out.println("%%%%%" + new File("target/ex13.png").length());
+    }
+
 }
