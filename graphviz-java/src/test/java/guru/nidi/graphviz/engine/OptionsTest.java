@@ -83,7 +83,7 @@ class OptionsTest {
     @Test
     void toJsonTwoImages() {
         final String s = Options.create().engine(Engine.DOT).format(Format.PNG).basedir(new File("example")).image("ex1.png").image("ex2.png").toJson(false);
-        assertEquals("{format:'svg',engine:'dot',basedir:'" + uriPathOf(new File("example")) + "',images:["
+        assertEquals("{format:'svg',engine:'dot',basedir:'" + new File("example").getAbsolutePath() + "',images:["
                 + "{path:'" + uriPathOf(new File("example/ex1.png")) + "',width:'547px',height:'100px'},"
                 + "{path:'" + uriPathOf(new File("example/ex2.png")) + "',width:'900px',height:'962px'}]}", s);
     }
