@@ -45,7 +45,6 @@ final class GraphvizServer {
             final byte[] buf = new byte[10000];
             for (; ; ) {
                 try {
-//                final int a = process.getInputStream().available();
                     final int read = process.getInputStream().read(buf);
                     if (read > 0) {
                         System.out.println("&&&&" + new String(buf, 0, read));
@@ -62,24 +61,20 @@ final class GraphvizServer {
 
     public static void main(String... args) throws IOException {
         LOG.info("starting graphviz server...");
-        System.out.println("starting graphviz server...");
         if (args.length > 0) {
             Graphviz.useEngine(Arrays.stream(args).map(GraphvizServer::engineFromString).collect(toList()));
         }
         LOG.info("started, using engines " + Arrays.toString(args));
-        System.out.println("started, using engines " + Arrays.toString(args));
         try (final ServerSocket ss = new ServerSocket(PORT)) {
             while (true) {
                 try (final Socket socket = ss.accept();
                      final Communicator com = new Communicator(socket, 500)) {
                     final int len = com.readLen();
-                    System.out.println("" + len);
                     if (len != 0) {
                         if (len == -1) {
                             break;
                         }
                         final String s = com.readContent(len);
-                        System.out.println("-" + s + "-");
                         try {
                             final String svg = render(s);
                             com.writeStatus("ok");
@@ -96,7 +91,6 @@ final class GraphvizServer {
             }
         }
         LOG.info("graphviz server stopped.");
-        System.out.println("graphviz server stopped.");
     }
 
     private static GraphvizEngine engineFromString(String s) {
