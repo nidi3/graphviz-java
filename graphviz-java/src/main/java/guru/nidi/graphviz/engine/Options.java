@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.service.SystemUtils;
+
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -139,11 +141,10 @@ public final class Options {
         final File file = new File(path).isAbsolute() ? new File(path) : new File(basedir, path);
         try {
             final BufferedImage img = ImageIO.read(file);
-            return new Image("/" + file.getAbsolutePath().replace('\\', '/'), img.getWidth(), img.getHeight());
+            return new Image(SystemUtils.uriPathOf(file.getAbsolutePath()), img.getWidth(), img.getHeight());
         } catch (IOException e) {
             throw new GraphvizException("Problem loading image " + file, e);
         }
-
     }
 
     public String toJson(boolean raw) {

@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.service.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,7 @@ final class GraphvizServer {
     }
 
     public static void start(List<GraphvizEngine> engines) throws IOException {
-        final boolean windows = System.getProperty("os.name").contains("windows");
-        final String executable = windows ? "java.exe" : "java";
+        final String executable = SystemUtils.executableName("java");
         final List<String> cmd = new ArrayList<>(Arrays.asList(
                 System.getProperty("java.home") + "/bin/" + executable,
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()));

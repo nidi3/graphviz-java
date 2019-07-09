@@ -64,6 +64,10 @@ public final class SystemUtils {
         return Paths.get(IS_OS_WINDOWS ? path.replace("\"", "") : path);
     }
 
+    public static String uriPathOf(String path) {
+        return IS_OS_WINDOWS ? "/" + path.replace('\\', '/') : path;
+    }
+
     public static String executableName(String filename) {
         return IS_OS_WINDOWS ? filename + ".exe" : filename;
     }

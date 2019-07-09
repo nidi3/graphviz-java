@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.service.SystemUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
@@ -40,7 +42,6 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         }
         final String memory = options.totalMemory == null ? "" : "totalMemory=" + options.totalMemory + ";";
         final Entry<String, Options> srcAndOpts = preprocessCode(src, options);
-        System.out.println("wwww" + srcAndOpts);
         final String render = "render('" + srcAndOpts.getKey() + "'," + srcAndOpts.getValue().toJson(false) + ");";
         return memory + render;
     }
@@ -52,7 +53,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         }
         final Options[] opts = new Options[]{options};
         final String pathsReplaced = replacePaths(src, IMAGE_ATTR, path -> {
-            final String realPath = "/" + replacePath(path, options.basedir).replace('\\', '/');
+            final String realPath = SystemUtils.uriPathOf(replacePath(path, options.basedir));
             opts[0] = opts[0].image(realPath);
             return realPath;
         });
