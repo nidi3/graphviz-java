@@ -73,7 +73,7 @@ class RendererTest {
     @Test
     void image() throws IOException {
         final File out = new File("target/image.png");
-        Graphviz g = Graphviz.fromGraph(graph().with(node(" ").with(Image.of("graphviz.png"))));
+        final Graphviz g = Graphviz.fromGraph(graph().with(node(" ").with(Image.of("graphviz.png"))));
         g.basedir(new File("example")).render(Format.PNG).toFile(out);
         assertThat((int) out.length(), greaterThan(20000));
     }
