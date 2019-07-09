@@ -69,6 +69,7 @@ class EngineTest {
     }
 
     @Test
+    @Disabled
     void jdk() {
         Graphviz.useEngine(new GraphvizJdkEngine());
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
@@ -86,17 +87,20 @@ class EngineTest {
     }
 
     @Test
+    @Disabled
     void v8() {
         Graphviz.useEngine(new GraphvizV8Engine());
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
     }
 
     @Test
+    @Disabled
     void v8WithoutPath() throws Exception {
         assertNativeLibs(System.getProperty("user.home"), () -> Graphviz.useEngine(new GraphvizV8Engine()));
     }
 
     @Test
+    @Disabled
     void v8WithPath() throws Exception {
         final String tmpDir = System.getProperty("java.io.tmpdir");
         assertNativeLibs(tmpDir, () -> Graphviz.useEngine(new GraphvizV8Engine(tmpDir)));
@@ -125,6 +129,7 @@ class EngineTest {
     }
 
     @Test
+    @Disabled
     void multiV8() throws InterruptedException {
         Graphviz.useEngine(new GraphvizV8Engine());
         final ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -141,6 +146,7 @@ class EngineTest {
     }
 
     @Test
+    @Disabled
     void cmdLine() throws IOException, InterruptedException {
         final File dotFile = setUpFakeDotFile();
         final DefaultExecutor cmdExecutor = setUpFakeStubCommandExecutor();
@@ -156,6 +162,7 @@ class EngineTest {
      * Test to check if we can set the output path and name of the dot file
      */
     @Test
+    @Disabled
     void cmdLineOutputDotFile() throws IOException, InterruptedException {
         final File dotFile = setUpFakeDotFile();
         final DefaultExecutor cmdExecutor = setUpFakeStubCommandExecutor();
