@@ -139,7 +139,7 @@ public final class Options {
         final File file = new File(path).isAbsolute() ? new File(path) : new File(basedir, path);
         try {
             final BufferedImage img = ImageIO.read(file);
-            return new Image(file.getAbsolutePath(), img.getWidth(), img.getHeight());
+            return new Image(file.getAbsolutePath().replace('\\', '/'), img.getWidth(), img.getHeight());
         } catch (IOException e) {
             throw new GraphvizException("Problem loading image " + file, e);
         }
