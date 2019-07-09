@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.attribute.Image;
+import guru.nidi.graphviz.attribute.Size;
 import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,6 +28,8 @@ import java.nio.file.Files;
 
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RendererTest {
@@ -65,6 +69,15 @@ class RendererTest {
         } finally {
             Files.deleteIfExists(file.toPath());
         }
+    }
+
+    @Test
+    void image() throws IOException {
+        final File out = new File("target/image.png");
+        Graphviz g = Graphviz.fromGraph(graph()
+                .with(node(" ").with(Size.std().margin(.8, .7), Image.of("graphviz.png"))));
+        g.basedir(new File("example")).render(Format.PNG).toFile(out);
+        assertThat((int) out.length(), greaterThan(20000));
     }
 
 }
