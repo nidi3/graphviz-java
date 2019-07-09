@@ -74,11 +74,13 @@ final class GraphvizServer {
                 try (final Socket socket = ss.accept();
                      final Communicator com = new Communicator(socket, 500)) {
                     final int len = com.readLen();
+                    System.out.println(len);
                     if (len != 0) {
                         if (len == -1) {
                             break;
                         }
                         final String s = com.readContent(len);
+                        System.out.println(s);
                         try {
                             final String svg = render(s);
                             com.writeStatus("ok");
@@ -94,6 +96,7 @@ final class GraphvizServer {
             }
         }
         LOG.info("graphviz server stopped.");
+        System.out.println("graphviz server stopped.");
     }
 
     private static GraphvizEngine engineFromString(String s) {

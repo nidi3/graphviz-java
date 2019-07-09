@@ -54,6 +54,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
                 }
             }
             if (!canConnect()) {
+                System.out.println("Could not connect to server");
                 throw new IOException("Could not connect to server");
             }
         }
@@ -65,6 +66,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
                 return true;
             }
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
