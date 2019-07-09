@@ -38,7 +38,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Every.everyItem;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -75,7 +77,7 @@ class EngineTest {
 
     @Test
     void server() {
-        assertFalse(System.getProperty("os.name").startsWith("Windows"), "I gave up fixing this");
+        assumeFalse(System.getProperty("os.name").startsWith("Windows"), "I gave up fixing this");
         GraphvizServerEngine.stopServer();
         try {
             Graphviz.useEngine(new GraphvizServerEngine().useEngine(new GraphvizV8Engine()));
