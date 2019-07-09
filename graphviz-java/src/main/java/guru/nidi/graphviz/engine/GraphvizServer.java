@@ -40,7 +40,7 @@ final class GraphvizServer {
                 System.getProperty("java.home") + "/bin/" + executable,
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()));
         cmd.addAll(engines.stream().map(e -> e.getClass().getName()).collect(toList()));
-        final Process process = new ProcessBuilder(cmd).inheritIO().start();
+        new ProcessBuilder(cmd).inheritIO().start();
     }
 
     public static void main(String... args) throws IOException {
