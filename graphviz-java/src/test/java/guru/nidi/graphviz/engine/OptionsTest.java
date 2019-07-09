@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static guru.nidi.graphviz.service.SystemUtils.uriPathOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class OptionsTest {
@@ -45,7 +46,7 @@ class OptionsTest {
     @Test
     void fromJsonOneImage() {
         final Options options = Options.fromJson("{engine:'DOT',format:'PNG',images:["
-                + "{path:'" + new File("./example/ex1.png").getAbsolutePath() + "',width:'547px',height:'100px'}]}");
+                + "{path:'" + uriPathOf(new File("./example/ex1.png")) + "',width:'547px',height:'100px'}]}");
         final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image("example/ex1.png");
         assertEquals(expected, options);
     }
@@ -53,8 +54,8 @@ class OptionsTest {
     @Test
     void fromJsonTwoImages() {
         final Options options = Options.fromJson("{engine:'DOT',format:'PNG',images:["
-                + "{path:'" + new File("./example/ex1.png").getAbsolutePath() + "',width:'547px',height:'100px'},"
-                + "{path:'" + new File("./example/ex2.png").getAbsolutePath() + "',width:'900px',height:'962px']}");
+                + "{path:'" + uriPathOf(new File("./example/ex1.png")) + "',width:'547px',height:'100px'},"
+                + "{path:'" + uriPathOf(new File("./example/ex2.png")) + "',width:'900px',height:'962px']}");
         final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image("example/ex1.png").image("example/ex2.png");
         assertEquals(expected, options);
     }
@@ -76,13 +77,15 @@ class OptionsTest {
     void toJsonOneImage() {
         final String s = Options.create().engine(Engine.DOT).format(Format.PNG).basedir(new File("example")).image("ex1.png").toJson(false);
         assertEquals("{format:'svg',engine:'dot',basedir:'" + new File("example").getAbsolutePath() + "',images:[" +
-                "{path:'" + new File("example/ex1.png").getAbsolutePath() + "',width:'547px',height:'100px'}]}", s);
+                "{path:'" + uriPathOf(new File("example/ex1.png")) + "',width:'547px',height:'100px'}]}", s);
     }
 
     @Test
     void toJsonTwoImages() {
         final String s = Options.create().engine(Engine.DOT).format(Format.PNG).basedir(new File("example")).image("ex1.png").image("ex2.png").toJson(false);
-        assertEquals("{format:'svg',engine:'dot',basedir:'" + new File("example").getAbsolutePath() + "',images:[{path:'" + new File("example/ex1.png").getAbsolutePath() + "',width:'547px',height:'100px'},{path:'" + new File("example/ex2.png").getAbsolutePath() + "',width:'900px',height:'962px'}]}", s);
+        assertEquals("{format:'svg',engine:'dot',basedir:'" + uriPathOf(new File("example")) + "',images:["
+                + "{path:'" + uriPathOf(new File("example/ex1.png")) + "',width:'547px',height:'100px'},"
+                + "{path:'" + uriPathOf(new File("example/ex2.png")) + "',width:'900px',height:'962px'}]}", s);
     }
 
 }

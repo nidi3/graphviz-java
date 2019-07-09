@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -66,6 +67,10 @@ public final class SystemUtils {
 
     public static String uriPathOf(String path) {
         return IS_OS_WINDOWS ? "/" + path.replace('\\', '/') : path;
+    }
+
+    public static String uriPathOf(File path) {
+        return uriPathOf(path.getAbsolutePath());
     }
 
     public static String executableName(String filename) {
