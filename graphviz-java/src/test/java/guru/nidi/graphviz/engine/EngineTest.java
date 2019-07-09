@@ -125,7 +125,6 @@ class EngineTest {
     }
 
     @Test
-    @Disabled
     void multiV8() throws InterruptedException {
         Graphviz.useEngine(new GraphvizV8Engine());
         final ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -142,7 +141,6 @@ class EngineTest {
     }
 
     @Test
-    @Disabled
     void cmdLine() throws IOException, InterruptedException {
         final File dotFile = setUpFakeDotFile();
         final DefaultExecutor cmdExecutor = setUpFakeStubCommandExecutor();
@@ -158,7 +156,6 @@ class EngineTest {
      * Test to check if we can set the output path and name of the dot file
      */
     @Test
-    @Disabled
     void cmdLineOutputDotFile() throws IOException, InterruptedException {
         final File dotFile = setUpFakeDotFile();
         final DefaultExecutor cmdExecutor = setUpFakeStubCommandExecutor();
