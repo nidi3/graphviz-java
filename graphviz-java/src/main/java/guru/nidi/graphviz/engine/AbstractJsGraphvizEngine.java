@@ -52,7 +52,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         }
         final Options[] opts = new Options[]{options};
         final String pathsReplaced = replacePaths(src, IMAGE_ATTR, path -> {
-            final String realPath = replacePath(path, options.basedir);
+            final String realPath = replacePath(path, options.basedir).replace('\\', '/');
             opts[0] = opts[0].image(realPath);
             return realPath;
         });
