@@ -75,8 +75,11 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         return communicating(com -> {
             com.writeContent(options.toJson(true) + "@@@" + src);
             final String status = com.readStatus();
+            System.out.println("***" + status);
             final int len = com.readLen();
+            System.out.println("***" + len);
             final String content = com.readContent(len);
+            System.out.println("***" + content);
             if (!"ok".equals(status)) {
                 throw new GraphvizException(content);
             }
