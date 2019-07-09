@@ -69,7 +69,6 @@ class EngineTest {
     }
 
     @Test
-    @Disabled
     void jdk() {
         Graphviz.useEngine(new GraphvizJdkEngine());
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
@@ -87,7 +86,6 @@ class EngineTest {
     }
 
     @Test
-    @Disabled
     void v8() {
         Graphviz.useEngine(new GraphvizV8Engine());
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
