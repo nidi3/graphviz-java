@@ -92,13 +92,11 @@ class EngineTest {
     }
 
     @Test
-    @Disabled
     void v8WithoutPath() throws Exception {
         assertNativeLibs(System.getProperty("user.home"), () -> Graphviz.useEngine(new GraphvizV8Engine()));
     }
 
     @Test
-    @Disabled
     void v8WithPath() throws Exception {
         final String tmpDir = System.getProperty("java.io.tmpdir");
         assertNativeLibs(tmpDir, () -> Graphviz.useEngine(new GraphvizV8Engine(tmpDir)));
