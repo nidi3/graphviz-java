@@ -1,8 +1,9 @@
 language: bash
 dist: xenial
 os:
-  - windows
   - linux
+  - osx
+  - windows
 
 env:
   - JDK="adopt@1.8.212-04"
