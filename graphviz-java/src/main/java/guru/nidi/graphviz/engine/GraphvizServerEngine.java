@@ -66,7 +66,6 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
                 return true;
             }
         } catch (IOException e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -80,7 +79,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
             System.out.println("***" + len);
             final String content = com.readContent(len);
             System.out.println("***" + content);
-            if (!"ok".equals(status)) {
+            if ("ok".equals(status)) {
                 throw new GraphvizException(content);
             }
             return content;
