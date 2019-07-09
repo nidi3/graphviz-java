@@ -16,7 +16,6 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.attribute.Image;
-import guru.nidi.graphviz.attribute.Size;
 import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -74,8 +73,7 @@ class RendererTest {
     @Test
     void image() throws IOException {
         final File out = new File("target/image.png");
-        Graphviz g = Graphviz.fromGraph(graph()
-                .with(node(" ").with(Size.std().margin(.8, .7), Image.of("graphviz.png"))));
+        Graphviz g = Graphviz.fromGraph(graph().with(node(" ").with(Image.of("graphviz.png"))));
         g.basedir(new File("example")).render(Format.PNG).toFile(out);
         assertThat((int) out.length(), greaterThan(20000));
     }
