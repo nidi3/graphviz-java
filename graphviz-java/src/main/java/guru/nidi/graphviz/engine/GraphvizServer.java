@@ -44,11 +44,11 @@ final class GraphvizServer {
         final Process process = new ProcessBuilder(cmd).start();
         new Thread(() -> {
             final byte[] buf = new byte[10000];
-            for(;;) {
+            for (; ; ) {
                 try {
 //                final int a = process.getInputStream().available();
                     final int read = process.getInputStream().read(buf);
-                    if (read>0) {
+                    if (read > 0) {
                         System.out.println("&&&&" + new String(buf, 0, read));
                     }
                     Thread.sleep(100);
@@ -74,13 +74,13 @@ final class GraphvizServer {
                 try (final Socket socket = ss.accept();
                      final Communicator com = new Communicator(socket, 500)) {
                     final int len = com.readLen();
-                    System.out.println(len);
+                    System.out.println("" + len);
                     if (len != 0) {
                         if (len == -1) {
                             break;
                         }
                         final String s = com.readContent(len);
-                        System.out.println(s);
+                        System.out.println("-" + s + "-");
                         try {
                             final String svg = render(s);
                             com.writeStatus("ok");
