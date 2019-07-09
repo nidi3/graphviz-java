@@ -40,6 +40,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         }
         final String memory = options.totalMemory == null ? "" : "totalMemory=" + options.totalMemory + ";";
         final Entry<String, Options> srcAndOpts = preprocessCode(src, options);
+        System.out.println("wwww" + srcAndOpts);
         final String render = "render('" + srcAndOpts.getKey() + "'," + srcAndOpts.getValue().toJson(false) + ");";
         return memory + render;
     }
