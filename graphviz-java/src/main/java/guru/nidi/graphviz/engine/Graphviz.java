@@ -87,6 +87,7 @@ public final class Graphviz {
 
     private static void doUseEngine(List<GraphvizEngine> engines) {
         if (engines.isEmpty()) {
+            new Exception("empty").printStackTrace();
             engineQueue.add(new ErrorGraphvizEngine());
         } else {
             engines.get(0).init(e -> engineQueue.add(e), e -> doUseEngine(engines.subList(1, engines.size())));
