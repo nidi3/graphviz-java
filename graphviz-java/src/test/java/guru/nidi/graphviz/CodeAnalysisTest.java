@@ -106,7 +106,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
-                        In.classes(MutableGraph.class, Serializer.class, Parser.class).ignore("GodClass"),
+                        In.classes(MutableGraph.class, Serializer.class, Parser.class, Label.class).ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
                         In.classes(MutableNode.class, Rasterizer.class).ignore("ConfusingTernary"),

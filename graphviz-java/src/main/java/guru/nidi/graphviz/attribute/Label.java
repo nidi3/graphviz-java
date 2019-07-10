@@ -117,7 +117,7 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
     public static Label lines(Justification just, String... lines) {
         final String sep = just == LEFT ? "\\l" : just == RIGHT ? "\\r" : "\n";
         final String value = Stream.of(lines).map(line -> line + sep).collect(joining());
-        return new Label(value, false, false, false, false, null, null);
+        return of(value);
     }
 
     /**
@@ -153,7 +153,7 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
     public static Label htmlLines(Justification just, String... lines) {
         final String sep = just == LEFT ? "<br align=\"left\"/>" : just == RIGHT ? "<br align=\"right\"/>" : "<br/>";
         final String value = Stream.of(lines).map(line -> line + sep).collect(joining());
-        return new Label(value, true, false, false, false, null, null);
+        return html(value);
     }
 
     /**
