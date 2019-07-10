@@ -62,6 +62,42 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
     }
 
     /**
+     * Create a label of the node name (works only as a node attribute).
+     *
+     * @return the Label
+     */
+    public static Label nodeName() {
+        return of("\\N");
+    }
+
+    /**
+     * Create a label of the graph name.
+     *
+     * @return the Label
+     */
+    public static Label graphName() {
+        return of("\\G");
+    }
+
+    /**
+     * Create a label of the link head's node name (works only as a link attribute).
+     *
+     * @return the Label
+     */
+    public static Label headName() {
+        return of("\\H");
+    }
+
+    /**
+     * Create a label of the link tail's node name (works only as a link attribute).
+     *
+     * @return the Label
+     */
+    public static Label tailName() {
+        return of("\\T");
+    }
+
+    /**
      * Create a simple multiline label.
      *
      * @param lines the text lines
