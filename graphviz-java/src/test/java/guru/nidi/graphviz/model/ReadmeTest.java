@@ -20,6 +20,7 @@ import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.parse.Parser;
 import org.junit.jupiter.api.*;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +52,8 @@ class ReadmeTest {
                         node("b").link(to(node("c")).with(Style.DASHED))
                 );
         Graphviz.fromGraph(g).height(100).render(Format.PNG).toFile(new File("example/ex1.png"));
+        final BufferedImage img = ImageIO.read(new File("example/ex1.png"));
+        System.out.println("*****************" + img.getHeight() + " " + img.getWidth());
         //## end
     }
 
