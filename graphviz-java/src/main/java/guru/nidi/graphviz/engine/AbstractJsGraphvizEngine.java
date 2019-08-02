@@ -30,8 +30,8 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public String execute(String src, Options options) {
-        return jsExecute(jsVizExec(src, options));
+    public EngineResult execute(String src, Options options) {
+        return EngineResult.fromString(jsExecute(jsVizExec(src, options)));
     }
 
     protected abstract String jsExecute(String jsCall);

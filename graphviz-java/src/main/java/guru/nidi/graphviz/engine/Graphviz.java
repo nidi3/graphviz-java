@@ -205,7 +205,7 @@ public final class Graphviz {
         return new Renderer(g, null, format);
     }
 
-    String execute() {
+    EngineResult execute() {
         return options.format.postProcess(getEngine().execute(src, options), fontAdjust);
     }
 
@@ -219,8 +219,8 @@ public final class Graphviz {
         }
 
         @Override
-        public String execute(String src, Options options) {
-            return "";
+        public EngineResult execute(String src, Options options) {
+            return EngineResult.fromString("");
         }
 
         @Override

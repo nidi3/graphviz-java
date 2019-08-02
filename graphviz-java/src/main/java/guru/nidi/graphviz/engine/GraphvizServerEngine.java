@@ -34,9 +34,9 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public String execute(String src, Options options) {
+    public EngineResult execute(String src, Options options) {
         try {
-            return createSvg(src, options);
+            return EngineResult.fromString(createSvg(src, options));
         } catch (IOException e) {
             throw new GraphvizException("Problem in communication with server", e);
         }

@@ -72,7 +72,7 @@ class EngineTest {
     @Test
     void jdk() {
         Graphviz.useEngine(new GraphvizJdkEngine());
-        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
+        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute().string, startsWith(START1_7));
     }
 
     @Test
@@ -81,7 +81,7 @@ class EngineTest {
         GraphvizServerEngine.stopServer();
         try {
             Graphviz.useEngine(new GraphvizServerEngine().useEngine(new GraphvizV8Engine()));
-            assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
+            assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute().string, startsWith(START1_7));
         } finally {
             GraphvizServerEngine.stopServer();
         }
@@ -90,7 +90,7 @@ class EngineTest {
     @Test
     void v8() {
         Graphviz.useEngine(new GraphvizV8Engine());
-        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
+        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute().string, startsWith(START1_7));
     }
 
     @Test
@@ -133,7 +133,7 @@ class EngineTest {
         final List<String> res = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             executor.submit(() -> {
-                res.add(Graphviz.fromString("graph g {a--b}").render(SVG).toString());
+                res.add(Graphviz.fromString("graph g {a--b}").render(SVG).execute().string);
                 Graphviz.releaseEngine();
             });
         }
@@ -150,7 +150,7 @@ class EngineTest {
         final String envPath = dotFile.getParent();
         Graphviz.useEngine(new GraphvizCmdLineEngine(envPath, cmdExecutor));
 
-        final String actual = Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
+        final String actual = Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute().string;
         assertThat(actual, startsWith(START1_7.replace("\n", System.lineSeparator())));
     }
 
@@ -175,7 +175,7 @@ class EngineTest {
         Graphviz.useEngine(engine);
 
         // Do execution
-        Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
+        Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute();
 
         assertTrue(new File(dotOutputFolder.getAbsolutePath(), dotOutputName + ".dot").exists());
     }

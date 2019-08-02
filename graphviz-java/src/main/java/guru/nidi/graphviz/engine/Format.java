@@ -24,22 +24,22 @@ import java.util.regex.Pattern;
 public enum Format {
     PNG("svg", "png", true, true) {
         @Override
-        String postProcess(String result, double fontAdjust) {
-            return postProcessSvg(result, true, fontAdjust);
+        EngineResult postProcess(EngineResult result, double fontAdjust) {
+            return result.mapString(s -> postProcessSvg(s, true, fontAdjust));
         }
     },
 
     SVG("svg", "svg", false, true) {
         @Override
-        String postProcess(String result, double fontAdjust) {
-            return postProcessSvg(result, true, fontAdjust);
+        EngineResult postProcess(EngineResult result, double fontAdjust) {
+            return result.mapString(s -> postProcessSvg(s, true, fontAdjust));
         }
     },
 
     SVG_STANDALONE("svg", "svg", false, true) {
         @Override
-        String postProcess(String result, double fontAdjust) {
-            return postProcessSvg(result, false, fontAdjust);
+        EngineResult postProcess(EngineResult result, double fontAdjust) {
+            return result.mapString(s -> postProcessSvg(s, false, fontAdjust));
         }
     },
     XDOT("xdot", "xdot", false, false),
@@ -67,7 +67,7 @@ public enum Format {
         this.svg = svg;
     }
 
-    String postProcess(String result, double fontAdjust) {
+    EngineResult postProcess(EngineResult result, double fontAdjust) {
         return result;
     }
 

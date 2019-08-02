@@ -52,8 +52,6 @@ class ReadmeTest {
                         node("b").link(to(node("c")).with(Style.DASHED))
                 );
         Graphviz.fromGraph(g).height(100).render(Format.PNG).toFile(new File("example/ex1.png"));
-        final BufferedImage img = ImageIO.read(new File("example/ex1.png"));
-        System.out.println("*****************" + img.getHeight() + " " + img.getWidth());
         //## end
     }
 
@@ -156,7 +154,7 @@ class ReadmeTest {
         viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
         viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
         viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
-        String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
+        String json = viz.engine(Engine.NEATO).render(Format.JSON).execute().string;
         BufferedImage image = viz.render(Format.PNG).toImage();
         //## end
     }

@@ -64,13 +64,11 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public String execute(String src, Options options) {
+    public EngineResult execute(String src, Options options) {
         final String engine = getEngineExecutable(options.engine);
         try {
-            // Create a temporary file to save the svg file to.
             final Path tempDirPath = Files.createTempDirectory(getOrCreateTempDirectory().toPath(), "DotEngine");
 
-            // Write the dot file to the output path or the temporary directory
             final File dotfile = getDotFile(tempDirPath.toString());
             try (final BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(dotfile), StandardCharsets.UTF_8))) {
@@ -82,12 +80,9 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
                     + " " + dotfile.getAbsolutePath() + " -ooutfile.svg";
             cmdRunner.exec(command, tempDirPath.toFile());
 
-            // Read output file from temp folder
             final byte[] encoded = Files.readAllBytes(tempDirPath.resolve("outfile.svg"));
-
             FileUtils.deleteDirectory(tempDirPath.toFile());
-
-            return new String(encoded, StandardCharsets.UTF_8);
+            return EngineResult.fromString(new String(encoded, StandardCharsets.UTF_8));
         } catch (IOException | InterruptedException e) {
             throw new GraphvizException(e.getMessage(), e);
         }

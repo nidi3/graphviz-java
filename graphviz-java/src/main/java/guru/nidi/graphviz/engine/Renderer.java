@@ -21,6 +21,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.function.Consumer;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -42,7 +43,7 @@ public class Renderer {
         return new Renderer(graphviz, graphicsConfigurer, output);
     }
 
-    public String toString() {
+    public EngineResult execute() {
         return graphviz.execute();
     }
 
@@ -51,32 +52,53 @@ public class Renderer {
         final File target = file.getName().contains(".")
                 ? file
                 : new File(file.getParentFile(), file.getName() + "." + output.fileExtension);
-        if (output.image) {
-            writeToFile(target, output.name().toLowerCase(ENGLISH), toImage());
-        } else {
-            try (final Writer out = new OutputStreamWriter(new FileOutputStream(target), UTF_8)) {
-                out.write(toString());
+        final EngineResult result = execute();
+        if (result.file == null) {
+            if (output.image) {
+                writeToFile(target, output.name().toLowerCase(ENGLISH), toImage(result));
+            } else {
+                try (final Writer out = new OutputStreamWriter(new FileOutputStream(target), UTF_8)) {
+                    out.write(result.string);
+                }
             }
+        } else {
+            Files.copy(result.file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         return target;
     }
 
     public void toOutputStream(OutputStream outputStream) throws IOException {
-        if (output.image) {
-            writeToOutputStream(outputStream, output.name().toLowerCase(ENGLISH), toImage());
-        } else {
-            try (final Writer out = new OutputStreamWriter(outputStream, UTF_8)) {
-                out.write(toString());
+        final EngineResult result = execute();
+        if (result.file == null) {
+            if (output.image) {
+                writeToOutputStream(outputStream, output.name().toLowerCase(ENGLISH), toImage(result));
+            } else {
+                try (final Writer out = new OutputStreamWriter(outputStream, UTF_8)) {
+                    out.write(result.string);
+                }
             }
+        } else {
+            Files.copy(result.file.toPath(), outputStream);
         }
     }
 
     public BufferedImage toImage() {
-        if (graphviz.rasterizer == null) {
-            throw new IllegalStateException("- Rasterizer explicitly set no null or\n"
-                    + "- neither Batik nor Salamander found on classpath.");
+        return toImage(graphviz.execute());
+    }
+
+    private BufferedImage toImage(EngineResult result) {
+        if (result.file == null) {
+            if (graphviz.rasterizer == null) {
+                throw new IllegalStateException("- Rasterizer explicitly set no null or\n"
+                        + "- neither Batik nor Salamander found on classpath.");
+            }
+            return graphviz.rasterizer.rasterize(graphviz, graphicsConfigurer, result.string);
         }
-        return graphviz.rasterizer.rasterize(graphviz, graphicsConfigurer, graphviz.execute());
+        try {
+            return ImageIO.read(result.file);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not convert the resulting file into an Image", e);
+        }
     }
 
     private void writeToFile(File output, String format, BufferedImage img) {

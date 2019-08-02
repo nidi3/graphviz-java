@@ -37,7 +37,7 @@ public class GraphvizJdkEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public String execute(String src, Options options) {
+    public EngineResult execute(String src, Options options) {
         return engine.execute(src, options);
     }
 }
