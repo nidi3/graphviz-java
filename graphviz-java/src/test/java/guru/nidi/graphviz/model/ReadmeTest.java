@@ -173,7 +173,7 @@ class ReadmeTest {
     }
 
     @Test
-    @DisabledIfEnvironmentVariable(named = "CI", matches = "*")
+    @DisabledIfEnvironmentVariable(named = "CI", matches = ".*")
     void ex7() throws IOException {
         //## img
         Graphviz.useEngine(new GraphvizCmdLineEngine());

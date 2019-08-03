@@ -80,7 +80,7 @@ class RendererTest {
     }
 
     @Test
-    @DisabledIfEnvironmentVariable(named = "CI", matches = "*")
+    @DisabledIfEnvironmentVariable(named = "CI", matches = ".*")
     void builtInRasterizer() throws IOException {
         final File out = new File("target/builtIn.pdf");
         out.delete();
