@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model;
+package guru.nidi.graphviz.engine;
+
+import java.io.IOException;
 
 @FunctionalInterface
-public interface ThrowingFunction<T, R> {
-    R apply(T t) throws Exception;
-
-    default R applyNotThrowing(T t) {
-        try {
-            return apply(t);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+interface IOFunction<T, R> {
+    R apply(T t) throws IOException;
 }

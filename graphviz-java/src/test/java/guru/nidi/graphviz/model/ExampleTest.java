@@ -17,7 +17,6 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Font;
-import guru.nidi.graphviz.attribute.Image;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.*;

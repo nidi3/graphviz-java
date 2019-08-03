@@ -19,8 +19,8 @@ import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.parse.Parser;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -154,7 +154,7 @@ class ReadmeTest {
         viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
         viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
         viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
-        String json = viz.engine(Engine.NEATO).render(Format.JSON).execute().string;
+        String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
         BufferedImage image = viz.render(Format.PNG).toImage();
         //## end
     }
@@ -173,7 +173,7 @@ class ReadmeTest {
     }
 
     @Test
-    @Disabled("Because there's no graphviz installed in the build server")
+    @DisabledIfEnvironmentVariable(named = "CI", matches = "*")
     void ex7() throws IOException {
         //## img
         Graphviz.useEngine(new GraphvizCmdLineEngine());

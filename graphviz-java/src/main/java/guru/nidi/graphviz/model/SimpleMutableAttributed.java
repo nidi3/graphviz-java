@@ -18,8 +18,6 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Objects;
 
 class SimpleMutableAttributed<T, F extends For> implements MutableAttributed<T, F> {

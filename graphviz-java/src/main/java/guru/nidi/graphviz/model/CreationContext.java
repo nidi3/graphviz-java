@@ -45,9 +45,7 @@ public final class CreationContext {
     public static <T> T use(@Nullable MutableGraph graph, ThrowingFunction<CreationContext, T> actions) {
         final CreationContext ctx = begin(graph);
         try {
-            return actions.apply(ctx);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return actions.applyNotThrowing(ctx);
         } finally {
             end();
         }

@@ -49,7 +49,7 @@ class CommandRunnerTest {
                 ? CommandLine.parse("cmd /C echo hello world")
                 : CommandLine.parse("/bin/sh -c").addArgument("echo hello world", false);
 
-        final DefaultExecutor cmdExecMock = Mockito.mock(DefaultExecutor.class);
+        final CommandLineExecutor cmdExecMock = Mockito.mock(CommandLineExecutor.class);
         final CommandRunner cmdRunner = new CommandBuilder()
                 .withShellWrapper(true)
                 .withCommandExecutor(cmdExecMock)

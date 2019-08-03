@@ -18,6 +18,7 @@ package guru.nidi.graphviz.engine;
 import guru.nidi.graphviz.attribute.Image;
 import guru.nidi.graphviz.model.Graph;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -78,4 +79,14 @@ class RendererTest {
         assertThat((int) out.length(), greaterThan(20000));
     }
 
+    @Test
+    @DisabledIfEnvironmentVariable(named = "CI", matches = "*")
+    void builtInRasterizer() throws IOException {
+        final File out = new File("target/builtIn.pdf");
+        out.delete();
+        Graphviz.useEngine(new GraphvizCmdLineEngine());
+        final Graphviz g = Graphviz.fromGraph(graph().with(node("a").link("b")));
+        g.basedir(new File("example")).rasterize(Rasterizer.builtIn("pdf")).toFile(new File("target/builtIn"));
+        assertTrue(out.exists());
+    }
 }

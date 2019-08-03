@@ -53,7 +53,7 @@ class GraphvizGraalEngine extends AbstractJsGraphvizEngine {
         eval("function result(r){ Polyglot.import('handler').setResult(r); }"
                 + "function error(r){ Polyglot.import('handler').setError(r); }");
         eval(jsInitEnv());
-        execute("digraph g { a -> b; }", Options.create());
+        execute("digraph g { a -> b; }", Options.create(), null);
     }
 
     private void eval(String code) {

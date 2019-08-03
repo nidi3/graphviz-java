@@ -19,7 +19,6 @@ import guru.nidi.graphviz.attribute.Attributes;
 import guru.nidi.graphviz.attribute.For;
 
 import javax.annotation.Nullable;
-import java.util.Map.Entry;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;

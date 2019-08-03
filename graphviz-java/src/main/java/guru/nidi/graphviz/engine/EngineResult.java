@@ -17,13 +17,15 @@ package guru.nidi.graphviz.engine;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.IOException;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class EngineResult {
     @Nullable
-    public final File file;
+    private final File file;
     @Nullable
-    public final String string;
+    private final String string;
 
     private EngineResult(@Nullable File file, @Nullable String string) {
         this.file = file;
@@ -40,5 +42,32 @@ public final class EngineResult {
 
     public EngineResult mapString(Function<String, String> mapper) {
         return string == null ? this : fromString(mapper.apply(string));
+    }
+
+    public void consume(Consumer<File> fileConsumer, Consumer<String> stringConsumer) {
+        if (string == null) {
+            fileConsumer.accept(file);
+        } else {
+            stringConsumer.accept(string);
+        }
+        close();
+    }
+
+    public <T> T map(Function<File, T> fileMapper, Function<String, T> stringMapper) {
+        final T res = string == null ? fileMapper.apply(file) : stringMapper.apply(string);
+        close();
+        return res;
+    }
+
+    <T> T mapIO(IOFunction<File, T> fileMapper, IOFunction<String, T> stringMapper) throws IOException {
+        final T res = string == null ? fileMapper.apply(file) : stringMapper.apply(string);
+        close();
+        return res;
+    }
+
+    private void close() {
+        if (file != null) {
+            file.delete();
+        }
     }
 }

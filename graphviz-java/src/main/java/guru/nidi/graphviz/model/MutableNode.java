@@ -19,7 +19,6 @@ import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.Map.Entry;
 
 import static guru.nidi.graphviz.model.Factory.mutNode;
 import static java.util.Arrays.asList;

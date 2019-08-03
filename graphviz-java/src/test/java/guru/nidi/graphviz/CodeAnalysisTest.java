@@ -71,10 +71,11 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("We don't execute user submitted JS code",
                         In.loc("GraphvizNashornEngine").ignore("SCRIPT_ENGINE_INJECTION"))
                 .because("It's ok",
-                        In.loc("DefaultExecutor").ignore("DM_DEFAULT_ENCODING"),
+                        In.loc("BuiltInRasterizer").ignore("NP_NONNULL_RETURN_VIOLATION"),
+                        In.loc("CommandLineExecutor").ignore("DM_DEFAULT_ENCODING"),
                         In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
                         In.locs("AbstractGraphvizEngine", "Options", "GraphvizCmdLineEngine", "EngineTest", "SystemUtils", "Renderer").ignore("PATH_TRAVERSAL_IN"),
-                        In.loc("EngineTest").ignore("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
+                        In.locs("EngineTest", "RendererTest", "EngineResult").ignore("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
                         In.loc("PortSource").ignore("NP_NONNULL_RETURN_VIOLATION"),
                         In.loc("OptionsTest").ignore("DMI_HARDCODED_ABSOLUTE_FILENAME"),
                         In.loc("Communicator").ignore("RR_NOT_CHECKED"));
@@ -98,7 +99,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.clazz(Format.class).ignore("AvoidDuplicateLiterals"),
                         In.loc("LabelTest").ignore("JUnitTestContainsTooManyAsserts"),
                         In.clazz(Serializer.class).ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
-                        In.clazz(CreationContext.class).ignore("AvoidThrowingRawExceptionTypes"),
+                        In.clazz(ThrowingFunction.class).ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),
@@ -140,7 +141,9 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(CheckstyleConfigs.minimalCheckstyleIgnore())
                 .just(In.locs("Color", "Arrow", "Rank", "RankDir", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr").ignore("empty.line.separator"))
-                .just(In.clazz(For.class).ignore("one.top.level.class"));
+                .just(In.clazz(For.class).ignore("one.top.level.class"))
+                .just(In.locs("EngineResult", "IOFunction").ignore("abbreviation.as.word"))
+                .just(In.clazz(Renderer.class).ignore("indentation.error"));
         final StyleChecks checks = CheckstyleConfigs.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }

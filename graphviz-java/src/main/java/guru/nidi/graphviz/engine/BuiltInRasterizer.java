@@ -15,29 +15,31 @@
  */
 package guru.nidi.graphviz.engine;
 
-public class GraphvizJdkEngine extends AbstractGraphvizEngine {
-    private final AbstractGraphvizEngine engine;
+import javax.annotation.Nullable;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.function.Consumer;
 
-    public GraphvizJdkEngine() {
-        super(false);
-        engine = newEngine();
-    }
+class BuiltInRasterizer implements Rasterizer {
+    final String format;
+    @Nullable
+    final String renderer;
+    @Nullable
+    final String formatter;
 
-    private AbstractGraphvizEngine newEngine() {
-        try {
-            return new GraphvizGraalEngine();
-        } catch (ExceptionInInitializerError | NoClassDefFoundError e) {
-            return new GraphvizNashornEngine();
-        }
-    }
-
-    @Override
-    protected void doInit() throws Exception {
-        engine.doInit();
+    BuiltInRasterizer(String format, @Nullable String renderer, @Nullable String formatter) {
+        this.format = format;
+        this.renderer = renderer;
+        this.formatter = formatter;
     }
 
     @Override
-    public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
-        return engine.execute(src, options, rasterizer);
+    public Format format() {
+        return Format.PNG;
+    }
+
+    @Override
+    public BufferedImage rasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String input) {
+        return null;
     }
 }

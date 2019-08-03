@@ -33,9 +33,9 @@ public class CommandRunner {
     private static final Logger LOG = LoggerFactory.getLogger(CommandRunner.class);
 
     private final Function<CommandLine, CommandLine> wrapperFunc;
-    private final DefaultExecutor cmdExec;
+    private final CommandLineExecutor cmdExec;
 
-    CommandRunner(Function<CommandLine, CommandLine> wrapperFunc, DefaultExecutor cmdExec) {
+    CommandRunner(Function<CommandLine, CommandLine> wrapperFunc, CommandLineExecutor cmdExec) {
         this.wrapperFunc = wrapperFunc;
         this.cmdExec = cmdExec;
     }

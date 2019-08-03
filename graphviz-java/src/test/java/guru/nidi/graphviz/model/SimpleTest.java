@@ -38,14 +38,14 @@ class SimpleTest {
     @Test
     void simple() {
         final Graphviz viz = Graphviz.fromString("digraph g { \"a\\b'c\" -> b; }");
-        assertNotNull(viz.render(SVG).execute().string);
+        assertNotNull(viz.render(SVG).toString());
     }
 
     @Test
     void dotError() {
         try {
             System.out.println("Try error...");
-            Graphviz.fromString("g { a -> b; }").render(SVG).execute();
+            Graphviz.fromString("g { a -> b; }").render(SVG).toString();
             fail("Wrong dot file should throw");
         } catch (GraphvizException e) {
             assertThat(e.getMessage(), containsString("syntax error in line 1 near 'g'"));

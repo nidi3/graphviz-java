@@ -17,6 +17,7 @@ package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.service.SystemUtils;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
@@ -30,7 +31,10 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public EngineResult execute(String src, Options options) {
+    public EngineResult execute(String src, Options options, @Nullable Rasterizer rasterizer) {
+        if (rasterizer instanceof BuiltInRasterizer) {
+            throw new GraphvizException("Built-in Rasterizer can only be used together with GraphvizCmdLineEngine.");
+        }
         return EngineResult.fromString(jsExecute(jsVizExec(src, options)));
     }
 

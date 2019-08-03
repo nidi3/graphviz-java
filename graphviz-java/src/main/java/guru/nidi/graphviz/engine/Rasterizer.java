@@ -30,6 +30,18 @@ public interface Rasterizer {
     @Nullable
     Rasterizer DEFAULT = BATIK != null ? BATIK : SALAMANDER;
 
+    static Rasterizer builtIn(String format) {
+        return new BuiltInRasterizer(format, null, null);
+    }
+
+    static Rasterizer builtIn(String format, String renderer) {
+        return new BuiltInRasterizer(format, renderer, null);
+    }
+
+    static Rasterizer builtIn(String format, String renderer, String formatter) {
+        return new BuiltInRasterizer(format, renderer, formatter);
+    }
+
     Format format();
 
     BufferedImage rasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String input);

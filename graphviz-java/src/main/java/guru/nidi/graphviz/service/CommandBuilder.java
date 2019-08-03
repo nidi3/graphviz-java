@@ -25,14 +25,14 @@ import javax.annotation.Nullable;
 public class CommandBuilder {
     private boolean shellWrapper;
     @Nullable
-    private DefaultExecutor cmdExec;
+    private CommandLineExecutor cmdExec;
 
     public CommandBuilder withShellWrapper(boolean shellWrapper) {
         this.shellWrapper = shellWrapper;
         return this;
     }
 
-    public CommandBuilder withCommandExecutor(DefaultExecutor cmdExec) {
+    public CommandBuilder withCommandExecutor(CommandLineExecutor cmdExec) {
         this.cmdExec = cmdExec;
         return this;
     }
@@ -43,7 +43,7 @@ public class CommandBuilder {
                 getCmdExecutorOrDefault(cmdExec));
     }
 
-    private static DefaultExecutor getCmdExecutorOrDefault(@Nullable DefaultExecutor cmdExec) {
-        return cmdExec == null ? new DefaultExecutor() : cmdExec;
+    private static CommandLineExecutor getCmdExecutorOrDefault(@Nullable CommandLineExecutor cmdExec) {
+        return cmdExec == null ? new CommandLineExecutor() : cmdExec;
     }
 }

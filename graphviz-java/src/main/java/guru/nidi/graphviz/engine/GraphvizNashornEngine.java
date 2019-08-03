@@ -60,6 +60,6 @@ class GraphvizNashornEngine extends AbstractJsGraphvizEngine {
                 + "function result(r){ handler.setResult(r); }"
                 + "function error(r){ handler.setError(r); }");
         ENGINE.eval(jsInitEnv());
-        execute("digraph g { a -> b; }", Options.create());
+        execute("digraph g { a -> b; }", Options.create(), null);
     }
 }

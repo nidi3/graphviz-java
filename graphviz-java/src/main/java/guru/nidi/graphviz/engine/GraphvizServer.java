@@ -99,14 +99,11 @@ final class GraphvizServer {
             options = Options.fromJson(raw.substring(0, pos));
             src = raw.substring(pos + 3);
         }
-        final EngineResult result = Graphviz.fromString(src)
+        return Graphviz.fromString(src)
                 .engine(options.engine)
                 .totalMemory(options.totalMemory)
                 .yInvert(options.yInvert)
-                .render(options.format).execute();
-        if (result.string == null) {
-            throw new GraphvizException("GraphvizServer supports only string results.");
-        }
-        return result.string;
+                .render(options.format)
+                .toString();
     }
 }

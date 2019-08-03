@@ -33,7 +33,7 @@ public class PerformanceTest {
         final long a = System.nanoTime();
         Graphviz.useEngine(new GraphvizV8Engine());
 //        Graphviz.useEngine(new GraphvizJdkEngine());
-        Graphviz.fromString("graph {a--b}").render(SVG).execute();
+        Graphviz.fromString("graph {a--b}").render(SVG).toString();
         final long b = System.nanoTime();
         System.out.printf("init %.0f ms%n", (b - a) / 1e6);
 
@@ -101,7 +101,7 @@ public class PerformanceTest {
                         node("make_string"), node("printf"), node("compare")),
                 node("init").link(
                         node("make_string"))));
-        Graphviz.fromGraph(g).render(SVG).execute();
+        Graphviz.fromGraph(g).render(SVG).toString();
     }
 
     void ex2() {
@@ -119,7 +119,7 @@ public class PerformanceTest {
                         to(printf).with(Style.BOLD, Label.of("100 times"), Color.RED)),
                 execute.link(graph().with(make_string, printf), to(compare).with(Color.RED)),
                 init.link(make_string.with(Label.of("make a\nstring"))));
-        Graphviz.fromGraph(g).render(SVG).execute();
+        Graphviz.fromGraph(g).render(SVG).toString();
     }
 
     void ex3() {
@@ -131,7 +131,7 @@ public class PerformanceTest {
         final Graph g = graph("ex3").directed().with(
                 a.link(node("b").link(c, d)),
                 e);
-        Graphviz.fromGraph(g).render(SVG).execute();
+        Graphviz.fromGraph(g).render(SVG).toString();
     }
 
     void ex4() {
@@ -143,7 +143,7 @@ public class PerformanceTest {
                 struct1.link(
                         between(port("f1"), struct2.port("f0")),
                         between(port("f2"), struct3.port("here"))));
-        Graphviz.fromGraph(g).render(SVG).execute();
+        Graphviz.fromGraph(g).render(SVG).toString();
     }
 
     void ex5() {
@@ -264,7 +264,7 @@ public class PerformanceTest {
                         archlib.link(adv),
                         proc.link(adv)
                 );
-        Graphviz.fromGraph(g).render(SVG).execute();
+        Graphviz.fromGraph(g).render(SVG).toString();
     }
 
     void ex6() {
@@ -288,7 +288,7 @@ public class PerformanceTest {
                                 between(port("f6"), node5.port(WEST))),
                         node2.link(between(port("p"), node6.port(WEST))),
                         node4.link(between(port("p"), node7.port(WEST))));
-        Graphviz.fromGraph(g).render(SVG).execute();
+        Graphviz.fromGraph(g).render(SVG).toString();
     }
 
     void ex7() {
@@ -310,7 +310,7 @@ public class PerformanceTest {
                         node("b3").link("end"),
                         node("end").with(Shape.mSquare("", ""))
                 );
-        Graphviz.fromGraph(g).render(SVG).execute();
+        Graphviz.fromGraph(g).render(SVG).toString();
     }
 
 }

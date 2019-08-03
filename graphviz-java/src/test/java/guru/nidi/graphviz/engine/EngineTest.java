@@ -16,7 +16,7 @@
 package guru.nidi.graphviz.engine;
 
 import com.eclipsesource.v8.V8;
-import guru.nidi.graphviz.service.DefaultExecutor;
+import guru.nidi.graphviz.service.CommandLineExecutor;
 import guru.nidi.graphviz.service.SystemUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
@@ -72,7 +72,7 @@ class EngineTest {
     @Test
     void jdk() {
         Graphviz.useEngine(new GraphvizJdkEngine());
-        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute().string, startsWith(START1_7));
+        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
     }
 
     @Test
@@ -81,7 +81,7 @@ class EngineTest {
         GraphvizServerEngine.stopServer();
         try {
             Graphviz.useEngine(new GraphvizServerEngine().useEngine(new GraphvizV8Engine()));
-            assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute().string, startsWith(START1_7));
+            assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
         } finally {
             GraphvizServerEngine.stopServer();
         }
@@ -90,7 +90,7 @@ class EngineTest {
     @Test
     void v8() {
         Graphviz.useEngine(new GraphvizV8Engine());
-        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute().string, startsWith(START1_7));
+        assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
     }
 
     @Test
@@ -133,7 +133,7 @@ class EngineTest {
         final List<String> res = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             executor.submit(() -> {
-                res.add(Graphviz.fromString("graph g {a--b}").render(SVG).execute().string);
+                res.add(Graphviz.fromString("graph g {a--b}").render(SVG).toString());
                 Graphviz.releaseEngine();
             });
         }
@@ -145,12 +145,12 @@ class EngineTest {
     @Test
     void cmdLine() throws IOException, InterruptedException {
         final File dotFile = setUpFakeDotFile();
-        final DefaultExecutor cmdExecutor = setUpFakeStubCommandExecutor();
+        final CommandLineExecutor cmdExecutor = setUpFakeStubCommandExecutor();
 
         final String envPath = dotFile.getParent();
         Graphviz.useEngine(new GraphvizCmdLineEngine(envPath, cmdExecutor));
 
-        final String actual = Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute().string;
+        final String actual = Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
         assertThat(actual, startsWith(START1_7.replace("\n", System.lineSeparator())));
     }
 
@@ -160,7 +160,7 @@ class EngineTest {
     @Test
     void cmdLineOutputDotFile() throws IOException, InterruptedException {
         final File dotFile = setUpFakeDotFile();
-        final DefaultExecutor cmdExecutor = setUpFakeStubCommandExecutor();
+        final CommandLineExecutor cmdExecutor = setUpFakeStubCommandExecutor();
 
         final String envPath = dotFile.getParent();
 
@@ -175,7 +175,7 @@ class EngineTest {
         Graphviz.useEngine(engine);
 
         // Do execution
-        Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).execute();
+        Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
 
         assertTrue(new File(dotOutputFolder.getAbsolutePath(), dotOutputName + ".dot").exists());
     }
@@ -188,8 +188,8 @@ class EngineTest {
         return dotFile;
     }
 
-    private DefaultExecutor setUpFakeStubCommandExecutor() throws IOException, InterruptedException {
-        final DefaultExecutor cmdExecutor = mock(DefaultExecutor.class);
+    private CommandLineExecutor setUpFakeStubCommandExecutor() throws IOException, InterruptedException {
+        final CommandLineExecutor cmdExecutor = mock(CommandLineExecutor.class);
         doAnswer(invocationOnMock -> {
             final File workingDirectory = invocationOnMock.getArgumentAt(1, File.class);
             final File svgInput = new File(getClass().getClassLoader().getResource("outfile1.svg").getFile());

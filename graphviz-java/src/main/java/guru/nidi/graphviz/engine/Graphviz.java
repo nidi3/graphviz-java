@@ -206,7 +206,7 @@ public final class Graphviz {
     }
 
     EngineResult execute() {
-        return options.format.postProcess(getEngine().execute(src, options), fontAdjust);
+        return options.format.postProcess(getEngine().execute(src, options, rasterizer), fontAdjust);
     }
 
     Format format() {
@@ -219,7 +219,7 @@ public final class Graphviz {
         }
 
         @Override
-        public EngineResult execute(String src, Options options) {
+        public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
             return EngineResult.fromString("");
         }
 

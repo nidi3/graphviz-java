@@ -43,62 +43,94 @@ public class Renderer {
         return new Renderer(graphviz, graphicsConfigurer, output);
     }
 
-    public EngineResult execute() {
-        return graphviz.execute();
+    public String toString() {
+        return execute().map(file -> {
+            throw new IllegalArgumentException("Expected a String result, but found a File."
+                    + " Use toFile / toImage instead of toString or use a different Rasterizer (not the built-in).");
+        }, string -> string);
     }
 
     public File toFile(File file) throws IOException {
+        return execute().mapIO(
+                fileRes -> toFile(fileRes, file),
+                string -> toFile(string, file));
+    }
+
+    private File toFile(File source, File target) throws IOException {
+        final File out = withExt(target, getExt(source));
+        Files.createDirectories(target.getAbsoluteFile().getParentFile().toPath());
+        Files.copy(source.toPath(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        return out;
+    }
+
+    private File toFile(String content, File file) throws IOException {
+        final File target = withExt(file, output.fileExtension);
         Files.createDirectories(file.getAbsoluteFile().getParentFile().toPath());
-        final File target = file.getName().contains(".")
-                ? file
-                : new File(file.getParentFile(), file.getName() + "." + output.fileExtension);
-        final EngineResult result = execute();
-        if (result.file == null) {
-            if (output.image) {
-                writeToFile(target, output.name().toLowerCase(ENGLISH), toImage(result));
-            } else {
-                try (final Writer out = new OutputStreamWriter(new FileOutputStream(target), UTF_8)) {
-                    out.write(result.string);
-                }
-            }
+        if (output.image) {
+            writeToFile(target, output.name().toLowerCase(ENGLISH), toImage(content));
         } else {
-            Files.copy(result.file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            try (final Writer out = new OutputStreamWriter(new FileOutputStream(target), UTF_8)) {
+                out.write(content);
+            }
         }
         return target;
     }
 
+    private File withExt(File file, String ext) {
+        return file.getName().contains(".") ? file : new File(file.getParentFile(), file.getName() + "." + ext);
+    }
+
+    private String getExt(File file) {
+        return file.getName().substring(file.getName().lastIndexOf('.') + 1);
+    }
+
     public void toOutputStream(OutputStream outputStream) throws IOException {
-        final EngineResult result = execute();
-        if (result.file == null) {
-            if (output.image) {
-                writeToOutputStream(outputStream, output.name().toLowerCase(ENGLISH), toImage(result));
-            } else {
-                try (final Writer out = new OutputStreamWriter(outputStream, UTF_8)) {
-                    out.write(result.string);
-                }
-            }
+        execute().mapIO(
+                file -> Files.copy(file.toPath(), outputStream),
+                string -> toOutputStream(string, outputStream));
+    }
+
+    private long toOutputStream(String content, OutputStream outputStream) throws IOException {
+        if (output.image) {
+            writeToOutputStream(outputStream, output.name().toLowerCase(ENGLISH), toImage(content));
         } else {
-            Files.copy(result.file.toPath(), outputStream);
+            try (final Writer out = new OutputStreamWriter(outputStream, UTF_8)) {
+                out.write(content);
+            }
         }
+        return 0;
     }
 
     public BufferedImage toImage() {
-        return toImage(graphviz.execute());
+        return toImage(execute());
     }
 
     private BufferedImage toImage(EngineResult result) {
-        if (result.file == null) {
-            if (graphviz.rasterizer == null) {
-                throw new IllegalStateException("- Rasterizer explicitly set no null or\n"
-                        + "- neither Batik nor Salamander found on classpath.");
-            }
-            return graphviz.rasterizer.rasterize(graphviz, graphicsConfigurer, result.string);
+        return result.map(this::toImage, this::toImage);
+    }
+
+    private BufferedImage toImage(String content) {
+        if (graphviz.rasterizer == null) {
+            throw new IllegalStateException("- Rasterizer explicitly set no null or\n"
+                    + "- neither Batik nor Salamander found on classpath.");
         }
+        return graphviz.rasterizer.rasterize(graphviz, graphicsConfigurer, content);
+    }
+
+    private BufferedImage toImage(File file) {
         try {
-            return ImageIO.read(result.file);
+            final BufferedImage image = ImageIO.read(file);
+            if (image == null) {
+                throw new IllegalArgumentException("Could not convert the resulting file into an Image");
+            }
+            return image;
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not convert the resulting file into an Image", e);
         }
+    }
+
+    private EngineResult execute() {
+        return graphviz.execute();
     }
 
     private void writeToFile(File output, String format, BufferedImage img) {

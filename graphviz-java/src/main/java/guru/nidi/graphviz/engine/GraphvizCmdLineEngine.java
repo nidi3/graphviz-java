@@ -16,7 +16,6 @@
 package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.service.*;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,15 +40,15 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private final CommandRunner cmdRunner;
 
     @Nullable
-    private String dotOutputFilePath;
+    private String outputFilePath;
     @Nullable
-    private String dotOutputFileName;
+    private String outputFileName;
 
     public GraphvizCmdLineEngine() {
-        this(Optional.ofNullable(System.getenv("PATH")).orElse(""), new DefaultExecutor());
+        this(Optional.ofNullable(System.getenv("PATH")).orElse(""), new CommandLineExecutor());
     }
 
-    public GraphvizCmdLineEngine(String envPath, DefaultExecutor executor) {
+    public GraphvizCmdLineEngine(String envPath, CommandLineExecutor executor) {
         super(true);
         this.envPath = envPath;
         cmdRunner = new CommandBuilder()
@@ -64,28 +63,35 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public EngineResult execute(String src, Options options) {
-        final String engine = getEngineExecutable(options.engine);
+    public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
         try {
-            final Path tempDirPath = Files.createTempDirectory(getOrCreateTempDirectory().toPath(), "DotEngine");
-
-            final File dotfile = getDotFile(tempDirPath.toString());
+            final Path path = Files.createTempDirectory(getOrCreateTempDirectory().toPath(), "DotEngine");
+            final File dotFile = getDotFile(path);
             try (final BufferedWriter bw = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(dotfile), StandardCharsets.UTF_8))) {
+                    new OutputStreamWriter(new FileOutputStream(dotFile), StandardCharsets.UTF_8))) {
                 bw.write(preprocessCode(src, options));
             }
-            final String command = engine
-                    + (options.yInvert != null && options.yInvert ? " -y" : "")
-                    + " -T" + getFormatName(options.format)
-                    + " " + dotfile.getAbsolutePath() + " -ooutfile.svg";
-            cmdRunner.exec(command, tempDirPath.toFile());
-
-            final byte[] encoded = Files.readAllBytes(tempDirPath.resolve("outfile.svg"));
-            FileUtils.deleteDirectory(tempDirPath.toFile());
-            return EngineResult.fromString(new String(encoded, StandardCharsets.UTF_8));
+            return doExecute(path, dotFile, options, rasterizer);
         } catch (IOException | InterruptedException e) {
             throw new GraphvizException(e.getMessage(), e);
         }
+    }
+
+    private EngineResult doExecute(Path path, File dotFile, Options options, Rasterizer rasterizer)
+            throws IOException, InterruptedException {
+        final String engine = getEngineExecutable(options.engine);
+        final String format = getFormatName(options.format, rasterizer);
+        final String command = engine
+                + (options.yInvert != null && options.yInvert ? " -y" : "")
+                + " -T" + format
+                + " " + dotFile.getAbsolutePath() + " -ooutfile." + format;
+        cmdRunner.exec(command, path.toFile());
+        final Path outFile = path.resolve("outfile." + format);
+        if (rasterizer instanceof BuiltInRasterizer) {
+            return EngineResult.fromFile(outFile.toFile());
+        }
+        final byte[] data = Files.readAllBytes(outFile);
+        return EngineResult.fromString(new String(data, StandardCharsets.UTF_8));
     }
 
     protected String preprocessCode(String src, Options options) {
@@ -103,7 +109,18 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         return exe;
     }
 
-    private String getFormatName(@Nullable Format format) {
+    private String getFormatName(@Nullable Format format, Rasterizer rasterizer) {
+        if (rasterizer instanceof BuiltInRasterizer) {
+            final BuiltInRasterizer natRast = (BuiltInRasterizer) rasterizer;
+            String f = natRast.format;
+            if (natRast.renderer != null) {
+                f += ":" + natRast.renderer;
+            }
+            if (natRast.formatter != null) {
+                f += ":" + natRast.formatter;
+            }
+            return f;
+        }
         return format == null ? "svg" : format.vizName;
     }
 
@@ -115,14 +132,14 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         return tempDir;
     }
 
-    private File getDotFile(String tempDirPath) {
-        final String dotFileName = dotOutputFileName == null ? "dotfile.dot" : dotOutputFileName + ".dot";
-        final String baseDir = dotOutputFilePath == null ? tempDirPath : dotOutputFilePath;
+    private File getDotFile(Path path) {
+        final String dotFileName = outputFileName == null ? "dotfile.dot" : outputFileName + ".dot";
+        final String baseDir = outputFilePath == null ? path.toString() : outputFilePath;
         return new File(baseDir, dotFileName);
     }
 
     public void setDotOutputFile(String path, String name) {
-        dotOutputFilePath = path;
-        dotOutputFileName = name;
+        outputFilePath = path;
+        outputFileName = name;
     }
 }

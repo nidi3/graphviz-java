@@ -27,14 +27,14 @@ import java.io.*;
  *
  * @author toon
  */
-public class DefaultExecutor {
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutor.class);
+public class CommandLineExecutor {
+    private static final Logger LOG = LoggerFactory.getLogger(CommandLineExecutor.class);
 
     public void execute(CommandLine cmd, @Nullable File workingDirectory) throws InterruptedException, IOException {
         LOG.info("executing command {}", cmd.toString());
 
         final ExecuteWatchdog watchdog = new ExecuteWatchdog(60 * 1000);
-        final Executor executor = new org.apache.commons.exec.DefaultExecutor();
+        final Executor executor = new DefaultExecutor();
 
         executor.setWatchdog(watchdog);
         if (workingDirectory != null) {
