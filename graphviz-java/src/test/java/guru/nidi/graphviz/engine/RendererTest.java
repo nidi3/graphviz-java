@@ -88,5 +88,7 @@ class RendererTest {
         final Graphviz g = Graphviz.fromGraph(graph().with(node("a").link("b")));
         g.basedir(new File("example")).rasterize(Rasterizer.builtIn("pdf")).toFile(new File("target/builtIn"));
         assertTrue(out.exists());
+        end();
+        init();
     }
 }

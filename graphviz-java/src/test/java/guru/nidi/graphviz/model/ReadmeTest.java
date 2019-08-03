@@ -147,6 +147,7 @@ class ReadmeTest {
     }
 
     @Test
+    @DisabledIfEnvironmentVariable(named = "CI", matches = ".*")
     void ex5() throws IOException {
         //## config
         Graphviz.useEngine(new GraphvizCmdLineEngine()); // Rasterizer.builtIn() works only with CmdLineEngine
@@ -159,6 +160,8 @@ class ReadmeTest {
         String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
         BufferedImage image = viz.render(Format.PNG).toImage();
         //## end
+        end();
+        init();
     }
 
     @Test
