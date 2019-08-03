@@ -307,18 +307,21 @@ The size of the resulting image, the rendering engine and the output format can 
 
 [//]: # (config)
 ```java
+Graphviz.useEngine(new GraphvizCmdLineEngine()); // Rasterizer.builtIn() works only with CmdLineEngine
 Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
 Graphviz viz = Graphviz.fromGraph(g);
 viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
 viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
 viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
+viz.width(200).rasterize(Rasterizer.builtIn("pdf")).toFile(new File("example/ex5p"));
 String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
 BufferedImage image = viz.render(Format.PNG).toImage();
 ```
 [//]: # (end)
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5.svg" width="100">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5b.png" width="100">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5s.png" width="100">
-<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5.svg" width="100">
+<object data="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5p.pdf" type="application/pdf">
 
 To rasterize with batik, provide this library on the classpath: 
 

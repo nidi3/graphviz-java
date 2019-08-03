@@ -149,11 +149,13 @@ class ReadmeTest {
     @Test
     void ex5() throws IOException {
         //## config
+        Graphviz.useEngine(new GraphvizCmdLineEngine()); // Rasterizer.builtIn() works only with CmdLineEngine
         Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
         Graphviz viz = Graphviz.fromGraph(g);
         viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
         viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
         viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
+        viz.width(200).rasterize(Rasterizer.builtIn("pdf")).toFile(new File("example/ex5p"));
         String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
         BufferedImage image = viz.render(Format.PNG).toImage();
         //## end
