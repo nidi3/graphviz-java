@@ -321,7 +321,7 @@ BufferedImage image = viz.render(Format.PNG).toImage();
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5.svg" width="100">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5b.png" width="100">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5s.png" width="100">
-<object data="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5p.pdf" type="application/pdf">
+[pdf](https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex5p.pdf)
 
 To rasterize with batik, provide this library on the classpath: 
 
