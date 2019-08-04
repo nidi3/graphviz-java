@@ -15,23 +15,35 @@
  */
 package guru.nidi.graphviz.parse;
 
-class Position {
-    final String name;
-    int line;
-    int col;
+public class Position {
+    private final String name;
+    private int line;
+    private int col;
 
-    public Position(String name) {
+    Position(String name) {
         this.name = name;
         line = col = 1;
     }
 
-    public void newLine() {
+    void newLine() {
         col = 1;
         line++;
     }
 
-    public void newChar() {
+    void newChar() {
         col++;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public int getCol() {
+        return col;
     }
 
     @Override

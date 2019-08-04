@@ -18,7 +18,7 @@ package guru.nidi.graphviz.parse;
 import java.util.Objects;
 
 final class Token {
-    public static final int
+    static final int
             EOF = 0,
             SEMICOLON = 1,
             COMMA = 2,
@@ -41,25 +41,25 @@ final class Token {
             SUB_NUMERAL = 2,
             SUB_QUOTED = 3,
             SUB_HTML = 4;
-    public final int type;
-    public final int subtype;
-    public final String value;
+    final int type;
+    final int subtype;
+    final String value;
 
-    public Token(int type, String value) {
+    Token(int type, String value) {
         this(type, -1, value);
     }
 
-    public Token(int type, char value) {
+    Token(int type, char value) {
         this(type, -1, Character.toString(value));
     }
 
-    public Token(int type, int subtype, String value) {
+    Token(int type, int subtype, String value) {
         this.type = type;
         this.subtype = subtype;
         this.value = value;
     }
 
-    public static String desc(int type) {
+    static String desc(int type) {
         switch (type) {
             case ID:
                 return "identifier";

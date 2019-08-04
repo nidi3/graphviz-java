@@ -22,6 +22,7 @@ import guru.nidi.codeassert.config.In;
 import guru.nidi.codeassert.dependency.*;
 import guru.nidi.codeassert.findbugs.*;
 import guru.nidi.codeassert.junit.CodeAssertJunit5Test;
+import guru.nidi.codeassert.model.Model;
 import guru.nidi.codeassert.pmd.*;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
@@ -58,6 +59,11 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .withExternals("java.*", "javax.*", "com.*", "org.*")
                 .withRelativeRules(new GuruNidiGraphviz());
         return new DependencyAnalyzer(AnalyzerConfig.maven().main()).rules(rules).analyze();
+    }
+
+    @Override
+    protected Model createModel() {
+        return Model.from(AnalyzerConfig.maven().main().getClasses()).read();
     }
 
     @Override

@@ -40,13 +40,13 @@ class Lexer {
     private char ch;
     Position pos;
 
-    public Lexer(Reader in, String name) throws IOException {
+    Lexer(Reader in, String name) throws IOException {
         this.in = new PushbackReader(in);
         pos = new Position(name);
         readChar();
     }
 
-    public Token token() throws IOException {
+    Token token() throws IOException {
         final Token sym = symbol();
         if (sym != null) {
             readChar();
