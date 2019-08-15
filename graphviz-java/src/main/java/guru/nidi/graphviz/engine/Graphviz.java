@@ -206,7 +206,10 @@ public final class Graphviz {
     }
 
     EngineResult execute() {
-        return options.format.postProcess(getEngine().execute(src, options, rasterizer), fontAdjust);
+        final EngineResult result = options.format == Format.DOT
+                ? EngineResult.fromString(src)
+                : getEngine().execute(src, options, rasterizer);
+        return options.format.postProcess(result, fontAdjust);
     }
 
     Format format() {

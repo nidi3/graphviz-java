@@ -42,6 +42,7 @@ public enum Format {
             return result.mapString(s -> postProcessSvg(s, false, fontAdjust));
         }
     },
+    DOT("dot", "dot", false, false),
     XDOT("xdot", "xdot", false, false),
     PLAIN("plain", "txt", false, false),
     PLAIN_EXT("plain-ext", "txt", false, false),

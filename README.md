@@ -314,6 +314,7 @@ viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
 viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
 viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
 viz.width(200).rasterize(Rasterizer.builtIn("pdf")).toFile(new File("example/ex5p"));
+String dot = viz.render(Format.DOT).toString();
 String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
 BufferedImage image = viz.render(Format.PNG).toImage();
 ```
