@@ -142,7 +142,7 @@ public final class Graphviz {
     }
 
     public static Graphviz fromGraph(MutableGraph graph) {
-        return withDefaultDpi(graph, g -> fromString(new Serializer(g).serialize()));
+        return withDefaultDpi(graph, g -> fromString(g.toString()));
     }
 
     private static <T> T withDefaultDpi(MutableGraph graph, Function<MutableGraph, T> action) {

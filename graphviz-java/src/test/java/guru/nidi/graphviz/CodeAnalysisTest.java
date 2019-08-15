@@ -27,7 +27,6 @@ import guru.nidi.codeassert.pmd.*;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.*;
-import guru.nidi.graphviz.parse.Parser;
 import guru.nidi.graphviz.service.CommandRunner;
 import net.sourceforge.pmd.RulePriority;
 import org.junit.jupiter.api.Test;
@@ -104,7 +103,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("it's ok here",
                         In.clazz(Format.class).ignore("AvoidDuplicateLiterals"),
                         In.loc("LabelTest").ignore("JUnitTestContainsTooManyAsserts"),
-                        In.clazz(Serializer.class).ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
+                        In.loc("Serializer").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
                         In.clazz(ThrowingFunction.class).ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
@@ -113,7 +112,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
-                        In.classes(MutableGraph.class, Serializer.class, Parser.class, Label.class).ignore("GodClass"),
+                        In.locs("MutableGraph", "Serializer", "Parser", "Label").ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
                         In.classes(MutableNode.class, Rasterizer.class).ignore("ConfusingTernary"),

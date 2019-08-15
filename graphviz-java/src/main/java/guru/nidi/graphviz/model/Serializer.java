@@ -21,16 +21,16 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
-public class Serializer {
+class Serializer {
     private final MutableGraph graph;
     private final StringBuilder str;
 
-    public Serializer(MutableGraph graph) {
+    Serializer(MutableGraph graph) {
         this.graph = graph;
         str = new StringBuilder();
     }
 
-    public String serialize() {
+    String serialize() {
         toplevelGraph(graph);
         return str.toString();
     }
