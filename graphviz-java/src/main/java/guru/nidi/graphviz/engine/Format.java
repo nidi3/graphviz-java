@@ -54,7 +54,7 @@ public enum Format {
     private static final Logger LOG = LoggerFactory.getLogger(Format.class);
     private static final Pattern FONT_PATTERN = Pattern.compile("font-size=\"(.*?)\"");
     private static final Pattern SVG_PATTERN = Pattern.compile(
-            "<svg width=\"(\\d+)p[tx]\" height=\"(\\d+)p[tx]\"(.*?)>\n"
+            "<svg width=\"(\\d+)p[tx]\" height=\"(\\d+)p[tx]\"(.*?)>\\R"
                     + "<g(.*?)transform=\"(scale\\(.*?\\))?", Pattern.DOTALL);
     final String vizName;
     final String fileExtension;
@@ -84,7 +84,7 @@ public enum Format {
             LOG.warn("Generated SVG has not the expected format. There might be image size problems.");
             return svg;
         }
-        return m.replaceFirst("<svg width=\"$1px\" height=\"$2px\"$3>\n<g$4transform=\"");
+        return m.replaceFirst("<svg width=\"$1px\" height=\"$2px\"$3><g$4transform=\"");
     }
 
     private static String withoutPrefix(String svg) {

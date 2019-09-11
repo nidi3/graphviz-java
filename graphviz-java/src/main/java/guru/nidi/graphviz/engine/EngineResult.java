@@ -18,6 +18,7 @@ package guru.nidi.graphviz.engine;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -69,5 +70,31 @@ public final class EngineResult {
         if (file != null) {
             file.delete();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        EngineResult that = (EngineResult) o;
+        return Objects.equals(file, that.file) &&
+                Objects.equals(string, that.string);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(file, string);
+    }
+
+    @Override
+    public String toString() {
+        return "EngineResult{" +
+                "file=" + file +
+                ", string='" + string + '\'' +
+                '}';
     }
 }
