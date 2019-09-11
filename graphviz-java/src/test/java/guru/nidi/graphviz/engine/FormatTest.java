@@ -15,7 +15,11 @@
  */
 package guru.nidi.graphviz.engine;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,23 +34,29 @@ class FormatTest {
                     "<!-- Title: g Pages: 1 -->\n" +
                     "<svg";
 
-    @Test
-    void postProcess() {
-        final String before = quote(
-                " width='62pt' height='116pt' viewBox='0.00 0.00 62.00 116.00'>\n" +
-                        "<g id='graph0' class='graph' transform='scale(1 1) rotate(0) translate(4 112)'>\n" +
-                        "<text font-size='14.2'>a</text>\n" +
-                        "</g></svg>");
-        final String after = quote(
-                "<svg width='62px' height='116px' viewBox='0.00 0.00 62.00 116.00'>" +
-                        "<g id='graph0' class='graph' transform=' rotate(0) translate(4 112)'>\n" +
-                        "<text font-size='7.1'>a</text>\n" +
-                        "</g></svg>");
+    private static final String BEFORE = quote(
+            " width='62pt' height='116pt' viewBox='0.00 0.00 62.00 116.00'>\n" +
+                    "<g id='graph0' class='graph' transform='scale(1 1) rotate(0) translate(4 112)'>\n" +
+                    "<text font-size='14.2'>a</text>\n" +
+                    "</g></svg>");
+    private static final String AFTER = quote(
+            "<svg width='62px' height='116px' viewBox='0.00 0.00 62.00 116.00'>" +
+                    "<g id='graph0' class='graph' transform=' rotate(0) translate(4 112)'>\n" +
+                    "<text font-size='7.1'>a</text>\n" +
+                    "</g></svg>");
 
-        assertEquals(EngineResult.fromString(after),
-                SVG.postProcess(EngineResult.fromString(START1_7 + before), .5));
-        assertEquals(EngineResult.fromString(after.replace("\n", "\r\n")),
-                SVG.postProcess(EngineResult.fromString(START1_7 + before.replace("\n", "\r\n")), .5));
+    @ParameterizedTest
+    @MethodSource
+    void postProcess(Entry<String, String> values) {
+        assertEquals(EngineResult.fromString(values.getValue()),
+                SVG.postProcess(EngineResult.fromString(START1_7 + values.getKey()), .5));
+    }
+
+    static Set<Entry<String, String>> postProcess() {
+        final Map<String, String> map = new HashMap<>();
+        map.put(BEFORE, AFTER);
+        map.put(BEFORE.replace("\n", "\r\n"), AFTER.replace("\n", "\r\n"));
+        return map.entrySet();
     }
 
     private static String quote(String s) {

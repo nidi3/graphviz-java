@@ -28,7 +28,7 @@ class SvgRasterizerTest {
     @Test
     void preProcess() {
         final DummyRasterizer rasterizer = new DummyRasterizer();
-        rasterizer.rasterize(null, null, quote(
+        rasterizer.rasterize(Graphviz.fromString(""), null, quote(
                 "<svg width='62px' height='116px' viewBox='0.00 0.00 62.00 116.00'>" +
                         "<g id='graph0' class='graph' transform=' rotate(0) translate(4 112)'>\n" +
                         "<text xlink:href='ref' stroke='transparent'>a</text>\n" +
@@ -48,12 +48,12 @@ class SvgRasterizerTest {
     }
 
     private static class DummyRasterizer extends SvgRasterizer {
-        String svg;
+        String svg = "";
 
         @Override
         BufferedImage doRasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String svg) {
             this.svg = svg;
-            return null;
+            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
         }
     }
 }

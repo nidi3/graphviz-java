@@ -80,9 +80,8 @@ public final class EngineResult {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        EngineResult that = (EngineResult) o;
-        return Objects.equals(file, that.file) &&
-                Objects.equals(string, that.string);
+        final EngineResult that = (EngineResult) o;
+        return Objects.equals(file, that.file) && Objects.equals(string, that.string);
     }
 
     @Override
@@ -92,9 +91,9 @@ public final class EngineResult {
 
     @Override
     public String toString() {
-        return "EngineResult{" +
-                "file=" + file +
-                ", string='" + string + '\'' +
-                '}';
+        return "EngineResult{"
+                + "file=" + file
+                + ", string='" + string + '\''
+                + '}';
     }
 }
