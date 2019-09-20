@@ -29,6 +29,8 @@ import java.io.IOException;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
+import static guru.nidi.graphviz.attribute.Rank.RankDir.LEFT_TO_RIGHT;
+import static guru.nidi.graphviz.attribute.Rank.RankType.SAME;
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
 import static guru.nidi.graphviz.engine.Format.*;
@@ -216,7 +218,7 @@ class ExampleTest {
                 proc = node("Process"), adv = node("Adv. Software Technology");
 
         final Graph g = graph("ex5").directed()
-                .graphAttr().with(attr("ranksep", .75), GraphAttr.sizeMax(7.5, 7.5))
+                .graphAttr().with(Rank.sep(.75), GraphAttr.sizeMax(7.5, 7.5))
                 .nodeAttr().with(Shape.RECTANGLE)
                 .with(
                         graph().nodeAttr().with(Shape.NONE).with(
@@ -233,19 +235,19 @@ class ExampleTest {
                                                                                                                 node("1990").link(
                                                                                                                         node("future")))))))))))),
                                 bsh, make, sccs, reiser, csh, yacc, cron, rcs, emacs, build, vi, curses),
-                        graph().graphAttr().with(Rank.SAME).nodeAttr().with(Shape.ELLIPSE).with(sis, cfg, archlib, proc),
-                        graph().graphAttr().with(Rank.SAME).with(node("past"), sccs, make, bsh, yacc, cron),
-                        graph().graphAttr().with(Rank.SAME).with(node("1978"), reiser, csh),
-                        graph().graphAttr().with(Rank.SAME).with(node("1980"), build, emacs, vi),
-                        graph().graphAttr().with(Rank.SAME).with(node("1982"), rcs, curses, imx, syned),
-                        graph().graphAttr().with(Rank.SAME).with(node("1983"), ksh, ifs, ttu),
-                        graph().graphAttr().with(Rank.SAME).with(node("1985"), nmake, peggy),
-                        graph().graphAttr().with(Rank.SAME).with(node("1986"), cs, ncpp, kshi, cursesi, pg2),
-                        graph().graphAttr().with(Rank.SAME).with(node("1987"), dag, csas, ansiCpp, fdelta, d3fs, nmake2),
-                        graph().graphAttr().with(Rank.SAME).with(node("1988"), cia, sbcs, pax, ksh88, pegasus, backtalk),
-                        graph().graphAttr().with(Rank.SAME).with(node("1989"), ciapp, app, ship, dataShare, ryacc, mosaic),
-                        graph().graphAttr().with(Rank.SAME).with(node("1990"), dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
-                        graph().graphAttr().with(Rank.SAME).with(node("future"), adv),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).nodeAttr().with(Shape.ELLIPSE).with(sis, cfg, archlib, proc),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("past"), sccs, make, bsh, yacc, cron),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1978"), reiser, csh),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1980"), build, emacs, vi),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1982"), rcs, curses, imx, syned),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1983"), ksh, ifs, ttu),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1985"), nmake, peggy),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1986"), cs, ncpp, kshi, cursesi, pg2),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1987"), dag, csas, ansiCpp, fdelta, d3fs, nmake2),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1988"), cia, sbcs, pax, ksh88, pegasus, backtalk),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1989"), ciapp, app, ship, dataShare, ryacc, mosaic),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("1990"), dot, dia, libft, coshell, sfio, ifsi, mlx, kyacc, yeast),
+                        graph().graphAttr().with(Rank.inSubgraph(SAME)).with(node("future"), adv),
                         sccs.link(rcs, nmake, d3fs),
                         make.link(build, nmake),
                         build.link(nmake2),
@@ -316,7 +318,7 @@ class ExampleTest {
                 node6 = node("node6").with(Records.of(turn(rec("n", "o15"), rec("794"), rec("p", "")))),
                 node7 = node("node7").with(Records.of(turn(rec("n", "s19"), rec("659"), rec("p", ""))));
         final Graph g = graph("ex6").directed()
-                .graphAttr().with(RankDir.LEFT_TO_RIGHT)
+                .graphAttr().with(Rank.dir(LEFT_TO_RIGHT))
                 .with(
                         node0.link(
                                 between(port("f0"), node1.port(WEST)),

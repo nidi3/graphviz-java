@@ -89,8 +89,8 @@ public enum Format {
         if (m.group("unit").equals("px")) {
             return svg;
         }
-        double scaleX = Double.parseDouble(m.group("scaleX")) / PIXEL_PER_POINT;
-        double scaleY = Double.parseDouble(m.group("scaleY")) / PIXEL_PER_POINT;
+        final double scaleX = Double.parseDouble(m.group("scaleX")) / PIXEL_PER_POINT;
+        final double scaleY = Double.parseDouble(m.group("scaleY")) / PIXEL_PER_POINT;
         return m.replaceFirst("<svg width=\"" + m.group("width") + "px\" height=\"" + m.group("height") + "px\""
                 + m.group("between") + "transform=\"scale(" + scaleX + " " + scaleY + ")");
     }

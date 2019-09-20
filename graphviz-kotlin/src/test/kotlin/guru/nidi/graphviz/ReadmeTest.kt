@@ -16,6 +16,7 @@
 package guru.nidi.graphviz
 
 import guru.nidi.graphviz.attribute.*
+import guru.nidi.graphviz.attribute.Rank.RankDir.LEFT_TO_RIGHT
 import guru.nidi.graphviz.engine.Format.PNG
 import guru.nidi.graphviz.model.Compass.NORTH
 import guru.nidi.graphviz.model.Compass.SOUTH
@@ -29,7 +30,7 @@ class ReadmeTest {
         graph(directed = true) {
             edge["color" eq "red", Arrow.TEE]
             node[Color.GREEN]
-            graph[RankDir.LEFT_TO_RIGHT]
+            graph[Rank.dir(LEFT_TO_RIGHT)]
 
             "a" - "b" - "c"
             ("c"[Color.RED] - "d"[Color.BLUE])[Arrow.VEE]

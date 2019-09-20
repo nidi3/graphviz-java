@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static guru.nidi.graphviz.attribute.Label.Justification.LEFT;
+import static guru.nidi.graphviz.attribute.Rank.RankDir.LEFT_TO_RIGHT;
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
 import static guru.nidi.graphviz.model.Compass.*;
@@ -46,7 +47,7 @@ class ReadmeTest {
     void ex1() throws IOException {
         //## basic
         Graph g = graph("example1").directed()
-                .graphAttr().with(RankDir.LEFT_TO_RIGHT)
+                .graphAttr().with(Rank.dir(LEFT_TO_RIGHT))
                 .with(
                         node("a").with(Color.RED).link(node("b")),
                         node("b").link(to(node("c")).with(Style.DASHED))
@@ -115,7 +116,7 @@ class ReadmeTest {
                 node6 = node("node6").with(Records.of(turn(rec("o1"), rec("794"), rec("")))),
                 node7 = node("node7").with(Records.of(turn(rec("s7"), rec("659"), rec(""))));
         Graph g = graph("example3").directed()
-                .graphAttr().with(RankDir.LEFT_TO_RIGHT)
+                .graphAttr().with(Rank.dir(LEFT_TO_RIGHT))
                 .with(
                         node0.link(
                                 between(port("f0"), node1.port("v", SOUTH)),

@@ -25,7 +25,6 @@ public final class GraphAttr {
             COMPOUND = new SingleAttributes<>("compound", true),
             CONCENTRATE = new SingleAttributes<>("concentrate", true),
             FORCE_LABELS_NOT = new SingleAttributes<>("forcelabels", false),
-            NEW_RANK = new SingleAttributes<>("newrank", true),
             LANDSCAPE = new SingleAttributes<>("orientation", "L");
 
     private GraphAttr() {
@@ -49,14 +48,6 @@ public final class GraphAttr {
 
     public static Attributes<ForGraph> sizePreferred(double sizeX, double sizeY) {
         return new SingleAttributes<>(SIZE, sizeX + "," + sizeY + "!");
-    }
-
-    public enum ClusterMode {
-        LOCAL, GLOBAL, NONE
-    }
-
-    public static Attributes<ForGraph> clusterRank(ClusterMode mode) {
-        return new SingleAttributes<>("clusterrank", mode.toString().toLowerCase(ENGLISH));
     }
 
     public enum SplineMode {

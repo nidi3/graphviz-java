@@ -70,7 +70,7 @@ The basic usage is as follows (assuming `import static guru.nidi.graphviz.model.
 [//]: # (basic)
 ```java
 Graph g = graph("example1").directed()
-        .graphAttr().with(RankDir.LEFT_TO_RIGHT)
+        .graphAttr().with(Rank.dir(LEFT_TO_RIGHT))
         .with(
                 node("a").with(Color.RED).link(node("b")),
                 node("b").link(to(node("c")).with(Style.DASHED))
@@ -153,7 +153,7 @@ To enable the functions, use `import guru.nidi.graphviz.*`
 graph(directed = true) {
     edge["color" eq "red", Arrow.TEE]
     node[Color.GREEN]
-    graph[RankDir.LEFT_TO_RIGHT]
+    graph[Rank.dir(LEFT_TO_RIGHT)]
 
     "a" - "b" - "c"
     ("c"[Color.RED] - "d"[Color.BLUE])[Arrow.VEE]
@@ -210,7 +210,7 @@ Node
         node6 = node("node6").with(Records.of(turn(rec("o1"), rec("794"), rec("")))),
         node7 = node("node7").with(Records.of(turn(rec("s7"), rec("659"), rec(""))));
 Graph g = graph("example3").directed()
-        .graphAttr().with(RankDir.LEFT_TO_RIGHT)
+        .graphAttr().with(Rank.dir(LEFT_TO_RIGHT))
         .with(
                 node0.link(
                         between(port("f0"), node1.port("v", SOUTH)),

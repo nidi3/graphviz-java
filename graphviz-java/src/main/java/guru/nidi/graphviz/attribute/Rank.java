@@ -15,15 +15,124 @@
  */
 package guru.nidi.graphviz.attribute;
 
-public class Rank extends SingleAttributes<String, ForGraph> {
-    public static final Rank
-            SAME = new Rank("same"),
-            MIN = new Rank("min"),
-            MAX = new Rank("max"),
-            SOURCE = new Rank("source"),
-            SINK = new Rank("sink");
+import javax.annotation.Nullable;
 
-    protected Rank(String value) {
-        super("rank", value);
+public final class Rank {
+    private Rank() {
+    }
+
+    public static GraphRank dir(RankDir dir) {
+        return new GraphRank(dir, null, false, true, false);
+    }
+
+    public static GraphRank sep(double sep) {
+        return new GraphRank(null, sep, false, true, false);
+    }
+
+    public static GraphRank sepEqually(double sep) {
+        return new GraphRank(null, sep, true, true, false);
+    }
+
+    public static GraphRank newRank() {
+        return new GraphRank(null, null, false, true, true);
+    }
+
+    public static Attributes<ForGraph> inSubgraph(RankType rankType) {
+        return new SubgraphRank(rankType);
+    }
+
+    private static class SubgraphRank extends SingleAttributes<String, ForGraph> {
+        SubgraphRank(RankType rankType) {
+            super("rank", rankType.value);
+        }
+    }
+
+    public static class GraphRank implements Attributes<ForGraph> {
+        @Nullable
+        private final RankDir dir;
+        @Nullable
+        private final Double sep;
+        private final boolean equally;
+        private final boolean cluster;
+        private final boolean newRank;
+
+        GraphRank(@Nullable RankDir dir, @Nullable Double sep, boolean equally,
+                  boolean cluster, boolean newRank) {
+            this.dir = dir;
+            this.sep = sep;
+            this.equally = equally;
+            this.cluster = cluster;
+            this.newRank = newRank;
+        }
+
+        public GraphRank dir(RankDir dir) {
+            return new GraphRank(dir, sep, equally, cluster, newRank);
+        }
+
+        public GraphRank sep(double sep) {
+            return new GraphRank(dir, sep, equally, cluster, newRank);
+        }
+
+        public GraphRank sepEqually(double sep) {
+            return new GraphRank(dir, sep, true, cluster, newRank);
+        }
+
+        public GraphRank noCluster() {
+            return cluster(false);
+        }
+
+        public GraphRank cluster(boolean cluster) {
+            return new GraphRank(dir, sep, equally, cluster, newRank);
+        }
+
+        public GraphRank newRank() {
+            return newRank(true);
+        }
+
+        public GraphRank newRank(boolean newRank) {
+            return new GraphRank(dir, sep, equally, cluster, newRank);
+        }
+
+        @Override
+        public Attributes<? super ForGraph> applyTo(MapAttributes<? super ForGraph> attrs) {
+            if (dir != null) {
+                attrs.add("rankdir", dir.value);
+            }
+            if (!cluster) {
+                attrs.add("clusterrank", "global");
+            }
+            if (sep != null || equally) {
+                attrs.add("ranksep", (sep == null ? "" : sep) + (equally ? " equally" : ""));
+            }
+            if (newRank) {
+                attrs.add("newrank", true);
+            }
+            return attrs;
+        }
+    }
+
+    public enum RankType {
+        SAME("same"),
+        MIN("min"),
+        MAX("max"),
+        SOURCE("source"),
+        SINK("sink");
+        final String value;
+
+        RankType(String value) {
+            this.value = value;
+        }
+    }
+
+    public enum RankDir {
+        TOP_TO_BOTTOM("TB"),
+        BOTTOM_TO_TOP("BT"),
+        LEFT_TO_RIGHT("LR"),
+        RIGHT_TO_LEFT("RL");
+        final String value;
+
+        RankDir(String value) {
+            this.value = value;
+        }
     }
 }
