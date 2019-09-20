@@ -54,8 +54,10 @@ public enum Format {
     private static final Logger LOG = LoggerFactory.getLogger(Format.class);
     private static final Pattern FONT_PATTERN = Pattern.compile("font-size=\"(.*?)\"");
     private static final Pattern SVG_PATTERN = Pattern.compile(
-            "<svg width=\"(\\d+)p[tx]\" height=\"(\\d+)p[tx]\"(.*?)>\\R"
-                    + "<g(.*?)transform=\"(scale\\(.*?\\))?", Pattern.DOTALL);
+            "<svg width=\"(?<width>\\d+)(?<unit>p[tx])\" height=\"(?<height>\\d+)p[tx]\""
+                    + "(?<between>.*?>\\R<g.*?)transform=\"scale\\((?<scaleX>[0-9.]+) (?<scaleY>[0-9.]+)\\)",
+            Pattern.DOTALL);
+    private static final double PIXEL_PER_POINT = 1.3333;
     final String vizName;
     final String fileExtension;
     final boolean image;
@@ -74,17 +76,23 @@ public enum Format {
 
     private static String postProcessSvg(String result, boolean prefix, double fontAdjust) {
         final String unprefixed = prefix ? withoutPrefix(result) : result;
-        final String scaled = adjustScale(unprefixed);
-        return fontAdjust == 1 ? scaled : fontAdjusted(scaled, fontAdjust);
+        final String pixelSized = pointsToPixels(unprefixed);
+        return fontAdjust == 1 ? pixelSized : fontAdjusted(pixelSized, fontAdjust);
     }
 
-    private static String adjustScale(String svg) {
+    private static String pointsToPixels(String svg) {
         final Matcher m = SVG_PATTERN.matcher(svg);
         if (!m.find()) {
             LOG.warn("Generated SVG has not the expected format. There might be image size problems.");
             return svg;
         }
-        return m.replaceFirst("<svg width=\"$1px\" height=\"$2px\"$3><g$4transform=\"");
+        if (m.group("unit").equals("px")) {
+            return svg;
+        }
+        double scaleX = Double.parseDouble(m.group("scaleX")) / PIXEL_PER_POINT;
+        double scaleY = Double.parseDouble(m.group("scaleY")) / PIXEL_PER_POINT;
+        return m.replaceFirst("<svg width=\"" + m.group("width") + "px\" height=\"" + m.group("height") + "px\""
+                + m.group("between") + "transform=\"scale(" + scaleX + " " + scaleY + ")");
     }
 
     private static String withoutPrefix(String svg) {
