@@ -1,3 +1,18 @@
+/*
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package guru.nidi.graphviz.attribute.validate;
 
 import java.util.stream.Stream;
@@ -9,7 +24,7 @@ import static java.util.Arrays.asList;
 abstract class Datatype {
     final String name;
 
-    private Datatype(String name) {
+    Datatype(String name) {
         this.name = name;
     }
 
@@ -39,8 +54,11 @@ abstract class Datatype {
     static final Datatype BOOL = new Datatype("boolean") {
         @Override
         ValidatorMessage validate(Object value) {
-            return boolValue(value.toString()) == null ? new ValidatorMessage(ERROR, "'" + value + "' is not a valid boolean.")
-                    : tryParseInt(value.toString()) == null ? null : new ValidatorMessage(WARNING, "Using numerical value '" + value + "' as boolean.");
+            return boolValue(value.toString()) == null
+                    ? new ValidatorMessage(ERROR, "'" + value + "' is not a valid boolean.")
+                    : tryParseInt(value.toString()) == null
+                    ? null
+                    : new ValidatorMessage(WARNING, "Using numerical value '" + value + "' as boolean.");
         }
     };
     static final Datatype STRING = new Datatype("string") {
@@ -97,7 +115,8 @@ abstract class Datatype {
         @Override
         ValidatorMessage validate(Object value) {
             final String[] parts = value.toString().split(":");
-            return (parts.length != 1 && parts.length != 2) || (parts.length == 2 && !asList("n", "ne", "e", "se", "s", "sw", "w", "nw", "c", "_").contains(parts[1]))
+            return (parts.length != 1 && parts.length != 2) || (parts.length == 2
+                    && !asList("n", "ne", "e", "se", "s", "sw", "w", "nw", "c", "_").contains(parts[1]))
                     ? new ValidatorMessage(ERROR, "'" + value + "' is not a valid post position.") : null;
         }
     };
@@ -231,10 +250,10 @@ abstract class Datatype {
     }
 
     static Boolean boolValue(Object value) {
-        final String val = value.toString();
         if (value instanceof Boolean) {
             return (Boolean) value;
         }
+        final String val = value.toString();
         final Integer i = tryParseInt(val);
         if (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("yes") || (i != null && i != 0)) {
             return true;

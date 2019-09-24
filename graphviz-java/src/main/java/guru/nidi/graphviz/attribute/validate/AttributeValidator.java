@@ -1,3 +1,18 @@
+/*
+ * Copyright © 2015 Stefan Niederhauser (nidin@gmx.ch)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package guru.nidi.graphviz.attribute.validate;
 
 
@@ -21,26 +36,30 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-public class AttributeValidator {
+public final class AttributeValidator {
     private static final AttributeValidator INSTANCE = new AttributeValidator();
+    private static final double EPSILON = 1e-8;
+    private final Map<String, List<AttributeConfig>> map = new HashMap<>();
 
     public enum Scope {
         GRAPH, SUB_GRAPH, CLUSTER, NODE, EDGE
     }
 
-    public static List<ValidatorMessage> validate(Attributes<? extends For> attrs, Scope scope, @Nullable String engine, @Nullable String format) {
+    public static List<ValidatorMessage> validate(Attributes<? extends For> attrs, Scope scope,
+                                                  @Nullable String engine, @Nullable String format) {
         return StreamSupport.stream(attrs.spliterator(), false)
                 .flatMap(entry -> validate(entry.getKey(), entry.getValue(), scope, engine, format).stream())
                 .collect(toList());
     }
 
-    private static List<ValidatorMessage> validate(String key, Object value, Scope scope, @Nullable String engine, @Nullable String format) {
+    private static List<ValidatorMessage> validate(String key, Object value, Scope scope,
+                                                   @Nullable String engine, @Nullable String format) {
         final List<AttributeConfig> configs = INSTANCE.map.get(key);
         if (configs == null) {
             return singletonList(new ValidatorMessage(ERROR, key, "Attribute is unknown."));
         }
-        final Engine e = engine == null ? null : Engine.valueOf(engine.toUpperCase());
-        final Format f = format == null ? null : Format.valueOf(format.toUpperCase());
+        final Engine e = engine == null ? null : Engine.valueOf(engine.toUpperCase(Locale.ENGLISH));
+        final Format f = format == null ? null : Format.valueOf(format.toUpperCase(Locale.ENGLISH));
         final Optional<AttributeConfig> engineConfig = configs.stream()
                 .filter(c -> {
                     if (e == null || c.engines.isEmpty()) {
@@ -52,29 +71,37 @@ public class AttributeValidator {
                     return c.engines.contains(e);
                 })
                 .findFirst();
+        if (!engineConfig.isPresent()) {
+            return singletonList(new ValidatorMessage(
+                    ERROR, key, "Attribute is not allowed for engine '" + engine + "'."));
+        }
         final Optional<AttributeConfig> formatConfig = configs.stream()
                 .filter(c -> f == null || c.formats.isEmpty() || c.formats.contains(f))
                 .findFirst();
-        if (!engineConfig.isPresent()) {
-            return singletonList(new ValidatorMessage(ERROR, key, "Attribute is not allowed for engine '" + engine + "'."));
-        }
         if (!formatConfig.isPresent()) {
-            return singletonList(new ValidatorMessage(ERROR, key, "Attribute is not allowed for format '" + format + "'."));
+            return singletonList(new ValidatorMessage(
+                    ERROR, key, "Attribute is not allowed for format '" + format + "'."));
         }
         if (!engineConfig.get().equals(formatConfig.get())) {
-            return singletonList(new ValidatorMessage(ERROR, key, "Attribute is not allowed for engine '" + engine + "' and format '" + format + "'."));
+            return singletonList(new ValidatorMessage(
+                    ERROR, key, "Attribute is not allowed for engine '" + engine + "' and format '" + format + "'."));
         }
-        final AttributeConfig config = engineConfig.get();
-        List<ValidatorMessage> messages = new ArrayList<>();
+        return validate(key, value, scope, engineConfig.get());
+    }
+
+    private static List<ValidatorMessage> validate(String key, Object value, Scope scope, AttributeConfig config) {
+        final List<ValidatorMessage> messages = new ArrayList<>();
         if (!config.scopes.contains(scope)) {
             messages.add(new ValidatorMessage(ERROR, key, "Attribute is not allowed for scope '" + scope + "'."));
         }
-        if (config.defaultVal != null && isValueEquals(config.defaultVal, value)) {
-            messages.add(new ValidatorMessage(WARNING, key, "Attribute is set to its default value '" + config.defaultVal + "'."));
+        if (config.defVal != null && isValueEquals(config.defVal, value)) {
+            messages.add(new ValidatorMessage(
+                    WARNING, key, "Attribute is set to its default value '" + config.defVal + "'."));
         }
         final Double val = tryParseDouble(value.toString());
-        if (config.minimum != null && val != null && val < config.minimum) {
-            messages.add(new ValidatorMessage(WARNING, key, "Attribute has a minimum of '" + config.minimum + "' but is set to '" + value + "'."));
+        if (config.min != null && val != null && val < config.min) {
+            messages.add(new ValidatorMessage(
+                    WARNING, key, "Attribute has a minimum of '" + config.min + "' but is set to '" + value + "'."));
         }
         final List<ValidatorMessage> typeMessages = config.types.stream().map(t -> t.validate(value)).collect(toList());
         if (typeMessages.size() == 1) {
@@ -83,7 +110,9 @@ public class AttributeValidator {
             }
         } else {
             if (typeMessages.stream().noneMatch(Objects::isNull)) {
-                messages.add(new ValidatorMessage(ERROR, key, "'" + value + "' is not valid for any of the types '" + config.types.stream().map(t -> t.name).collect(joining(", ")) + "'."));
+                messages.add(new ValidatorMessage(
+                        ERROR, key, "'" + value + "' is not valid for any of the types '"
+                        + config.types.stream().map(t -> t.name).collect(joining(", ")) + "'."));
             }
         }
         return messages;
@@ -105,15 +134,12 @@ public class AttributeValidator {
         return config.toString().equals(value.toString());
     }
 
-    private final Map<String, List<AttributeConfig>> map = new HashMap<>();
-    private final static double epsilon = 1e-8;
-
     private AttributeValidator() {
         add("Damping", entry("G", DOUBLE, 0.99, 0.0).engines(NEATO));
         add("K", entry("GC", DOUBLE, 0.3, 0.0).engines(SFDP, FDP));
         add("URL", entry("ENGC", ESC_STRING).formats(SVG, POSTSCRIPT, MAP));
         add("_background", entry("G", STRING));
-        add("area", entry("NC", DOUBLE, 1.0, epsilon).engines(PATCHWORK));
+        add("area", entry("NC", DOUBLE, 1.0, EPSILON).engines(PATCHWORK));
         add("arrowhead", entry("E", ARROW_TYPE, "normal"));
         add("arrowsize", entry("E", DOUBLE, 1.0, 0.0));
         add("arrowtail", entry("E", ARROW_TYPE, "normal"));
@@ -129,7 +155,7 @@ public class AttributeValidator {
         add("concentrate", entry("G", BOOL, false));
         add("constraint", entry("E", BOOL, true).engines(DOT));
         add("decorate", entry("E", BOOL, false));
-        add("defaultdist", entry("G", DOUBLE, "1+(avg. len)*sqrt(|V|)", epsilon).engines(NEATO));
+        add("defaultdist", entry("G", DOUBLE, "1+(avg. len)*sqrt(|V|)", EPSILON).engines(NEATO));
         add("dim", entry("G", INT, 2, 2.0).engines(SFDP, FDP, NEATO));
         add("dimen", entry("G", INT, 2, 2.0).engines(SFDP, FDP, NEATO));
         add("dir", entry("E", DIR_TYPE, "forward(directed)<BR>none(undirected)"));
@@ -198,7 +224,7 @@ public class AttributeValidator {
         add("ltail", entry("E", STRING, "").engines(DOT));
         add("lwidth", entry("GC", DOUBLE).formats(WRITE));
         add("margin", entry("NCG", asList(DOUBLE, POINT), "&#60;device-dependent&#62;"));
-        add("maxiter", entry("G", INT, "100 &#42; # nodes(mode == KK)<BR>200(mode == major)<BR>600(fdp)").engines(FDP, NEATO));
+        add("maxiter", entry("G", INT, "100 nodes(mode == KK)<BR>200(mode == major)<BR>600(fdp)").engines(FDP, NEATO));
         add("mclimit", entry("G", DOUBLE, 1.0).engines(DOT));
         add("mindist", entry("G", DOUBLE, 1.0, 0.0).engines(CIRCO));
         add("minlen", entry("E", INT, 1, 0.0).engines(DOT));
