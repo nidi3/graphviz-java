@@ -102,7 +102,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("There are a lot of colors", In.clazz(Color.class)
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
-                        In.clazz(Format.class).ignore("AvoidDuplicateLiterals"),
+                        In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
                         In.locs("LabelTest", "RankTest", "AttributeValidatorTest").ignore("JUnitTestContainsTooManyAsserts"),
                         In.loc("Serializer").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
                         In.clazz(ThrowingFunction.class).ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
@@ -123,6 +123,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("I don't understand the message",
                         In.locs("CommandRunnerTest", "AbstractJsGraphvizEngine").ignore("SimplifiedTernary"))
                 .because("I don't agree",
+                        In.loc("Datatype").ignore("PositionLiteralsFirstInCaseInsensitiveComparisons"),
                         In.clazz(CommandRunner.class).ignore("OptimizableToArrayCall"),
                         In.everywhere().ignore("SimplifyStartsWith"))
                 .because("It's wrapping an Exception with a RuntimeException",

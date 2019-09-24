@@ -65,6 +65,10 @@ class ArrowTypeValidator {
             lr = true;
             pos++;
         }
+        return validateShape(o, lr);
+    }
+
+    private ValidatorMessage validateShape(boolean o, boolean lr) {
         final Shape shape = findShape();
         if (shape == null) {
             return new ValidatorMessage(ERROR, "Unknown shape '" + s.substring(pos) + "'.");

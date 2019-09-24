@@ -15,185 +15,203 @@
  */
 package guru.nidi.graphviz.attribute.validate;
 
+import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.For;
+import guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity;
 import org.junit.jupiter.api.Test;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 import static guru.nidi.graphviz.attribute.validate.AttributeValidator.Scope.*;
-import static guru.nidi.graphviz.attribute.validate.AttributeValidator.validate;
 import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
 import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.WARNING;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AttributeValidatorTest {
+    AttributeValidator validator = new AttributeValidator();
 
     @Test
     void ok() {
-        assertEquals(emptyList(), validate(attrs(attr("Damping", 5)), GRAPH, null, null));
-        assertEquals(emptyList(), validate(attrs(attr("Damping", 5)), GRAPH, "neato", null));
-        assertEquals(emptyList(), validate(attrs(attr("URL", 5)), GRAPH, null, "svg"));
+        assertOk(validate(attr("Damping", 5), GRAPH, null, null));
+        assertOk(validate(attr("Damping", 5), GRAPH, "neato", null));
+        assertOk(validate(attr("URL", 5), GRAPH, null, "svg"));
     }
 
     @Test
     void invalidEngine() {
-        assertThrows(IllegalArgumentException.class, () -> validate(attrs(attr("Damping", 5)), GRAPH, "hula", null));
+        assertThrows(IllegalArgumentException.class, () -> validate(attr("Damping", 5), GRAPH, "hula", null));
     }
 
     @Test
     void invalidFormat() {
-        assertThrows(IllegalArgumentException.class, () -> validate(attrs(attr("Damping", 5)), GRAPH, null, "hula"));
+        assertThrows(IllegalArgumentException.class, () -> validate(attr("Damping", 5), GRAPH, null, "hula"));
     }
 
     @Test
     void wrongName() {
-        assertEquals(asList(new ValidatorMessage(ERROR, "hula", "Attribute is unknown.")),
-                validate(attrs(attr("hula", 5)), NODE, null, null));
+        assertMessage(ERROR, "hula", "Attribute is unknown.", validate(attr("hula", 5), NODE));
     }
 
     @Test
     void wrongScope() {
-        assertEquals(asList(new ValidatorMessage(ERROR, "Damping", "Attribute is not allowed for scope 'NODE'.")),
-                validate(attrs(attr("Damping", 5)), NODE, null, null));
+        assertMessage(ERROR, "Damping", "Attribute is not allowed for scope 'NODE'.",
+                validate(attr("Damping", 5), NODE));
     }
 
     @Test
     void wrongEngine() {
-        assertEquals(asList(new ValidatorMessage(ERROR, "Damping", "Attribute is not allowed for engine 'dot'.")),
-                validate(attrs(attr("Damping", 5)), GRAPH, "dot", null));
+        assertMessage(ERROR, "Damping", "Attribute is not allowed for engine 'dot'.",
+                validate(attr("Damping", 5), GRAPH, "dot", null));
     }
 
     @Test
     void wrongFormat() {
-        assertEquals(asList(new ValidatorMessage(ERROR, "URL", "Attribute is not allowed for format 'cmap'.")),
-                validate(attrs(attr("URL", 5)), GRAPH, null, "cmap"));
+        assertMessage(ERROR, "URL", "Attribute is not allowed for format 'cmap'.",
+                validate(attr("URL", 5), GRAPH, null, "cmap"));
     }
 
     @Test
     void useDoubleDefault() {
-        assertEquals(asList(new ValidatorMessage(WARNING, "Damping", "Attribute is set to its default value '0.99'.")),
-                validate(attrs(attr("Damping", .99)), GRAPH, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "Damping", "Attribute is set to its default value '0.99'.")),
-                validate(attrs(attr("Damping", .99000001)), GRAPH, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "Damping", "Attribute is set to its default value '0.99'.")),
-                validate(attrs(attr("Damping", ".99")), GRAPH, null, null));
+        assertMessage(WARNING, "Damping", "Attribute is set to its default value '0.99'.",
+                validate(attr("Damping", .99), GRAPH));
+        assertMessage(WARNING, "Damping", "Attribute is set to its default value '0.99'.",
+                validate(attr("Damping", .99000001), GRAPH));
+        assertMessage(WARNING, "Damping", "Attribute is set to its default value '0.99'.",
+                validate(attr("Damping", ".99"), GRAPH));
     }
 
     @Test
     void useIntDefault() {
-        assertEquals(asList(new ValidatorMessage(WARNING, "dim", "Attribute is set to its default value '2'.")),
-                validate(attrs(attr("dim", 2)), GRAPH, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "dim", "Attribute is set to its default value '2'.")),
-                validate(attrs(attr("dim", "+2")), GRAPH, null, null));
+        assertMessage(WARNING, "dim", "Attribute is set to its default value '2'.", validate(attr("dim", 2), GRAPH));
+        assertMessage(WARNING, "dim", "Attribute is set to its default value '2'.", validate(attr("dim", "+2"), GRAPH));
     }
 
     @Test
     void useBoolDefault() {
-        assertEquals(asList(new ValidatorMessage(WARNING, "headclip", "Attribute is set to its default value 'true'.")),
-                validate(attrs(attr("headclip", true)), EDGE, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "headclip", "Attribute is set to its default value 'true'.")),
-                validate(attrs(attr("headclip", "truE")), EDGE, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "headclip", "Attribute is set to its default value 'true'.")),
-                validate(attrs(attr("headclip", "Yes")), EDGE, null, null));
+        assertMessage(WARNING, "headclip", "Attribute is set to its default value 'true'.",
+                validate(attr("headclip", true), EDGE));
+        assertMessage(WARNING, "headclip", "Attribute is set to its default value 'true'.",
+                validate(attr("headclip", "truE"), EDGE));
+        assertMessage(WARNING, "headclip", "Attribute is set to its default value 'true'.",
+                validate(attr("headclip", "Yes"), EDGE));
         assertEquals(asList(
                 new ValidatorMessage(WARNING, "headclip", "Attribute is set to its default value 'true'."),
                 new ValidatorMessage(WARNING, "headclip", "Using numerical value '42' as boolean.")),
-                validate(attrs(attr("headclip", "42")), EDGE, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "center", "Attribute is set to its default value 'false'.")),
-                validate(attrs(attr("center", false)), GRAPH, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "center", "Attribute is set to its default value 'false'.")),
-                validate(attrs(attr("center", "False")), GRAPH, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "center", "Attribute is set to its default value 'false'.")),
-                validate(attrs(attr("center", "NO")), GRAPH, null, null));
+                validate(attr("headclip", "42"), EDGE));
+        assertMessage(WARNING, "center", "Attribute is set to its default value 'false'.",
+                validate(attr("center", false), GRAPH));
+        assertMessage(WARNING, "center", "Attribute is set to its default value 'false'.",
+                validate(attr("center", "False"), GRAPH));
+        assertMessage(WARNING, "center", "Attribute is set to its default value 'false'.",
+                validate(attr("center", "NO"), GRAPH));
         assertEquals(asList(
                 new ValidatorMessage(WARNING, "center", "Attribute is set to its default value 'false'."),
                 new ValidatorMessage(WARNING, "center", "Using numerical value '0' as boolean.")),
-                validate(attrs(attr("center", "0")), GRAPH, null, null));
+                validate(attr("center", "0"), GRAPH));
     }
 
     @Test
     void minimum() {
-        assertEquals(asList(), validate(attrs(attr("Damping", 0)), GRAPH, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "Damping", "Attribute has a minimum of '0.0' but is set to '-0.1'.")),
-                validate(attrs(attr("Damping", -.1)), GRAPH, null, null));
-        assertEquals(asList(new ValidatorMessage(WARNING, "dim", "Attribute has a minimum of '2.0' but is set to '1'.")),
-                validate(attrs(attr("dim", 1)), GRAPH, null, null));
+        assertOk(validate(attr("Damping", 0), GRAPH));
+        assertMessage(WARNING, "Damping", "Attribute has a minimum of '0.0' but is set to '-0.1'.",
+                validate(attr("Damping", -.1), GRAPH));
+        assertMessage(WARNING, "dim", "Attribute has a minimum of '2.0' but is set to '1'.",
+                validate(attr("dim", 1), GRAPH));
     }
 
     @Test
     void invalidInt() {
-        assertEquals(asList(new ValidatorMessage(ERROR, "dim", "'a' is not a valid integer.")),
-                validate(attrs(attr("dim", "a")), GRAPH, null, null));
+        assertMessage(ERROR, "dim", "'a' is not a valid integer.", validate(attr("dim", "a"), GRAPH));
     }
 
     @Test
     void invalidFloat() {
-        assertEquals(asList(new ValidatorMessage(ERROR, "Damping", "'1.2.3' is not a valid float.")),
-                validate(attrs(attr("Damping", "1.2.3")), GRAPH, null, null));
+        assertMessage(ERROR, "Damping", "'1.2.3' is not a valid float.", validate(attr("Damping", "1.2.3"), GRAPH));
     }
 
     @Test
     void floatList() {
-        assertEquals(asList(), validate(attrs(attr("ranksep", "1.2:-4:5e2")), GRAPH, null, null));
-        assertEquals(asList(new ValidatorMessage(ERROR, "ranksep", "'1.2:-4;5e2' is not valid for any of the types 'float, list of floats'.")),
-                validate(attrs(attr("ranksep", "1.2:-4;5e2")), GRAPH, null, null));
+        assertOk(validate(attr("ranksep", "1.2:-4:5e2"), GRAPH));
+        assertMessage(ERROR, "ranksep", "'1.2:-4;5e2' is not valid for any of the types 'float, list of floats'.",
+                validate(attr("ranksep", "1.2:-4;5e2"), GRAPH));
     }
 
     @Test
     void point() {
-        assertEquals(asList(), validate(attrs(attr("head_lp", "1.2,4.5")), EDGE, null, null));
-        assertEquals(asList(), validate(attrs(attr("head_lp", "1.2,4.5!")), EDGE, null, null));
-        assertEquals(asList(), validate(attrs(attr("head_lp", "1.2,4.5,5!")), EDGE, null, null));
-        assertEquals(asList(new ValidatorMessage(ERROR, "head_lp", "'1.2' is not a valid point.")),
-                validate(attrs(attr("head_lp", "1.2")), EDGE, null, null));
-        assertEquals(asList(new ValidatorMessage(ERROR, "head_lp", "'1.2,3,4,5' is not a valid point.")),
-                validate(attrs(attr("head_lp", "1.2,3,4,5")), EDGE, null, null));
+        assertOk(validate(attr("head_lp", "1.2,4.5"), EDGE));
+        assertOk(validate(attr("head_lp", "1.2,4.5!"), EDGE));
+        assertOk(validate(attr("head_lp", "1.2,4.5,5!"), EDGE));
+        assertMessage(ERROR, "head_lp", "'1.2' is not a valid point.",
+                validate(attr("head_lp", "1.2"), EDGE));
+        assertMessage(ERROR, "head_lp", "'1.2,3,4,5' is not a valid point.",
+                validate(attr("head_lp", "1.2,3,4,5"), EDGE));
     }
 
     @Test
     void pointList() {
-        assertEquals(asList(), validate(attrs(attr("vertices", "1.2,4.5")), NODE, null, null));
-        assertEquals(asList(), validate(attrs(attr("vertices", "1.2,4.5! 3,4,5")), NODE, null, null));
-        assertEquals(asList(new ValidatorMessage(ERROR, "vertices", "'1.2' is not a valid list of points.")),
-                validate(attrs(attr("vertices", "1.2")), NODE, null, null));
-        assertEquals(asList(new ValidatorMessage(ERROR, "vertices", "'1.2,3,4,5' is not a valid list of points.")),
-                validate(attrs(attr("vertices", "1.2,3,4,5")), NODE, null, null));
+        assertOk(validate(attr("vertices", "1.2,4.5"), NODE));
+        assertOk(validate(attr("vertices", "1.2,4.5! 3,4,5"), NODE));
+        assertMessage(ERROR, "vertices", "'1.2' is not a valid list of points.",
+                validate(attr("vertices", "1.2"), NODE));
+        assertMessage(ERROR, "vertices", "'1.2,3,4,5' is not a valid list of points.",
+                validate(attr("vertices", "1.2,3,4,5"), NODE));
     }
 
     @Test
     void arrowTypeOk() {
-        assertEquals(asList(), validate(attrs(attr("arrowhead", "box")), EDGE, null, null));
-        assertEquals(asList(), validate(attrs(attr("arrowhead", "obox")), EDGE, null, null));
-        assertEquals(asList(), validate(attrs(attr("arrowhead", "lbox")), EDGE, null, null));
-        assertEquals(asList(), validate(attrs(attr("arrowhead", "olbox")), EDGE, null, null));
+        assertOk(validate(attr("arrowhead", "box"), EDGE));
+        assertOk(validate(attr("arrowhead", "obox"), EDGE));
+        assertOk(validate(attr("arrowhead", "lbox"), EDGE));
+        assertOk(validate(attr("arrowhead", "olbox"), EDGE));
     }
 
     @Test
     void arrowTypeWrongShape() {
-        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "Unknown shape 'hula'.")),
-                validate(attrs(attr("arrowhead", "ohula")), EDGE, null, null));
+        assertMessage(ERROR, "arrowhead", "Unknown shape 'hula'.", validate(attr("arrowhead", "ohula"), EDGE));
     }
 
     @Test
     void arrowTypeWrongPrefix() {
-        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "Shape 'crow' is not allowed a 'o' prefix.")),
-                validate(attrs(attr("arrowhead", "ocrow")), EDGE, null, null));
-        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "Shape 'dot' is not allowed a 'l'/'r' prefix.")),
-                validate(attrs(attr("arrowhead", "ldot")), EDGE, null, null));
+        assertMessage(ERROR, "arrowhead", "Shape 'crow' is not allowed a 'o' prefix.",
+                validate(attr("arrowhead", "ocrow"), EDGE));
+        assertMessage(ERROR, "arrowhead", "Shape 'dot' is not allowed a 'l'/'r' prefix.",
+                validate(attr("arrowhead", "ldot"), EDGE));
     }
 
     @Test
     void arrowTypeTooManyShapes() {
-        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "More than 4 shapes in 'dotcrowboxdotcrow'.")),
-                validate(attrs(attr("arrowhead", "dotcrowboxdotcrow")), EDGE, null, null));
+        assertMessage(ERROR, "arrowhead", "More than 4 shapes in 'dotcrowboxdotcrow'.",
+                validate(attr("arrowhead", "dotcrowboxdotcrow"), EDGE));
     }
 
     @Test
     void arrowTypeNone() {
-        assertEquals(asList(), validate(attrs(attr("arrowhead", "none")), EDGE, null, null));
-        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "Last shape cannot be 'none' in 'dotnone'.")),
-                validate(attrs(attr("arrowhead", "dotnone")), EDGE, null, null));
+        assertOk(validate(attr("arrowhead", "none"), EDGE));
+        assertMessage(ERROR, "arrowhead", "Last shape cannot be 'none' in 'dotnone'.",
+                validate(attr("arrowhead", "dotnone"), EDGE));
+    }
+
+    private void assertMessage(Severity severity, String attribute, String message, List<ValidatorMessage> actual) {
+        assertEquals(singletonList(new ValidatorMessage(severity, attribute, message)), actual);
+    }
+
+    private void assertOk(List<ValidatorMessage> actual) {
+        assertEquals(emptyList(), actual);
+    }
+
+    private List<ValidatorMessage> validate(Attributes<? extends For> attr, AttributeValidator.Scope scope) {
+        return validate(attr, scope, null, null);
+    }
+
+    private List<ValidatorMessage> validate(Attributes<? extends For> attr, AttributeValidator.Scope scope,
+                                            @Nullable String engine, @Nullable String format) {
+        return validator.validate(attrs(attr), scope, engine, format);
     }
 }
