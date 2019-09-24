@@ -136,16 +136,16 @@ class AttributeValidatorTest {
 
     @Test
     void floatList() {
-        assertEquals(asList(), validate(attrs(attr("ranksep", "1.2 :-4:5e2")), GRAPH, null, null));
-        assertEquals(asList(new ValidatorMessage(ERROR, "ranksep", "'1.2 :-4;5e2' is not valid for any of the types 'float, list of floats'.")),
-                validate(attrs(attr("ranksep", "1.2 :-4;5e2")), GRAPH, null, null));
+        assertEquals(asList(), validate(attrs(attr("ranksep", "1.2:-4:5e2")), GRAPH, null, null));
+        assertEquals(asList(new ValidatorMessage(ERROR, "ranksep", "'1.2:-4;5e2' is not valid for any of the types 'float, list of floats'.")),
+                validate(attrs(attr("ranksep", "1.2:-4;5e2")), GRAPH, null, null));
     }
 
     @Test
     void point() {
-        assertEquals(asList(), validate(attrs(attr("head_lp", "1.2, 4.5")), EDGE, null, null));
-        assertEquals(asList(), validate(attrs(attr("head_lp", "1.2, 4.5!")), EDGE, null, null));
-        assertEquals(asList(), validate(attrs(attr("head_lp", "1.2, 4.5,5!")), EDGE, null, null));
+        assertEquals(asList(), validate(attrs(attr("head_lp", "1.2,4.5")), EDGE, null, null));
+        assertEquals(asList(), validate(attrs(attr("head_lp", "1.2,4.5!")), EDGE, null, null));
+        assertEquals(asList(), validate(attrs(attr("head_lp", "1.2,4.5,5!")), EDGE, null, null));
         assertEquals(asList(new ValidatorMessage(ERROR, "head_lp", "'1.2' is not a valid point.")),
                 validate(attrs(attr("head_lp", "1.2")), EDGE, null, null));
         assertEquals(asList(new ValidatorMessage(ERROR, "head_lp", "'1.2,3,4,5' is not a valid point.")),
@@ -155,10 +155,45 @@ class AttributeValidatorTest {
     @Test
     void pointList() {
         assertEquals(asList(), validate(attrs(attr("vertices", "1.2,4.5")), NODE, null, null));
-        assertEquals(asList(), validate(attrs(attr("vertices", "1.2,4.5!  3,4,5")), NODE, null, null));
+        assertEquals(asList(), validate(attrs(attr("vertices", "1.2,4.5! 3,4,5")), NODE, null, null));
         assertEquals(asList(new ValidatorMessage(ERROR, "vertices", "'1.2' is not a valid list of points.")),
                 validate(attrs(attr("vertices", "1.2")), NODE, null, null));
         assertEquals(asList(new ValidatorMessage(ERROR, "vertices", "'1.2,3,4,5' is not a valid list of points.")),
                 validate(attrs(attr("vertices", "1.2,3,4,5")), NODE, null, null));
+    }
+
+    @Test
+    void arrowTypeOk() {
+        assertEquals(asList(), validate(attrs(attr("arrowhead", "box")), EDGE, null, null));
+        assertEquals(asList(), validate(attrs(attr("arrowhead", "obox")), EDGE, null, null));
+        assertEquals(asList(), validate(attrs(attr("arrowhead", "lbox")), EDGE, null, null));
+        assertEquals(asList(), validate(attrs(attr("arrowhead", "olbox")), EDGE, null, null));
+    }
+
+    @Test
+    void arrowTypeWrongShape() {
+        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "Unknown shape 'hula'.")),
+                validate(attrs(attr("arrowhead", "ohula")), EDGE, null, null));
+    }
+
+    @Test
+    void arrowTypeWrongPrefix() {
+        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "Shape 'crow' is not allowed a 'o' prefix.")),
+                validate(attrs(attr("arrowhead", "ocrow")), EDGE, null, null));
+        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "Shape 'dot' is not allowed a 'l'/'r' prefix.")),
+                validate(attrs(attr("arrowhead", "ldot")), EDGE, null, null));
+    }
+
+    @Test
+    void arrowTypeTooManyShapes() {
+        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "More than 4 shapes in 'dotcrowboxdotcrow'.")),
+                validate(attrs(attr("arrowhead", "dotcrowboxdotcrow")), EDGE, null, null));
+    }
+
+    @Test
+    void arrowTypeNone() {
+        assertEquals(asList(), validate(attrs(attr("arrowhead", "none")), EDGE, null, null));
+        assertEquals(asList(new ValidatorMessage(ERROR, "arrowhead", "Last shape cannot be 'none' in 'dotnone'.")),
+                validate(attrs(attr("arrowhead", "dotnone")), EDGE, null, null));
     }
 }

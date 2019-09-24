@@ -105,7 +105,7 @@ final class AttributeConfig {
                     res.add(EDGE);
                     break;
                 default:
-                    throw new IllegalArgumentException("unknown cope '" + scopes.charAt(i) + "'.");
+                    throw new IllegalArgumentException("unknown scope '" + scopes.charAt(i) + "'.");
             }
         }
         return res;
