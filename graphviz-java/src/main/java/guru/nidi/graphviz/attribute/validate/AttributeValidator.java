@@ -29,6 +29,7 @@ import static guru.nidi.graphviz.attribute.validate.AttributeConfig.Engine.*;
 import static guru.nidi.graphviz.attribute.validate.AttributeConfig.Format.*;
 import static guru.nidi.graphviz.attribute.validate.AttributeConfig.entry;
 import static guru.nidi.graphviz.attribute.validate.Datatype.*;
+import static guru.nidi.graphviz.attribute.validate.Datatypes.*;
 import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
 import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.WARNING;
 import static java.util.Arrays.asList;
@@ -59,7 +60,6 @@ public final class AttributeValidator {
             return singletonList(new ValidatorMessage(ERROR, key, "Attribute is unknown."));
         }
         final Engine e = engine == null ? null : Engine.valueOf(engine.toUpperCase(Locale.ENGLISH));
-        final Format f = format == null ? null : Format.valueOf(format.toUpperCase(Locale.ENGLISH));
         final Optional<AttributeConfig> engineConfig = configs.stream()
                 .filter(c -> {
                     if (e == null || c.engines.isEmpty()) {
@@ -75,6 +75,7 @@ public final class AttributeValidator {
             return singletonList(new ValidatorMessage(
                     ERROR, key, "Attribute is not allowed for engine '" + engine + "'."));
         }
+        final Format f = format == null ? null : Format.valueOf(format.toUpperCase(Locale.ENGLISH));
         final Optional<AttributeConfig> formatConfig = configs.stream()
                 .filter(c -> f == null || c.formats.isEmpty() || c.formats.contains(f))
                 .findFirst();

@@ -76,6 +76,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("We don't execute user submitted JS code",
                         In.loc("GraphvizNashornEngine").ignore("SCRIPT_ENGINE_INJECTION"))
                 .because("It's ok",
+                        In.loc("Datatype").ignore("NP_BOOLEAN_RETURN_NULL"),
                         In.loc("BuiltInRasterizer").ignore("NP_NONNULL_RETURN_VIOLATION"),
                         In.loc("CommandLineExecutor").ignore("DM_DEFAULT_ENCODING"),
                         In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
@@ -102,7 +103,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
                         In.clazz(Format.class).ignore("AvoidDuplicateLiterals"),
-                        In.locs("LabelTest", "RankTest").ignore("JUnitTestContainsTooManyAsserts"),
+                        In.locs("LabelTest", "RankTest", "AttributeValidatorTest").ignore("JUnitTestContainsTooManyAsserts"),
                         In.loc("Serializer").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
                         In.clazz(ThrowingFunction.class).ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
