@@ -208,7 +208,7 @@ public final class Graphviz {
     EngineResult execute() {
         final EngineResult result = options.format == Format.DOT
                 ? EngineResult.fromString(src)
-                : getEngine().execute(src, options, rasterizer);
+                : getEngine().execute(options.format.preProcess(src), options, rasterizer);
         return options.format.postProcess(result, fontAdjust);
     }
 

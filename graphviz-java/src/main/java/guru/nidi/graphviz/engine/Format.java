@@ -24,6 +24,11 @@ import java.util.regex.Pattern;
 public enum Format {
     PNG("svg", "png", true, true) {
         @Override
+        String preProcess(String src) {
+            return encodeXml(super.preProcess(src));
+        }
+
+        @Override
         EngineResult postProcess(EngineResult result, double fontAdjust) {
             return result.mapString(s -> postProcessSvg(s, true, fontAdjust));
         }
@@ -31,12 +36,22 @@ public enum Format {
 
     SVG("svg", "svg", false, true) {
         @Override
+        String preProcess(String src) {
+            return encodeXml(super.preProcess(src));
+        }
+
+        @Override
         EngineResult postProcess(EngineResult result, double fontAdjust) {
             return result.mapString(s -> postProcessSvg(s, true, fontAdjust));
         }
     },
 
     SVG_STANDALONE("svg", "svg", false, true) {
+        @Override
+        String preProcess(String src) {
+            return encodeXml(super.preProcess(src));
+        }
+
         @Override
         EngineResult postProcess(EngineResult result, double fontAdjust) {
             return result.mapString(s -> postProcessSvg(s, false, fontAdjust));
@@ -70,8 +85,27 @@ public enum Format {
         this.svg = svg;
     }
 
+    String preProcess(String src) {
+        return replaceSubSpaces(src)
+                .replace("\\\\\"", "\\\""); //otherwise, the " is unescaped and the string not terminated
+    }
+
     EngineResult postProcess(EngineResult result, double fontAdjust) {
         return result;
+    }
+
+    private static String replaceSubSpaces(String src) {
+        final char[] chars = src.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] < ' ' && chars[i] != '\t' && chars[i] != '\r' && chars[i] != '\n') {
+                chars[i] = ' ';
+            }
+        }
+        return new String(chars);
+    }
+
+    private static String encodeXml(String src) {
+        return src.replace("&", "&amp;");
     }
 
     private static String postProcessSvg(String result, boolean prefix, double fontAdjust) {

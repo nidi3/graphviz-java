@@ -34,6 +34,9 @@ import java.util.concurrent.*;
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static guru.nidi.graphviz.engine.FormatTest.START1_7;
+import static guru.nidi.graphviz.model.Factory.graph;
+import static guru.nidi.graphviz.model.Factory.node;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
@@ -171,6 +174,21 @@ class EngineTest {
         Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
 
         assertTrue(new File(dotOutputFolder.getAbsolutePath(), dotOutputName + ".dot").exists());
+    }
+
+    @Test
+    void escapeBackslashQuote() {
+        assertThat(Graphviz.fromGraph(graph().with(node("Z\\\"g"))).render(SVG).toString(), containsString(">Z&quot;g<"));
+    }
+
+    @Test
+    void escapeAmpersand() {
+        assertThat(Graphviz.fromGraph(graph().with(node("Z&bl;g"))).render(SVG).toString(), containsString(">Z&amp;bl;g<"));
+    }
+
+    @Test
+    void escapeSubSpace() {
+        assertThat(Graphviz.fromGraph(graph().with(node("Z\u0001a\u001fg"))).render(SVG).toString(), containsString(">Z a g<"));
     }
 
     private File setUpFakeDotFile() throws IOException {
