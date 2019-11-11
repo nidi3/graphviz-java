@@ -50,11 +50,10 @@ abstract class Datatype {
     }
 
     static Boolean boolValue(Object value) {
-        if (value instanceof Boolean) {
-            return (Boolean) value;
-        }
-        final String val = value.toString();
-        final Integer i = tryParseInt(val);
+        return value instanceof Boolean ? (Boolean) value : boolValue(value.toString(), tryParseInt(value.toString()));
+    }
+
+    static Boolean boolValue(String val, Integer i) {
         if (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("yes") || (i != null && i != 0)) {
             return true;
         }

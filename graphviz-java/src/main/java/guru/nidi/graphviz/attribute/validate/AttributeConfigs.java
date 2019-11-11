@@ -62,7 +62,7 @@ final class AttributeConfigs {
         add("dir", entry("E", DIR_TYPE, "forward(directed)<BR>none(undirected)"));
         add("diredgeconstraints", entry("G", asList(STRING, BOOL), false).engines(NEATO));
         add("distortion", entry("N", DOUBLE, 0.0, -100.0));
-        add("dpi", entry("G", DOUBLE, "96.0<BR>0.0").formats(SVG, BITMAP));
+        add("dpi", entry("G", DOUBLE, 72.0).formats(SVG, BITMAP));
         add("edgeURL", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
         add("edgehref", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
         add("edgetarget", entry("E", ESC_STRING).formats(SVG, AttributeConfig.Format.MAP));
@@ -165,7 +165,7 @@ final class AttributeConfigs {
         add("regular", entry("N", BOOL, false));
         add("remincross", entry("G", BOOL, true).engines(DOT));
         add("repulsiveforce", entry("G", DOUBLE, 1.0, 0.0).engines(SFDP));
-        add("resolution", entry("G", DOUBLE, "96.0<BR>0.0").formats(SVG, BITMAP));
+        add("resolution", entry("G", DOUBLE, 72.0).formats(SVG, BITMAP));
         add("root", entry("GN", asList(STRING, BOOL), "&#60;none&#62;(graphs)<BR>false(nodes)").engines(CIRCO, TWOPI));
         add("rotate", entry("G", INT, 0));
         add("rotation", entry("G", DOUBLE, 0).engines(SFDP));

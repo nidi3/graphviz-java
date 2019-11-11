@@ -15,7 +15,6 @@
  */
 package guru.nidi.graphviz.attribute.validate;
 
-
 import guru.nidi.graphviz.attribute.Attributes;
 import guru.nidi.graphviz.attribute.For;
 import guru.nidi.graphviz.attribute.validate.AttributeConfig.Engine;
