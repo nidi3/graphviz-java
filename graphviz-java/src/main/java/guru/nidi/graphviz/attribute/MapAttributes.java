@@ -23,7 +23,7 @@ public class MapAttributes<F extends For> implements Attributes<F>, Iterable<Ent
     protected final Map<String, Object> attributes;
 
     public MapAttributes() {
-        attributes = new HashMap<>();
+        attributes = new LinkedHashMap<>();
     }
 
     public Attributes<? super F> applyTo(MapAttributes<? super F> attrs) {
