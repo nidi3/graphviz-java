@@ -22,6 +22,8 @@ public interface ThrowingFunction<T, R> {
     default R applyNotThrowing(T t) {
         try {
             return apply(t);
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

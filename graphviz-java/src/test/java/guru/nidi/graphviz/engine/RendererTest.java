@@ -76,7 +76,7 @@ class RendererTest {
         final File out = new File("target/image.png");
         final Graphviz g = Graphviz.fromGraph(graph().with(node(" ").with(Image.of("graphviz.png"))));
         g.basedir(new File("example")).render(Format.PNG).toFile(out);
-        assertThat((int) out.length(), greaterThan(20000));
+        assertThat((int) out.length(), greaterThan(19000));
     }
 
     @Test

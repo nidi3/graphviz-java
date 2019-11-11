@@ -48,8 +48,9 @@ class FormatTest {
     @ParameterizedTest
     @MethodSource
     void postProcess(Entry<String, String> values) {
-        assertEquals(EngineResult.fromString(values.getValue()),
-                SVG.postProcess(EngineResult.fromString(START1_7 + values.getKey()), .5));
+        assertEquals(EngineResult.fromString(values.getValue()), SVG.postProcess(
+                Graphviz.fromString("graph {dpi=96}").fontAdjust(.5),
+                EngineResult.fromString(START1_7 + values.getKey())));
     }
 
     static Set<Entry<String, String>> postProcess() {

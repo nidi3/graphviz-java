@@ -64,7 +64,7 @@ class GraphvizTest {
     void executeWithTotalMemory() {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph).totalMemory(32000).render(Format.SVG).toString();
-        assertThat(result, is("totalMemory=32000;render('graph { graph [\"dpi\"=\"96\"] \"a\" -- \"b\" }',"
+        assertThat(result, is("totalMemory=32000;render('graph { \"a\" -- \"b\" }',"
                 + "{format:'svg',engine:'dot',totalMemory:'32000',basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
     }
 
@@ -72,7 +72,7 @@ class GraphvizTest {
     void executeWithoutTotalMemory() {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph).render(Format.SVG).toString();
-        assertThat(result, is("render('graph { graph [\"dpi\"=\"96\"] \"a\" -- \"b\" }',"
+        assertThat(result, is("render('graph { \"a\" -- \"b\" }',"
                 + "{format:'svg',engine:'dot',basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
     }
 

@@ -30,27 +30,13 @@ class SalamanderRasterizer extends SvgRasterizer {
     @Override
     public BufferedImage doRasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String svg) {
         final SVGDiagram diagram = createDiagram(svg);
-        double scaleX = graphviz.scale;
-        double scaleY = graphviz.scale;
-        if (graphviz.width != 0 || graphviz.height != 0) {
-            scaleX = graphviz.scale * graphviz.width / diagram.getWidth();
-            scaleY = graphviz.scale * graphviz.height / diagram.getHeight();
-            if (scaleX == 0) {
-                scaleX = scaleY;
-            }
-            if (scaleY == 0) {
-                scaleY = scaleX;
-            }
-        }
-        final int width = (int) Math.ceil(scaleX * diagram.getWidth());
-        final int height = (int) Math.ceil(scaleY * diagram.getHeight());
-        final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage image = new BufferedImage(
+                (int) diagram.getWidth(), (int) diagram.getHeight(), BufferedImage.TYPE_INT_ARGB);
         final Graphics2D graphics = image.createGraphics();
         configGraphics(graphics);
         if (graphicsConfigurer != null) {
             graphicsConfigurer.accept(graphics);
         }
-        graphics.scale(scaleX, scaleY);
         renderDiagram(diagram, graphics);
         return image;
     }

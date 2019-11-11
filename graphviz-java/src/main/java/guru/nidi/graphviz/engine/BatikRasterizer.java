@@ -43,15 +43,6 @@ class BatikRasterizer extends SvgRasterizer {
                     return image[0] = super.createImage(width, height);
                 }
             };
-            final TranscodingHints hints = new TranscodingHints(t.getTranscodingHints());
-            if (graphviz.width != 0) {
-                hints.put(ImageTranscoder.KEY_WIDTH, (float) graphviz.scale * graphviz.width);
-            }
-            if (graphviz.height != 0) {
-                hints.put(ImageTranscoder.KEY_HEIGHT, (float) graphviz.scale * graphviz.height);
-            }
-            t.setTranscodingHints(hints);
-
             t.transcode(in, out);
             return image[0];
         } catch (TranscoderException e) {

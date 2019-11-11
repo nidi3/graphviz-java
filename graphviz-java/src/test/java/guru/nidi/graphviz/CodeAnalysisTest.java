@@ -44,13 +44,14 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     @Override
     protected DependencyResult analyzeDependencies() {
         class GuruNidiGraphviz extends DependencyRuler {
-            DependencyRule model, attribute, engine, parse, service, use;
+            DependencyRule model, attribute, attributeValidate, engine, parse, service, use;
 
             public void defineRules() {
                 base().mayBeUsedBy(all());
                 engine.mayUse(model, service);
                 parse.mayUse(model, attribute);
                 model.mayUse(attribute);
+                attributeValidate.mayUse(attribute);
                 use.mayUse(all());
             }
         }
@@ -116,7 +117,9 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("MutableGraph", "Serializer", "Parser", "Label").ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
+                        In.locs("AttributeConfigs", "AttributeValidator").ignore("TooManyStaticImports"),
                         In.classes(MutableNode.class, Rasterizer.class).ignore("ConfusingTernary"),
+                        In.clazz(ThrowingFunction.class).ignore("AvoidRethrowingException"),
                         In.classes(ThrowingFunction.class, ThrowingBiConsumer.class).ignore("SignatureDeclareThrowsException"))
                 .because("It's command line tool", In.loc("GraphvizServer")
                         .ignore("AvoidCatchingGenericException", "PreserveStackTrace"))
@@ -138,7 +141,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
         final CpdMatchCollector collector = new CpdMatchCollector()
                 .apply(PmdConfigs.cpdIgnoreEqualsHashCodeToString())
                 .because("It's java",
-                        In.loc("*Graph").ignore("Graph(strict, directed, cluster, name,", "if (strict != graph.strict) {"))
+                        In.loc("*Graph").ignore("Graph(strict, directed, cluster, name,", "if (strict != graph.strict) {"),
+                        In.loc("Format").ignore("String preProcess(String src) {"))
                 .just(In.locs("GraphvizGraalEngine", "GraphvizNashornEngine").ignore("void doInit()"));
         return new CpdAnalyzer(AnalyzerConfig.maven().main(), 36, collector).analyze();
     }

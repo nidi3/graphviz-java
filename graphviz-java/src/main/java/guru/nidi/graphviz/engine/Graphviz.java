@@ -15,19 +15,23 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.attribute.ForGraph;
-import guru.nidi.graphviz.model.*;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.MutableGraph;
 
 import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static guru.nidi.graphviz.engine.IoUtils.readStream;
 
 public final class Graphviz {
+    private static final Pattern DPI_PATTERN = Pattern.compile("\"?dpi\"?\\s*=\\s*\"?([0-9.]+)\"?",
+            Pattern.CASE_INSENSITIVE);
+
     @Nullable
     private static volatile BlockingQueue<GraphvizEngine> engineQueue;
     @Nullable
@@ -127,13 +131,9 @@ public final class Graphviz {
         engineQueue = null;
     }
 
-    public static Graphviz fromString(String src) {
-        return new Graphviz(src, Rasterizer.DEFAULT, 0, 0, 1, 1, Options.create());
-    }
-
     public static Graphviz fromFile(File src) throws IOException {
         try (final InputStream in = new FileInputStream(src)) {
-            return fromString(readStream(in)).basedir(src.getParentFile());
+            return fromString(readStream(in)).basedir(src.getAbsoluteFile().getParentFile());
         }
     }
 
@@ -142,20 +142,11 @@ public final class Graphviz {
     }
 
     public static Graphviz fromGraph(MutableGraph graph) {
-        return withDefaultDpi(graph, g -> fromString(g.toString()));
+        return fromString(graph.toString());
     }
 
-    private static <T> T withDefaultDpi(MutableGraph graph, Function<MutableGraph, T> action) {
-        final MutableAttributed<MutableGraph, ForGraph> attrs = graph.graphAttrs();
-        final Object oldDpi = attrs.get("dpi");
-        if (oldDpi == null) {
-            attrs.add("dpi", 96);
-        }
-        try {
-            return action.apply(graph);
-        } finally {
-            attrs.add("dpi", oldDpi);
-        }
+    public static Graphviz fromString(String src) {
+        return new Graphviz(src, Rasterizer.DEFAULT, 0, 0, 1, 1, Options.create());
     }
 
     public Graphviz engine(Engine engine) {
@@ -209,11 +200,16 @@ public final class Graphviz {
         final EngineResult result = options.format == Format.DOT
                 ? EngineResult.fromString(src)
                 : getEngine().execute(options.format.preProcess(src), options, rasterizer);
-        return options.format.postProcess(result, fontAdjust);
+        return options.format.postProcess(this, result);
     }
 
     Format format() {
         return options.format;
+    }
+
+    double dpi() {
+        final Matcher matcher = DPI_PATTERN.matcher(src);
+        return matcher.find() ? Double.parseDouble(matcher.group(1)) : 72;
     }
 
     private static class ErrorGraphvizEngine implements GraphvizEngine {
