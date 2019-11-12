@@ -177,11 +177,6 @@ class EngineTest {
     }
 
     @Test
-    void escapeBackslashQuote() {
-        assertThat(Graphviz.fromGraph(graph().with(node("Z\\\"g"))).render(SVG).toString(), containsString(">Z&quot;g<"));
-    }
-
-    @Test
     void escapeAmpersand() {
         assertThat(Graphviz.fromGraph(graph().with(node("Z&bl;g"))).render(SVG).toString(), containsString(">Z&amp;bl;g<"));
     }

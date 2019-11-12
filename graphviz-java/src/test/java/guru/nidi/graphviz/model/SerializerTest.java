@@ -46,7 +46,7 @@ class SerializerTest {
 
     @Test
     void escapeLabel() {
-        assertGraph("graph {\ngraph ['label'='b\\'la']\n}", graph().graphAttr().with(Label.of("b\"la")));
+        assertGraph("graph {\ngraph ['label'='b\\'l\\a\\\\']\n}", graph().graphAttr().with(Label.of("b\"l\\a\\")));
     }
 
     @Test
