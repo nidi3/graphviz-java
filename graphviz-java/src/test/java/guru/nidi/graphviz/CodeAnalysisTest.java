@@ -85,6 +85,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("EngineTest", "RendererTest", "EngineResult").ignore("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
                         In.loc("PortSource").ignore("NP_NONNULL_RETURN_VIOLATION"),
                         In.loc("OptionsTest").ignore("DMI_HARDCODED_ABSOLUTE_FILENAME"),
+                        In.loc("SimpleLabel").ignore("IM_BAD_CHECK_FOR_ODD"),
                         In.loc("Communicator").ignore("RR_NOT_CHECKED"));
         return new FindBugsAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector).analyze();
     }
