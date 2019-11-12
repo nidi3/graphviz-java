@@ -51,4 +51,52 @@ class LinkList extends ArrayList<Link> {
     public boolean addAll(int index, Collection<? extends Link> c) {
         return super.addAll(index, c.stream().map(owner::linkTo).collect(toList()));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LinkList links = (LinkList) o;
+        return new MultiSet<>(this).equals(new MultiSet<>(links));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( new MultiSet<>(this));
+    }
+}
+
+class MultiSet<K> {
+    private final Map<K, Integer> map = new HashMap<>();
+
+    MultiSet(List<K> list) {
+        for (final K e : list) {
+            add(e);
+        }
+    }
+
+    void add(K k) {
+        map.merge(k, 1, (a, b) -> a + 1);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MultiSet<?> multiSet = (MultiSet<?>) o;
+        return map.equals(multiSet.map);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(map);
+    }
 }

@@ -72,9 +72,9 @@ public enum Format {
             "<svg width=\"(?<width>\\d+)(?<unit>p[tx])\" height=\"(?<height>\\d+)p[tx]\""
                     + "(?<between>.*?>\\R<g.*?)transform=\"scale\\((?<scaleX>[0-9.]+) (?<scaleY>[0-9.]+)\\)",
             Pattern.DOTALL);
-    private static final double PIXEL_PER_POINT = 1.3333;
+
     final String vizName;
-    final String fileExtension;
+    public final String fileExtension;
     final boolean image;
     final boolean svg;
 
@@ -86,8 +86,7 @@ public enum Format {
     }
 
     String preProcess(String src) {
-        return replaceSubSpaces(src)
-                .replace("\\\\\"", "\\\""); //otherwise, the " is unescaped and the string not terminated
+        return replaceSubSpaces(src);
     }
 
     EngineResult postProcess(Graphviz graphviz, EngineResult result) {
