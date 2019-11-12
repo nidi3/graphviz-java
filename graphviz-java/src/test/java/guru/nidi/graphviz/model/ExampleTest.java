@@ -21,13 +21,11 @@ import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
-import guru.nidi.graphviz.parse.Parser;
 import org.junit.jupiter.api.*;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
@@ -42,8 +40,6 @@ import static guru.nidi.graphviz.model.Compass.WEST;
 import static guru.nidi.graphviz.model.Factory.*;
 import static guru.nidi.graphviz.model.Link.between;
 import static guru.nidi.graphviz.model.Link.to;
-import static org.apache.commons.lang3.RandomStringUtils.random;
-import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
 
 class ExampleTest {
     @BeforeAll
@@ -63,22 +59,16 @@ class ExampleTest {
 
     @Test
     void ex1a() throws IOException {
-        String expected = "digraph a {0 -> 1 [label=\"c\"] 0 -> 1 [label=\"b\"]}";
-        String actual = "digraph a {0 -> 1 [label=\"b\"] 0 -> 2 [label=\"c\"]}";
-        final MutableGraph a = Parser.read(expected);
-        final MutableGraph b = Parser.read(actual);
-        System.out.println(a.equals(b));
-//        Graphviz.fromGraph(Parser.read(expected)).render(PNG).toFile(new File("target/ex1.png"));
-//        Graphviz.fromGraph(Parser.read(actual)).render(PNG).toFile(new File("target/ex123.png"));
-
-        final MutableGraph g = mutGraph();
-        for(int i=0;i<10;i++){
-            g.add(node(random(100)));
-            g.add(node(randomAscii(100)));
-        }
-//        Graphviz.fromGraph(g).render(DOT).toFile(new File("target/ex1a"));
-        Graphviz.fromFile(new File("s.dot")).render(PNG).toFile(new File("target/ex1a"));
-//        Graphviz.fromGraph(g).rasterize(SALAMANDER).toFile(new File("target/ex1a.png"));
+        final Graph g = CreationContext.use(ctx -> graph("ex1a").directed().with(
+                node("main").link(
+                        node("parse"), node("init"), node("cleanup"), node("printf")),
+                node("parse").link(
+                        node("execute")),
+                node("execute").link(
+                        node("make_string"), node("printf"), node("compare")),
+                node("init").link(
+                        node("make_string"))));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex1a.png"));
     }
 
     @Test
@@ -378,9 +368,9 @@ class ExampleTest {
                 .nodeAttr().with(Style.FILLED.and(Style.ROUNDED), attr, Color.BLACK.font(), Color.rgb("bbbbbb").fill(), Shape.RECTANGLE)
                 .linkAttr().with(Color.rgb("888888"), Style.lineWidth(2))
                 .with(
-                        node("in\\put\\").link(split.link(redString, redNum)),
+                        node("input").link(split.link(redString, redNum)),
                         graph().cluster()
-                                .graphAttr().with(attr, Label.lines(Label.Justification.RIGHT,"a","stringPrint"))
+                                .graphAttr().with(attr, Label.of("stringPrint"))
                                 .with(redString.link(succString)),
                         graph("x").cluster()
                                 .graphAttr().with(attr, Label.of("numberPrint"))
