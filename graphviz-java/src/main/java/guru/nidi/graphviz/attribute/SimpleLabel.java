@@ -35,9 +35,17 @@ public class SimpleLabel {
     }
 
     public String serialized() {
-        return html
-                ? ("<" + value + ">")
-                : ("\"" + value.replace("\"", "\\\"").replace("\n", "\\n") + "\"");
+        return html ? ("<" + value + ">") : quoted();
+    }
+
+    private String quoted() {
+        //the ending " must not accidentally be escaped by an odd number of \
+        int endSlashes = 0;
+        while (endSlashes < value.length() && value.charAt(value.length() - 1 - endSlashes) == '\\') {
+            endSlashes++;
+        }
+        final String end = endSlashes % 2 == 1 ? "\\" : "";
+        return "\"" + value.replace("\"", "\\\"").replace("\n", "\\n") + end + "\"";
     }
 
     public String value() {
