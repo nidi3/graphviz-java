@@ -392,4 +392,3 @@ The usage inside javadoc is then as follows:
  */
 public class GraphvizTaglet implements Taglet {}
 ```
-
