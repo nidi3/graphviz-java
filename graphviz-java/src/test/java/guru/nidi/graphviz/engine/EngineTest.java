@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.engine;
 
 import com.eclipsesource.v8.V8;
+import guru.nidi.codeassert.config.AnalyzerConfig;
 import guru.nidi.graphviz.service.CommandLineExecutor;
 import guru.nidi.graphviz.service.SystemUtils;
 import org.apache.commons.exec.CommandLine;
@@ -23,6 +24,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 
 import javax.annotation.Nullable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -66,7 +70,14 @@ class EngineTest {
     }
 
     @Test
-    void jdk() {
+    void jdk() throws IOException, ScriptException {
+        String script = new String(Files.readAllBytes(new File("../dist/bundle.js").toPath()));
+        ScriptEngine js = new ScriptEngineManager().getEngineByExtension("js");
+        //js.eval(script);
+        V8 v8 = V8.createV8Runtime();
+        v8.registerJavaMethod(System.out,"println","print",new Class[]{Object.class});
+        v8.executeVoidScript("console={log:function(a){print(a);}};setTimeout=function(a){print(a);};clearTimeout=function(a){print(a);};"+
+                "setInterval=function(a){print(a);};clearInterval=function(a){print(a);};"+script);
         Graphviz.useEngine(new GraphvizJdkEngine());
         assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
     }
