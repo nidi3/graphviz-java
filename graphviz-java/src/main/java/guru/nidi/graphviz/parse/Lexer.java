@@ -229,6 +229,7 @@ class Lexer {
     }
 
     private void unread(char before, char next) throws IOException {
+        pos.lastChar();
         ch = before;
         in.unread(next);
     }

@@ -35,8 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AttributeValidatorTest {
-    AttributeValidator validator = new AttributeValidator();
-
     @Test
     void ok() {
         assertOk(validate(attr("Damping", 5), GRAPH, null, null));
@@ -67,13 +65,13 @@ class AttributeValidatorTest {
 
     @Test
     void wrongEngine() {
-        assertMessage(ERROR, "Damping", "Attribute is not allowed for engine 'dot'.",
+        assertMessage(ERROR, "Damping", "Attribute is not allowed for engine 'DOT'.",
                 validate(attr("Damping", 5), GRAPH, "dot", null));
     }
 
     @Test
     void wrongFormat() {
-        assertMessage(ERROR, "URL", "Attribute is not allowed for format 'cmap'.",
+        assertMessage(ERROR, "URL", "Attribute is not allowed for format 'CMAP'.",
                 validate(attr("URL", 5), GRAPH, null, "cmap"));
     }
 
@@ -212,6 +210,6 @@ class AttributeValidatorTest {
 
     private List<ValidatorMessage> validate(Attributes<? extends For> attr, AttributeValidator.Scope scope,
                                             @Nullable String engine, @Nullable String format) {
-        return validator.validate(attrs(attr), scope, engine, format);
+        return new AttributeValidator(engine, format).validate(attrs(attr), scope);
     }
 }

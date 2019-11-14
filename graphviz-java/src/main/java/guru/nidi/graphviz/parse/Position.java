@@ -21,17 +21,30 @@ public class Position {
     private int col;
 
     Position(String name) {
+        this(name, 1, 0);
+    }
+
+    private Position(String name, int line, int col) {
         this.name = name;
-        line = col = 1;
+        this.line = line;
+        this.col = col;
+    }
+
+    Position copy(int delta) {
+        return new Position(name, line, col + delta);
     }
 
     void newLine() {
-        col = 1;
+        col = 0;
         line++;
     }
 
     void newChar() {
         col++;
+    }
+
+    void lastChar() {
+        col--;
     }
 
     public String getName() {

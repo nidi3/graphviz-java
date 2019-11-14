@@ -49,7 +49,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
             public void defineRules() {
                 base().mayBeUsedBy(all());
                 engine.mayUse(model, service);
-                parse.mayUse(model, attribute);
+                parse.mayUse(model, attribute, attributeValidate);
                 model.mayUse(attribute);
                 attributeValidate.mayUse(attribute);
                 use.mayUse(all());
@@ -105,17 +105,17 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
                         In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
-                        In.locs("LabelTest", "RankTest", "AttributeValidatorTest").ignore("JUnitTestContainsTooManyAsserts"),
+                        In.locs("LabelTest", "RankTest", "AttributeValidatorTest", "ParserTest").ignore("JUnitTestContainsTooManyAsserts"),
                         In.loc("Serializer").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
                         In.clazz(ThrowingFunction.class).ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),
-                        In.locs("Lexer", "Parser", "ImmutableGraph", "MutableGraph", "Label#applyTo", "Rank$GraphRank#applyTo", "Options#toJson", "Options#fromJson")
+                        In.locs("Lexer", "ParserImpl", "ImmutableGraph", "MutableGraph", "Label#applyTo", "Rank$GraphRank#applyTo", "Options#toJson", "Options#fromJson")
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
-                        In.locs("MutableGraph", "Serializer", "Parser", "Label").ignore("GodClass"),
+                        In.locs("MutableGraph", "Serializer", "ParserImpl", "Label").ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
                         In.locs("AttributeConfigs", "AttributeValidator").ignore("TooManyStaticImports"),

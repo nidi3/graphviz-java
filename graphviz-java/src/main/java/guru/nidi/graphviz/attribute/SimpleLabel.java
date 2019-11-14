@@ -45,6 +45,7 @@ public class SimpleLabel {
             endSlashes++;
         }
         final String end = endSlashes % 2 == 1 ? "\\" : "";
+        //TODO check if works for cmdline engine too
         return "\"" + value.replace("\"", "\\\"").replace("\n", "\\n") + end + "\"";
     }
 

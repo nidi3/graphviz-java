@@ -32,11 +32,11 @@ public class ValidatorMessage {
         this(severity, "", message);
     }
 
-    ValidatorMessage(Severity severity, String attribute, String message) {
+    public ValidatorMessage(Severity severity, String attribute, String message) {
         this(severity, attribute, message, 0, 0);
     }
 
-    ValidatorMessage(Severity severity, String attribute, String message, int line, int column) {
+    public ValidatorMessage(Severity severity, String attribute, String message, int line, int column) {
         this.severity = severity;
         this.attribute = attribute;
         this.message = message;

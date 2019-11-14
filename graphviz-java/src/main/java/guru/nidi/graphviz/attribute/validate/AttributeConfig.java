@@ -26,10 +26,12 @@ import static java.util.Collections.singletonList;
 
 final class AttributeConfig {
     enum Engine {
+        //TODO make public or unify with oter engine enum
         CIRCO, NOT_DOT, DOT, NEATO, OSAGE, TWOPI, FDP, SFDP, PATCHWORK
     }
 
     enum Format {
+        //TODO make public or unify with oter format enum
         WRITE, SVG, BITMAP, MAP, CMAP, POSTSCRIPT, XDOT
     }
 

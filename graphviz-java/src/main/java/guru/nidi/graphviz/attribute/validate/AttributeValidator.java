@@ -39,25 +39,33 @@ public final class AttributeValidator {
         GRAPH, SUB_GRAPH, CLUSTER, NODE, EDGE
     }
 
-    public List<ValidatorMessage> validate(Attributes<? extends For> attrs, Scope scope,
-                                           @Nullable String engine, @Nullable String format) {
+    @Nullable
+    private final Engine engine;
+    @Nullable
+    private final Format format;
+
+    public AttributeValidator(@Nullable String engine, @Nullable String format) {
+        this.engine = engine == null ? null : Engine.valueOf(engine.toUpperCase(Locale.ENGLISH));
+        this.format = format == null ? null : Format.valueOf(format.toUpperCase(Locale.ENGLISH));
+    }
+
+    public List<ValidatorMessage> validate(Attributes<? extends For> attrs, Scope scope) {
         return StreamSupport.stream(attrs.spliterator(), false)
-                .flatMap(entry -> validate(entry.getKey(), entry.getValue(), scope, engine, format).stream())
+                .flatMap(entry -> validate(entry.getKey(), entry.getValue(), scope).stream())
                 .collect(toList());
     }
 
-    private List<ValidatorMessage> validate(String key, Object value, Scope scope,
-                                            @Nullable String engine, @Nullable String format) {
+    public List<ValidatorMessage> validate(String key, Object value, Scope scope) {
         final List<AttributeConfig> configs = AttributeConfigs.get(key);
         if (configs == null) {
             return singletonList(new ValidatorMessage(ERROR, key, "Attribute is unknown."));
         }
-        final AttributeConfig engineConfig = findConfigForEngine(engine, configs);
+        final AttributeConfig engineConfig = findConfigForEngine(configs);
         if (engineConfig == null) {
             return singletonList(new ValidatorMessage(
                     ERROR, key, "Attribute is not allowed for engine '" + engine + "'."));
         }
-        final AttributeConfig formatConfig = findConfigForFormat(format, configs);
+        final AttributeConfig formatConfig = findConfigForFormat(configs);
         if (formatConfig == null) {
             return singletonList(new ValidatorMessage(
                     ERROR, key, "Attribute is not allowed for format '" + format + "'."));
@@ -71,26 +79,24 @@ public final class AttributeValidator {
         return messages;
     }
 
-    private AttributeConfig findConfigForEngine(@Nullable String engine, List<AttributeConfig> configs) {
-        final Engine e = engine == null ? null : Engine.valueOf(engine.toUpperCase(Locale.ENGLISH));
+    private AttributeConfig findConfigForEngine(List<AttributeConfig> configs) {
         return configs.stream()
                 .filter(c -> {
-                    if (e == null || c.engines.isEmpty()) {
+                    if (engine == null || c.engines.isEmpty()) {
                         return true;
                     }
-                    if (c.engines.contains(NOT_DOT) && e == DOT) {
+                    if (c.engines.contains(NOT_DOT) && engine == DOT) {
                         return false;
                     }
-                    return c.engines.contains(e);
+                    return c.engines.contains(engine);
                 })
                 .findFirst()
                 .orElse(null);
     }
 
-    private AttributeConfig findConfigForFormat(@Nullable String format, List<AttributeConfig> configs) {
-        final Format f = format == null ? null : Format.valueOf(format.toUpperCase(Locale.ENGLISH));
+    private AttributeConfig findConfigForFormat(List<AttributeConfig> configs) {
         return configs.stream()
-                .filter(c -> f == null || c.formats.isEmpty() || c.formats.contains(f))
+                .filter(c -> format == null || c.formats.isEmpty() || c.formats.contains(format))
                 .findFirst()
                 .orElse(null);
     }
