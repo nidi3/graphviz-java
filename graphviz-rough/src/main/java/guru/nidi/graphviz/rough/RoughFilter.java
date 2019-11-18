@@ -19,19 +19,59 @@ import guru.nidi.graphviz.engine.*;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.util.stream.Collectors.joining;
 
 public class RoughFilter implements GraphvizFilter {
     private static final String CODE = readCode();
-    private JavascriptEngine engine;
+    private static final Pattern FONT_PATTERN = Pattern.compile("font-family=\"(.*?)\"");
+    private final JavascriptEngine engine;
+    private final List<Entry<Pattern, String>> fonts;
+    private final Map<String, Object> options;
 
     public RoughFilter() {
         this(new GraphvizV8Engine());
     }
 
     public RoughFilter(JavascriptEngine engine) {
+        this(engine, new ArrayList<>(), new HashMap<>());
+    }
+
+    private RoughFilter(JavascriptEngine engine, List<Entry<Pattern, String>> fonts, Map<String, Object> options) {
         this.engine = engine;
         engine.init();
         engine.executeJavascript(CODE);
+        this.options = options;
+        this.fonts = fonts;
+    }
+
+    public RoughFilter font(String from, String to) {
+        final List<Entry<Pattern, String>> fs = new ArrayList<>(fonts);
+        fs.add(new SimpleEntry<>(Pattern.compile(from.replace("*", ".*?"), Pattern.CASE_INSENSITIVE), to));
+        return new RoughFilter(engine, fs, options);
+    }
+
+    public RoughFilter roughness(double roughness) {
+        return new RoughFilter(engine, fonts, options("roughness", roughness));
+    }
+
+    public RoughFilter bowing(double bowing) {
+        return new RoughFilter(engine, fonts, options("bowing", bowing));
+    }
+
+    public RoughFilter curveStepCount(double curveStepCount) {
+        return new RoughFilter(engine, fonts, options("curveStepCount", curveStepCount));
+    }
+
+    private Map<String, Object> options(String key, Object value) {
+        final Map<String, Object> os = new HashMap<>(options);
+        os.put(key, value);
+        return os;
     }
 
     @Override
@@ -51,7 +91,36 @@ public class RoughFilter implements GraphvizFilter {
     }
 
     private String transform(String svg) {
-        return engine.executeJavascript("try{ result(rough(", svg, ")); } catch(e){ error(e.toString()); };");
+        return engine.executeJavascript(
+                "try{ result(rough(",
+                replaceFonts(svg),
+                ",{" + optionsJson() + "})); } catch(e){ error(e.toString()); };");
+    }
+
+    private String optionsJson() {
+        return options.entrySet().stream()
+                .map(e -> e.getKey() + ":" + (e.getValue() instanceof String ? "\"" + e.getValue() + "\"" : e.getValue()))
+                .collect(joining(","));
+    }
+
+    private String replaceFonts(String svg) {
+        final Matcher m = FONT_PATTERN.matcher(svg);
+        final StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            final String r = replaceFont(m.group(1));
+            m.appendReplacement(sb, "font-family=\"" + (r == null ? m.group(1) : r) + "\"");
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    private String replaceFont(String font) {
+        for (final Entry<Pattern, String> f : fonts) {
+            if (f.getKey().matcher(font).matches()) {
+                return f.getValue();
+            }
+        }
+        return null;
     }
 
     private static String readCode() {

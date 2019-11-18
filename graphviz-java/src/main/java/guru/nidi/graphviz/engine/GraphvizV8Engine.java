@@ -52,18 +52,18 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
 
     @Override
     protected void doInit(boolean onlyCallbacks) throws IOException {
-        ENVS.set(new Env(extractionPath, jsInitEnv(), jsVizCode(), onlyCallbacks));
+        final Env env = ENVS.get();
+        if (env == null) {
+            ENVS.set(new Env(extractionPath, jsInitEnv(), jsVizCode(), onlyCallbacks));
+        }
     }
 
     @Override
     protected String jsExecute(String call) {
-        final Env env = ENVS.get();
-        if (env == null) {
-            try {
-                doInit(false);
-            } catch (IOException e) {
-                throw new GraphvizException("Could not initialize v8 engine for new thread", e);
-            }
+        try {
+            doInit(false);
+        } catch (IOException e) {
+            throw new GraphvizException("Could not initialize v8 engine for new thread", e);
         }
         return ENVS.get().execute(call);
     }

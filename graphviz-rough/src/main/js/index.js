@@ -7,7 +7,7 @@ setInterval = function () {
 }
 clearInterval = function () {
 }
-rough = function (svg) {
+rough = function (svg, options) {
     const coarse = require('coarse-domino')
-    return coarse(svg)
+    return coarse(svg, [], options)
 }

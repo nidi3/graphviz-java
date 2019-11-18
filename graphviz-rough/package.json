@@ -5,7 +5,7 @@
     "webpack": "webpack"
   },
   "dependencies": {
-    "coarse-domino": "0.8.3"
+    "coarse-domino": "0.8.4"
   },
   "devDependencies": {
     "@babel/core": "7.7.2",
