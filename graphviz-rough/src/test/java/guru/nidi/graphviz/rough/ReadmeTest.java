@@ -28,7 +28,7 @@ import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class RoughFilterTest {
+class ReadmeTest {
     @BeforeAll
     static void init() {
         Graphviz.useEngine(new GraphvizV8Engine());
@@ -36,7 +36,7 @@ class RoughFilterTest {
 
     @Test
     void simple() throws IOException {
-        final Graph g = graph("ex7").directed()
+        final Graph g = graph("ex1").directed()
                 .with(
                         graph().cluster()
                                 .nodeAttr().with(Style.FILLED, Color.WHITE)
@@ -55,12 +55,12 @@ class RoughFilterTest {
                         node("end").with(Shape.mSquare("", ""))
                 );
 
-        final File normal = new File("target/out.png");
+
+        //## rough
         Graphviz.fromGraph(g)
                 .render(Format.PNG)
-                .toFile(normal);
+                .toFile(new File("example/ex1.png"));
 
-        final File rough = new File("target/outf.png");
         Graphviz.fromGraph(g)
                 .filter(new RoughFilter()
                         .bowing(1)
@@ -68,8 +68,8 @@ class RoughFilterTest {
                         .fillStyle(FillStyle.zigzagLine().width(2).gap(5).angle(0))
                         .font("*serif", "Comic Sans MS"))
                 .render(Format.PNG)
-                .toFile(rough);
-
-        assertTrue(normal.exists() && rough.exists());
+                .toFile(new File("example/ex1-rough.png"));
+        //## end
+        assertTrue(new File("example/ex1.png").exists() && new File("example/ex1-rough.png").exists());
     }
 }

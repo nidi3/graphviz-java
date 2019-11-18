@@ -13,6 +13,7 @@ Use graphviz with pure java. Create graphviz models using java code and convert 
 #### [Images ](#user-content-images)
 #### [Configuration ](#user-content-configuration)
 #### [Javadoc ](#javadoc)
+#### [Sketchy ](#sketchy)
 
 
 ## How it works
@@ -394,3 +395,34 @@ The usage inside javadoc is then as follows:
  */
 public class GraphvizTaglet implements Taglet {}
 ```
+
+## Sketchy
+To change the appearance of the graph into something more sketchy / hand drawn, the `RoughFilter` can be used.
+First, add the rough module to the dependencies: 
+
+```xml
+<dependency>
+    <groupId>guru.nidi</groupId>
+    <artifactId>graphviz-rough</artifactId>
+    <version>0.11.2</version>
+</dependency>
+```
+
+[//]: # (rough)
+```java
+Graphviz.fromGraph(g)
+        .render(Format.PNG)
+        .toFile(new File("example/ex1.png"));
+
+Graphviz.fromGraph(g)
+        .filter(new RoughFilter()
+                .bowing(1)
+                .roughness(1)
+                .fillStyle(FillStyle.zigzagLine().width(2).gap(5).angle(0))
+                .font("*serif", "Comic Sans MS"))
+        .render(Format.PNG)
+        .toFile(new File("example/ex1-rough.png"));
+```
+[//]: # (end)
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-rough/example/ex1.png" width="200">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-rough/example/ex1-rough.png" width="200">
