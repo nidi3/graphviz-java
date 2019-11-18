@@ -19,6 +19,7 @@ import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.Node;
 
 import java.awt.*;
@@ -28,8 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static guru.nidi.graphviz.engine.Format.PNG;
-import static guru.nidi.graphviz.model.Factory.graph;
-import static guru.nidi.graphviz.model.Factory.node;
+import static guru.nidi.graphviz.model.Factory.*;
 
 public final class FontTools {
     private FontTools() {
@@ -37,6 +37,14 @@ public final class FontTools {
 
     public static List<String> availableFontNames() {
         return Arrays.asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
+    }
+
+    public static void availableFontNamesGraph(File output) throws IOException {
+        final MutableGraph g = mutGraph();
+        for (final String f : availableFontNames()) {
+            g.add(node(f).with(Font.name(f)));
+        }
+        Graphviz.fromGraph(g).render(PNG).toFile(output);
     }
 
     public static void createFontTest(String name, double adjust, File output) throws IOException {
