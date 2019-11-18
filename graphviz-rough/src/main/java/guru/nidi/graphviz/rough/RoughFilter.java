@@ -18,6 +18,7 @@ package guru.nidi.graphviz.rough;
 import guru.nidi.graphviz.engine.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -88,7 +89,7 @@ public class RoughFilter implements GraphvizFilter {
 
     private String read(File file) {
         try {
-            return new String(Files.readAllBytes(file.toPath()));
+            return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new GraphvizException("Error reading file", e);
         }

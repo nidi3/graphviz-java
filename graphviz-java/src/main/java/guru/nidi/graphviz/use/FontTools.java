@@ -62,16 +62,19 @@ public final class FontTools {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Available fonts: " + availableFontNames());
+        final String fontShow = "font-show.png";
+        System.out.println("Creating image with all fonts '" + fontShow + "'.");
+        availableFontNamesGraph(new File(fontShow));
         if (args.length < 2) {
             System.out.println("Usage: FontTools <font name> <font adjust>");
             System.exit(0);
         }
         try {
             final double adjust = Double.parseDouble(args[1]);
-            final String filename = "font-test.png";
-            System.out.println("Creating test image '" + filename
+            final String fontTest = "font-test.png";
+            System.out.println("Creating test image '" + fontTest
                     + "' with font=" + args[0] + " and font adjust=" + adjust);
-            createFontTest(args[0], adjust, new File(filename));
+            createFontTest(args[0], adjust, new File(fontTest));
         } catch (NumberFormatException e) {
             System.out.println("Illegal number " + args[1]);
         }

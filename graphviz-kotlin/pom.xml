@@ -57,10 +57,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>guru.nidi</groupId>
-            <artifactId>code-assert</artifactId>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graphviz-java</artifactId>
             <version>${project.version}</version>

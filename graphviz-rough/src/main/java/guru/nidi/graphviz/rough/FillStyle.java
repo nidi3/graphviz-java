@@ -19,86 +19,93 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FillStyle {
+    private static final String
+            FILL_WEIGHT = "fillWeight",
+            HACHURE_ANGLE = "hachureAngle",
+            HACHURE_GAP = "hachureGap";
+
+    protected Map<String, Object> values;
+
     public static class Hachure extends FillStyle {
-        private Hachure() {
+        Hachure() {
             super("hachure");
         }
 
         public Hachure width(double width) {
-            values.put("fillWeight", width);
+            values.put(FILL_WEIGHT, width);
             return this;
         }
 
         public Hachure angle(double angle) {
-            values.put("hachureAngle", angle);
+            values.put(HACHURE_ANGLE, angle);
             return this;
         }
 
         public Hachure gap(double gap) {
-            values.put("hachureGap", gap);
+            values.put(HACHURE_GAP, gap);
             return this;
         }
     }
 
     public static class CrossHatch extends FillStyle {
-        private CrossHatch() {
+        CrossHatch() {
             super("cross-hatch");
         }
 
         public CrossHatch width(double width) {
-            values.put("fillWeight", width);
+            values.put(FILL_WEIGHT, width);
             return this;
         }
 
         public CrossHatch angle(double angle) {
-            values.put("hachureAngle", angle);
+            values.put(HACHURE_ANGLE, angle);
             return this;
         }
 
         public CrossHatch gap(double gap) {
-            values.put("hachureGap", gap);
+            values.put(HACHURE_GAP, gap);
             return this;
         }
     }
 
     public static class Zigzag extends FillStyle {
-        private Zigzag() {
+        Zigzag() {
             super("zigzag");
         }
 
         public Zigzag width(double width) {
-            values.put("fillWeight", width);
+            values.put(FILL_WEIGHT, width);
             return this;
         }
 
         public Zigzag angle(double angle) {
-            values.put("hachureAngle", angle);
+            values.put(HACHURE_ANGLE, angle);
             return this;
         }
 
         public Zigzag gap(double gap) {
-            values.put("hachureGap", gap);
+            values.put(HACHURE_GAP, gap);
             return this;
         }
     }
 
     public static class ZigzagLine extends FillStyle {
-        private ZigzagLine() {
+        ZigzagLine() {
             super("zigzag-line");
         }
 
         public ZigzagLine width(double width) {
-            values.put("fillWeight", width);
+            values.put(FILL_WEIGHT, width);
             return this;
         }
 
         public ZigzagLine angle(double angle) {
-            values.put("hachureAngle", angle);
+            values.put(HACHURE_ANGLE, angle);
             return this;
         }
 
         public ZigzagLine gap(double gap) {
-            values.put("hachureGap", gap);
+            values.put(HACHURE_GAP, gap);
             return this;
         }
 
@@ -109,49 +116,49 @@ public class FillStyle {
     }
 
     public static class Starburst extends FillStyle {
-        private Starburst() {
+        Starburst() {
             super("starburst");
         }
 
         public Starburst width(double width) {
-            values.put("fillWeight", width);
+            values.put(FILL_WEIGHT, width);
             return this;
         }
 
         public Starburst gap(double gap) {
-            values.put("hachureGap", gap);
+            values.put(HACHURE_GAP, gap);
             return this;
         }
     }
 
     public static class Dots extends FillStyle {
-        private Dots() {
+        Dots() {
             super("dots");
         }
 
         public Dots size(double size) {
-            values.put("fillWeight", size);
+            values.put(FILL_WEIGHT, size);
             return this;
         }
     }
 
     public static class Dashed extends FillStyle {
-        private Dashed() {
+        Dashed() {
             super("dashed");
         }
 
         public Dashed width(double size) {
-            values.put("fillWeight", size);
+            values.put(FILL_WEIGHT, size);
             return this;
         }
 
         public Dashed angle(double angle) {
-            values.put("hachureAngle", angle);
+            values.put(HACHURE_ANGLE, angle);
             return this;
         }
 
         public Dashed gap(double gap) {
-            values.put("hachureGap", gap);
+            values.put(HACHURE_GAP, gap);
             return this;
         }
 
@@ -160,8 +167,6 @@ public class FillStyle {
             return this;
         }
     }
-
-    Map<String, Object> values;
 
     private FillStyle(String style) {
         values = new HashMap<>();

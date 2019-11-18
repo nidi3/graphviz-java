@@ -18,7 +18,6 @@ package guru.nidi.graphviz.rough;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.use.FontTools;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +26,7 @@ import java.io.IOException;
 
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
-import static guru.nidi.graphviz.model.Link.to;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RoughFilterTest {
     @BeforeAll
@@ -37,7 +36,6 @@ class RoughFilterTest {
 
     @Test
     void simple() throws IOException {
-        FontTools.availableFontNamesGraph(new File("fonts.png"));
         final Graph g = graph("ex7").directed()
                 .with(
                         graph().cluster()
@@ -49,22 +47,29 @@ class RoughFilterTest {
                                 .graphAttr().with(Color.BLUE, Label.of("process #2"))
                                 .with(node("b0").link(node("b1").link(node("b2").link(node("b3"))))),
                         node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
-                        node("a1").with(Style.FILLED,Color.RED.gradient(Color.BLUE)).link("b3"),
+                        node("a1").with(Style.FILLED, Color.RED.gradient(Color.BLUE)).link("b3"),
                         node("b2").link("a3"),
                         node("a3").link("a0"),
                         node("a3").link("end"),
                         node("b3").link("end"),
                         node("end").with(Shape.mSquare("", ""))
                 );
+
+        final File normal = new File("target/out.png");
         Graphviz.fromGraph(g)
-//                .scale(2)
-//                .filter(new RoughFilter())
                 .render(Format.PNG)
-                .toFile(new File("target/out.png"));
+                .toFile(normal);
+
+        final File rough = new File("target/outf.png");
         Graphviz.fromGraph(g)
-//                .scale(2)
-                .filter(new RoughFilter().bowing(1).roughness(1).fillStyle(FillStyle.zigzagLine().width(2).gap(5).angle(0)).font("*serif","Comic Sans MS"))
+                .filter(new RoughFilter()
+                        .bowing(1)
+                        .roughness(1)
+                        .fillStyle(FillStyle.zigzagLine().width(2).gap(5).angle(0))
+                        .font("*serif", "Comic Sans MS"))
                 .render(Format.PNG)
-                .toFile(new File("target/outf.png"));
+                .toFile(rough);
+
+        assertTrue(normal.exists() && rough.exists());
     }
 }
