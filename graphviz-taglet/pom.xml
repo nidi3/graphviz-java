@@ -4,7 +4,7 @@
     <parent>
         <artifactId>graphviz-java-parent</artifactId>
         <groupId>guru.nidi</groupId>
-        <version>0.12.0</version>
+        <version>0.12.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>graphviz-taglet</artifactId>
