@@ -64,6 +64,10 @@ public class RoughFilter implements GraphvizFilter {
         return new RoughFilter(engine, fonts, options("bowing", bowing));
     }
 
+    public RoughFilter fillStyle(FillStyle fillStyle) {
+        return new RoughFilter(engine, fonts, options("fillStyle", fillStyle));
+    }
+
     public RoughFilter curveStepCount(double curveStepCount) {
         return new RoughFilter(engine, fonts, options("curveStepCount", curveStepCount));
     }
@@ -94,13 +98,23 @@ public class RoughFilter implements GraphvizFilter {
         return engine.executeJavascript(
                 "try{ result(rough(",
                 replaceFonts(svg),
-                ",{" + optionsJson() + "})); } catch(e){ error(e.toString()); };");
+                ",{" + optionString(options) + "})); } catch(e){ error(e.toString()); };");
     }
 
-    private String optionsJson() {
+    private String optionString(Map<String, Object> options) {
         return options.entrySet().stream()
-                .map(e -> e.getKey() + ":" + (e.getValue() instanceof String ? "\"" + e.getValue() + "\"" : e.getValue()))
+                .map(e -> optionValue(e.getKey(), e.getValue()))
                 .collect(joining(","));
+    }
+
+    private String optionValue(String key, Object value) {
+        if (value instanceof Number) {
+            return key + ":" + value.toString();
+        }
+        if (value instanceof FillStyle) {
+            return optionString(((FillStyle) value).values);
+        }
+        return key + ":\"" + value + "\"";
     }
 
     private String replaceFonts(String svg) {
