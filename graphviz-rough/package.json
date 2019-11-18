@@ -1,0 +1,18 @@
+{
+  "name": "graphviz-rough",
+  "version": "0.11.3",
+  "scripts": {
+    "webpack": "webpack"
+  },
+  "dependencies": {
+    "coarse-domino": "0.8.3"
+  },
+  "devDependencies": {
+    "@babel/core": "7.7.2",
+    "@babel/polyfill": "7.7.0",
+    "@babel/preset-env": "7.7.1",
+    "babel-loader": "8.0.6",
+    "webpack": "4.41.2",
+    "webpack-cli": "3.3.10"
+  }
+}

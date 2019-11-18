@@ -30,7 +30,7 @@ class AbstractGraphvizEngineTest {
         }
 
         @Override
-        protected void doInit() {
+        protected void doInit(boolean onlyCallbacks) {
             // nothing
         }
 

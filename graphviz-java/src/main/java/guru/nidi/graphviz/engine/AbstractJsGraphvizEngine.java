@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 
 import static guru.nidi.graphviz.engine.IoUtils.readStream;
 
-public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
+public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine implements JavascriptEngine {
     public AbstractJsGraphvizEngine(boolean sync) {
         super(sync);
     }
@@ -36,6 +36,25 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
             throw new GraphvizException("Built-in Rasterizer can only be used together with GraphvizCmdLineEngine.");
         }
         return EngineResult.fromString(jsExecute(jsVizExec(src, options)));
+    }
+
+    @Override
+    public void init() {
+        try {
+            doInit(true);
+        } catch (Exception e) {
+            throw new GraphvizException("Could not start engine", e);
+        }
+    }
+
+    @Override
+    public void executeJavascript(String raw) {
+        jsExecute(raw + "; result('');");
+    }
+
+    @Override
+    public String executeJavascript(String pre, String src, String post) {
+        return jsExecute(pre + "'" + jsEscape(src) + "'" + post);
     }
 
     protected abstract String jsExecute(String jsCall);

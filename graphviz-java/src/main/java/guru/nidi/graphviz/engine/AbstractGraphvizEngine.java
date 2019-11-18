@@ -45,7 +45,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
 
     private void initTask(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError) {
         try {
-            doInit();
+            doInit(false);
             onOk.accept(this);
         } catch (Exception e) {
             LOG.info("Could not initialize {}", this, e);
@@ -77,7 +77,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
     public void close() {
     }
 
-    protected abstract void doInit() throws Exception;
+    protected abstract void doInit(boolean onlyCallbacks) throws Exception;
 
     @Override
     public String toString() {

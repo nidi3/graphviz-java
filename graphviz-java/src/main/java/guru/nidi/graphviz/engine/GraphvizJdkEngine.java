@@ -32,8 +32,8 @@ public class GraphvizJdkEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    protected void doInit() throws Exception {
-        engine.doInit();
+    protected void doInit(boolean onlyCallbacks) throws Exception {
+        engine.doInit(onlyCallbacks);
     }
 
     @Override

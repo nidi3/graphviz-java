@@ -51,15 +51,17 @@ class GraphvizNashornEngine extends AbstractJsGraphvizEngine {
     }
 
     @Override
-    protected void doInit() throws Exception {
-        try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
-            ENGINE.eval(readStream(api));
-        }
-        ENGINE.eval(jsVizCode());
+    protected void doInit(boolean onlyCallbacks) throws Exception {
         ENGINE.eval("var graphviz = Java.type('guru.nidi.graphviz.engine.GraphvizJdkEngine');"
                 + "function result(r){ handler.setResult(r); }"
                 + "function error(r){ handler.setError(r); }");
-        ENGINE.eval(jsInitEnv());
-        execute("digraph g { a -> b; }", Options.create(), null);
+        if (!onlyCallbacks) {
+            try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
+                ENGINE.eval(readStream(api));
+            }
+            ENGINE.eval(jsVizCode());
+            ENGINE.eval(jsInitEnv());
+            execute("digraph g { a -> b; }", Options.create(), null);
+        }
     }
 }

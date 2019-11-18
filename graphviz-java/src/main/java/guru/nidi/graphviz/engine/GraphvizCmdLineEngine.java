@@ -58,7 +58,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    protected void doInit() throws GraphvizException {
+    protected void doInit(boolean onlyCallBacks) throws GraphvizException {
         getEngineExecutable(Engine.DOT);
     }
 

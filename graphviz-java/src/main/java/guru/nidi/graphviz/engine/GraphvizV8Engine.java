@@ -51,8 +51,8 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
     }
 
     @Override
-    protected void doInit() throws IOException {
-        ENVS.set(new Env(extractionPath, jsInitEnv(), jsVizCode()));
+    protected void doInit(boolean onlyCallbacks) throws IOException {
+        ENVS.set(new Env(extractionPath, jsInitEnv(), jsVizCode(), onlyCallbacks));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
         final Env env = ENVS.get();
         if (env == null) {
             try {
-                doInit();
+                doInit(false);
             } catch (IOException e) {
                 throw new GraphvizException("Could not initialize v8 engine for new thread", e);
             }
@@ -73,12 +73,10 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
         final V8 v8;
         final ResultHandler resultHandler = new ResultHandler();
 
-        Env(@Nullable String extractionPath, String init, String viz) {
+        Env(@Nullable String extractionPath, String init, String viz, boolean onlyCallbacks) {
             LOG.info("Starting V8 runtime...");
             v8 = V8.createV8Runtime(null, extractionPath);
             LOG.info("Started V8 runtime. Initializing graphviz...");
-            v8.executeVoidScript(viz);
-            v8.executeVoidScript(init);
             v8.registerJavaMethod((receiver, parameters) -> {
                 resultHandler.setResult(parameters.getString(0));
             }, "result");
@@ -90,6 +88,10 @@ public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
                         : rawMsg;
                 resultHandler.setError(msg);
             }, "error");
+            if (!onlyCallbacks) {
+                v8.executeVoidScript(viz);
+                v8.executeVoidScript(init);
+            }
             LOG.info("Initialized graphviz.");
         }
 

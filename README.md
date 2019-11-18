@@ -251,17 +251,19 @@ Then running this program:
 
 [//]: # (manipulate)
 ```java
-MutableGraph g = Parser.read(getClass().getResourceAsStream("/color.dot"));
-Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-1.png"));
+try (InputStream dot = getClass().getResourceAsStream("/color.dot")) {
+    MutableGraph g = new Parser().read(dot);
+    Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-1.png"));
 
-g.graphAttrs()
-        .add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
-        .nodeAttrs().add(Color.WHITE.fill())
-        .nodes().forEach(node ->
-        node.add(
-                Color.named(node.name().toString()),
-                Style.lineWidth(4).and(Style.FILLED)));
-Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-2.png"));
+    g.graphAttrs()
+            .add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
+            .nodeAttrs().add(Color.WHITE.fill())
+            .nodes().forEach(node ->
+            node.add(
+                    Color.named(node.name().toString()),
+                    Style.lineWidth(4).and(Style.FILLED)));
+    Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-2.png"));
+}
 ```
 [//]: # (end)
 

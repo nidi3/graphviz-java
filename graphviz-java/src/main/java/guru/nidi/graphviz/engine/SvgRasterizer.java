@@ -31,7 +31,9 @@ abstract class SvgRasterizer implements Rasterizer {
         final String svg = input
                 .replace("xlink:href=\"", "xlink:href=\"file://")
                 .replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"")
-                .replace("fill=\"transparent\"", "fill=\"#fff\" fill-opacity=\"0.0\"");
+                .replace("stroke: transparent", "stroke: #fff; stroke-opacity: 0.0")
+                .replace("fill=\"transparent\"", "fill=\"#fff\" fill-opacity=\"0.0\"")
+                .replace("fill: transparent", "fill: #fff; fill-opacity: 0.0");
         return doRasterize(graphviz, graphicsConfigurer, svg);
     }
 

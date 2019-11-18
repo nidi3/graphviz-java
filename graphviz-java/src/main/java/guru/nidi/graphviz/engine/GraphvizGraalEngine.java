@@ -45,15 +45,17 @@ class GraphvizGraalEngine extends AbstractJsGraphvizEngine {
     }
 
     @Override
-    protected void doInit() throws Exception {
-        try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
-            eval(readStream(api));
-        }
-        eval(jsVizCode());
+    protected void doInit(boolean onlyCallbacks) throws Exception {
         eval("function result(r){ Polyglot.import('handler').setResult(r); }"
                 + "function error(r){ Polyglot.import('handler').setError(r); }");
-        eval(jsInitEnv());
-        execute("digraph g { a -> b; }", Options.create(), null);
+        if (!onlyCallbacks) {
+            try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
+                eval(readStream(api));
+            }
+            eval(jsVizCode());
+            eval(jsInitEnv());
+            execute("digraph g { a -> b; }", Options.create(), null);
+        }
     }
 
     private void eval(String code) {

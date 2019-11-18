@@ -25,6 +25,7 @@
 
     <modules>
         <module>graphviz-java</module>
+        <module>graphviz-rough</module>
         <module>graphviz-kotlin</module>
         <module>graphviz-taglet</module>
     </modules>
