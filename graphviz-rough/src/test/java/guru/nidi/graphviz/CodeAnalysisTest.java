@@ -85,7 +85,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     @Override
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
-                .apply(CheckstyleConfigs.minimalCheckstyleIgnore());
+                .apply(CheckstyleConfigs.minimalCheckstyleIgnore())
+                .because("I don't agree", In.clazz(FillStyle.class).ignore("empty.line.separator"));
         final StyleChecks checks = CheckstyleConfigs.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }

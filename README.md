@@ -408,21 +408,18 @@ First, add the rough module to the dependencies:
 </dependency>
 ```
 
+Then, apply the `RoughFilter` to the graph: 
+
 [//]: # (rough)
 ```java
 Graphviz.fromGraph(g)
-        .render(Format.PNG)
-        .toFile(new File("example/ex1.png"));
-
-Graphviz.fromGraph(g)
         .filter(new RoughFilter()
-                .bowing(1)
+                .bowing(2)
                 .roughness(1)
-                .fillStyle(FillStyle.zigzagLine().width(2).gap(5).angle(0))
+                .fillStyle(FillStyle.hachure().width(2).gap(5).angle(0))
                 .font("*serif", "Comic Sans MS"))
         .render(Format.PNG)
         .toFile(new File("example/ex1-rough.png"));
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-rough/example/ex1.png" width="200">
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-rough/example/ex1-rough.png" width="200">

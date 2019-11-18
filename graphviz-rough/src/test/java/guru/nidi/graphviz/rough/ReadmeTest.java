@@ -55,12 +55,11 @@ class ReadmeTest {
                         node("end").with(Shape.mSquare("", ""))
                 );
 
-
-        //## rough
         Graphviz.fromGraph(g)
                 .render(Format.PNG)
                 .toFile(new File("example/ex1.png"));
 
+        //## rough
         Graphviz.fromGraph(g)
                 .filter(new RoughFilter()
                         .bowing(2)
