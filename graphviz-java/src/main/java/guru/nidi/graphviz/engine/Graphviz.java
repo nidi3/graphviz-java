@@ -158,7 +158,8 @@ public final class Graphviz {
     }
 
     public Graphviz totalMemory(@Nullable Integer totalMemory) {
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.totalMemory(totalMemory), filters);
+        return new Graphviz(
+                src, rasterizer, width, height, scale, fontAdjust, options.totalMemory(totalMemory), filters);
     }
 
     public Graphviz yInvert(@Nullable Boolean yInvert) {
@@ -202,7 +203,8 @@ public final class Graphviz {
     }
 
     public Renderer render(Format format) {
-        final Graphviz g = new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.format(format), filters);
+        final Graphviz g =
+                new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.format(format), filters);
         return new Renderer(g, null, format);
     }
 

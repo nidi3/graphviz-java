@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz.engine;
 
+/**
+ * The engine must provide the global result(s: String) and error(s: String) functions.
+ */
 public interface JavascriptEngine extends AutoCloseable {
     void init();
 
@@ -32,7 +35,7 @@ public interface JavascriptEngine extends AutoCloseable {
      * @param pre  Prefixed javascript code
      * @param src  The string parameter, does not need to be escaped.
      * @param post Postfixed javascript code
-     * @return
+     * @return the value given to result or error
      */
     String executeJavascript(String pre, String src, String post);
 }
