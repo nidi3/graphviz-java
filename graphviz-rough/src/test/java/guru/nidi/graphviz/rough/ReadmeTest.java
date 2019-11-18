@@ -63,9 +63,9 @@ class ReadmeTest {
 
         Graphviz.fromGraph(g)
                 .filter(new RoughFilter()
-                        .bowing(1)
+                        .bowing(2)
                         .roughness(1)
-                        .fillStyle(FillStyle.zigzagLine().width(2).gap(5).angle(0))
+                        .fillStyle(FillStyle.hachure().width(2).gap(5).angle(0))
                         .font("*serif", "Comic Sans MS"))
                 .render(Format.PNG)
                 .toFile(new File("example/ex1-rough.png"));
