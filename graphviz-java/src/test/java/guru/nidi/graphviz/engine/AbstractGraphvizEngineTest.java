@@ -26,17 +26,14 @@ class AbstractGraphvizEngineTest {
 
     static class GraphvizEngineDummy extends AbstractJsGraphvizEngine {
         GraphvizEngineDummy() {
-            super(true);
+            super(true, DummyJavascriptEngine::new);
         }
+    }
 
+    static class DummyJavascriptEngine extends AbstractJavascriptEngine {
         @Override
-        protected void doInit(boolean onlyCallbacks) {
-            // nothing
-        }
-
-        @Override
-        protected String jsExecute(String call) {
-            return call;
+        protected String execute(String js) {
+            return js;
         }
     }
 

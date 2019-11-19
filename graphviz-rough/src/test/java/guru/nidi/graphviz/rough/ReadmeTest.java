@@ -36,32 +36,26 @@ class ReadmeTest {
 
     @Test
     void simple() throws IOException {
-        final Graph g = graph("ex1").directed()
-                .with(
-                        graph().cluster()
-                                .nodeAttr().with(Style.FILLED, Color.WHITE)
-                                .graphAttr().with(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
-                                .with(node("a0").link(node("a1").link(node("a2").link(node("a3"))))),
-                        graph("x").cluster()
-                                .nodeAttr().with(Style.FILLED)
-                                .graphAttr().with(Color.BLUE, Label.of("process #2"))
-                                .with(node("b0").link(node("b1").link(node("b2").link(node("b3"))))),
-                        node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
-                        node("a1").with(Style.FILLED, Color.RED.gradient(Color.BLUE)).link("b3"),
-                        node("b2").link("a3"),
-                        node("a3").link("a0"),
-                        node("a3").link("end"),
-                        node("b3").link("end"),
-                        node("end").with(Shape.mSquare("", ""))
-                );
-
-        Graphviz.fromGraph(g)
-                .render(Format.PNG)
-                .toFile(new File("example/ex1.png"));
-
         //## rough
+        final Graph g = graph("ex1").directed().with(
+                graph().cluster()
+                        .nodeAttr().with(Style.FILLED, Color.WHITE)
+                        .graphAttr().with(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
+                        .with(node("a0").link(node("a1").link(node("a3")))),
+                graph("x").cluster()
+                        .nodeAttr().with(Style.FILLED)
+                        .graphAttr().with(Color.BLUE, Label.of("process #2"))
+                        .with(node("b0").link(node("b2").link(node("b3")))),
+                node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
+                node("a1").with(Style.FILLED, Color.RED.gradient(Color.BLUE)).link("b3"),
+                node("b2").link("a3"),
+                node("a3").link("end"),
+                node("b3").link("end"),
+                node("end").with(Shape.mSquare("", ""))
+        );
+
         Graphviz.fromGraph(g)
-                .filter(new RoughFilter()
+                .filter(new RoughFilter(new V8JavascriptEngine())
                         .bowing(2)
                         .roughness(1)
                         .fillStyle(FillStyle.hachure().width(2).gap(5).angle(0))
@@ -69,6 +63,11 @@ class ReadmeTest {
                 .render(Format.PNG)
                 .toFile(new File("example/ex1-rough.png"));
         //## end
+
+        Graphviz.fromGraph(g)
+                .render(Format.PNG)
+                .toFile(new File("example/ex1.png"));
+
         assertTrue(new File("example/ex1.png").exists() && new File("example/ex1-rough.png").exists());
     }
 }

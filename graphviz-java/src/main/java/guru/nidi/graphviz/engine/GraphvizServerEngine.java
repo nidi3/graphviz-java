@@ -43,7 +43,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    protected void doInit(boolean onlyCallbacks) throws Exception {
+    protected void doInit() throws IOException {
         if (!canConnect()) {
             GraphvizServer.start(engines);
             for (int i = 0; i < 100 && !canConnect(); i++) {

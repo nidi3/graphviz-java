@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -14,6 +15,7 @@
     <properties>
         <j2v8.version>4.6.0</j2v8.version>
         <j2v8-linux.version>4.6.0</j2v8-linux.version>
+        <graal.version>19.2.1</graal.version>
     </properties>
 
     <build>
@@ -58,11 +60,28 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.graalvm</groupId>
+            <groupId>org.graalvm.sdk</groupId>
             <artifactId>graal-sdk</artifactId>
-            <version>1.0.0-rc7</version>
+            <version>${graal.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- these are needed to test with Graal Javascript engine
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>${graal.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-scriptengine</artifactId>
+            <version>${graal.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.truffle</groupId>
+            <artifactId>truffle-api</artifactId>
+            <version>${graal.version}</version>
+        </dependency>
+        -->
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>viz.js</artifactId>

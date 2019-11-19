@@ -15,29 +15,22 @@
  */
 package guru.nidi.graphviz.engine;
 
-public class GraphvizJdkEngine extends AbstractGraphvizEngine {
-    private final AbstractGraphvizEngine engine;
-
+public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
     public GraphvizJdkEngine() {
-        super(false);
-        engine = newEngine();
+        super(false, GraphvizJdkEngine::newEngine);
     }
 
-    private AbstractGraphvizEngine newEngine() {
+    private static JavascriptEngine newEngine() {
         try {
-            return new GraphvizGraalEngine();
-        } catch (ExceptionInInitializerError | NoClassDefFoundError e) {
-            return new GraphvizNashornEngine();
+            return new GraalJavascriptEngine();
+        } catch (ExceptionInInitializerError | NoClassDefFoundError | IllegalStateException e) {
+            return new NashornJavascriptEngine();
         }
     }
 
     @Override
-    protected void doInit(boolean onlyCallbacks) throws Exception {
-        engine.doInit(onlyCallbacks);
-    }
-
-    @Override
-    public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
-        return engine.execute(src, options, rasterizer);
+    protected void doInit() {
+        engine().executeJavascript(promiseJsCode());
+        super.doInit();
     }
 }

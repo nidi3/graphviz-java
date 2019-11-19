@@ -15,7 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 final class IoUtils {
@@ -40,10 +41,10 @@ final class IoUtils {
         }
     }
 
-    static void closeQuietly(Closeable c) {
+    static void closeQuietly(AutoCloseable c) {
         try {
             c.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             //ignore
         }
     }

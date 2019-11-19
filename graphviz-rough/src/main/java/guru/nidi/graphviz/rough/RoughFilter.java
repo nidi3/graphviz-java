@@ -36,17 +36,16 @@ public class RoughFilter implements GraphvizFilter {
     private final Map<String, Object> options;
 
     public RoughFilter() {
-        this(new GraphvizV8Engine());
+        this(new V8JavascriptEngine());
     }
 
     public RoughFilter(JavascriptEngine engine) {
         this(engine, new ArrayList<>(), new HashMap<>());
+        engine.executeJavascript(CODE);
     }
 
     private RoughFilter(JavascriptEngine engine, List<Entry<Pattern, String>> fonts, Map<String, Object> options) {
         this.engine = engine;
-        engine.init();
-        engine.executeJavascript(CODE);
         this.options = options;
         this.fonts = fonts;
     }

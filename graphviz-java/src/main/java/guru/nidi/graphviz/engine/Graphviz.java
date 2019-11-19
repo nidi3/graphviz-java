@@ -123,7 +123,6 @@ public final class Graphviz {
     }
 
     public static void releaseEngine() {
-        GraphvizV8Engine.releaseThread(); //TODO remove this hard coupling
         if (engine != null) {
             try {
                 engine.close();

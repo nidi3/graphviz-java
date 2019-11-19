@@ -21,6 +21,8 @@ import guru.nidi.graphviz.service.SystemUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -30,12 +32,14 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.function.Supplier;
 
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static guru.nidi.graphviz.engine.FormatTest.START1_7;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -122,20 +126,30 @@ class EngineTest {
         fail("No native library found");
     }
 
-    @Test
-    void multiV8() throws InterruptedException {
-        Graphviz.useEngine(new GraphvizV8Engine());
+    @ParameterizedTest
+    @MethodSource
+    void multi(Supplier<GraphvizEngine> engineSupplier) throws InterruptedException {
+        Graphviz.useEngine(engineSupplier.get());
         final ExecutorService executor = Executors.newFixedThreadPool(2);
         final List<String> res = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
+            res.add(null);
+            final int j = i;
             executor.submit(() -> {
-                res.add(Graphviz.fromString("graph g {a--b}").render(SVG).toString());
+                res.set(j, Graphviz.fromString("graph g {number" + j + "--b}").render(SVG).toString());
                 Graphviz.releaseEngine();
             });
         }
         executor.shutdown();
         executor.awaitTermination(60, TimeUnit.SECONDS);
         assertThat(res, everyItem(not(isEmptyOrNullString())));
+        for (int i = 0; i < res.size(); i++) {
+            assertThat(res.get(i), containsString("number" + i));
+        }
+    }
+
+    static List<Supplier<GraphvizEngine>> multi() {
+        return asList(GraphvizV8Engine::new, GraphvizJdkEngine::new);
     }
 
     @Test

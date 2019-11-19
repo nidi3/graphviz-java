@@ -21,13 +21,50 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 import static guru.nidi.graphviz.engine.IoUtils.readStream;
 
-public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine implements JavascriptEngine {
-    public AbstractJsGraphvizEngine(boolean sync) {
+public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
+    private static final Map<Class<?>, ThreadLocal<JavascriptEngine>> ENGINES = new HashMap<>();
+    private final Supplier<JavascriptEngine> engineSupplier;
+
+    protected AbstractJsGraphvizEngine(boolean sync, Supplier<JavascriptEngine> engineSupplier) {
         super(sync);
+        this.engineSupplier = engineSupplier;
+    }
+
+    @Override
+    protected void doInit() {
+        engine().executeJavascript(vizJsCode());
+        engine().executeJavascript(renderJsCode());
+        execute("graph g { a -- b }", Options.create(), null);
+    }
+
+    protected JavascriptEngine engine() {
+        final ThreadLocal<JavascriptEngine> holder = ENGINES.computeIfAbsent(getClass(), e -> new ThreadLocal<>());
+        JavascriptEngine engine = holder.get();
+        if (engine == null) {
+            engine = engineSupplier.get();
+            holder.set(engine);
+            throwingInit();
+        }
+        return engine;
+    }
+
+    @Override
+    public void close() {
+        final ThreadLocal<JavascriptEngine> holder = ENGINES.get(getClass());
+        if (holder != null) {
+            final JavascriptEngine engine = holder.get();
+            if (engine != null) {
+                IoUtils.closeQuietly(engine);
+                holder.remove();
+            }
+        }
     }
 
     @Override
@@ -35,29 +72,8 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine im
         if (rasterizer instanceof BuiltInRasterizer) {
             throw new GraphvizException("Built-in Rasterizer can only be used together with GraphvizCmdLineEngine.");
         }
-        return EngineResult.fromString(jsExecute(jsVizExec(src, options)));
+        return EngineResult.fromString(jsVizExec(src, options));
     }
-
-    @Override
-    public void init() {
-        try {
-            doInit(true);
-        } catch (Exception e) {
-            throw new GraphvizException("Could not start engine", e);
-        }
-    }
-
-    @Override
-    public void executeJavascript(String raw) {
-        jsExecute(raw + "; result('');");
-    }
-
-    @Override
-    public String executeJavascript(String pre, String src, String post) {
-        return jsExecute(pre + "'" + jsEscape(src) + "'" + post);
-    }
-
-    protected abstract String jsExecute(String jsCall);
 
     protected String jsVizExec(String src, Options options) {
         if (src.startsWith("totalMemory") || src.startsWith("render")) {
@@ -65,8 +81,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine im
         }
         final String memory = options.totalMemory == null ? "" : "totalMemory=" + options.totalMemory + ";";
         final Entry<String, Options> srcAndOpts = preprocessCode(src, options);
-        final String render = "render('" + srcAndOpts.getKey() + "'," + srcAndOpts.getValue().toJson(false) + ");";
-        return memory + render;
+        return engine().executeJavascript(memory + "render(", srcAndOpts.getKey(), "," + srcAndOpts.getValue().toJson(false) + ");");
     }
 
     protected Entry<String, Options> preprocessCode(String src, Options options) {
@@ -80,22 +95,28 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine im
             opts[0] = opts[0].image(realPath);
             return realPath;
         });
-        return new SimpleEntry<>(jsEscape(pathsReplaced), opts[0]);
+        return new SimpleEntry<>(pathsReplaced, opts[0]);
     }
 
-    protected String jsEscape(String js) {
-        return js.replace("\\", "\\\\").replace("'", "\\'").replaceAll("\\R", "\\\\n");
-    }
-
-    protected String jsVizCode() throws IOException {
+    private String vizJsCode() {
         final String path = "/META-INF/resources/webjars/viz.js/2.1.2/";
         try (final InputStream api = getClass().getResourceAsStream(path + "viz.js");
              final InputStream engine = getClass().getResourceAsStream(path + "full.render.js")) {
             return readStream(api) + readStream(engine);
+        } catch (IOException e) {
+            throw new AssertionError("Could not load internal javascript resources, is the jar file corrupt?", e);
         }
     }
 
-    protected String jsInitEnv() {
+    protected String promiseJsCode() {
+        try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
+            return readStream(api);
+        } catch (IOException e) {
+            throw new AssertionError("Could not load internal javascript resources, is the jar file corrupt?", e);
+        }
+    }
+
+    private String renderJsCode() {
         return "var viz; var totalMemory = 16777216;"
                 + "function initViz(force){"
                 + "  if (force || !viz || viz.totalMemory !== totalMemory){"
@@ -115,5 +136,4 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine im
                 + "  } catch(e) { error(e.toString()); }"
                 + "}";
     }
-
 }

@@ -412,6 +412,23 @@ Then, apply the `RoughFilter` to the graph:
 
 [//]: # (rough)
 ```java
+final Graph g = graph("ex1").directed().with(
+        graph().cluster()
+                .nodeAttr().with(Style.FILLED, Color.WHITE)
+                .graphAttr().with(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
+                .with(node("a0").link(node("a1").link(node("a3")))),
+        graph("x").cluster()
+                .nodeAttr().with(Style.FILLED)
+                .graphAttr().with(Color.BLUE, Label.of("process #2"))
+                .with(node("b0").link(node("b2").link(node("b3")))),
+        node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
+        node("a1").with(Style.FILLED, Color.RED.gradient(Color.BLUE)).link("b3"),
+        node("b2").link("a3"),
+        node("a3").link("end"),
+        node("b3").link("end"),
+        node("end").with(Shape.mSquare("", ""))
+);
+
 Graphviz.fromGraph(g)
         .filter(new RoughFilter()
                 .bowing(2)

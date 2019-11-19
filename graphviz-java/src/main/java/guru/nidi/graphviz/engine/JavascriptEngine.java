@@ -19,8 +19,6 @@ package guru.nidi.graphviz.engine;
  * The engine must provide the global result(s: String) and error(s: String) functions.
  */
 public interface JavascriptEngine extends AutoCloseable {
-    void init();
-
     /**
      * Execute a piece of javascript code.
      *

@@ -346,7 +346,7 @@ class ExampleTest {
                         node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
                         node("a1").link("b3"),
                         node("b2").link("a3"),
-                        node("a3").link("a0"),
+//                        node("a3").link("a0"), //TODO this removes a3->end link why?
                         node("a3").link("end"),
                         node("b3").link("end"),
                         node("end").with(Shape.mSquare("", ""))

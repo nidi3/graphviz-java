@@ -74,8 +74,6 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("GraphvizServer is on localhost",
                         In.locs("GraphvizServer", "GraphvizServerEngine")
                                 .ignore("UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"))
-                .because("We don't execute user submitted JS code",
-                        In.loc("GraphvizNashornEngine").ignore("SCRIPT_ENGINE_INJECTION"))
                 .because("It's ok",
                         In.loc("Datatype").ignore("NP_BOOLEAN_RETURN_NULL"),
                         In.loc("BuiltInRasterizer").ignore("NP_NONNULL_RETURN_VIOLATION"),
@@ -86,6 +84,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.loc("PortSource").ignore("NP_NONNULL_RETURN_VIOLATION"),
                         In.loc("OptionsTest").ignore("DMI_HARDCODED_ABSOLUTE_FILENAME"),
                         In.loc("SimpleLabel").ignore("IM_BAD_CHECK_FOR_ODD"),
+                        In.loc("JavascriptEngineTest").ignore("PREDICTABLE_RANDOM"),
                         In.loc("Communicator").ignore("RR_NOT_CHECKED"));
         return new FindBugsAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector).analyze();
     }
@@ -105,9 +104,9 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
                         In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
-                        In.locs("LabelTest", "RankTest", "AttributeValidatorTest", "ParserTest").ignore("JUnitTestContainsTooManyAsserts"),
+                        In.locs("LabelTest", "RankTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest").ignore("JUnitTestContainsTooManyAsserts"),
                         In.loc("Serializer").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
-                        In.classes(ThrowingFunction.class, AbstractJsGraphvizEngine.class).ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
+                        In.locs("ThrowingFunction", "IoUtils").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),

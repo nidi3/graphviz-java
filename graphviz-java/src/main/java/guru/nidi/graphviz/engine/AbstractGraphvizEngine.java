@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -45,7 +46,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
 
     private void initTask(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError) {
         try {
-            doInit(false);
+            doInit();
             onOk.accept(this);
         } catch (Exception e) {
             LOG.info("Could not initialize {}", this, e);
@@ -77,7 +78,15 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
     public void close() {
     }
 
-    protected abstract void doInit(boolean onlyCallbacks) throws Exception;
+    protected abstract void doInit() throws IOException;
+
+    protected void throwingInit() {
+        try {
+            doInit();
+        } catch (Exception e) {
+            LOG.info("Could not initialize {}", this, e);
+        }
+    }
 
     @Override
     public String toString() {
