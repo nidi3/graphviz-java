@@ -23,6 +23,7 @@ import java.util.*;
 import static java.util.Arrays.asList;
 
 public class MutableGraph implements LinkSource, LinkTarget {
+    private static final SafeRecursion<MutableGraph> RECURSION = new SafeRecursion<>();
     protected boolean strict;
     protected boolean directed;
     protected boolean cluster;
@@ -212,7 +213,7 @@ public class MutableGraph implements LinkSource, LinkTarget {
             return false;
         }
         final MutableGraph that = (MutableGraph) o;
-        return strict == that.strict
+        return RECURSION.recurse(this, true, () -> strict == that.strict
                 && directed == that.directed
                 && cluster == that.cluster
                 && Objects.equals(name, that.name)
@@ -221,12 +222,13 @@ public class MutableGraph implements LinkSource, LinkTarget {
                 && Objects.equals(links, that.links)
                 && Objects.equals(nodeAttrs, that.nodeAttrs)
                 && Objects.equals(linkAttrs, that.linkAttrs)
-                && Objects.equals(graphAttrs, that.graphAttrs);
+                && Objects.equals(graphAttrs, that.graphAttrs));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(strict, directed, cluster, name, nodes, subgraphs, links, nodeAttrs, linkAttrs, graphAttrs);
+        return RECURSION.recurse(this, 0, () -> Objects.hash(
+                strict, directed, cluster, name, nodes, subgraphs, links, nodeAttrs, linkAttrs, graphAttrs));
     }
 
     @Override

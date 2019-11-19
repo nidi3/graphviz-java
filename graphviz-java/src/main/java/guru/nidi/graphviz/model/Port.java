@@ -39,6 +39,10 @@ public class Port {
         return compass;
     }
 
+    public boolean isEmpty() {
+        return record == null && compass == null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

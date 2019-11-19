@@ -89,32 +89,6 @@ class ImmutableGraph extends MutableGraph implements Graph {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final MutableGraph that = (MutableGraph) o;
-        return strict == that.strict
-                && directed == that.directed
-                && cluster == that.cluster
-                && Objects.equals(name, that.name)
-                && Objects.equals(nodes, that.nodes)
-                && Objects.equals(subgraphs, that.subgraphs)
-                && Objects.equals(links, that.links)
-                && Objects.equals(nodeAttrs, that.nodeAttrs)
-                && Objects.equals(linkAttrs, that.linkAttrs)
-                && Objects.equals(graphAttrs, that.graphAttrs);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(strict, directed, cluster, name, nodes, subgraphs, links, nodeAttrs, linkAttrs, graphAttrs);
-    }
-
-    @Override
     public String toString() {
         return new Serializer(this).serialize();
     }

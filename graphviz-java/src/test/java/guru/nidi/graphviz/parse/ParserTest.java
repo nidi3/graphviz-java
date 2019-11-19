@@ -183,7 +183,7 @@ class ParserTest {
         final Pars pars = new Pars();
         final MutableNode b = mutNode("b").add(Color.BLUE, attr("dpi", "1"), Shape.EGG);
         final MutableNode a = mutNode("a").add(Color.RED, attr("dpi", "1")).addLink(b);
-        assertEquals(mutGraph().add(a, b),
+        assertEquals(mutGraph().add(a),
                 pars.parser.read("graph { node[color=red, dpi=1] a node[color=blue, shape=egg] a -- b }"));
         assertEquals(asList(
                 new ValidatorMessage(ERROR, "dpi", "Attribute is not allowed for scope 'NODE'.", 1, 25)),
@@ -196,7 +196,7 @@ class ParserTest {
         final MutableNode a = mutNode("a").addLink(to(b).with(Color.RED, attr("width", "x")))
                 .addLink(to(b).with(Color.BLUE, attr("width", "x"), attr("a", "b")));
         final Pars pars = new Pars();
-        assertEquals(mutGraph().add(a, b),
+        assertEquals(mutGraph().add(a),
                 pars.parser.read("graph { edge[color=red, width=x] a -- b edge[color=blue, a=b] a -- b }"));
         assertEquals(asList(
                 new ValidatorMessage(ERROR, "width", "Attribute is not allowed for scope 'EDGE'.", 1, 25),

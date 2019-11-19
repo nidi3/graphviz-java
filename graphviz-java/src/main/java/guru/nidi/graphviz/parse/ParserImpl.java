@@ -173,7 +173,7 @@ final class ParserImpl {
         for (int i = 0; i < points.size() - 1; i++) {
             final LinkSource from = points.get(i);
             final LinkTarget to = (LinkTarget) points.get(i + 1);
-            from.links().add(applyAttributes(Link.to(to), attrs));
+            from.links().add(applyAttributes(from.linkTo(to), attrs));
             graph.add(from);
         }
     }

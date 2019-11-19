@@ -25,7 +25,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 public class MutableNode implements MutableAttributed<MutableNode, ForNode>, LinkSource, LinkTarget {
-    private final static SafeRecursion<MutableNode> RECURSION = new SafeRecursion<>();
+    private static final SafeRecursion<MutableNode> RECURSION = new SafeRecursion<>();
     protected Label name;
     protected final LinkList links;
     protected final MutableAttributed<MutableNode, ForNode> attributes;

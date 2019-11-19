@@ -60,7 +60,7 @@ class ImmutablePortNode implements PortNode, LinkSource, LinkTarget {
 
     @Override
     public Link linkTo(LinkTarget target) {
-        return node.linkTo(target);
+        return node.linkTo(port.isEmpty() ? target : Link.between(port, target));
     }
 
     @Override
