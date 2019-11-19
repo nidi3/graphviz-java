@@ -63,7 +63,7 @@ final class ParserImpl {
             }
             statementList(graph, false);
             assertToken(EOF);
-            return graph;
+            return deduplicateNodes(graph);
         });
     }
 
@@ -138,8 +138,15 @@ final class ParserImpl {
                 }
             }
             statementList(sub, true);
-            return sub;
+            return deduplicateNodes(sub);
         });
+    }
+
+    //we add nodes (and others?) which possibly change afterwards
+    //-> the hashcode changes -> same node is multiple times in the set of nodes
+    //copy() normalizes this
+    private MutableGraph deduplicateNodes(MutableGraph g) {
+        return g.copy();
     }
 
     private void edgeStatement(MutableGraph graph, LinkSource linkSource)

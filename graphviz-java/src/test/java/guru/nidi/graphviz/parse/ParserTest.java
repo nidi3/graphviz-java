@@ -17,6 +17,7 @@ package guru.nidi.graphviz.parse;
 
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
+import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +40,14 @@ class ParserTest {
     void emptyGraph() throws IOException {
         final Pars pars = new Pars();
         assertEquals(mutGraph("bla"), pars.parser.read("graph bla{}"));
+        assertEquals(asList(), pars.messages);
+    }
+
+    @Test
+    void deduplicatedNodes() throws IOException {
+        final Pars pars = new Pars();
+        final MutableGraph g = pars.parser.read("graph { a--b; a[color=red] }");
+        assertEquals(1, g.rootNodes().size());
         assertEquals(asList(), pars.messages);
     }
 
