@@ -41,21 +41,21 @@ class ReadmeTest {
                 graph().cluster()
                         .nodeAttr().with(Style.FILLED, Color.WHITE)
                         .graphAttr().with(Style.FILLED, Color.LIGHTGREY, Label.of("process #1"))
-                        .with(node("a0").link(node("a1").link(node("a3")))),
+                        .with(node("a0").link(node("a1").link(node("a2")))),
                 graph("x").cluster()
                         .nodeAttr().with(Style.FILLED)
                         .graphAttr().with(Color.BLUE, Label.of("process #2"))
-                        .with(node("b0").link(node("b2").link(node("b3")))),
+                        .with(node("b0").link(node("b1").link(node("b2")))),
                 node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
-                node("a1").with(Style.FILLED, Color.RED.gradient(Color.BLUE)).link("b3"),
-                node("b2").link("a3"),
-                node("a3").link("end"),
-                node("b3").link("end"),
+                node("a0").with(Style.FILLED, Color.RED.gradient(Color.BLUE)).link("b1"),
+                node("b1").link("a2"),
+                node("a2").link("end"),
+                node("b2").link("end"),
                 node("end").with(Shape.mSquare("", ""))
         );
 
         Graphviz.fromGraph(g)
-                .filter(new RoughFilter(new V8JavascriptEngine())
+                .filter(new RoughFilter()
                         .bowing(2)
                         .roughness(1)
                         .fillStyle(FillStyle.hachure().width(2).gap(5).angle(0))

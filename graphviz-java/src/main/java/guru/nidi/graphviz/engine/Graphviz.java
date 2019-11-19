@@ -35,7 +35,7 @@ public final class Graphviz {
     @Nullable
     private static volatile BlockingQueue<GraphvizEngine> engineQueue;
     @Nullable
-    private static GraphvizEngine engine;
+    private static volatile GraphvizEngine engine;
 
     private final String src;
     @Nullable
@@ -123,15 +123,26 @@ public final class Graphviz {
     }
 
     public static void releaseEngine() {
-        if (engine != null) {
-            try {
-                engine.close();
-            } catch (Exception e) {
-                throw new GraphvizException("Problem closing engine", e);
+        synchronized (Graphviz.class) {
+            if (engine != null) {
+                doReleaseEngine(engine);
+            }
+            if (engineQueue != null) {
+                for (final GraphvizEngine engine : engineQueue) {
+                    doReleaseEngine(engine);
+                }
             }
         }
         engine = null;
         engineQueue = null;
+    }
+
+    private static void doReleaseEngine(GraphvizEngine engine) {
+        try {
+            engine.close();
+        } catch (Exception e) {
+            throw new GraphvizException("Problem closing engine", e);
+        }
     }
 
     public static Graphviz fromFile(File src) throws IOException {
