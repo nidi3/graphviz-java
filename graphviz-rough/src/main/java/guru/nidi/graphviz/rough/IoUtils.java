@@ -15,7 +15,8 @@
  */
 package guru.nidi.graphviz.rough;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 final class IoUtils {

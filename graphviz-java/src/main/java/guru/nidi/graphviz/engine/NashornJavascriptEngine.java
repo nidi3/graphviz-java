@@ -19,9 +19,8 @@ import javax.script.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static guru.nidi.graphviz.engine.JdkJavascriptEngine.ENGINE;
-
 class NashornJavascriptEngine extends AbstractJavascriptEngine {
+    private static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
     private static final Pattern JAVA_18_PATTERN = Pattern.compile("1.8.0_(\\d+).*");
     private final ScriptContext context = new SimpleScriptContext();
     private final ResultHandler resultHandler = new ResultHandler();

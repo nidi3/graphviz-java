@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 
 public class V8JavascriptEngine extends AbstractJavascriptEngine {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
+    private static final Logger LOG = LoggerFactory.getLogger(V8JavascriptEngine.class);
     private final V8 v8;
     private final ResultHandler resultHandler = new ResultHandler();
 

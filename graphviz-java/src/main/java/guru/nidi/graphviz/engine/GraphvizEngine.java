@@ -17,6 +17,10 @@ package guru.nidi.graphviz.engine;
 
 import java.util.function.Consumer;
 
+/**
+ * Process a dot file.
+ * A Graphviz engine should be thread safe.
+ */
 public interface GraphvizEngine extends AutoCloseable {
     void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError);
 

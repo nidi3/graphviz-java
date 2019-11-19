@@ -15,11 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 public class JdkJavascriptEngine implements JavascriptEngine {
-    static final ScriptEngine ENGINE = new ScriptEngineManager().getEngineByExtension("js");
     private final JavascriptEngine engine;
 
     public JdkJavascriptEngine() {

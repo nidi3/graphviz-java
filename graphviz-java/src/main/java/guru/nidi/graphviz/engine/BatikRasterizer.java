@@ -16,7 +16,6 @@
 package guru.nidi.graphviz.engine;
 
 import org.apache.batik.transcoder.*;
-import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 
 import javax.annotation.Nullable;

@@ -45,7 +45,7 @@ final class AttributeConfig {
     final EnumSet<Scope> scopes;
 
     private AttributeConfig(@Nullable EnumSet<Scope> scopes, List<Datatype> types, @Nullable Object defVal,
-                            @Nullable Double min, @Nullable EnumSet<Engine> engines, 
+                            @Nullable Double min, @Nullable EnumSet<Engine> engines,
                             @Nullable EnumSet<Format> formats) {
         this.scopes = scopes == null ? EnumSet.noneOf(Scope.class) : scopes;
         this.types = types;

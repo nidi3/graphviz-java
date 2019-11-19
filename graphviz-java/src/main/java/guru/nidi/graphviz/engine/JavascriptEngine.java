@@ -16,6 +16,7 @@
 package guru.nidi.graphviz.engine;
 
 /**
+ * A javascript engine is NOT thread safe.
  * The engine must provide the global result(s: String) and error(s: String) functions.
  */
 public interface JavascriptEngine extends AutoCloseable {
