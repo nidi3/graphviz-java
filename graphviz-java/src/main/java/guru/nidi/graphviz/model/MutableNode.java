@@ -25,6 +25,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
 public class MutableNode implements MutableAttributed<MutableNode, ForNode>, LinkSource, LinkTarget {
+    private final static SafeRecursion<MutableNode> RECURSION = new SafeRecursion<>();
     protected Label name;
     protected final LinkList links;
     protected final MutableAttributed<MutableNode, ForNode> attributes;
@@ -187,15 +188,15 @@ public class MutableNode implements MutableAttributed<MutableNode, ForNode>, Lin
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final MutableNode entries = (MutableNode) o;
-        return Objects.equals(name, entries.name)
-                && Objects.equals(links, entries.links)
-                && Objects.equals(attributes, entries.attributes);
+        final MutableNode node = (MutableNode) o;
+        return RECURSION.recurse(this, true, () -> Objects.equals(name, node.name)
+                && Objects.equals(links, node.links)
+                && Objects.equals(attributes, node.attributes));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, links, attributes);
+        return RECURSION.recurse(this, 0, () -> Objects.hash(name, links, attributes));
     }
 
     @Override

@@ -18,6 +18,7 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public final class Link implements Attributed<Link, ForLink>, LinkTarget {
     @Nullable
@@ -103,27 +104,14 @@ public final class Link implements Attributed<Link, ForLink>, LinkTarget {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        final Link link = (Link) o;
-
-        /*
-        //including from could cause circular executions
-//        if (from != null ? !from.equals(addLink.from) : addLink.from != null) {
-//            return false;
-//        }
-//        if (to != null ? !to.equals(link.to) : link.to != null) {
-//            return false;
-//        }
-        */
-        return attributes.equals(link.attributes);
+        final Link entries = (Link) o;
+        return Objects.equals(from, entries.from)
+                && to.equals(entries.to)
+                && attributes.equals(entries.attributes);
     }
 
     @Override
     public int hashCode() {
-        //including from could cause circular executions
-        int result = 0;// from != null ? from.hashCode() : 0;
-        //result = 31 * result + (to != null ? to.hashCode() : 0);
-        result = 31 * result + attributes.hashCode();
-        return result;
+        return Objects.hash(from, to, attributes);
     }
 }
