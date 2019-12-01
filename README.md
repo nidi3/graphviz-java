@@ -9,6 +9,7 @@ Use graphviz with pure java. Create graphviz models using java code and convert 
 #### [How it works ](#user-content-how-it-works)
 #### [Prerequisites ](#user-content-prerequisites)
 #### [API ](#user-content-api)
+#### [Parsing ](#user-content-parsing)
 #### [Examples ](#user-content-examples)
 #### [Images ](#user-content-images)
 #### [Configuration ](#user-content-configuration)
@@ -164,6 +165,52 @@ graph(directed = true) {
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-kotlin/example/ex1.png" width="500">
 
+## Parsing
+
+Dot files can be parsed and thus manipulated. Given this file `color.dot`:
+
+```
+graph {
+    { rank=same; white}
+    { rank=same; cyan; yellow; pink}
+    { rank=same; red; green; blue}
+    { rank=same; black}
+
+    white -- cyan -- blue
+    white -- yellow -- green
+    white -- pink -- red
+
+    cyan -- green -- black
+    yellow -- red -- black
+    pink -- blue -- black
+}
+```
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-1.png" width="400">
+
+Then running this program:
+
+[//]: # (manipulate)
+```java
+try (InputStream dot = getClass().getResourceAsStream("/color.dot")) {
+    MutableGraph g = new Parser().read(dot);
+    Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-1.png"));
+
+    g.graphAttrs()
+            .add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
+            .nodeAttrs().add(Color.WHITE.fill())
+            .nodes().forEach(node ->
+            node.add(
+                    Color.named(node.name().toString()),
+                    Style.lineWidth(4).and(Style.FILLED)));
+    Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-2.png"));
+}
+```
+[//]: # (end)
+
+results in this graphics:
+
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-2.png" width="400">
+
 ## Examples
 
 ### Complex example
@@ -225,52 +272,6 @@ Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex3
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex3.png" width="500">
-
-### Read and manipulate graphs
-
-Dot files can be parsed and thus manipulated. Given this file `color.dot`:
-
-```
-graph {
-    { rank=same; white}
-    { rank=same; cyan; yellow; pink}
-    { rank=same; red; green; blue}
-    { rank=same; black}
-
-    white -- cyan -- blue
-    white -- yellow -- green
-    white -- pink -- red
-
-    cyan -- green -- black
-    yellow -- red -- black
-    pink -- blue -- black
-}
-```
-<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-1.png" width="400">
-
-Then running this program:
-
-[//]: # (manipulate)
-```java
-try (InputStream dot = getClass().getResourceAsStream("/color.dot")) {
-    MutableGraph g = new Parser().read(dot);
-    Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-1.png"));
-
-    g.graphAttrs()
-            .add(Color.WHITE.gradient(Color.rgb("888888")).background().angle(90))
-            .nodeAttrs().add(Color.WHITE.fill())
-            .nodes().forEach(node ->
-            node.add(
-                    Color.named(node.name().toString()),
-                    Style.lineWidth(4).and(Style.FILLED)));
-    Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-2.png"));
-}
-```
-[//]: # (end)
-
-results in this graphics:
-
-<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex4-2.png" width="400">
 
 ## Images
 Images can be included in graphviz in two ways.
