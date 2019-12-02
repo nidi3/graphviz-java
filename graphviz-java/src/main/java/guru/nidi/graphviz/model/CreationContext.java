@@ -30,10 +30,6 @@ public final class CreationContext {
     private final MutableAttributed<CreationContext, ForLink> linkAttributes = new SimpleMutableAttributed<>(this);
     private final MutableAttributed<CreationContext, ForGraph> graphAttributes = new SimpleMutableAttributed<>(this);
 
-    private CreationContext() {
-        this(null);
-    }
-
     private CreationContext(@Nullable MutableGraph graph) {
         this.graph = graph;
     }
@@ -64,17 +60,13 @@ public final class CreationContext {
         return cs.peek();
     }
 
-    static CreationContext begin() {
-        return begin(null);
-    }
-
-    static CreationContext begin(@Nullable MutableGraph graph) {
+    private static CreationContext begin(@Nullable MutableGraph graph) {
         final CreationContext ctx = new CreationContext(graph);
         CONTEXT.get().push(ctx);
         return ctx;
     }
 
-    static void end() {
+    private static void end() {
         final Stack<CreationContext> cs = CONTEXT.get();
         if (!cs.empty()) {
             final CreationContext ctx = cs.pop();

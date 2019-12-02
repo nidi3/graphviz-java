@@ -57,14 +57,16 @@ public enum Format {
             return result.mapString(s -> postProcessSvg(graphviz, s, false));
         }
     },
-    DOT("dot", "dot", false, false),
-    XDOT("xdot", "xdot", false, false),
-    PLAIN("plain", "txt", false, false),
-    PLAIN_EXT("plain-ext", "txt", false, false),
-    PS("ps", "ps", false, false),
-    PS2("ps2", "ps", false, false),
-    JSON("json", "json", false, false),
-    JSON0("json0", "json", false, false);
+    DOT("dot", "dot"),
+    XDOT("xdot", "xdot"),
+    PLAIN("plain", "txt"),
+    PLAIN_EXT("plain-ext", "txt"),
+    PS("ps", "ps"),
+    PS2("ps2", "ps"),
+    JSON("json", "json"),
+    IMAP("imap", "imap"),
+    CMAPX("cmapx", "cmapx"),
+    JSON0("json0", "json");
 
     private static final Logger LOG = LoggerFactory.getLogger(Format.class);
     private static final Pattern FONT_PATTERN = Pattern.compile("font-size=\"(.*?)\"");
@@ -77,6 +79,10 @@ public enum Format {
     public final String fileExtension;
     final boolean image;
     final boolean svg;
+
+    Format(String vizName, String fileExtension) {
+        this(vizName, fileExtension, false, false);
+    }
 
     Format(String vizName, String fileExtension, boolean image, boolean svg) {
         this.vizName = vizName;

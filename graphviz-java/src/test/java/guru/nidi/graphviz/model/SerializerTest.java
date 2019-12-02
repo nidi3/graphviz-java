@@ -16,7 +16,6 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Label;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static guru.nidi.graphviz.model.Compass.*;
@@ -24,11 +23,6 @@ import static guru.nidi.graphviz.model.Factory.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SerializerTest {
-    @AfterEach
-    void closeContext() {
-        CreationContext.end();
-    }
-
     @Test
     void simple() {
         assertGraph("graph {\n}", graph());
@@ -83,12 +77,14 @@ class SerializerTest {
 
     @Test
     void context() {
-        CreationContext.begin()
-                .graphAttrs().add("g", "x")
-                .nodeAttrs().add("n", "y")
-                .linkAttrs().add("l", "z");
-        assertGraph("graph 'x' {\ngraph ['g'='x']\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", graph("x")
-                .with(node("x").with("bla", "blu").link(node("y"))));
+        final Graph g = CreationContext.use(ctx -> {
+            ctx
+                    .graphAttrs().add("g", "x")
+                    .nodeAttrs().add("n", "y")
+                    .linkAttrs().add("l", "z");
+            return graph("x").with(node("x").with("bla", "blu").link(node("y")));
+        });
+        assertGraph("graph 'x' {\ngraph ['g'='x']\n'x' ['n'='y','bla'='blu']\n'y' ['n'='y']\n'x' -- 'y' ['l'='z']\n}", g);
     }
 
     @Test
