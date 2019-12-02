@@ -61,6 +61,11 @@ public final class Link implements Attributed<Link, ForLink>, LinkTarget {
         return this;
     }
 
+    public Link add(String name, @Nullable Object value) {
+        attributes.add(name, value);
+        return this;
+    }
+
     public Link with(Attributes<? extends ForLink> attrs) {
         @SuppressWarnings("unchecked") final Attributes<? extends ForLink> as =
                 (Attributes) attrs.applyTo(attributes.copy());
