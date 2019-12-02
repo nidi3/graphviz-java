@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.attribute.Label;
+
 import java.util.List;
 
 class PortSource implements LinkSource {
@@ -22,6 +24,11 @@ class PortSource implements LinkSource {
 
     PortSource(Port port) {
         this.port = port;
+    }
+
+    @Override
+    public Label name() {
+        return null;
     }
 
     @Override

@@ -68,6 +68,11 @@ public final class Link implements Attributed<Link, ForLink>, LinkTarget {
     }
 
     @Override
+    public Label name() {
+        return to.name();
+    }
+
+    @Override
     public Attributes<? super ForLink> applyTo(MapAttributes<? super ForLink> attrs) {
         return attributes.applyTo(attrs);
     }

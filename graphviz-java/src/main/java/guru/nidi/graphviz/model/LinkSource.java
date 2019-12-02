@@ -15,9 +15,13 @@
  */
 package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.attribute.Label;
+
 import java.util.List;
 
 public interface LinkSource {
+    Label name();
+
     List<Link> links();
 
     Link linkTo(LinkTarget target);
