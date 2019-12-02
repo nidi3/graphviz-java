@@ -19,6 +19,7 @@ import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.Map.Entry;
 
 import static java.util.Arrays.asList;
 
@@ -27,7 +28,7 @@ public class MutableGraph implements LinkSource, LinkTarget {
     protected boolean strict;
     protected boolean directed;
     protected boolean cluster;
-    protected String name;
+    protected Label name;
     protected final Set<MutableNode> nodes;
     protected final Set<MutableGraph> subgraphs;
     protected final LinkList links;
@@ -36,12 +37,12 @@ public class MutableGraph implements LinkSource, LinkTarget {
     protected final MutableAttributed<MutableGraph, ForGraph> graphAttrs;
 
     MutableGraph() {
-        this(false, false, false, "", new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
+        this(false, false, false, Label.of(""), new LinkedHashSet<>(), new LinkedHashSet<>(), new ArrayList<>(),
                 null, null, null);
         CreationContext.current().ifPresent(ctx -> graphAttrs().add(ctx.graphAttrs()));
     }
 
-    protected MutableGraph(boolean strict, boolean directed, boolean cluster, String name,
+    protected MutableGraph(boolean strict, boolean directed, boolean cluster, Label name,
                            LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
                            @Nullable Attributes<? extends ForNode> nodeAttrs,
                            @Nullable Attributes<? extends ForLink> linkAttrs,
@@ -87,7 +88,7 @@ public class MutableGraph implements LinkSource, LinkTarget {
     }
 
     public MutableGraph setName(String name) {
-        this.name = name;
+        this.name = Label.of(name);
         return this;
     }
 
@@ -150,22 +151,7 @@ public class MutableGraph implements LinkSource, LinkTarget {
     }
 
     public Collection<MutableNode> nodes() {
-        final HashSet<MutableNode> ns = new HashSet<>();
-        for (final MutableNode node : nodes) {
-            collectNodes(node, ns);
-        }
-        return ns;
-    }
-
-    private void collectNodes(MutableNode node, Set<MutableNode> visited) {
-        if (!visited.contains(node)) {
-            visited.add(node);
-            for (final Link link : node.links()) {
-                if (link.to instanceof ImmutablePortNode) {
-                    collectNodes(((ImmutablePortNode) link.to).node(), visited);
-                }
-            }
-        }
+        return collectNodes(new HashSet<>(), new HashSet<>()).getKey();
     }
 
     public Collection<MutableGraph> graphs() {
@@ -174,6 +160,44 @@ public class MutableGraph implements LinkSource, LinkTarget {
 
     public List<Link> links() {
         return links;
+    }
+
+    public Collection<Link> rootEdges() {
+        return links;
+    }
+
+    public Collection<Link> edges() {
+        return collectNodes(new HashSet<>(), new HashSet<>()).getValue();
+    }
+
+    private Entry<Set<MutableNode>, Set<Link>> collectNodes(Set<MutableNode> nodes, Set<Link> links) {
+        for (final MutableGraph graph : subgraphs) {
+            graph.collectNodes(nodes, links);
+        }
+        for (final MutableNode node : this.nodes) {
+            collectNodes(node, nodes, links);
+        }
+        for (final Link link : this.links) {
+            links.add(link);
+            if (link.to instanceof ImmutablePortNode) {
+                collectNodes(((ImmutablePortNode) link.to).node(), nodes, links);
+            }
+            //TODO link.to is graph
+        }
+        return new AbstractMap.SimpleEntry<>(nodes, links);
+    }
+
+    private void collectNodes(MutableNode node, Set<MutableNode> nodes, Set<Link> links) {
+        if (!nodes.contains(node)) {
+            nodes.add(node);
+            for (final Link link : node.links()) {
+                links.add(link);
+                if (link.to instanceof ImmutablePortNode) {
+                    collectNodes(((ImmutablePortNode) link.to).node(), nodes, links);
+                }
+                //TODO link.to is graph
+            }
+        }
     }
 
     public boolean isStrict() {
@@ -188,7 +212,7 @@ public class MutableGraph implements LinkSource, LinkTarget {
         return cluster;
     }
 
-    public String name() {
+    public Label name() {
         return name;
     }
 

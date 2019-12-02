@@ -24,7 +24,7 @@ class ImmutableGraph extends MutableGraph implements Graph {
     ImmutableGraph() {
     }
 
-    private ImmutableGraph(boolean strict, boolean directed, boolean cluster, String name,
+    private ImmutableGraph(boolean strict, boolean directed, boolean cluster, Label name,
                            LinkedHashSet<MutableNode> nodes, LinkedHashSet<MutableGraph> subgraphs, List<Link> links,
                            MutableAttributed<MutableGraph, ForNode> nodeAttributes,
                            MutableAttributed<MutableGraph, ForLink> linkAttributes,
