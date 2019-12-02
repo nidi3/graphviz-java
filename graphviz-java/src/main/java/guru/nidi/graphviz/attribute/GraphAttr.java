@@ -65,4 +65,12 @@ public final class GraphAttr {
     public static Attributes<ForGraph> pad(double padX, double padY) {
         return new SingleAttributes<>("pad", padX + "," + padY);
     }
+
+    public static Attributes<ForGraph> margin(double margin) {
+        return new SingleAttributes<>("margin", margin);
+    }
+
+    public static Attributes<ForGraph> margin(double marginX, double marginY) {
+        return new SingleAttributes<>("margin", marginX + "," + marginY);
+    }
 }
