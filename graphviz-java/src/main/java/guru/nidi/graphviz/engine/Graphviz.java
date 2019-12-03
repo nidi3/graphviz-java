@@ -17,6 +17,7 @@ package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.model.layout.LayoutParser;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -26,6 +27,7 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static guru.nidi.graphviz.engine.Format.JSON;
 import static guru.nidi.graphviz.engine.IoUtils.readStream;
 
 public final class Graphviz {
@@ -37,25 +39,26 @@ public final class Graphviz {
     @Nullable
     private static volatile GraphvizEngine engine;
 
+    @Nullable
+    private final MutableGraph graph;
     private final String src;
+
     @Nullable
     final Rasterizer rasterizer;
-    final int width;
-    final int height;
-    final double scale;
-    final double fontAdjust;
+    final ProcessOptions processOptions;
     private final Options options;
     private final List<GraphvizFilter> filters;
 
-    private Graphviz(String src, @Nullable Rasterizer rasterizer,
-                     int width, int height, double scale, double fontAdjust,
-                     Options options, List<GraphvizFilter> filters) {
+    private Graphviz(@Nullable MutableGraph graph, String src) {
+        this(graph, src, Rasterizer.DEFAULT, new ProcessOptions().dpi(dpi(src)), Options.create(), new ArrayList<>());
+    }
+
+    private Graphviz(@Nullable MutableGraph graph, String src, @Nullable Rasterizer rasterizer,
+                     ProcessOptions processOptions, Options options, List<GraphvizFilter> filters) {
+        this.graph = graph;
         this.src = src;
         this.rasterizer = rasterizer;
-        this.width = width;
-        this.height = height;
-        this.scale = scale;
-        this.fontAdjust = fontAdjust;
+        this.processOptions = processOptions;
         this.options = options;
         this.filters = filters;
     }
@@ -156,50 +159,58 @@ public final class Graphviz {
     }
 
     public static Graphviz fromGraph(MutableGraph graph) {
-        return fromString(graph.toString());
+        return new Graphviz(graph, graph.toString());
     }
 
     public static Graphviz fromString(String src) {
-        return new Graphviz(src, Rasterizer.DEFAULT, 0, 0, 1, 1, Options.create(), new ArrayList<>());
+        return new Graphviz(null, src);
     }
 
     public Graphviz engine(Engine engine) {
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.engine(engine), filters);
+        return new Graphviz(graph, src, rasterizer, processOptions, options.engine(engine), filters);
     }
 
     public Graphviz totalMemory(@Nullable Integer totalMemory) {
-        return new Graphviz(
-                src, rasterizer, width, height, scale, fontAdjust, options.totalMemory(totalMemory), filters);
+        return new Graphviz(graph, src, rasterizer, processOptions, options.totalMemory(totalMemory), filters);
     }
 
     public Graphviz yInvert(@Nullable Boolean yInvert) {
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.yInvert(yInvert), filters);
+        return new Graphviz(graph, src, rasterizer, processOptions, options.yInvert(yInvert), filters);
     }
 
     public Graphviz basedir(File basedir) {
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.basedir(basedir), filters);
+        return new Graphviz(graph, src, rasterizer, processOptions, options.basedir(basedir), filters);
     }
 
     public Graphviz width(int width) {
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options, filters);
+        return new Graphviz(graph, src, rasterizer, processOptions.width(width), options, filters);
     }
 
     public Graphviz height(int height) {
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options, filters);
+        return new Graphviz(graph, src, rasterizer, processOptions.height(height), options, filters);
     }
 
     public Graphviz scale(double scale) {
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options, filters);
+        return new Graphviz(graph, src, rasterizer, processOptions.scale(scale), options, filters);
     }
 
     public Graphviz fontAdjust(double fontAdjust) {
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options, filters);
+        return new Graphviz(graph, src, rasterizer, processOptions.fontAdjust(fontAdjust), options, filters);
+    }
+
+    public Graphviz parseLayout(boolean parseLayout) {
+        if (graph == null) {
+            throw new GraphvizException(
+                    "Graphviz.parseLayout(true) does not work together with Graphviz.fromString or Graphviz.fromFile\n"
+                            + "Use MutableGraph g = new Parser().read(...); Graphviz.fromGraph(g); instead.");
+        }
+        return new Graphviz(graph, src, rasterizer, processOptions.parseLayout(parseLayout), options, filters);
     }
 
     public Graphviz filter(GraphvizFilter filter) {
         final ArrayList<GraphvizFilter> fs = new ArrayList<>(filters);
         fs.add(filter);
-        return new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options, fs);
+        return new Graphviz(graph, src, rasterizer, processOptions, options, fs);
     }
 
     public Renderer rasterize(@Nullable Rasterizer rasterizer) {
@@ -208,17 +219,23 @@ public final class Graphviz {
                     + "Make sure that the batik-rasterizer or svg-salamander jar is available on the classpath.");
         }
         final Options opts = options.format(rasterizer.format());
-        final Graphviz graphviz = new Graphviz(src, rasterizer, width, height, scale, fontAdjust, opts, filters);
+        final Graphviz graphviz = new Graphviz(graph, src, rasterizer, processOptions, opts, filters);
         return new Renderer(graphviz, null, Format.PNG);
     }
 
     public Renderer render(Format format) {
-        final Graphviz g =
-                new Graphviz(src, rasterizer, width, height, scale, fontAdjust, options.format(format), filters);
+        final Graphviz g = new Graphviz(graph, src, rasterizer, processOptions, options.format(format), filters);
         return new Renderer(g, null, format);
     }
 
     EngineResult execute() {
+        if (processOptions.parseLayout) {
+            JSON.postProcess(this, getEngine().execute(JSON.preProcess(src), options, null)).consume(
+                    file -> {
+                        throw new AssertionError("Json output is always a string.");
+                    },
+                    string -> LayoutParser.applyLayoutToGraph(string, graph));
+        }
         final EngineResult result = options.format == Format.DOT
                 ? EngineResult.fromString(src)
                 : getEngine().execute(options.format.preProcess(src), options, rasterizer);
@@ -233,7 +250,7 @@ public final class Graphviz {
         return options.format;
     }
 
-    double dpi() {
+    private static double dpi(String src) {
         final Matcher matcher = DPI_PATTERN.matcher(src);
         return matcher.find() ? Double.parseDouble(matcher.group(1)) : 72;
     }

@@ -63,7 +63,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
+    public EngineResult execute(String src, Options options, @Nullable Rasterizer rasterizer) {
         try {
             final Path path = Files.createTempDirectory(getOrCreateTempDirectory().toPath(), "DotEngine");
             final File dotFile = getDotFile(path);
@@ -77,7 +77,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         }
     }
 
-    private EngineResult doExecute(Path path, File dotFile, Options options, Rasterizer rasterizer)
+    private EngineResult doExecute(Path path, File dotFile, Options options, @Nullable Rasterizer rasterizer)
             throws IOException, InterruptedException {
         final String engine = getEngineExecutable(options.engine);
         final String format = getFormatName(options.format, rasterizer);
@@ -109,7 +109,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         return exe;
     }
 
-    private String getFormatName(@Nullable Format format, Rasterizer rasterizer) {
+    private String getFormatName(@Nullable Format format, @Nullable Rasterizer rasterizer) {
         if (rasterizer instanceof BuiltInRasterizer) {
             final BuiltInRasterizer natRast = (BuiltInRasterizer) rasterizer;
             String f = natRast.format;
