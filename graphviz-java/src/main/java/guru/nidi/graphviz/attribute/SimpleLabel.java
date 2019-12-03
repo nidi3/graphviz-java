@@ -53,6 +53,10 @@ public class SimpleLabel {
         return value;
     }
 
+    public boolean contentEquals(String s) {
+        return value.equals(s);
+    }
+
     public boolean isHtml() {
         return html;
     }

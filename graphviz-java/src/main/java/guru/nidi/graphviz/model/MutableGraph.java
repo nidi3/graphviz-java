@@ -177,26 +177,24 @@ public class MutableGraph implements LinkSource, LinkTarget {
         for (final MutableNode node : this.nodes) {
             collectNodes(node, nodes, links);
         }
-        for (final Link link : this.links) {
-            links.add(link);
-            if (link.to instanceof ImmutablePortNode) {
-                collectNodes(((ImmutablePortNode) link.to).node(), nodes, links);
-            }
-            //TODO link.to is graph
-        }
+        collectLinks(this.links, nodes, links);
         return new AbstractMap.SimpleEntry<>(nodes, links);
     }
 
     private void collectNodes(MutableNode node, Set<MutableNode> nodes, Set<Link> links) {
         if (!nodes.contains(node)) {
             nodes.add(node);
-            for (final Link link : node.links()) {
-                links.add(link);
-                if (link.to instanceof ImmutablePortNode) {
-                    collectNodes(((ImmutablePortNode) link.to).node(), nodes, links);
-                }
-                //TODO link.to is graph
+            collectLinks(node.links(), nodes, links);
+        }
+    }
+
+    private void collectLinks(List<Link> edges, Set<MutableNode> nodes, Set<Link> links) {
+        for (final Link link : edges) {
+            links.add(link);
+            if (link.to instanceof ImmutablePortNode) {
+                collectNodes(((ImmutablePortNode) link.to).node(), nodes, links);
             }
+            //TODO link.to is graph
         }
     }
 
