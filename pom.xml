@@ -84,7 +84,7 @@
                 <plugin>
                     <groupId>guru.nidi.maven.plugins</groupId>
                     <artifactId>snippets-maven-plugin</artifactId>
-                    <version>0.0.3</version>
+                    <version>1.0.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
