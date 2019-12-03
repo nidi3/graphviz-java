@@ -52,11 +52,6 @@ class ExampleTest {
         Graphviz.releaseEngine();
     }
 
-    @AfterEach
-    void closeContext() {
-        CreationContext.end();
-    }
-
     @Test
     void ex1a() throws IOException {
         final Graph g = CreationContext.use(ctx -> graph("ex1a").directed().with(
@@ -165,23 +160,25 @@ class ExampleTest {
 
     @Test
     void ex4b() throws IOException {
-        CreationContext.begin()
-                .graphAttrs().add(Color.YELLOWGREEN.background())
-                .nodeAttrs().add(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
-                .linkAttrs().add(Style.DOTTED);
-        final Node
-                struct1 = node("struct1").with(Records.mOf(rec("f0", "left"), rec("f1", "mid dle"), rec("f2", "right"))),
-                struct2 = node("struct2").with(Records.mOf(rec("f0", "one"), rec("f1", "two"))),
-                struct3 = node("struct3").with(Records.mOf(
-                        rec("hello\nworld"),
-                        turn(rec("b"),
-                                turn(rec("c"), rec("here", "d"), rec("e")),
-                                rec("f")),
-                        rec("g"), rec("h")));
-        final Graph g = graph("ex4b").directed().with(
-                struct1.link(
-                        between(port("f1"), struct2.port("f0")),
-                        between(port("f2"), struct3.port("here"))));
+        final Graph g = CreationContext.use(ctx -> {
+            ctx
+                    .graphAttrs().add(Color.YELLOWGREEN.background())
+                    .nodeAttrs().add(Color.LIGHTBLUE3.fill(), Style.FILLED, Color.VIOLET.font())
+                    .linkAttrs().add(Style.DOTTED);
+            final Node
+                    struct1 = node("struct1").with(Records.mOf(rec("f0", "left"), rec("f1", "mid dle"), rec("f2", "right"))),
+                    struct2 = node("struct2").with(Records.mOf(rec("f0", "one"), rec("f1", "two"))),
+                    struct3 = node("struct3").with(Records.mOf(
+                            rec("hello\nworld"),
+                            turn(rec("b"),
+                                    turn(rec("c"), rec("here", "d"), rec("e")),
+                                    rec("f")),
+                            rec("g"), rec("h")));
+            return graph("ex4b").directed().with(
+                    struct1.link(
+                            between(port("f1"), struct2.port("f0")),
+                            between(port("f2"), struct3.port("here"))));
+        });
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex4b.png"));
     }
 
@@ -351,7 +348,7 @@ class ExampleTest {
                         node("b3").link("end"),
                         node("end").with(Shape.mSquare("", ""))
                 );
-        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex7.png"));
+        Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex7"));
     }
 
     @Test
