@@ -30,7 +30,7 @@ public enum Format {
 
         @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
-            return result.mapString(s -> postProcessSvg(graphviz, s, true));
+            return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, true));
         }
     },
 
@@ -42,7 +42,7 @@ public enum Format {
 
         @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
-            return result.mapString(s -> postProcessSvg(graphviz, s, true));
+            return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, true));
         }
     },
 
@@ -54,7 +54,7 @@ public enum Format {
 
         @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
-            return result.mapString(s -> postProcessSvg(graphviz, s, false));
+            return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, false));
         }
     },
     DOT("dot", "dot", false, false),
@@ -107,11 +107,11 @@ public enum Format {
         return src.replace("&", "&amp;");
     }
 
-    private static String postProcessSvg(Graphviz graphviz, String result, boolean prefix) {
+    private static String postProcessSvg(ProcessOptions options, String result, boolean prefix) {
         final String unprefixed = prefix ? withoutPrefix(result) : result;
-        final String pixelSized = pointsToPixels(unprefixed, graphviz.dpi(),
-                graphviz.width, graphviz.height, graphviz.scale);
-        return graphviz.fontAdjust == 1 ? pixelSized : fontAdjusted(pixelSized, graphviz.fontAdjust);
+        final String pixelSized = pointsToPixels(unprefixed, options.dpi,
+                options.width, options.height, options.scale);
+        return options.fontAdjust == 1 ? pixelSized : fontAdjusted(pixelSized, options.fontAdjust);
     }
 
     private static String withoutPrefix(String svg) {
