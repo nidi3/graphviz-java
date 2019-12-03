@@ -35,14 +35,15 @@ import static guru.nidi.graphviz.attribute.GraphAttr.*;
 import static guru.nidi.graphviz.engine.Format.*;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LayoutParserTest {
     @Test
     void simple() throws IOException {
-        int pad = 10;
-        int dpi = 72; //TODO
-        int margin = 0; //TODO
-        MutableGraph g = (MutableGraph) graph("ex7").cluster().graphAttr().with(dpi(dpi), pad(pad / 72.0), margin(margin / 72.0))
+        final int pad = 10;
+        final int dpi = 72; //TODO
+        final int margin = 0; //TODO
+        final MutableGraph g = (MutableGraph) graph("ex7").cluster().graphAttr().with(dpi(dpi), pad(pad / 72.0), margin(margin / 72.0))
                 .with(
                         graph().cluster()
                                 .nodeAttr().with(Style.FILLED, Color.WHITE)
@@ -60,35 +61,36 @@ public class LayoutParserTest {
                         node("b3").link("end"),
                         node("end").with(Shape.mSquare("", ""))
                 );
-        File file = new File("target/ex7.json");
-        Graphviz viz = Graphviz.fromGraph(g);//.width(500);
+        final File file = new File("target/ex7.json");
+        final Graphviz viz = Graphviz.fromGraph(g);//.width(500);
         viz.render(JSON).toFile(file);
         viz.render(PNG).toFile(new File("target/ex7"));
         viz.render(SVG).toFile(new File("target/ex7"));
         Graphviz.fromGraph(g.graphAttrs().add("splines", "ortho")).render(JSON).toFile(new File("target/ex7o"));
 
-        Collection<MutableNode> nodes = g.nodes();
-        Collection<Link> edges = g.edges();
-        try (InputStream in = new FileInputStream(file)) {
+        final Collection<MutableNode> nodes = g.nodes();
+        final Collection<Link> edges = g.edges();
+        try (final InputStream in = new FileInputStream(file)) {
             LayoutParser.applyLayoutToGraph(IOUtils.toString(in, StandardCharsets.UTF_8), (MutableGraph) g);
         }
 
-        int width = LayoutAttributes.widthOf(g);
-        int height = LayoutAttributes.heightOf(g);
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D gr = image.createGraphics();
+        final int width = LayoutAttributes.widthOf(g);
+        final int height = LayoutAttributes.heightOf(g);
+        final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D gr = image.createGraphics();
         gr.setColor(java.awt.Color.BLACK);
         gr.setStroke(new BasicStroke(2));
         gr.draw(LayoutAttributes.figureOf(g).toShape());
-        for (MutableNode node : nodes) {
+        for (final MutableNode node : nodes) {
             gr.draw(LayoutAttributes.figureOf(node).toShape());
         }
-        for (MutableGraph graph : g.graphs()) {
+        for (final MutableGraph graph : g.graphs()) {
             gr.draw(LayoutAttributes.figureOf(graph).toShape());
         }
-        for (Link edge : edges) {
+        for (final Link edge : edges) {
             gr.draw(LayoutAttributes.figureOf(edge).toShape());
         }
         ImageIO.write(image, "png", new File("target/draw.png"));
+        assertTrue(true);
     }
 }
