@@ -65,6 +65,10 @@ public class MutableGraph implements LinkSource, LinkTarget {
                 nodeAttrs, linkAttrs, graphAttrs);
     }
 
+    public Graph toImmutable() {
+        return ImmutableGraph.copyOfMut(this);
+    }
+
     public MutableGraph use(ThrowingBiConsumer<MutableGraph, CreationContext> actions) {
         return CreationContext.use(this, ctx -> {
             actions.accept(this, ctx);

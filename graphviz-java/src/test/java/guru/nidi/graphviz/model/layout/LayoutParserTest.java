@@ -71,7 +71,7 @@ public class LayoutParserTest {
         final Collection<MutableNode> nodes = g.nodes();
         final Collection<Link> edges = g.edges();
         try (final InputStream in = new FileInputStream(file)) {
-            LayoutParser.applyLayoutToGraph(IOUtils.toString(in, StandardCharsets.UTF_8), (MutableGraph) g);
+            LayoutParser.applyLayoutToGraph(IOUtils.toString(in, StandardCharsets.UTF_8), g);
         }
 
         final int width = LayoutAttributes.widthOf(g);
