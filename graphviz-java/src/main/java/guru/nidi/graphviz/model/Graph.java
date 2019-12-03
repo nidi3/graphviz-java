@@ -39,4 +39,6 @@ public interface Graph extends LinkSource, LinkTarget {
     Attributed<Graph, ForLink> linkAttr();
 
     Attributed<Graph, ForGraph> graphAttr();
+
+    MutableGraph toMutable();
 }

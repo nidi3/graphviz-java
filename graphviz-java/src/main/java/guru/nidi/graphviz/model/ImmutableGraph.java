@@ -34,9 +34,18 @@ class ImmutableGraph extends MutableGraph implements Graph {
     }
 
     private ImmutableGraph copyOfMut() {
-        return new ImmutableGraph(strict, directed, cluster, name,
-                new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), new ArrayList<>(links),
-                nodeAttrs, linkAttrs, graphAttrs);
+        return copyOfMut(this);
+    }
+
+    static ImmutableGraph copyOfMut(MutableGraph g) {
+        return new ImmutableGraph(g.strict, g.directed, g.cluster, g.name,
+                new LinkedHashSet<>(g.nodes), new LinkedHashSet<>(g.subgraphs), new ArrayList<>(g.links),
+                g.nodeAttrs, g.linkAttrs, g.graphAttrs);
+    }
+
+    @Override
+    public MutableGraph toMutable() {
+        return copy();
     }
 
     public Graph strict() {
