@@ -77,8 +77,8 @@ class GraphvizTest {
     }
 
     private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {
-        assertThat(graphviz.width, is(expectedWidth));
-        assertThat(graphviz.height, is(expectedHeight));
-        assertThat(graphviz.scale, is(expectedScale));
+        assertThat(graphviz.processOptions.width, is(expectedWidth));
+        assertThat(graphviz.processOptions.height, is(expectedHeight));
+        assertThat(graphviz.processOptions.scale, is(expectedScale));
     }
 }

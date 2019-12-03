@@ -19,7 +19,7 @@ import guru.nidi.graphviz.attribute.Label;
 
 public interface LinkTarget {
     Label name();
-    
+
     Link linkTo();
 
     LinkSource asLinkSource();
