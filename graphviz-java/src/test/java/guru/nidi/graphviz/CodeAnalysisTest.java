@@ -44,13 +44,14 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     @Override
     protected DependencyResult analyzeDependencies() {
         class GuruNidiGraphviz extends DependencyRuler {
-            DependencyRule model, attribute, attributeValidate, engine, parse, service, use;
+            DependencyRule model, modelLayout, attribute, attributeValidate, engine, parse, service, use;
 
             public void defineRules() {
                 base().mayBeUsedBy(all());
-                engine.mayUse(model, service);
+                engine.mayUse(model, modelLayout, service);
                 parse.mayUse(model, attribute, attributeValidate);
                 model.mayUse(attribute);
+                modelLayout.mayUse(model, attribute);
                 attributeValidate.mayUse(attribute);
                 use.mayUse(all());
             }
@@ -74,6 +75,9 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("GraphvizServer is on localhost",
                         In.locs("GraphvizServer", "GraphvizServerEngine")
                                 .ignore("UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"))
+                .because("It's used by Jackson",
+                        In.locs("JsonDraw", "JsonEdge", "JsonNode")
+                                .ignore("NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD"))
                 .because("It's ok",
                         In.loc("Datatype").ignore("NP_BOOLEAN_RETURN_NULL"),
                         In.loc("BuiltInRasterizer").ignore("NP_NONNULL_RETURN_VIOLATION"),
@@ -151,10 +155,10 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(CheckstyleConfigs.minimalCheckstyleIgnore())
-                .just(In.locs("Color", "Arrow", "Rank", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr").ignore("empty.line.separator"))
+                .just(In.locs("Color", "Arrow", "Rank", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr", "LayoutAttributes").ignore("empty.line.separator"))
                 .just(In.clazz(For.class).ignore("one.top.level.class"))
                 .just(In.locs("EngineResult", "IOFunction").ignore("abbreviation.as.word"))
-                .just(In.clazz(Renderer.class).ignore("indentation.error"));
+                .just(In.classes(Renderer.class).ignore("indentation.error"));
         final StyleChecks checks = CheckstyleConfigs.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }

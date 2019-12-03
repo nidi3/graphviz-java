@@ -38,16 +38,16 @@ class Serializer {
     private void toplevelGraph(MutableGraph graph) {
         final boolean useDir = hasDifferentlyDirectedSubgraphs(graph);
         str.append(graph.strict ? "strict " : "").append(graph.directed || useDir ? "digraph " : "graph ");
-        if (!graph.name.isEmpty()) {
-            str.append(SimpleLabel.of(graph.name).serialized()).append(' ');
+        if (!graph.name.isContentEmpty()) {
+            str.append(graph.name.serialized()).append(' ');
         }
         doGraph(graph, useDir);
     }
 
     private void subGraph(MutableGraph graph, boolean useDir) {
-        if (!graph.name.isEmpty() || graph.cluster) {
+        if (!graph.name.isContentEmpty() || graph.cluster) {
             str.append("subgraph ")
-                    .append(Label.of((graph.cluster ? "cluster_" : "") + graph.name).serialized())
+                    .append((graph.cluster ? Label.of("cluster_" + graph.name) : graph.name).serialized())
                     .append(' ');
         }
         doGraph(graph, useDir);

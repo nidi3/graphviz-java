@@ -230,11 +230,9 @@ public final class Graphviz {
 
     EngineResult execute() {
         if (processOptions.parseLayout) {
-            JSON.postProcess(this, getEngine().execute(JSON.preProcess(src), options, null)).consume(
-                    file -> {
-                        throw new AssertionError("Json output is always a string.");
-                    },
-                    string -> LayoutParser.applyLayoutToGraph(string, graph));
+            JSON.postProcess(this, getEngine().execute(JSON.preProcess(src), options, null)).consume(file -> {
+                throw new AssertionError("Json output is always a string.");
+            }, string -> LayoutParser.applyLayoutToGraph(string, graph));
         }
         final EngineResult result = options.format == Format.DOT
                 ? EngineResult.fromString(src)

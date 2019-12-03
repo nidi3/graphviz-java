@@ -57,6 +57,10 @@ public class SimpleLabel {
         return value.equals(s);
     }
 
+    public boolean isContentEmpty() {
+        return value.isEmpty();
+    }
+
     public boolean isHtml() {
         return html;
     }
