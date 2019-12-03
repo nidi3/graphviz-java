@@ -21,6 +21,7 @@ import java.awt.geom.Ellipse2D;
 public class Ellipse implements Figure {
     public final Coordinate center;
     public final Coordinate radius;
+    private Ellipse2D.Double shape;
 
     public Ellipse(Coordinate center, Coordinate radius) {
         this.center = center;
@@ -29,6 +30,9 @@ public class Ellipse implements Figure {
 
     @Override
     public Shape toShape() {
-        return new Ellipse2D.Double(center.x, center.y, 2 * radius.x, 2 * radius.y);
+        if (shape == null) {
+            shape = new Ellipse2D.Double(center.x, center.y, 2 * radius.x, 2 * radius.y);
+        }
+        return shape;
     }
 }

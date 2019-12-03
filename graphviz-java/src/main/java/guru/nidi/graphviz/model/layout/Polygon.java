@@ -22,6 +22,7 @@ import static java.util.Collections.unmodifiableList;
 
 public class Polygon implements Figure {
     public final List<Coordinate> coordinates;
+    private java.awt.Polygon shape;
 
     public Polygon(List<Coordinate> coordinates) {
         this.coordinates = unmodifiableList(coordinates);
@@ -29,8 +30,11 @@ public class Polygon implements Figure {
 
     @Override
     public Shape toShape() {
-        final int[] xs = coordinates.stream().mapToInt(c -> (int) c.x).toArray();
-        final int[] ys = coordinates.stream().mapToInt(c -> (int) c.y).toArray();
-        return new java.awt.Polygon(xs, ys, xs.length);
+        if (shape == null) {
+            final int[] xs = coordinates.stream().mapToInt(c -> (int) c.x).toArray();
+            final int[] ys = coordinates.stream().mapToInt(c -> (int) c.y).toArray();
+            shape = new java.awt.Polygon(xs, ys, xs.length);
+        }
+        return shape;
     }
 }

@@ -80,15 +80,15 @@ public class LayoutParserTest {
         final Graphics2D gr = image.createGraphics();
         gr.setColor(java.awt.Color.BLACK);
         gr.setStroke(new BasicStroke(2));
-        gr.draw(LayoutAttributes.figureOf(g).toShape());
+        gr.draw(LayoutAttributes.outlineOf(g).toShape());
         for (final MutableNode node : nodes) {
-            gr.draw(LayoutAttributes.figureOf(node).toShape());
+            gr.draw(LayoutAttributes.outlineOf(node).toShape());
         }
         for (final MutableGraph graph : g.graphs()) {
-            gr.draw(LayoutAttributes.figureOf(graph).toShape());
+            gr.draw(LayoutAttributes.outlineOf(graph).toShape());
         }
         for (final Link edge : edges) {
-            gr.draw(LayoutAttributes.figureOf(edge).toShape());
+            gr.draw(LayoutAttributes.outlineOf(edge).toShape());
         }
         ImageIO.write(image, "png", new File("target/draw.png"));
         assertTrue(true);

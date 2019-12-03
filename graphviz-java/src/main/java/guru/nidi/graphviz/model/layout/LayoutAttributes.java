@@ -20,7 +20,7 @@ import guru.nidi.graphviz.model.*;
 
 public final class LayoutAttributes {
     static final String
-            FIGURE = "layoutFigure",
+            OUTLINE = "layoutOutline",
             WIDTH = "layoutWidth",
             HEIGHT = "layoutHeight";
 
@@ -35,19 +35,19 @@ public final class LayoutAttributes {
         return (Integer) graph.graphAttrs().get(HEIGHT);
     }
 
-    public static Figure figureOf(MutableGraph graph) {
-        return figureOf(graph.graphAttrs());
+    public static Figure outlineOf(MutableGraph graph) {
+        return outlineOf(graph.graphAttrs());
     }
 
-    public static Figure figureOf(MutableNode node) {
-        return figureOf(node.attrs());
+    public static Figure outlineOf(MutableNode node) {
+        return outlineOf(node.attrs());
     }
 
-    public static Figure figureOf(Link link) {
-        return figureOf(link.attrs());
+    public static Figure outlineOf(Link link) {
+        return outlineOf(link.attrs());
     }
 
-    public static Figure figureOf(Attributes<?> attributes) {
-        return (Figure) attributes.get(FIGURE);
+    public static Figure outlineOf(Attributes<?> attributes) {
+        return (Figure) attributes.get(OUTLINE);
     }
 }

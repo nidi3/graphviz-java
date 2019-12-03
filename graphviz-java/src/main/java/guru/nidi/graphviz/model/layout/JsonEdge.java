@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static guru.nidi.graphviz.model.layout.JsonDraw.parseDraw;
-import static guru.nidi.graphviz.model.layout.LayoutAttributes.FIGURE;
+import static guru.nidi.graphviz.model.layout.LayoutAttributes.OUTLINE;
 
 class JsonEdge {
     int head;
@@ -35,6 +35,6 @@ class JsonEdge {
         graph.edges().stream()
                 .filter(e -> e.from().name().contentEquals(nodeById.get(tail))
                         && e.to().name().contentEquals(nodeById.get(head)))
-                .forEach(e -> e.add(FIGURE, shape));
+                .forEach(e -> e.add(OUTLINE, shape));
     }
 }

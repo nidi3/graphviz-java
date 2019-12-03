@@ -23,6 +23,7 @@ import static java.util.Collections.unmodifiableList;
 
 public class Spline implements Figure {
     public final List<Coordinate> points;
+    private Path2D.Double shape;
 
     public Spline(List<Coordinate> points) {
         this.points = unmodifiableList(points);
@@ -30,14 +31,16 @@ public class Spline implements Figure {
 
     @Override
     public Shape toShape() {
-        final Path2D.Double res = new Path2D.Double();
-        res.moveTo(points.get(0).x, points.get(0).y);
-        for (int i = 1; i < points.size() - 2; i += 3) {
-            res.curveTo(
-                    points.get(i).x, points.get(i).y,
-                    points.get(i + 1).x, points.get(i + 1).y,
-                    points.get(i + 2).x, points.get(i + 2).y);
+        if (shape == null) {
+            shape = new Path2D.Double();
+            shape.moveTo(points.get(0).x, points.get(0).y);
+            for (int i = 1; i < points.size() - 2; i += 3) {
+                shape.curveTo(
+                        points.get(i).x, points.get(i).y,
+                        points.get(i + 1).x, points.get(i + 1).y,
+                        points.get(i + 2).x, points.get(i + 2).y);
+            }
         }
-        return res;
+        return shape;
     }
 }

@@ -38,7 +38,7 @@ class JsonGraph {
         final Polygon shape = (Polygon) parseDraw(draw, padX, padY, 0);
         final Coordinate topRight = shape.coordinates.get(2);
         final int height = -(int) topRight.y;
-        graph.graphAttrs().add(FIGURE, parseDraw(draw, padX, padY, height));
+        graph.graphAttrs().add(OUTLINE, parseDraw(draw, padX, padY, height));
         graph.graphAttrs().add(WIDTH, (int) topRight.x);
         graph.graphAttrs().add(HEIGHT, height);
         final Map<Integer, String> nodeById = new HashMap<>();

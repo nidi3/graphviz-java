@@ -21,7 +21,7 @@ import guru.nidi.graphviz.model.MutableGraph;
 import java.util.List;
 
 import static guru.nidi.graphviz.model.layout.JsonDraw.parseDraw;
-import static guru.nidi.graphviz.model.layout.LayoutAttributes.FIGURE;
+import static guru.nidi.graphviz.model.layout.LayoutAttributes.OUTLINE;
 
 class JsonNode {
     String name;
@@ -35,11 +35,11 @@ class JsonNode {
         if (name.startsWith("cluster_")) {
             graph.graphs().stream()
                     .filter(n -> ("cluster_" + n.name()).equals(name))
-                    .forEach(n -> n.graphAttrs().add(FIGURE, shape));
+                    .forEach(n -> n.graphAttrs().add(OUTLINE, shape));
         } else {
             graph.nodes().stream()
                     .filter(n -> n.name().contentEquals(name))
-                    .forEach(n -> n.add(FIGURE, shape));
+                    .forEach(n -> n.add(OUTLINE, shape));
         }
     }
 }
