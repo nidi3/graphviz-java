@@ -72,6 +72,7 @@ public enum Format {
     private static final Pattern FONT_PATTERN = Pattern.compile("font-size=\"(.*?)\"");
     private static final Pattern SVG_PATTERN = Pattern.compile(
             "<svg width=\"(?<width>\\d+)(?<unit>p[tx])\" height=\"(?<height>\\d+)p[tx]\""
+                    + "\\R viewBox=\"(?<box1>[0-9.]+) (?<box2>[0-9.]+) (?<box3>[0-9.]+) (?<box4>[0-9.]+)\""
                     + "(?<between>.*?>\\R<g.*?)transform=\"scale\\((?<scaleX>[0-9.]+) (?<scaleY>[0-9.]+)\\)",
             Pattern.DOTALL);
 
@@ -131,7 +132,11 @@ public enum Format {
             LOG.warn("Generated SVG has not the expected format. There might be image size problems.");
             return svg;
         }
-        return m.replaceFirst("<svg " + svgSize(m, width, height, scale) + m.group("between") + svgScale(m, dpi));
+        return m.replaceFirst("<svg " + svgSize(m, width, height, scale) + boxSize(m) + m.group("between") + svgScale(m, dpi));
+    }
+
+    private static String boxSize(Matcher m) {
+        return ""; //the viewBox gives troubles to salamander and batik, deleting it seems to do the right thing...
     }
 
     private static String svgSize(Matcher m, int width, int height, double scale) {
