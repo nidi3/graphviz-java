@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.newSetFromMap;
 
 public class MutableGraph implements LinkSource, LinkTarget {
     private static final SafeRecursion<MutableGraph> RECURSION = new SafeRecursion<>();
@@ -155,7 +156,7 @@ public class MutableGraph implements LinkSource, LinkTarget {
     }
 
     public Collection<MutableNode> nodes() {
-        return collectNodes(new HashSet<>(), new HashSet<>()).getKey();
+        return collectNodes(newSetFromMap(new IdentityHashMap<>()), newSetFromMap(new IdentityHashMap<>())).getKey();
     }
 
     public Collection<MutableGraph> graphs() {
@@ -171,7 +172,7 @@ public class MutableGraph implements LinkSource, LinkTarget {
     }
 
     public Collection<Link> edges() {
-        return collectNodes(new HashSet<>(), new HashSet<>()).getValue();
+        return collectNodes(newSetFromMap(new IdentityHashMap<>()), newSetFromMap(new IdentityHashMap<>())).getValue();
     }
 
     private Entry<Set<MutableNode>, Set<Link>> collectNodes(Set<MutableNode> nodes, Set<Link> links) {
@@ -261,5 +262,4 @@ public class MutableGraph implements LinkSource, LinkTarget {
     public String toString() {
         return new Serializer(this).serialize();
     }
-
 }

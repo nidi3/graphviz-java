@@ -230,18 +230,22 @@ public final class Graphviz {
 
     EngineResult execute() {
         if (processOptions.parseLayout) {
-            JSON.postProcess(this, getEngine().execute(JSON.preProcess(src), options, null)).consume(file -> {
+            execute(options.format(JSON)).consume(file -> {
                 throw new AssertionError("Json output is always a string.");
             }, string -> LayoutParser.applyLayoutToGraph(string, graph));
         }
+        EngineResult result = execute(options);
+        for (final GraphvizFilter filter : filters) {
+            result = filter.filter(options.format, result);
+        }
+        return result;
+    }
+
+    private EngineResult execute(Options options) {
         final EngineResult result = options.format == Format.DOT
                 ? EngineResult.fromString(src)
                 : getEngine().execute(options.format.preProcess(src), options, rasterizer);
-        EngineResult engineResult = options.format.postProcess(this, result);
-        for (final GraphvizFilter filter : filters) {
-            engineResult = filter.filter(options.format, engineResult);
-        }
-        return engineResult;
+        return options.format.postProcess(this, result);
     }
 
     Format format() {

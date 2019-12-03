@@ -41,7 +41,7 @@ class JsonDraw {
                 return new Polygon(pointCoordinates(padX, padY, height));
             case "e":
                 return new Ellipse(
-                        new Coordinate(rect.get(0) - rect.get(2) + padX, height - (rect.get(1) + rect.get(3)) - padY),
+                        new Coordinate(rect.get(0) - rect.get(2) + padX, height - (rect.get(1) + rect.get(3) + padY)),
                         new Coordinate(rect.get(2), rect.get(3)));
             case "b":
                 return new Spline(pointCoordinates(padX, padY, height));
@@ -51,6 +51,6 @@ class JsonDraw {
     }
 
     private List<Coordinate> pointCoordinates(int padX, int padY, int height) {
-        return points.stream().map(c -> new Coordinate(c.get(0) + padX, height - c.get(1) - padY)).collect(toList());
+        return points.stream().map(c -> new Coordinate(c.get(0) + padX, height - (c.get(1) + padY))).collect(toList());
     }
 }
