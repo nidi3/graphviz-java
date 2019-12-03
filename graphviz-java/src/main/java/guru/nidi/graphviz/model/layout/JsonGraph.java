@@ -35,11 +35,13 @@ class JsonGraph {
 
     public void applyTo(MutableGraph graph) {
         calcPad();
+        int adjust = pad == null ? 4 : 0;
         final Polygon shape = (Polygon) parseDraw(draw, padX, padY, 0);
         final Coordinate topRight = shape.coordinates.get(2);
-        final int height = -(int) topRight.y;
+        final int height = -(int) topRight.y + adjust;
+        final int width = (int) topRight.x + adjust;
         graph.graphAttrs().add(OUTLINE, parseDraw(draw, padX, padY, height));
-        graph.graphAttrs().add(WIDTH, (int) topRight.x);
+        graph.graphAttrs().add(WIDTH, width);
         graph.graphAttrs().add(HEIGHT, height);
         final Map<Integer, String> nodeById = new HashMap<>();
         for (final JsonNode object : objects) {
@@ -53,7 +55,7 @@ class JsonGraph {
 
     private void calcPad() {
         if (pad == null) {
-            padX = padY = 8;
+            padX = padY = 4;
         } else if (pad.contains(",")) {
             final String[] parts = pad.split(",");
             padX = dpiToPixel(parts[0]);
