@@ -13,36 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model.shape;
+package guru.nidi.graphviz.model.layout;
 
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.Link;
-import guru.nidi.graphviz.model.MutableGraph;
-import guru.nidi.graphviz.model.MutableNode;
+import guru.nidi.graphviz.model.*;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.List;
 
 import static guru.nidi.graphviz.attribute.GraphAttr.*;
 import static guru.nidi.graphviz.engine.Format.*;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 
-public class JsonShapesParserTest {
+public class LayoutParserTest {
     @Test
     void simple() throws IOException {
         int pad = 10;
@@ -76,31 +70,25 @@ public class JsonShapesParserTest {
         Collection<MutableNode> nodes = g.nodes();
         Collection<Link> edges = g.edges();
         try (InputStream in = new FileInputStream(file)) {
-            JsonShapesParser.applyShapesToGraph(IOUtils.toString(in, StandardCharsets.UTF_8), (MutableGraph) g);
+            LayoutParser.applyLayoutToGraph(IOUtils.toString(in, StandardCharsets.UTF_8), (MutableGraph) g);
         }
 
-        int width = (int) g.graphAttrs().get("graphWidth");
-        int height = (int) g.graphAttrs().get("graphHeight");
+        int width = LayoutAttributes.widthOf(g);
+        int height = LayoutAttributes.heightOf(g);
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D gr = image.createGraphics();
         gr.setColor(java.awt.Color.BLACK);
         gr.setStroke(new BasicStroke(2));
-        draw(gr, g.graphAttrs());
+        gr.draw(LayoutAttributes.figureOf(g).toShape());
         for (MutableNode node : nodes) {
-            draw(gr, node.attrs());
+            gr.draw(LayoutAttributes.figureOf(node).toShape());
         }
         for (MutableGraph graph : g.graphs()) {
-            draw(gr, graph.graphAttrs());
+            gr.draw(LayoutAttributes.figureOf(graph).toShape());
         }
         for (Link edge : edges) {
-            draw(gr, edge.attrs());
+            gr.draw(LayoutAttributes.figureOf(edge).toShape());
         }
         ImageIO.write(image, "png", new File("target/draw.png"));
-    }
-
-
-    void draw(Graphics2D gr, Attributes<?> attrs) {
-        GraphShape shape = (GraphShape) attrs.get("graphShape");
-        gr.draw(shape.toShape());
     }
 }

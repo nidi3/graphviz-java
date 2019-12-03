@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model.shape;
+package guru.nidi.graphviz.model.layout;
 
-import java.awt.*;
+public class LayoutParserException extends RuntimeException {
+    LayoutParserException(String message) {
+        super(message);
+    }
 
-public interface GraphShape {
-    Shape toShape();
+    LayoutParserException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
-

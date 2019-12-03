@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model.shape;
+package guru.nidi.graphviz.model.layout;
 
-public class Coordinate {
-    public final double x;
-    public final double y;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
 
-    public Coordinate(double x, double y) {
-        this.x = x;
-        this.y = y;
+public class Ellipse implements Figure {
+    public final Coordinate center;
+    public final Coordinate radius;
+
+    public Ellipse(Coordinate center, Coordinate radius) {
+        this.center = center;
+        this.radius = radius;
+    }
+
+    @Override
+    public Shape toShape() {
+        return new Ellipse2D.Double(center.x, center.y, 2 * radius.x, 2 * radius.y);
     }
 }

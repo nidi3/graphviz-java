@@ -13,31 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model.shape;
+package guru.nidi.graphviz.model.layout;
 
 import java.awt.*;
-import java.awt.geom.Path2D;
 import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 
-public class GraphSpline implements GraphShape {
-    public final List<Coordinate> points;
+public class Polygon implements Figure {
+    public final List<Coordinate> coordinates;
 
-    public GraphSpline(List<Coordinate> points) {
-        this.points = unmodifiableList(points);
+    public Polygon(List<Coordinate> coordinates) {
+        this.coordinates = unmodifiableList(coordinates);
     }
 
     @Override
     public Shape toShape() {
-        final Path2D.Double res = new Path2D.Double();
-        res.moveTo(points.get(0).x, points.get(0).y);
-        for (int i = 1; i < points.size() - 3; i += 3) {
-            res.curveTo(
-                    points.get(i).x, points.get(i).y,
-                    points.get(i + 1).x, points.get(i + 1).y,
-                    points.get(i + 2).x, points.get(i + 2).y);
-        }
-        return res;
+        final int[] xs = coordinates.stream().mapToInt(c -> (int) c.x).toArray();
+        final int[] ys = coordinates.stream().mapToInt(c -> (int) c.y).toArray();
+        return new java.awt.Polygon(xs, ys, xs.length);
     }
 }

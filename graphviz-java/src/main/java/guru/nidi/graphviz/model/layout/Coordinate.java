@@ -13,24 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model.shape;
+package guru.nidi.graphviz.model.layout;
 
-import java.awt.*;
-import java.util.List;
+public class Coordinate {
+    public final double x;
+    public final double y;
 
-import static java.util.Collections.unmodifiableList;
-
-public class GraphPolygon implements GraphShape {
-    public final List<Coordinate> coordinates;
-
-    public GraphPolygon(List<Coordinate> coordinates) {
-        this.coordinates = unmodifiableList(coordinates);
-    }
-
-    @Override
-    public Shape toShape() {
-        final int[] xs = coordinates.stream().mapToInt(c -> (int) c.x).toArray();
-        final int[] ys = coordinates.stream().mapToInt(c -> (int) c.y).toArray();
-        return new Polygon(xs, ys, xs.length);
+    public Coordinate(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
 }

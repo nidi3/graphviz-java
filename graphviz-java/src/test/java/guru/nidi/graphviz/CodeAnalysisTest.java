@@ -20,22 +20,13 @@ import guru.nidi.codeassert.checkstyle.*;
 import guru.nidi.codeassert.config.AnalyzerConfig;
 import guru.nidi.codeassert.config.In;
 import guru.nidi.codeassert.dependency.*;
-import guru.nidi.codeassert.findbugs.BugCollector;
-import guru.nidi.codeassert.findbugs.FindBugsAnalyzer;
-import guru.nidi.codeassert.findbugs.FindBugsConfigs;
-import guru.nidi.codeassert.findbugs.FindBugsResult;
+import guru.nidi.codeassert.findbugs.*;
 import guru.nidi.codeassert.junit.CodeAssertJunit5Test;
 import guru.nidi.codeassert.model.Model;
 import guru.nidi.codeassert.pmd.*;
-import guru.nidi.graphviz.attribute.Color;
-import guru.nidi.graphviz.attribute.For;
-import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.*;
-import guru.nidi.graphviz.model.CreationContext;
-import guru.nidi.graphviz.model.MutableNode;
-import guru.nidi.graphviz.model.ThrowingBiConsumer;
-import guru.nidi.graphviz.model.ThrowingFunction;
-import guru.nidi.graphviz.model.shape.JsonShapesParser;
+import guru.nidi.graphviz.model.*;
 import guru.nidi.graphviz.service.CommandRunner;
 import net.sourceforge.pmd.RulePriority;
 import org.junit.jupiter.api.Test;
@@ -53,14 +44,14 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     @Override
     protected DependencyResult analyzeDependencies() {
         class GuruNidiGraphviz extends DependencyRuler {
-            DependencyRule model, modelShape, attribute, attributeValidate, engine, parse, service, use;
+            DependencyRule model, modelLayout, attribute, attributeValidate, engine, parse, service, use;
 
             public void defineRules() {
                 base().mayBeUsedBy(all());
-                engine.mayUse(model, service);
+                engine.mayUse(model, modelLayout, service);
                 parse.mayUse(model, attribute, attributeValidate);
                 model.mayUse(attribute);
-                modelShape.mayUse(model);
+                modelLayout.mayUse(model, attribute);
                 attributeValidate.mayUse(attribute);
                 use.mayUse(all());
             }
@@ -85,8 +76,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("GraphvizServer", "GraphvizServerEngine")
                                 .ignore("UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"))
                 .because("It's used by Jackson",
-                        In.clazz(JsonShapesParser.class)
-                                .ignore("NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD", "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"))
+                        In.locs("JsonDraw", "JsonEdge", "JsonNode")
+                                .ignore("NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD"))
                 .because("It's ok",
                         In.loc("Datatype").ignore("NP_BOOLEAN_RETURN_NULL"),
                         In.loc("BuiltInRasterizer").ignore("NP_NONNULL_RETURN_VIOLATION"),
@@ -164,10 +155,10 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(CheckstyleConfigs.minimalCheckstyleIgnore())
-                .just(In.locs("Color", "Arrow", "Rank", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr").ignore("empty.line.separator"))
+                .just(In.locs("Color", "Arrow", "Rank", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr", "LayoutAttributes").ignore("empty.line.separator"))
                 .just(In.clazz(For.class).ignore("one.top.level.class"))
                 .just(In.locs("EngineResult", "IOFunction").ignore("abbreviation.as.word"))
-                .just(In.clazz(Renderer.class).ignore("indentation.error"));
+                .just(In.classes(Renderer.class, Graphviz.class).ignore("indentation.error"));
         final StyleChecks checks = CheckstyleConfigs.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }
