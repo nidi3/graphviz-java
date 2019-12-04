@@ -18,6 +18,7 @@ package guru.nidi.graphviz.model.layout;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.nidi.graphviz.model.MutableGraph;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +31,8 @@ class JsonEdge {
     @JsonProperty("_draw_")
     List<JsonDraw> draw;
 
-    public void applyTo(MutableGraph graph, int padX, int padY, int height, Map<Integer, String> nodeById) {
-        final Figure shape = parseDraw(draw, padX, padY, height);
+    public void applyTo(MutableGraph graph, Point offset, Map<Integer, String> nodeById) {
+        final Figure shape = parseDraw(draw, offset);
         graph.edges().stream()
                 .filter(e -> e.from().name().contentEquals(nodeById.get(tail))
                         && e.to().name().contentEquals(nodeById.get(head)))

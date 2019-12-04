@@ -18,6 +18,8 @@ package guru.nidi.graphviz.model.layout;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.nidi.graphviz.model.MutableGraph;
 
+import java.awt.*;
+import java.util.List;
 import java.util.*;
 
 import static guru.nidi.graphviz.model.layout.JsonDraw.parseDraw;
@@ -26,43 +28,43 @@ import static guru.nidi.graphviz.model.layout.LayoutAttributes.*;
 class JsonGraph {
     String name;
     String pad;
+    String margin;
     @JsonProperty("_draw_")
     List<JsonDraw> draw;
     List<JsonNode> objects;
     List<JsonEdge> edges;
-    int padX;
-    int padY;
 
     public void applyTo(MutableGraph graph) {
-        calcPad();
+        final Point padPx = parseLimit(pad);
+        final Point marginPx = parseLimit(margin);
         int adjust = pad == null ? 4 : 0;
-        final Polygon shape = (Polygon) parseDraw(draw, padX, padY, 0);
+        final Polygon shape = (Polygon) parseDraw(draw, padPx);
         final Coordinate topRight = shape.coordinates.get(2);
-        final int height = -(int) topRight.y + adjust;
-        final int width = (int) topRight.x + adjust;
-        graph.graphAttrs().add(OUTLINE, parseDraw(draw, padX, padY, height));
+        final int width = adjust + (int) topRight.x + 2 * marginPx.x;
+        final int height = adjust - (int) topRight.y + 2 * marginPx.y + 2 * padPx.y;
         graph.graphAttrs().add(WIDTH, width);
         graph.graphAttrs().add(HEIGHT, height);
+        final Point offset = new Point(padPx.x + marginPx.x, height - (padPx.y + marginPx.y));
+        graph.graphAttrs().add(OUTLINE, parseDraw(draw, offset));
         final Map<Integer, String> nodeById = new HashMap<>();
         for (final JsonNode object : objects) {
-            object.applyTo(graph, padX, padY, height);
+            object.applyTo(graph, offset);
             nodeById.put(object.id, object.name);
         }
         for (final JsonEdge edge : edges) {
-            edge.applyTo(graph, padX, padY, height, nodeById);
+            edge.applyTo(graph, offset, nodeById);
         }
     }
 
-    private void calcPad() {
-        if (pad == null) {
-            padX = padY = 4;
-        } else if (pad.contains(",")) {
-            final String[] parts = pad.split(",");
-            padX = dpiToPixel(parts[0]);
-            padY = dpiToPixel(parts[1]);
-        } else {
-            padX = padY = dpiToPixel(pad);
+    private Point parseLimit(String limit) {
+        if (limit == null) {
+            return new Point(4, 4);
         }
+        if (limit.contains(",")) {
+            final String[] parts = limit.split(",");
+            return new Point(dpiToPixel(parts[0]), dpiToPixel(parts[1]));
+        }
+        return new Point(dpiToPixel(limit), dpiToPixel(limit));
     }
 
     private int dpiToPixel(String pixel) {

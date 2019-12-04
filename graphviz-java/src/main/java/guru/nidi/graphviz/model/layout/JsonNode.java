@@ -18,6 +18,7 @@ package guru.nidi.graphviz.model.layout;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.nidi.graphviz.model.MutableGraph;
 
+import java.awt.*;
 import java.util.List;
 
 import static guru.nidi.graphviz.model.layout.JsonDraw.parseDraw;
@@ -30,8 +31,8 @@ class JsonNode {
     @JsonProperty("_draw_")
     List<JsonDraw> draw;
 
-    public void applyTo(MutableGraph graph, int padX, int padY, int height) {
-        final Figure shape = parseDraw(draw, padX, padY, height);
+    public void applyTo(MutableGraph graph, Point offset) {
+        final Figure shape = parseDraw(draw, offset);
         if (name.startsWith("cluster_")) {
             graph.graphs().stream()
                     .filter(n -> ("cluster_" + n.name()).equals(name))

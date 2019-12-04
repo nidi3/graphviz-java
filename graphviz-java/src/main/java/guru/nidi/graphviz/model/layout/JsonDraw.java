@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.model.layout;
 
+import java.awt.*;
+import java.util.List;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
@@ -24,9 +26,9 @@ class JsonDraw {
     List<List<Double>> points;
     List<Double> rect;
 
-    static Figure parseDraw(List<JsonDraw> draw, int padX, int padY, int height) {
+    static Figure parseDraw(List<JsonDraw> draw, Point offset) {
         final List<Figure> shapes = draw.stream()
-                .map(jsonDraw -> jsonDraw.toShape(padX, padY, height))
+                .map(jsonDraw -> jsonDraw.toShape(offset))
                 .filter(Objects::nonNull)
                 .collect(toList());
         if (shapes.size() != 1) {
@@ -35,22 +37,22 @@ class JsonDraw {
         return shapes.get(0);
     }
 
-    private Figure toShape(int padX, int padY, int height) {
+    private Figure toShape(Point offset) {
         switch (op.toLowerCase(Locale.ENGLISH)) {
             case "p":
-                return new Polygon(pointCoordinates(padX, padY, height));
+                return new Polygon(pointCoordinates(offset));
             case "e":
                 return new Ellipse(
-                        new Coordinate(rect.get(0) - rect.get(2) + padX, height - (rect.get(1) + rect.get(3) + padY)),
+                        new Coordinate(rect.get(0) - rect.get(2) + offset.x, offset.y - (rect.get(1) + rect.get(3))),
                         new Coordinate(rect.get(2), rect.get(3)));
             case "b":
-                return new Spline(pointCoordinates(padX, padY, height));
+                return new Spline(pointCoordinates(offset));
             default:
                 return null;
         }
     }
 
-    private List<Coordinate> pointCoordinates(int padX, int padY, int height) {
-        return points.stream().map(c -> new Coordinate(c.get(0) + padX, height - (c.get(1) + padY))).collect(toList());
+    private List<Coordinate> pointCoordinates(Point offset) {
+        return points.stream().map(c -> new Coordinate(c.get(0) + offset.x, offset.y - c.get(1))).collect(toList());
     }
 }
