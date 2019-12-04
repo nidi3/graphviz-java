@@ -22,6 +22,11 @@ import java.util.Map.Entry;
 public class MapAttributes<F extends For> implements Attributes<F>, Iterable<Entry<String, Object>> {
     protected final Map<String, Object> attributes;
 
+    MapAttributes(String key, @Nullable Object value) {
+        this();
+        attributes.put(key, value);
+    }
+
     public MapAttributes() {
         attributes = new LinkedHashMap<>();
     }

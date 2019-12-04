@@ -224,12 +224,14 @@ class Serializer {
             str.append(" [");
             boolean first = true;
             for (final Entry<String, Object> attr : attrs) {
-                if (first) {
-                    first = false;
-                } else {
-                    str.append(',');
+                if (attr.getValue() != null) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        str.append(',');
+                    }
+                    attr(attr.getKey(), attr.getValue());
                 }
-                attr(attr.getKey(), attr.getValue());
             }
             str.append(']');
         }
