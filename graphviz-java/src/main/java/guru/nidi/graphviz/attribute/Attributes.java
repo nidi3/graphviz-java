@@ -23,23 +23,8 @@ import java.util.Map.Entry;
 import static java.util.Arrays.asList;
 
 public interface Attributes<F extends For> extends Iterable<Entry<String, Object>> {
-    Attributes<? super F> applyTo(MapAttributes<? super F> attrs);
-
-    default Attributes<? super F> applyTo(Attributes<? super F> attrs) {
-        if (!(attrs instanceof MapAttributes)) {
-            throw new UnsupportedOperationException("attributes must be a MapAttributes");
-        }
-        @SuppressWarnings("unchecked") final MapAttributes<? super F> as = (MapAttributes<? super F>) attrs;
-        return applyTo(as);
-    }
-
-    default Attributes<F> copy() {
-        @SuppressWarnings("unchecked") final Attributes<F> copy = (Attributes<F>) applyTo(attrs());
-        return copy;
-    }
-
     static <F extends For> Attributes<F> attr(String key, @Nullable Object value) {
-        return new MapAttributes<F>().add(key, value);
+        return new MapAttributes<F>(key, value);
     }
 
     static <F extends For> Attributes<F> attrs() {
@@ -59,6 +44,19 @@ public interface Attributes<F extends For> extends Iterable<Entry<String, Object
         return res;
     }
 
+    default Attributes<? super F> applyTo(Attributes<? super F> attrs) {
+        if (!(attrs instanceof MapAttributes)) {
+            throw new UnsupportedOperationException("attributes must be a MapAttributes");
+        }
+        @SuppressWarnings("unchecked") final MapAttributes<? super F> as = (MapAttributes<? super F>) attrs;
+        return applyTo(as);
+    }
+
+    default Attributes<F> copy() {
+        @SuppressWarnings("unchecked") final Attributes<F> copy = (Attributes<F>) applyTo(attrs());
+        return copy;
+    }
+
     @Nullable
     default Object get(String key) {
         return applyTo(new MapAttributes<>()).get(key);
@@ -72,4 +70,6 @@ public interface Attributes<F extends For> extends Iterable<Entry<String, Object
     default boolean isEmpty() {
         return applyTo(new MapAttributes<>()).isEmpty();
     }
+
+    Attributes<? super F> applyTo(MapAttributes<? super F> attrs);
 }
