@@ -115,6 +115,11 @@ public class MutableNode implements MutableAttributed<MutableNode, ForNode>, Lin
         return this;
     }
 
+    public MutableNode addLink(Link link) {
+        links.add(link);
+        return this;
+    }
+
     @Override
     public LinkTarget asLinkTarget() {
         return this;
