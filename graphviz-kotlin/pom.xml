@@ -59,7 +59,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graphviz-java</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
