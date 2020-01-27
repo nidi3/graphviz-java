@@ -224,7 +224,7 @@ class Serializer {
             str.append(" [");
             boolean first = true;
             for (final Entry<String, Object> attr : attrs) {
-                if (attr.getValue() != null) {
+                if (!attr.getKey().startsWith("_") && attr.getValue() != null) {
                     if (first) {
                         first = false;
                     } else {

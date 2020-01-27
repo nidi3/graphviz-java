@@ -26,11 +26,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-import static guru.nidi.graphviz.attribute.GraphAttr.margin;
-import static guru.nidi.graphviz.attribute.GraphAttr.pad;
+import static guru.nidi.graphviz.attribute.GraphAttr.*;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
-import static java.awt.BorderLayout.*;
 
 public final class LocatorDemo {
     private LocatorDemo() {
@@ -49,9 +47,9 @@ public final class LocatorDemo {
 
         final Container contentPane = frame.getContentPane();
         contentPane.setLayout(new BorderLayout());
-        contentPane.add(createActions(e -> picture.setImage(image), e -> picture.setImage(outline)), NORTH);
-        contentPane.add(picture, CENTER);
-        contentPane.add(info, SOUTH);
+        contentPane.add(createActions(e -> picture.setImage(image), e -> picture.setImage(outline)), BorderLayout.NORTH);
+        contentPane.add(picture, BorderLayout.CENTER);
+        contentPane.add(info, BorderLayout.SOUTH);
 
         frame.pack();
         frame.setVisible(true);

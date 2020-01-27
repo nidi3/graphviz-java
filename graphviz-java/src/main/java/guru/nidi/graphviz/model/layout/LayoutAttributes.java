@@ -20,9 +20,9 @@ import guru.nidi.graphviz.model.*;
 
 public final class LayoutAttributes {
     static final String
-            OUTLINE = "layoutOutline",
-            WIDTH = "layoutWidth",
-            HEIGHT = "layoutHeight";
+            OUTLINE = "__layoutOutline",
+            WIDTH = "__layoutWidth",
+            HEIGHT = "__layoutHeight";
 
     private LayoutAttributes() {
     }

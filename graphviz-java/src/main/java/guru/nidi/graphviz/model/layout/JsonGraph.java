@@ -26,7 +26,6 @@ import static guru.nidi.graphviz.model.layout.JsonDraw.parseDraw;
 import static guru.nidi.graphviz.model.layout.LayoutAttributes.*;
 
 class JsonGraph {
-    String name;
     String pad;
     String margin;
     @JsonProperty("_draw_")
@@ -35,9 +34,9 @@ class JsonGraph {
     List<JsonEdge> edges;
 
     public void applyTo(MutableGraph graph) {
-        final Point padPx = parseLimit(pad);
-        final Point marginPx = parseLimit(margin);
-        int adjust = pad == null ? 4 : 0;
+        final Point padPx = parseLimit(pad, 4);
+        final Point marginPx = parseLimit(margin, 0);
+        final int adjust = pad == null ? 4 : 0;
         final Polygon shape = (Polygon) parseDraw(draw, padPx);
         final Coordinate topRight = shape.coordinates.get(2);
         final int width = adjust + (int) topRight.x + 2 * marginPx.x;
@@ -56,9 +55,9 @@ class JsonGraph {
         }
     }
 
-    private Point parseLimit(String limit) {
+    private Point parseLimit(String limit, int defaultValue) {
         if (limit == null) {
-            return new Point(4, 4);
+            return new Point(defaultValue, defaultValue);
         }
         if (limit.contains(",")) {
             final String[] parts = limit.split(",");

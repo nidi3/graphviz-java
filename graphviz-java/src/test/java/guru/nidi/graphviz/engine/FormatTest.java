@@ -35,12 +35,12 @@ class FormatTest {
                     "<svg";
 
     private static final String BEFORE = quote(
-            " width='62pt' height='116pt' viewBox='0.00 0.00 62.00 116.00'>\n" +
+            " width='62pt' height='116pt'\n viewBox='0.00 0.00 62.00 116.00'>\n" +
                     "<g id='graph0' class='graph' transform='scale(1.3333 2.6666) rotate(0) translate(4 112)'>\n" +
                     "<text font-size='14.2'>a</text>\n" +
                     "</g></svg>");
     private static final String AFTER = quote(
-            "<svg width='62px' height='116px' viewBox='0.00 0.00 62.00 116.00'>\n" +
+            "<svg width='62px' height='116px'>\n" +
                     "<g id='graph0' class='graph' transform='scale(1.0 2.0) rotate(0) translate(4 112)'>\n" +
                     "<text font-size='7.1'>a</text>\n" +
                     "</g></svg>");

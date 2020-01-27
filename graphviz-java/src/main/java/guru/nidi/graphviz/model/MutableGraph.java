@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.newSetFromMap;
+import static java.util.stream.Collectors.toList;
 
 public class MutableGraph implements LinkSource, LinkTarget {
     private static final SafeRecursion<MutableGraph> RECURSION = new SafeRecursion<>();
@@ -62,7 +63,8 @@ public class MutableGraph implements LinkSource, LinkTarget {
 
     public MutableGraph copy() {
         return new MutableGraph(strict, directed, cluster, name,
-                new LinkedHashSet<>(nodes), new LinkedHashSet<>(subgraphs), links,
+                new LinkedHashSet<>(nodes.stream().map(MutableNode::copy).collect(toList())),
+                new LinkedHashSet<>(subgraphs.stream().map(MutableGraph::copy).collect(toList())), links,
                 nodeAttrs, linkAttrs, graphAttrs);
     }
 

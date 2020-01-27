@@ -248,10 +248,6 @@ public final class Graphviz {
         return options.format.postProcess(this, result);
     }
 
-    Format format() {
-        return options.format;
-    }
-
     private static double dpi(String src) {
         final Matcher matcher = DPI_PATTERN.matcher(src);
         return matcher.find() ? Double.parseDouble(matcher.group(1)) : 72;

@@ -18,6 +18,7 @@ package guru.nidi.graphviz.engine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.geom.Point2D;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,6 +81,8 @@ public enum Format {
     public final String fileExtension;
     final boolean image;
     final boolean svg;
+    private static final Pattern DPI_PATTERN = Pattern.compile("\"?dpi\"?\\s*=\\s*\"?([0-9.]+)\"?",
+            Pattern.CASE_INSENSITIVE);
 
     Format(String vizName, String fileExtension) {
         this(vizName, fileExtension, false, false);
@@ -93,6 +96,12 @@ public enum Format {
     }
 
     String preProcess(String src) {
+        //when dpi is unspecified, native rendered should take 72, but does not do this always
+        //-> force dpi
+        if (!DPI_PATTERN.matcher(src).find()) {
+            int pos = src.indexOf('{') + 1; //TODO { could be contained in graph's name
+            src = src.substring(0, pos) + "dpi=72;" + src.substring(pos);
+        }
         return replaceSubSpaces(src);
     }
 
@@ -132,21 +141,44 @@ public enum Format {
             LOG.warn("Generated SVG has not the expected format. There might be image size problems.");
             return svg;
         }
-        return m.replaceFirst("<svg " + svgSize(m, width, height, scale) + m.group("between") + svgScale(m, dpi, viewBoxScale(m)));
+        return m.replaceFirst("<svg "
+                + svgSize(m, width, height, scale)
+                + m.group("between")
+                + svgScale(m, dpi, viewBoxScale(m), optionScale(m, width, height, scale)));
     }
 
     private static double viewBoxScale(Matcher m) {
         //we remove the viewBox as it seems not to be correctly implemented in salamander and batik
         //as compensation we must adjust the scale transformation (depending on the dpi setting)
         //TODO do the calculations here and in svgScale annulate each other?
-        double x1 = Double.parseDouble(m.group("box1"));
+        final double x1 = Double.parseDouble(m.group("box1"));
         //double y1 = Double.parseDouble(m.group("box2"));
-        double x2 = Double.parseDouble(m.group("box3"));
+        final double x2 = Double.parseDouble(m.group("box3"));
         //double y2 = Double.parseDouble(m.group("box4"));
-        double w = Integer.parseInt(m.group("width"));
+        final double w = Integer.parseInt(m.group("width"));
         //double h = Integer.parseInt(m.group("height"));
         //h / (y1 + y2) should be the same
         return w / (x1 + x2);
+    }
+
+    private static Point2D.Double optionScale(Matcher m, int width, int height, double scale) {
+        final double origW = Integer.parseInt(m.group("width"));
+        final double origH = Integer.parseInt(m.group("height"));
+        final double w, h;
+        if (width > 0 && height > 0) {
+            w = width;
+            h = height;
+        } else if (width > 0) {
+            h = origH * width / origW;
+            w = width;
+        } else if (height > 0) {
+            w = origW * height / origH;
+            h = height;
+        } else {
+            w = origW;
+            h = origH;
+        }
+        return new Point2D.Double((w * scale) / origW, (h * scale) / origH);
     }
 
     private static String svgSize(Matcher m, int width, int height, double scale) {
@@ -165,10 +197,10 @@ public enum Format {
         return "width=\"" + Math.round(w * scale) + "px\" height=\"" + Math.round(h * scale) + "px\"";
     }
 
-    private static String svgScale(Matcher m, double dpi, double viewBoxScale) {
+    private static String svgScale(Matcher m, double dpi, double viewBoxScale, Point2D.Double optionScale) {
         final double pixelScale = m.group("unit").equals("px") ? 1 : Math.round(10000 * dpi / 72) / 10000d;
-        final double scaleX = viewBoxScale * Double.parseDouble(m.group("scaleX")) / pixelScale;
-        final double scaleY = viewBoxScale * Double.parseDouble(m.group("scaleY")) / pixelScale;
+        final double scaleX = optionScale.x * viewBoxScale * Double.parseDouble(m.group("scaleX")) / pixelScale;
+        final double scaleY = optionScale.y * viewBoxScale * Double.parseDouble(m.group("scaleY")) / pixelScale;
         return "transform=\"scale(" + scaleX + " " + scaleY + ")";
     }
 
