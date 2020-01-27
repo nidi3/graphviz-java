@@ -44,14 +44,13 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     @Override
     protected DependencyResult analyzeDependencies() {
         class GuruNidiGraphviz extends DependencyRuler {
-            DependencyRule model, modelLayout, attribute, attributeValidate, engine, parse, service, use;
+            DependencyRule model, attribute, attributeValidate, engine, parse, service, use;
 
             public void defineRules() {
                 base().mayBeUsedBy(all());
-                engine.mayUse(model, modelLayout, service);
+                engine.mayUse(model, service);
                 parse.mayUse(model, attribute, attributeValidate);
                 model.mayUse(attribute);
-                modelLayout.mayUse(model, attribute);
                 attributeValidate.mayUse(attribute);
                 use.mayUse(all());
             }
@@ -75,9 +74,6 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("GraphvizServer is on localhost",
                         In.locs("GraphvizServer", "GraphvizServerEngine")
                                 .ignore("UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"))
-                .because("It's used by Jackson",
-                        In.locs("JsonDraw", "JsonEdge", "JsonNode")
-                                .ignore("NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD"))
                 .because("It's ok",
                         In.loc("Datatype").ignore("NP_BOOLEAN_RETURN_NULL"),
                         In.loc("BuiltInRasterizer").ignore("NP_NONNULL_RETURN_VIOLATION"),
