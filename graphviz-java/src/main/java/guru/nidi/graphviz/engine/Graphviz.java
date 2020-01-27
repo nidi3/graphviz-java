@@ -17,7 +17,6 @@ package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
-import guru.nidi.graphviz.model.layout.LayoutParser;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -198,15 +197,6 @@ public final class Graphviz {
         return new Graphviz(graph, src, rasterizer, processOptions.fontAdjust(fontAdjust), options, filters);
     }
 
-    public Graphviz parseLayout(boolean parseLayout) {
-        if (graph == null) {
-            throw new GraphvizException(
-                    "Graphviz.parseLayout(true) does not work together with Graphviz.fromString or Graphviz.fromFile\n"
-                            + "Use MutableGraph g = new Parser().read(...); Graphviz.fromGraph(g); instead.");
-        }
-        return new Graphviz(graph, src, rasterizer, processOptions.parseLayout(parseLayout), options, filters);
-    }
-
     public Graphviz filter(GraphvizFilter filter) {
         final ArrayList<GraphvizFilter> fs = new ArrayList<>(filters);
         fs.add(filter);
@@ -229,11 +219,6 @@ public final class Graphviz {
     }
 
     EngineResult execute() {
-        if (processOptions.parseLayout) {
-            JSON.postProcess(this, getEngine().execute(JSON.preProcess(src), options, null)).consume(file -> {
-                throw new AssertionError("Json output is always a string.");
-            }, string -> LayoutParser.applyLayoutToGraph(string, graph));
-        }
         final EngineResult result = options.format == Format.DOT
                 ? EngineResult.fromString(src)
                 : getEngine().execute(options.format.preProcess(src), options, rasterizer);

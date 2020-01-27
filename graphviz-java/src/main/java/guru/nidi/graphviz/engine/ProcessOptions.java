@@ -21,42 +21,36 @@ class ProcessOptions {
     final double scale;
     final double fontAdjust;
     final double dpi;
-    final boolean parseLayout;
 
     ProcessOptions() {
-        this(0, 0, 1, 1, 72, false);
+        this(0, 0, 1, 1, 72);
     }
 
-    ProcessOptions(int width, int height, double scale, double fontAdjust, double dpi, boolean parseLayout) {
+    ProcessOptions(int width, int height, double scale, double fontAdjust, double dpi) {
         this.width = width;
         this.height = height;
         this.scale = scale;
         this.fontAdjust = fontAdjust;
         this.dpi = dpi;
-        this.parseLayout = parseLayout;
     }
 
     ProcessOptions width(int width) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi, parseLayout);
+        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
     }
 
     ProcessOptions height(int height) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi, parseLayout);
+        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
     }
 
     ProcessOptions scale(double scale) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi, parseLayout);
+        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
     }
 
     ProcessOptions fontAdjust(double fontAdjust) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi, parseLayout);
+        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
     }
 
     ProcessOptions dpi(double dpi) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi, parseLayout);
-    }
-
-    ProcessOptions parseLayout(boolean parseLayout) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi, parseLayout);
+        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
     }
 }
