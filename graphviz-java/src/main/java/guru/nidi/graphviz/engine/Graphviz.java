@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static guru.nidi.graphviz.engine.Format.JSON;
 import static guru.nidi.graphviz.engine.IoUtils.readStream;
 
 public final class Graphviz {

@@ -151,10 +151,10 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(CheckstyleConfigs.minimalCheckstyleIgnore())
-                .just(In.locs("Color", "Arrow", "Rank", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr", "LayoutAttributes").ignore("empty.line.separator"))
+                .just(In.locs("Color", "Arrow", "Rank", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr").ignore("empty.line.separator"))
                 .just(In.clazz(For.class).ignore("one.top.level.class"))
                 .just(In.locs("EngineResult", "IOFunction").ignore("abbreviation.as.word"))
-                .just(In.classes(Renderer.class).ignore("indentation.error"));
+                .just(In.clazz(Renderer.class).ignore("indentation.error"));
         final StyleChecks checks = CheckstyleConfigs.adjustedGoogleStyleChecks();
         return new CheckstyleAnalyzer(AnalyzerConfig.maven().main(), checks, collector).analyze();
     }
