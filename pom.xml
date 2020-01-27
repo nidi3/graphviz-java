@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>graphviz-java-parent</artifactId>
-    <version>0.12.2-SNAPSHOT</version>
+    <version>0.13.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>

@@ -44,6 +44,8 @@ public interface Attributes<F extends For> extends Iterable<Entry<String, Object
         return res;
     }
 
+    Attributes<? super F> applyTo(MapAttributes<? super F> attrs);
+
     default Attributes<? super F> applyTo(Attributes<? super F> attrs) {
         if (!(attrs instanceof MapAttributes)) {
             throw new UnsupportedOperationException("attributes must be a MapAttributes");
@@ -70,6 +72,4 @@ public interface Attributes<F extends For> extends Iterable<Entry<String, Object
     default boolean isEmpty() {
         return applyTo(new MapAttributes<>()).isEmpty();
     }
-
-    Attributes<? super F> applyTo(MapAttributes<? super F> attrs);
 }
