@@ -13,6 +13,8 @@
 
     <properties>
         <graal.version>19.2.1</graal.version>
+        <j2v8.version>4.6.0</j2v8.version>
+        <j2v8-linux.version>4.6.0</j2v8-linux.version>
     </properties>
 
     <build>
@@ -126,19 +128,25 @@
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_macosx_x86_64</artifactId>
-            <scope>compile</scope>
+            <version>${j2v8.version}</version>
         </dependency>
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_linux_x86_64</artifactId>
+            <version>${j2v8-linux.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_win32_x86_64</artifactId>
+            <version>${j2v8.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_win32_x86</artifactId>
+            <version>${j2v8.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
