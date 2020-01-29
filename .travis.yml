@@ -22,7 +22,8 @@ before_script:
   before_script
 
 script:
-  script
+  - mvn dependency:list
+  - script
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
