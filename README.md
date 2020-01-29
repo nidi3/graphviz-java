@@ -39,6 +39,9 @@ This project is available via Maven:
     <version>0.13.0</version>
 </dependency>
 ```
+This includes a dependency to J2V8 corresponding to the current operating system (Linux, Mac OS X, Windows).
+If you don't need the J2V8 engine, use `graphviz-java-no-j2v8` as artifactId,
+if you want to include the J2V8 engine for all operating systems, use `graphviz-java-all-j2v8`.
 
 ### Logging
 Graphviz-java uses the [SLF4J](https://www.slf4j.org/) facade to log. 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -21,11 +22,14 @@
     <properties>
         <dependency-check.fail-on-error>false</dependency-check.fail-on-error>
         <java.version>1.8</java.version>
+        <j2v8.version>4.6.0</j2v8.version>
+        <j2v8-linux.version>4.6.0</j2v8-linux.version>
     </properties>
 
     <modules>
         <module>graphviz-java</module>
         <module>graphviz-java-no-j2v8</module>
+        <module>graphviz-java-all-j2v8</module>
         <module>graphviz-rough</module>
         <module>graphviz-kotlin</module>
         <module>graphviz-taglet</module>
@@ -78,6 +82,35 @@
             <artifactId>code-assert</artifactId>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.eclipsesource.j2v8</groupId>
+                <artifactId>j2v8_macosx_x86_64</artifactId>
+                <version>${j2v8.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.eclipsesource.j2v8</groupId>
+                <artifactId>j2v8_linux_x86_64</artifactId>
+                <version>${j2v8-linux.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.eclipsesource.j2v8</groupId>
+                <artifactId>j2v8_win32_x86_64</artifactId>
+                <version>${j2v8.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.eclipsesource.j2v8</groupId>
+                <artifactId>j2v8_win32_x86</artifactId>
+                <version>${j2v8.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <pluginManagement>

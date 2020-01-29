@@ -8,7 +8,7 @@
         <version>0.13.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>graphviz-java-no-j2v8</artifactId>
+    <artifactId>graphviz-java-all-j2v8</artifactId>
     <name>${project.artifactId}</name>
 
     <dependencies>
@@ -16,32 +16,22 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>graphviz-java</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.eclipsesource.j2v8</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_macosx_x86_64</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_linux_x86_64</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_win32_x86_64</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_win32_x86</artifactId>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>
