@@ -19,10 +19,10 @@ before_install:
   - install_maven
 
 before_script:
-  before_script
+  - mvn dependency:list
+  - before_script
 
 script:
-  - mvn dependency:list
   - script
 
 after_success:
