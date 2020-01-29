@@ -188,7 +188,7 @@
             <activation>
                 <os>
                     <family>windows</family>
-                    <arch>x86_32</arch>
+                    <arch>x86</arch>
                 </os>
             </activation>
             <dependencies>
