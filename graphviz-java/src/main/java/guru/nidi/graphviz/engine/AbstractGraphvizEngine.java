@@ -20,10 +20,13 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public abstract class AbstractGraphvizEngine implements GraphvizEngine {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
@@ -31,6 +34,7 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
     protected static final Pattern IMAGE_ATTR = Pattern.compile("\"?image\"?\\s*=\\s*\"(.*?)\"");
 
     private final boolean sync;
+    protected int timeout = 10000;
 
     protected AbstractGraphvizEngine(boolean sync) {
         this.sync = sync;
@@ -53,6 +57,12 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
             close();
             onError.accept(this);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T extends AbstractGraphvizEngine> T timeout(int amount, TimeUnit unit) {
+        this.timeout = (int) MILLISECONDS.convert(amount, unit);
+        return (T) this;
     }
 
     protected String replacePaths(String src, Pattern pattern, Function<String, String> replacer) {

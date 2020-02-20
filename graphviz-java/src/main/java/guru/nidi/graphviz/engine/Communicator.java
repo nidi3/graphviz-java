@@ -17,9 +17,9 @@ package guru.nidi.graphviz.engine;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 import static guru.nidi.graphviz.engine.IoUtils.closeQuietly;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 class Communicator implements Closeable {
     private final Socket socket;
@@ -29,8 +29,8 @@ class Communicator implements Closeable {
     public Communicator(Socket socket, int timeout) throws IOException {
         socket.setSoTimeout(timeout);
         this.socket = socket;
-        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-        this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), UTF_8));
+        this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), UTF_8));
     }
 
     public int readLen() throws IOException {

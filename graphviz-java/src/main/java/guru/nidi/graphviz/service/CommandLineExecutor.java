@@ -30,10 +30,11 @@ import java.io.*;
 public class CommandLineExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(CommandLineExecutor.class);
 
-    public void execute(CommandLine cmd, @Nullable File workingDirectory) throws InterruptedException, IOException {
+    public void execute(CommandLine cmd, @Nullable File workingDirectory, int timeout)
+            throws InterruptedException, IOException {
         LOG.info("executing command {}", cmd.toString());
 
-        final ExecuteWatchdog watchdog = new ExecuteWatchdog(60 * 1000);
+        final ExecuteWatchdog watchdog = new ExecuteWatchdog(timeout);
         final Executor executor = new DefaultExecutor();
 
         executor.setWatchdog(watchdog);
@@ -54,6 +55,9 @@ public class CommandLineExecutor {
             LOG.info(out.toString());
         }
         if (exitCode != 0) {
+            if (executor.getWatchdog().killedProcess()) {
+                throw new IOException("Engine took too long to respond, try setting a higher timout");
+            }
             throw new IOException(err.size() == 0 ? "command '" + cmd + "' didn't succeed" : err.toString());
         }
     }

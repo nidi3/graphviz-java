@@ -40,30 +40,32 @@ public class CommandRunner {
         this.cmdExec = cmdExec;
     }
 
-    void exec(CommandLine cmd, @Nullable File workDir) throws IOException, InterruptedException {
-        final CommandLine wrappedCmd = wrapperFunc.apply(cmd);
-        cmdExec.execute(wrappedCmd, workDir);
+    void exec(String cmd, int timeout, List<String> args) throws IOException, InterruptedException {
+        exec(cmd, null, timeout, args);
     }
 
-    public void exec(String cmd, @Nullable File workDir, String... args) throws IOException, InterruptedException {
-        exec(cmd, workDir, args, true);
-    }
-
-    private void exec(String cmd, @Nullable File workDir, String[] args, boolean quote)
+    private void exec(String cmd, @Nullable File workDir, int timeout, List<String> args)
             throws IOException, InterruptedException {
-        exec(new CommandLine(cmd).addArguments(args, quote), workDir);
+        exec(cmd, workDir, timeout, args.toArray(new String[0]));
     }
 
-    private void exec(String cmd, @Nullable File workDir, List<String> args) throws IOException, InterruptedException {
-        exec(cmd, workDir, args.toArray(new String[0]));
+    void exec(String cmd, int timeout) throws IOException, InterruptedException {
+        exec(cmd, null, timeout);
     }
 
-    void exec(String cmd, List<String> args) throws IOException, InterruptedException {
-        exec(cmd, null, args);
+    public void exec(String cmd, @Nullable File workDir, int timeout, String... args)
+            throws IOException, InterruptedException {
+        exec(cmd, workDir, args, true, timeout);
     }
 
-    void exec(String cmd) throws IOException, InterruptedException {
-        exec(cmd, null, new String[0]);
+    private void exec(String cmd, @Nullable File workDir, String[] args, boolean quote, int timeout)
+            throws IOException, InterruptedException {
+        exec(new CommandLine(cmd).addArguments(args, quote), workDir, timeout);
+    }
+
+    void exec(CommandLine cmd, @Nullable File workDir, int timeout) throws IOException, InterruptedException {
+        final CommandLine wrappedCmd = wrapperFunc.apply(cmd);
+        cmdExec.execute(wrappedCmd, workDir, timeout);
     }
 
     // Cross-platform way of finding an executable in the $PATH.

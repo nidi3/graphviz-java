@@ -216,7 +216,7 @@ class EngineTest {
             final File svgOutputFile = new File(workingDirectory.getAbsolutePath() + "/outfile.svg");
             Files.copy(svgInput.toPath(), svgOutputFile.toPath());
             return null;
-        }).when(cmdExecutor).execute(any(CommandLine.class), any(File.class));
+        }).when(cmdExecutor).execute(any(CommandLine.class), any(File.class), any(Integer.class));
         return cmdExecutor;
     }
 }

@@ -15,9 +15,12 @@
  */
 package guru.nidi.graphviz.engine;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GraphvizServerEngine extends AbstractGraphvizEngine {
     private final List<GraphvizEngine> engines = new ArrayList<>();
@@ -33,10 +36,17 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
+    public GraphvizServerEngine timeout(int amount, TimeUnit unit) {
+        return super.timeout(amount, unit);
+    }
+
     @Override
-    public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
+    public EngineResult execute(String src, Options options, @Nullable Rasterizer rasterizer) {
         try {
             return EngineResult.fromString(createSvg(src, options));
+        } catch (SocketTimeoutException e) {
+            throw new GraphvizException("Engine took too long to respond, try setting a higher timout");
         } catch (IOException e) {
             throw new GraphvizException("Problem in communication with server", e);
         }
@@ -70,7 +80,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     private String createSvg(String src, Options options) throws IOException {
-        return communicating(com -> {
+        return communicating(timeout, com -> {
             com.writeContent(options.toJson(true) + "@@@" + src);
             final String status = com.readStatus();
             final int len = com.readLen();
@@ -84,7 +94,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
 
     public static void stopServer() {
         try {
-            communicating(com -> {
+            communicating(5000, com -> {
                 com.writeLen(-1);
                 return "";
             });
@@ -97,9 +107,9 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         T apply(Communicator c) throws IOException;
     }
 
-    private static <T> T communicating(ComFunc<T> action) throws IOException {
+    private static <T> T communicating(int timeout, ComFunc<T> action) throws IOException {
         try (final Socket socket = new Socket("localhost", GraphvizServer.PORT);
-             final Communicator com = new Communicator(socket, 5000)) {
+             final Communicator com = new Communicator(socket, timeout)) {
             return action.apply(com);
         }
     }

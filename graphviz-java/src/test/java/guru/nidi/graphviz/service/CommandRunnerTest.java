@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 
@@ -55,9 +56,9 @@ class CommandRunnerTest {
                 .withCommandExecutor(cmdExecMock)
                 .build();
 
-        cmdRunner.exec(CommandLine.parse("echo hello world"), null);
+        cmdRunner.exec(CommandLine.parse("echo hello world"), null, 5000);
 
-        verify(cmdExecMock).execute(runEchoCaptor.capture(), (File) isNull());
+        verify(cmdExecMock).execute(runEchoCaptor.capture(), (File) isNull(), eq(5000));
         assertEquals(expected.toString(), runEchoCaptor.getValue().toString());
     }
 
@@ -67,7 +68,7 @@ class CommandRunnerTest {
                 .withShellWrapper(true)
                 .build();
 
-        cmdRunner.exec("echo", Arrays.asList("hello", "world"));
+        cmdRunner.exec("echo", 5000, Arrays.asList("hello", "world"));
     }
 
     @Test
@@ -76,6 +77,6 @@ class CommandRunnerTest {
                 .withShellWrapper(true)
                 .build();
 
-        cmdRunner.exec("env");
+        cmdRunner.exec("env", 5000);
     }
 }

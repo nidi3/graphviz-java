@@ -243,7 +243,7 @@ public final class Graphviz {
         }
 
         @Override
-        public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
+        public EngineResult execute(String src, Options options, @Nullable Rasterizer rasterizer) {
             return EngineResult.fromString("");
         }
 

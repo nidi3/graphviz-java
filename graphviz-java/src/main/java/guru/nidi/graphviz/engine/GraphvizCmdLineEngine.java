@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Locale.ENGLISH;
 
@@ -57,6 +58,11 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
                 .build();
     }
 
+    @SuppressWarnings("unchecked")
+    public GraphvizCmdLineEngine timeout(int amount, TimeUnit unit) {
+        return super.timeout(amount, unit);
+    }
+
     @Override
     protected void doInit() {
         getEngineExecutable(Engine.DOT);
@@ -85,7 +91,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
                 + (options.yInvert != null && options.yInvert ? " -y" : "")
                 + " -T" + format
                 + " " + dotFile.getAbsolutePath() + " -ooutfile." + format;
-        cmdRunner.exec(command, path.toFile());
+        cmdRunner.exec(command, path.toFile(), timeout);
         final Path outFile = path.resolve("outfile." + format);
         if (rasterizer instanceof BuiltInRasterizer) {
             return EngineResult.fromFile(outFile.toFile());
