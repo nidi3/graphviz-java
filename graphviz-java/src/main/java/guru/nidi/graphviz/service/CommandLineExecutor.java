@@ -55,10 +55,10 @@ public class CommandLineExecutor {
             LOG.info(out.toString());
         }
         if (exitCode != 0) {
-            if (executor.getWatchdog().killedProcess()) {
-                throw new IOException("Engine took too long to respond, try setting a higher timout");
-            }
-            throw new IOException(err.size() == 0 ? "command '" + cmd + "' didn't succeed" : err.toString());
+            final String msg = executor.getWatchdog().killedProcess()
+                    ? "Command took too long to execute, try setting a higher timout: '" + cmd + "'"
+                    : err.size() == 0 ? "Command didn't succeed: '" + cmd + "'" : err.toString();
+            throw new IOException(msg);
         }
     }
 }
