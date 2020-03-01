@@ -16,51 +16,49 @@
 package guru.nidi.graphviz.use;
 
 import guru.nidi.graphviz.attribute.Font;
-import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.engine.GraphvizV8Engine;
 import guru.nidi.graphviz.model.MutableGraph;
-import guru.nidi.graphviz.model.Node;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
+import static guru.nidi.graphviz.attribute.Label.of;
+import static guru.nidi.graphviz.attribute.Rank.RankDir.LEFT_TO_RIGHT;
 import static guru.nidi.graphviz.engine.Format.PNG;
-import static guru.nidi.graphviz.model.Factory.*;
+import static guru.nidi.graphviz.model.Factory.mutGraph;
+import static guru.nidi.graphviz.model.Factory.node;
+import static java.util.Arrays.asList;
 
 public final class FontTools {
     private FontTools() {
     }
 
     public static List<String> availableFontNames() {
-        return Arrays.asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
+        return asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
     }
 
     public static void availableFontNamesGraph(File output) throws IOException {
-        final MutableGraph g = mutGraph();
-        for (final String f : availableFontNames()) {
+        final MutableGraph g = mutGraph()
+                .graphAttrs().add(Rank.dir(LEFT_TO_RIGHT))
+                .nodeAttrs().add(Size.mode(Size.Mode.MINIMUM).margin(.1, .1).size(0, 0), Shape.RECTANGLE);
+        final List<String> fonts = availableFontNames();
+        fonts.sort(Comparator.reverseOrder());
+        for (final String f : fonts) {
+            g.add(node(f + "2").with(of("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")).with(Font.name(f)));
+            g.add(node(f + "3").with(of("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")).with(Font.name(f)));
             g.add(node(f).with(Font.name(f)));
         }
         Graphviz.fromGraph(g).render(PNG).toFile(output);
     }
 
-    public static void createFontTest(String name, double adjust, File output) throws IOException {
-        final Node width = node("If text is too narrow, increase fontAdjust. If it's too wide, decrease it.");
-        final Node center = node(Label.html("A very long node label that should be centered inside the border<br/>"
-                + "If text is too much left, increase fontAdjust.<br/>"
-                + "If it's too much right, decrease it."));
-        Graphviz.fromGraph(graph()
-                .nodeAttr().with(Font.name(name), Shape.RECTANGLE)
-                .with(width.link(center)))
-                .fontAdjust(adjust)
-                .render(PNG)
-                .toFile(output);
-    }
-
     public static void main(String[] args) throws IOException {
+        Graphviz.useEngine(new GraphvizV8Engine());
         System.out.println("Available fonts: " + availableFontNames());
         final String fontShow = "font-show.png";
         System.out.println("Creating image with all fonts '" + fontShow + "'.");
@@ -68,15 +66,6 @@ public final class FontTools {
         if (args.length < 2) {
             System.out.println("Usage: FontTools <font name> <font adjust>");
             System.exit(0);
-        }
-        try {
-            final double adjust = Double.parseDouble(args[1]);
-            final String fontTest = "font-test.png";
-            System.out.println("Creating test image '" + fontTest
-                    + "' with font=" + args[0] + " and font adjust=" + adjust);
-            createFontTest(args[0], adjust, new File(fontTest));
-        } catch (NumberFormatException e) {
-            System.out.println("Illegal number " + args[1]);
         }
     }
 }

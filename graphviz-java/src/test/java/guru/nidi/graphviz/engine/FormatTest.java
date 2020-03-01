@@ -42,14 +42,14 @@ class FormatTest {
     private static final String AFTER = quote(
             "<svg width='62px' height='116px' viewBox='0.00 0.00 62.00 116.00'>\n" +
                     "<g id='graph0' class='graph' transform='scale(1.0 2.0) rotate(0) translate(4 112)'>\n" +
-                    "<text font-size='7.1'>a</text>\n" +
+                    "<text font-size='14.2'>a</text>\n" +
                     "</g></svg>");
 
     @ParameterizedTest
     @MethodSource
     void postProcess(Entry<String, String> values) {
         assertEquals(EngineResult.fromString(values.getValue()), SVG.postProcess(
-                Graphviz.fromString("graph {dpi=96}").fontAdjust(.5),
+                Graphviz.fromString("graph {dpi=96}"),
                 EngineResult.fromString(START1_7 + values.getKey())));
     }
 

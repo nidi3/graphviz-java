@@ -21,16 +21,20 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static guru.nidi.graphviz.engine.IoUtils.readStream;
+import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
+    private static final Pattern FONT_NAME_PATTERN = Pattern.compile("\"?fontname\"?\\s*=\\s*\"?(.*?)[\",;\\]]");
     private static final Map<Class<?>, ThreadLocal<JavascriptEngine>> ENGINES = new HashMap<>();
     private final Supplier<JavascriptEngine> engineSupplier;
+    private final FontMeasurer fontMeasurer = new FontMeasurer();
 
     protected AbstractJsGraphvizEngine(boolean sync, Supplier<JavascriptEngine> engineSupplier) {
         super(sync);
@@ -80,11 +84,24 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
             return src;
         }
         final String memory = options.totalMemory == null ? "" : "totalMemory=" + options.totalMemory + ";";
+        measureFonts(src);
         final Entry<String, Options> srcAndOpts = preprocessCode(src, options);
         return engine().executeJavascript(
                 memory + "render(",
                 srcAndOpts.getKey(),
                 "," + srcAndOpts.getValue().toJson(false) + ");");
+    }
+
+    private void measureFonts(String src) {
+        final Matcher matcher = FONT_NAME_PATTERN.matcher(src);
+        while (matcher.find()) {
+            final String font = matcher.group(1).trim();
+            final double[] widths = fontMeasurer.measureFont(font);
+            if (widths.length > 0) {
+                final String widthsString = Arrays.stream(widths).mapToObj(Double::toString).collect(joining(","));
+                engine().executeJavascript("initViz().setFontWidth('" + font + "',[" + widthsString + "])");
+            }
+        }
     }
 
     protected Entry<String, Options> preprocessCode(String src, Options options) {
@@ -102,7 +119,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     private String vizJsCode() {
-        final String path = "/META-INF/resources/webjars/viz.js/2.1.2/";
+        final String path = "/META-INF/resources/webjars/viz.js-for-graphviz-java/2.1.2/";
         try (final InputStream api = getClass().getResourceAsStream(path + "viz.js");
              final InputStream engine = getClass().getResourceAsStream(path + "full.render.js")) {
             return readStream(api) + readStream(engine);

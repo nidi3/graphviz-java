@@ -19,38 +19,32 @@ class ProcessOptions {
     final int width;
     final int height;
     final double scale;
-    final double fontAdjust;
     final double dpi;
 
     ProcessOptions() {
-        this(0, 0, 1, 1, 72);
+        this(0, 0, 1, 72);
     }
 
-    ProcessOptions(int width, int height, double scale, double fontAdjust, double dpi) {
+    ProcessOptions(int width, int height, double scale, double dpi) {
         this.width = width;
         this.height = height;
         this.scale = scale;
-        this.fontAdjust = fontAdjust;
         this.dpi = dpi;
     }
 
     ProcessOptions width(int width) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
+        return new ProcessOptions(width, height, scale, dpi);
     }
 
     ProcessOptions height(int height) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
+        return new ProcessOptions(width, height, scale, dpi);
     }
 
     ProcessOptions scale(double scale) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
-    }
-
-    ProcessOptions fontAdjust(double fontAdjust) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
+        return new ProcessOptions(width, height, scale, dpi);
     }
 
     ProcessOptions dpi(double dpi) {
-        return new ProcessOptions(width, height, scale, fontAdjust, dpi);
+        return new ProcessOptions(width, height, scale, dpi);
     }
 }

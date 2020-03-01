@@ -1,0 +1,51 @@
+package guru.nidi.graphviz.engine;
+
+import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
+
+class FontMeasurer {
+    private static final FontRenderContext FONT_RENDER_CONTEXT =
+            new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR).createGraphics().getFontRenderContext();
+    private static final double COURIER_WIDTH = .5999;
+    private static final Font COURIER = new Font("Courier", Font.PLAIN, 10);
+    private static final double COURIER_SPACE_WIDTH = charWidth(COURIER, ' ');
+    private static final double COURIER_BORDER_WIDTH = borderWidth(COURIER);
+    private static final double[] COURIER_WIDTHS = courierWidths();
+    private final Set<String> fonts = new HashSet<>();
+
+    private static double[] courierWidths() {
+        double[] w = new double[256];
+        for (int i = 32; i < 256; i++) {
+            w[i] = charWidth(COURIER, (char) i);
+        }
+        return w;
+    }
+
+    private static double charWidth(Font font, char c) {
+        return font.createGlyphVector(FONT_RENDER_CONTEXT, new char[]{56, c, 56}).getVisualBounds().getWidth();
+    }
+
+    private static double borderWidth(Font font) {
+        return font.createGlyphVector(FONT_RENDER_CONTEXT, new char[]{56, 56}).getVisualBounds().getWidth();
+    }
+
+    double[] measureFont(String name) {
+        if (fonts.contains(name)) {
+            return new double[0];
+        }
+        fonts.add(name);
+        final Font font = new Font(name, Font.PLAIN, 10);
+        final double spaceWidth = charWidth(font, ' ');
+        final double borderWidth = borderWidth(font);
+        double[] w = new double[256];
+        for (int i = 0; i < 256; i++) {
+            w[i] = COURIER_WIDTH * (i <= 32
+                    ? (spaceWidth - borderWidth) / (COURIER_SPACE_WIDTH - COURIER_BORDER_WIDTH)
+                    : (charWidth(font, (char) i) - borderWidth) / (COURIER_WIDTHS[i] - COURIER_BORDER_WIDTH));
+        }
+        return w;
+    }
+}

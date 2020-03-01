@@ -117,7 +117,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("MutableGraph", "Serializer", "ParserImpl", "Label").ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
-                        In.locs("AttributeConfigs", "AttributeValidator").ignore("TooManyStaticImports"),
+                        In.locs("AttributeConfigs", "AttributeValidator", "FontTools").ignore("TooManyStaticImports"),
                         In.classes(MutableNode.class, Rasterizer.class).ignore("ConfusingTernary"),
                         In.clazz(ThrowingFunction.class).ignore("AvoidRethrowingException"),
                         In.classes(ThrowingFunction.class, ThrowingBiConsumer.class).ignore("SignatureDeclareThrowsException"))

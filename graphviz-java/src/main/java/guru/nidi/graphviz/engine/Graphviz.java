@@ -20,13 +20,16 @@ import guru.nidi.graphviz.model.MutableGraph;
 
 import javax.annotation.Nullable;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static guru.nidi.graphviz.engine.IoUtils.readStream;
+import static java.lang.Double.parseDouble;
+import static java.util.Arrays.asList;
 
 public final class Graphviz {
     private static final Pattern DPI_PATTERN = Pattern.compile("\"?dpi\"?\\s*=\\s*\"?([0-9.]+)\"?",
@@ -69,7 +72,7 @@ public final class Graphviz {
     public static void useEngine(GraphvizEngine first, GraphvizEngine... rest) {
         final List<GraphvizEngine> engines = new ArrayList<>();
         engines.add(first);
-        engines.addAll(Arrays.asList(rest));
+        engines.addAll(asList(rest));
         useEngine(engines);
     }
 
@@ -192,10 +195,6 @@ public final class Graphviz {
         return new Graphviz(graph, src, rasterizer, processOptions.scale(scale), options, filters);
     }
 
-    public Graphviz fontAdjust(double fontAdjust) {
-        return new Graphviz(graph, src, rasterizer, processOptions.fontAdjust(fontAdjust), options, filters);
-    }
-
     public Graphviz filter(GraphvizFilter filter) {
         final ArrayList<GraphvizFilter> fs = new ArrayList<>(filters);
         fs.add(filter);
@@ -234,7 +233,7 @@ public final class Graphviz {
 
     private static double dpi(String src) {
         final Matcher matcher = DPI_PATTERN.matcher(src);
-        return matcher.find() ? Double.parseDouble(matcher.group(1)) : 72;
+        return matcher.find() ? parseDouble(matcher.group(1)) : 72;
     }
 
     private static class ErrorGraphvizEngine implements GraphvizEngine {

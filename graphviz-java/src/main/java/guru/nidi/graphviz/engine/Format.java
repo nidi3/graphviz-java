@@ -69,7 +69,6 @@ public enum Format {
     JSON0("json0", "json");
 
     private static final Logger LOG = LoggerFactory.getLogger(Format.class);
-    private static final Pattern FONT_PATTERN = Pattern.compile("font-size=\"(.*?)\"");
     private static final Pattern SVG_PATTERN = Pattern.compile(
             "<svg width=\"(?<width>\\d+)(?<unit>p[tx])\" height=\"(?<height>\\d+)p[tx]\""
                     + "(?<between>.*?>\\R<g.*?)transform=\"scale\\((?<scaleX>[0-9.]+) (?<scaleY>[0-9.]+)\\)",
@@ -115,9 +114,7 @@ public enum Format {
 
     private static String postProcessSvg(ProcessOptions options, String result, boolean prefix) {
         final String unprefixed = prefix ? withoutPrefix(result) : result;
-        final String pixelSized = pointsToPixels(unprefixed, options.dpi,
-                options.width, options.height, options.scale);
-        return options.fontAdjust == 1 ? pixelSized : fontAdjusted(pixelSized, options.fontAdjust);
+        return pointsToPixels(unprefixed, options.dpi, options.width, options.height, options.scale);
     }
 
     private static String withoutPrefix(String svg) {
@@ -155,21 +152,5 @@ public enum Format {
         final double scaleX = Double.parseDouble(m.group("scaleX")) / pixelScale;
         final double scaleY = Double.parseDouble(m.group("scaleY")) / pixelScale;
         return "transform=\"scale(" + scaleX + " " + scaleY + ")";
-    }
-
-    private static String fontAdjusted(String svg, double fontAdjust) {
-        final Matcher m = FONT_PATTERN.matcher(svg);
-        final StringBuffer s = new StringBuffer();
-        while (m.find()) {
-            String rep;
-            try {
-                rep = "font-size=\"" + Double.parseDouble(m.group(1)) * fontAdjust + "\"";
-            } catch (NumberFormatException e) {
-                rep = m.group();
-            }
-            m.appendReplacement(s, rep);
-        }
-        m.appendTail(s);
-        return s.toString();
     }
 }
