@@ -31,7 +31,7 @@ class CodeCoverage {
         final JacocoAnalyzer analyzer = new JacocoAnalyzer(new CoverageCollector(BRANCH, LINE, METHOD)
                 .just(For.allPackages().setMinima(75, 75, 75))
                 .just(For.thePackage("*.attribute").setMinima(65, 75, 75))
-                .just(For.thePackage("*.engine").setMinima(55, 75, 75))
+                .just(For.thePackage("*.engine").setMinima(55, 65, 70))
                 .just(For.thePackage("*.service").setMinima(45, 75, 75))
                 .just(For.thePackage("*.use").setMinima(0, 0, 0))
         );
