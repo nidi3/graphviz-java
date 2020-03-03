@@ -32,11 +32,11 @@ class CodeCoverage {
                 .just(For.global().setMinima(0, 0, 0)) //TODO remove
 //                .just(For.global().setMinima(60, 75, 75))
                 .just(For.allPackages().setMinima(75, 75, 75))
-                .just(For.thePackage("*.attribute").setMinima(70, 75, 75))
+                .just(For.thePackage("*.attribute").setMinima(65, 75, 75))
                 .just(For.thePackage("*.engine").setMinima(30, 70, 70))
                 .just(For.thePackage("*.model").setMinima(60, 75, 75))
                 .just(For.thePackage("*.service").setMinima(40, 65, 75))
-                .just(For.thePackage("com.kitfox.svg*").setMinima(0, 0, 0)) //TODO remove
+                .just(For.thePackage("*.use").setMinima(0, 0, 0))
         );
         assertThat("Enough code coverage", analyzer.analyze(), hasEnoughCoverage());
     }
