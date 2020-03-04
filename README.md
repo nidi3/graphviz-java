@@ -421,3 +421,8 @@ Graphviz.fromGraph(g)
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-rough/example/ex1-rough.png" width="200">
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/nidi3/graphviz-java/badge.svg?style=beer-square)](https://beerpay.io/nidi3/graphviz-java)  [![Beerpay](https://beerpay.io/nidi3/graphviz-java/make-wish.svg?style=flat-square)](https://beerpay.io/nidi3/graphviz-java?focus=wish)
