@@ -71,6 +71,14 @@ or [Log4j](https://logging.apache.org/log4j/2.x/)
 </dependency>
 ```
 
+### Dependencies
+- The `pom.xml` of `graphviz-java` contains all needed dependencies including one to `J2V8` for the current platform. 
+  This should be ok for most use cases.
+- `graphviz-java-all-j2v8` additionally contains dependencies to _all_ `J2V8` platforms. 
+  This is useful if the project is used on different platforms (Linux, Mac OS, Windows).
+- `graphviz-java-min-deps` contains only dependencies that are absolutely necessary. 
+  All other dependencies are marked as `optional` and must added manually. 
+
 ## API
 The API is separated into a mutable and immutable part.
 The basic usage is as follows (assuming `import static guru.nidi.graphviz.model.Factory.*`).

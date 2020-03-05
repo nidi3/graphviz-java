@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>guru.nidi</groupId>
+        <artifactId>graphviz-java-parent</artifactId>
+        <version>0.15.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>graphviz-java-min-deps</artifactId>
+    <name>${project.artifactId}</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>graphviz-java</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.eclipsesource.j2v8</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-exec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.npm</groupId>
+                    <artifactId>viz.js-for-graphviz-java</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>guru.nidi.com.kitfox</groupId>
+                    <artifactId>svgSalamander</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.arnx</groupId>
+                    <artifactId>nashorn-promise</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.eclipsesource.j2v8</groupId>
+            <artifactId>j2v8_macosx_x86_64</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.eclipsesource.j2v8</groupId>
+            <artifactId>j2v8_linux_x86_64</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.eclipsesource.j2v8</groupId>
+            <artifactId>j2v8_win32_x86_64</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.eclipsesource.j2v8</groupId>
+            <artifactId>j2v8_win32_x86</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Only needed for Javascript Graphviz Engines -->
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>viz.js-for-graphviz-java</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Only needed for SALAMANDER renderer -->
+        <dependency>
+            <groupId>guru.nidi.com.kitfox</groupId>
+            <artifactId>svgSalamander</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Only needed for Nashorn Javascript Engine -->
+        <dependency>
+            <groupId>net.arnx</groupId>
+            <artifactId>nashorn-promise</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Only needed for GraphvizCmlLineEngine -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+</project>
