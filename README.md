@@ -30,6 +30,8 @@ The method(s) to be used can be configured with the `Graphviz.useEngine()` metho
 
 ## Prerequisites
 
+This project heavily uses classes from `java.awt`. Therefore, **it does not work on android.**
+
 ### Maven
 
 This project is available via Maven:
