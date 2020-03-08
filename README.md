@@ -73,11 +73,13 @@ or [Log4j](https://logging.apache.org/log4j/2.x/)
 
 ### Dependencies
 - The `pom.xml` of `graphviz-java` contains all needed dependencies including one to `J2V8` for the current platform. 
-  This should be ok for most use cases.
+  This should be ok for most use cases. 
+  **gradle does not support this way of defining a dependency.** Gradle users have to manually add a dependency to j2v8:
+  e.g. `com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0`
 - `graphviz-java-all-j2v8` additionally contains dependencies to _all_ `J2V8` platforms. 
   This is useful if the project is used on different platforms (Linux, Mac OS, Windows).
 - `graphviz-java-min-deps` contains only dependencies that are absolutely necessary. 
-  All other dependencies are marked as `optional` and must added manually. 
+  All other dependencies are marked as `optional` and must added manually. See the [pom.xml](blob/master/graphviz-java-min-deps/pom.xml) for details.
 
 ## API
 The API is separated into a mutable and immutable part.
