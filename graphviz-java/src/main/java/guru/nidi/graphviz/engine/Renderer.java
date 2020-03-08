@@ -112,7 +112,8 @@ public class Renderer {
     private BufferedImage toImage(String content) {
         if (graphviz.rasterizer == null) {
             throw new IllegalStateException("- Rasterizer explicitly set no null or\n"
-                    + "- neither Batik nor Salamander found on classpath.");
+                    + "- neither 'guru.nidi.com.kitfox:svgSalamander' nor 'org.apache.xmlgraphics:batik-rasterizer'"
+                    + " found on classpath.");
         }
         return graphviz.rasterizer.rasterize(graphviz, graphicsConfigurer, content);
     }

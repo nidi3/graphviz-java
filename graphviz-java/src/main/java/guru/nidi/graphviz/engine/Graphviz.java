@@ -226,8 +226,9 @@ public final class Graphviz {
 
     public Renderer rasterize(@Nullable Rasterizer rasterizer) {
         if (rasterizer == null) {
-            throw new IllegalArgumentException("The provided rasterizer implementation was not found. "
-                    + "Make sure that the batik-rasterizer or svg-salamander jar is available on the classpath.");
+            throw new IllegalArgumentException("The provided rasterizer implementation was not found."
+                    + " Make sure that either 'guru.nidi.com.kitfox:svgSalamander' or"
+                    + " 'org.apache.xmlgraphics:batik-rasterizer' is available on the classpath.");
         }
         final Options opts = options.format(rasterizer.format());
         final Graphviz graphviz = new Graphviz(graph, src, rasterizer, processOptions, opts, filters);
