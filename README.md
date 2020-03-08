@@ -47,14 +47,14 @@ This project is available via Maven:
 `graphviz-java` contains all needed dependencies including one to `J2V8` for the current platform (Linux, Mac OS X, Windows). 
 This should be ok for most use cases. 
   
-**gradle does not support this way of defining a dependency.** Gradle users have to manually add a dependency to J2V8:
+**gradle does not support this way of defining a dependency.** Gradle users have to manually add a dependency to J2V8,
 e.g. `com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0`
 
 Instead of `graphviz-java` there are two alternative dependencies that can be used: 
 - `graphviz-java-all-j2v8` additionally contains dependencies to _all_ `J2V8` platforms. 
     So the same application can run on Linux, Mac OS X and Windows.  
 - `graphviz-java-min-deps` contains only dependencies that are absolutely necessary. 
-    All other dependencies are marked as `optional` and must added manually. See the [pom.xml](blob/master/graphviz-java-min-deps/pom.xml) for details.
+    All other dependencies are marked as `optional` and must added manually. See the [pom.xml](graphviz-java-min-deps/pom.xml#L64-L90) for details.
     
 ### Logging
 Graphviz-java uses the [SLF4J](https://www.slf4j.org/) facade to log. 
