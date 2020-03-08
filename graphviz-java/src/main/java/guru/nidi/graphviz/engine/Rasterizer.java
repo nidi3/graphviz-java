@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -28,7 +30,16 @@ public interface Rasterizer {
     @Nullable
     Rasterizer SALAMANDER = isOnClasspath("com.kitfox.svg.SVGDiagram") ? new SalamanderRasterizer() : null;
     @Nullable
-    Rasterizer DEFAULT = BATIK != null ? BATIK : SALAMANDER;
+    Rasterizer DEFAULT = getDefault();
+
+    @Nullable
+    static Rasterizer getDefault() {
+        final Rasterizer r = BATIK != null ? BATIK : SALAMANDER;
+        if (r == null) {
+            LoggerFactory.getLogger(Rasterizer.class).warn("Neither Batik nor Salamander found on classpath");
+        }
+        return r;
+    }
 
     static Rasterizer builtIn(String format) {
         return new BuiltInRasterizer(format, null, null);

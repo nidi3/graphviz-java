@@ -15,21 +15,15 @@
  */
 package guru.nidi.graphviz.engine;
 
-import javax.annotation.Nullable;
+public class MissingDependencyException extends GraphvizException {
+    private final String dependency;
 
-import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
-
-public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
-    static boolean AVAILABLE = AbstractJsGraphvizEngine.AVAILABLE && isOnClasspath("com.eclipsesource.v8.V8");
-
-    public GraphvizV8Engine() {
-        this(null);
+    public MissingDependencyException(String message, String dependency) {
+        super(message + " Missing '" + dependency + "' dependency.");
+        this.dependency = dependency;
     }
 
-    public GraphvizV8Engine(@Nullable String extractionPath) {
-        super(true, () -> new V8JavascriptEngine(extractionPath));
-        if (!AVAILABLE) {
-            throw new MissingDependencyException("V8 engine is not available.", "com.eclipsesource.j2v8:j2v8_*");
-        }
+    public String getDependency() {
+        return dependency;
     }
 }

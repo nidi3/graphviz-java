@@ -17,6 +17,8 @@ package guru.nidi.graphviz.engine;
 
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -32,8 +34,11 @@ import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 
 public final class Graphviz {
+    private static final Logger LOG = LoggerFactory.getLogger(Graphviz.class);
+
     private static final Pattern DPI_PATTERN = Pattern.compile("\"?dpi\"?\\s*=\\s*\"?([0-9.]+)\"?",
             Pattern.CASE_INSENSITIVE);
+    private static final List<GraphvizEngine> AVAILABLE_ENGINES = availableEngines();
 
     @Nullable
     private static volatile BlockingQueue<GraphvizEngine> engineQueue;
@@ -64,9 +69,27 @@ public final class Graphviz {
         this.filters = filters;
     }
 
+    private static List<GraphvizEngine> availableEngines() {
+        final List<GraphvizEngine> engines = new ArrayList<>();
+        if (GraphvizCmdLineEngine.AVAILABLE) {
+            engines.add(new GraphvizCmdLineEngine());
+        }
+        if (GraphvizV8Engine.AVAILABLE) {
+            engines.add(new GraphvizV8Engine());
+        }
+        engines.add(new GraphvizServerEngine());
+        if (GraphvizJdkEngine.AVAILABLE) {
+            engines.add(new GraphvizJdkEngine());
+        }
+        if (engines.size() == 1) {
+            LOG.warn("Only GraphvizServerEngine is available." +
+                    " If you want to use other engines, please put the needed dependencies on the classpath.");
+        }
+        return engines;
+    }
+
     public static void useDefaultEngines() {
-        useEngine(new GraphvizCmdLineEngine(), new GraphvizV8Engine(),
-                new GraphvizServerEngine(), new GraphvizJdkEngine());
+        useEngine(AVAILABLE_ENGINES);
     }
 
     public static void useEngine(GraphvizEngine first, GraphvizEngine... rest) {

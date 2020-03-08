@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
 import static java.util.Locale.ENGLISH;
 
 /**
@@ -36,6 +37,7 @@ import static java.util.Locale.ENGLISH;
  */
 public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
+    static boolean AVAILABLE = isOnClasspath("org.apache.commons.exec.CommandLine");
 
     private final String envPath;
     private final CommandRunner cmdRunner;
@@ -51,6 +53,10 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
     public GraphvizCmdLineEngine(String envPath, CommandLineExecutor executor) {
         super(true);
+        if (!AVAILABLE) {
+            throw new MissingDependencyException("Command line engine is not available.",
+                    "org.apache.commons:commons-exec");
+        }
         this.envPath = envPath;
         cmdRunner = new CommandBuilder()
                 .withShellWrapper(true)

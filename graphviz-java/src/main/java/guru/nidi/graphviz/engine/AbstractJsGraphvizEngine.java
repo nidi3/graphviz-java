@@ -27,10 +27,13 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
 import static guru.nidi.graphviz.engine.IoUtils.readStream;
 import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
+    private static final String VIZ_BASE = "META-INF/resources/webjars/viz.js-for-graphviz-java/2.1.2/";
+    static boolean AVAILABLE = isOnClasspath(VIZ_BASE + "viz.js");
     private static final Pattern FONT_NAME_PATTERN = Pattern.compile("\"?fontname\"?\\s*=\\s*\"?(.*?)[\",;\\]]");
     private static final Map<Class<?>, ThreadLocal<JavascriptEngine>> ENGINES = new HashMap<>();
     private final Supplier<JavascriptEngine> engineSupplier;
@@ -38,6 +41,10 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
 
     protected AbstractJsGraphvizEngine(boolean sync, Supplier<JavascriptEngine> engineSupplier) {
         super(sync);
+        if (!AVAILABLE) {
+            throw new MissingDependencyException("Javascript engines are not available.",
+                    "org.webjars.npm:viz.js-for-graphviz-java");
+        }
         this.engineSupplier = engineSupplier;
     }
 
@@ -119,9 +126,8 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     private String vizJsCode() {
-        final String path = "/META-INF/resources/webjars/viz.js-for-graphviz-java/2.1.2/";
-        try (final InputStream api = getClass().getResourceAsStream(path + "viz.js");
-             final InputStream engine = getClass().getResourceAsStream(path + "full.render.js")) {
+        try (final InputStream api = getClass().getResourceAsStream("/" + VIZ_BASE + "viz.js");
+             final InputStream engine = getClass().getResourceAsStream("/" + VIZ_BASE + "full.render.js")) {
             return readStream(api) + readStream(engine);
         } catch (IOException e) {
             throw new AssertionError("Could not load internal javascript resources, is the jar file corrupt?", e);

@@ -15,22 +15,41 @@
  */
 package guru.nidi.graphviz.engine;
 
+import javax.annotation.Nullable;
+
+import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
+
 public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
+    static boolean AVAILABLE = AbstractJsGraphvizEngine.AVAILABLE &&
+            (tryGraal() != null || isOnClasspath("net.arnx.nashorn.lib.PromiseException"));
+
     public GraphvizJdkEngine() {
         super(false, GraphvizJdkEngine::newEngine);
+        if (!AVAILABLE) {
+            throw new MissingDependencyException("JDK engine is not available", "net.arnx:nashorn-promise");
+        }
     }
 
     private static JavascriptEngine newEngine() {
+        final GraalJavascriptEngine graal = tryGraal();
+        return graal != null ? graal : new NashornJavascriptEngine();
+    }
+
+    @Nullable
+    private static GraalJavascriptEngine tryGraal() {
         try {
             return new GraalJavascriptEngine();
         } catch (ExceptionInInitializerError | NoClassDefFoundError | IllegalStateException e) {
-            return new NashornJavascriptEngine();
+            return null;
         }
     }
 
     @Override
     protected void doInit() {
-        engine().executeJavascript(promiseJsCode());
+        final JavascriptEngine engine = engine();
+        if (engine instanceof NashornJavascriptEngine) {
+            engine.executeJavascript(promiseJsCode());
+        }
         super.doInit();
     }
 }
