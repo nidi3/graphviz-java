@@ -40,7 +40,7 @@ This project is available via Maven:
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-java</artifactId>
-    <version>0.15.0</version>
+    <version>0.15.1</version>
 </dependency>
 ```
 
@@ -153,7 +153,7 @@ digraph example1 {
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-kotlin</artifactId>
-    <version>0.15.0</version>
+    <version>0.15.1</version>
 </dependency>
 ```
 
@@ -366,7 +366,7 @@ To use graphviz inside javadoc comments, add this to `pom.xml`:
         <tagletArtifact>
           <groupId>guru.nidi</groupId>
           <artifactId>graphviz-taglet</artifactId>
-          <version>0.15.0</version>
+          <version>0.15.1</version>
         </tagletArtifact>
       </configuration>
     </plugin>
@@ -398,7 +398,7 @@ First, add the rough module to the dependencies:
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-rough</artifactId>
-    <version>0.15.0</version>
+    <version>0.15.1</version>
 </dependency>
 ```
 
