@@ -33,7 +33,11 @@ final class IoUtils {
     }
 
     static boolean isOnClasspath(String resource) {
-        return Thread.currentThread().getContextClassLoader().getResourceAsStream(resource) != null;
+        try (final InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource)) {
+            return stream != null;
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
     }
 
     static void closeQuietly(AutoCloseable c) {
