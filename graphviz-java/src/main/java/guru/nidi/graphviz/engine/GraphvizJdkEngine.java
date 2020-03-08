@@ -20,8 +20,8 @@ import javax.annotation.Nullable;
 import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
 
 public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
-    static boolean AVAILABLE = AbstractJsGraphvizEngine.AVAILABLE &&
-            (tryGraal() != null || isOnClasspath("net.arnx.nashorn.lib.PromiseException"));
+    static final boolean AVAILABLE = AbstractJsGraphvizEngine.AVAILABLE
+            && (tryGraal() != null || isOnClasspath("net/arnx/nashorn/lib/PromiseException.class"));
 
     public GraphvizJdkEngine() {
         super(false, GraphvizJdkEngine::newEngine);
@@ -32,7 +32,7 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
 
     private static JavascriptEngine newEngine() {
         final GraalJavascriptEngine graal = tryGraal();
-        return graal != null ? graal : new NashornJavascriptEngine();
+        return graal == null ? new NashornJavascriptEngine() : graal;
     }
 
     @Nullable

@@ -33,7 +33,7 @@ import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     private static final String VIZ_BASE = "META-INF/resources/webjars/viz.js-for-graphviz-java/2.1.2/";
-    static boolean AVAILABLE = isOnClasspath(VIZ_BASE + "viz.js");
+    static final boolean AVAILABLE = isOnClasspath(VIZ_BASE + "viz.js");
     private static final Pattern FONT_NAME_PATTERN = Pattern.compile("\"?fontname\"?\\s*=\\s*\"?(.*?)[\",;\\]]");
     private static final Map<Class<?>, ThreadLocal<JavascriptEngine>> ENGINES = new HashMap<>();
     private final Supplier<JavascriptEngine> engineSupplier;

@@ -82,8 +82,8 @@ public final class Graphviz {
             engines.add(new GraphvizJdkEngine());
         }
         if (engines.size() == 1) {
-            LOG.warn("Only GraphvizServerEngine is available." +
-                    " If you want to use other engines, please put the needed dependencies on the classpath.");
+            LOG.warn("Only GraphvizServerEngine is available."
+                    + " If you want to use other engines, please put the needed dependencies on the classpath.");
         }
         return engines;
     }

@@ -114,7 +114,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
-                        In.locs("MutableGraph", "Serializer", "ParserImpl", "Label").ignore("GodClass"),
+                        In.locs("MutableGraph", "Serializer", "ParserImpl", "Label", "Graphviz").ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
                         In.locs("AttributeConfigs", "AttributeValidator", "FontTools").ignore("TooManyStaticImports"),
@@ -142,7 +142,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .apply(PmdConfigs.cpdIgnoreEqualsHashCodeToString())
                 .because("It's java",
                         In.loc("*Graph").ignore("Graph(strict, directed, cluster, name,", "if (strict != graph.strict) {"),
-                        In.loc("Format").ignore("String preProcess(String src) {"))
+                        In.loc("Format").ignore("EngineResult postProcess("))
                 .just(In.locs("GraphvizGraalEngine", "GraphvizNashornEngine").ignore("void doInit()"));
         return new CpdAnalyzer(AnalyzerConfig.maven().main(), 36, collector).analyze();
     }

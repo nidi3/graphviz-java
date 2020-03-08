@@ -20,7 +20,8 @@ import javax.annotation.Nullable;
 import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
 
 public class GraphvizV8Engine extends AbstractJsGraphvizEngine {
-    static boolean AVAILABLE = AbstractJsGraphvizEngine.AVAILABLE && isOnClasspath("com.eclipsesource.v8.V8");
+    static final boolean AVAILABLE = AbstractJsGraphvizEngine.AVAILABLE
+            && isOnClasspath("com/eclipsesource/v8/V8.class");
 
     public GraphvizV8Engine() {
         this(null);

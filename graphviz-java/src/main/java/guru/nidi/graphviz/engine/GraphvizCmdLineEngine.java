@@ -37,7 +37,7 @@ import static java.util.Locale.ENGLISH;
  */
 public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
-    static boolean AVAILABLE = isOnClasspath("org.apache.commons.exec.CommandLine");
+    static final boolean AVAILABLE = isOnClasspath("org/apache/commons/exec/CommandLine.class");
 
     private final String envPath;
     private final CommandRunner cmdRunner;

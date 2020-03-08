@@ -26,9 +26,9 @@ import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
 
 public interface Rasterizer {
     @Nullable
-    Rasterizer BATIK = isOnClasspath("org.apache.batik.transcoder.Transcoder") ? new BatikRasterizer() : null;
+    Rasterizer BATIK = isOnClasspath("org/apache/batik/transcoder/Transcoder.class") ? new BatikRasterizer() : null;
     @Nullable
-    Rasterizer SALAMANDER = isOnClasspath("com.kitfox.svg.SVGDiagram") ? new SalamanderRasterizer() : null;
+    Rasterizer SALAMANDER = isOnClasspath("com/kitfox/svg/SVGDiagram.class") ? new SalamanderRasterizer() : null;
     @Nullable
     Rasterizer DEFAULT = getDefault();
 

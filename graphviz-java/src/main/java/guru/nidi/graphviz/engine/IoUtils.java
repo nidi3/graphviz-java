@@ -32,13 +32,8 @@ final class IoUtils {
         return new String(buf, StandardCharsets.UTF_8);
     }
 
-    static boolean isOnClasspath(String clazz) {
-        try {
-            Class.forName(clazz);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+    static boolean isOnClasspath(String resource) {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(resource) != null;
     }
 
     static void closeQuietly(AutoCloseable c) {
