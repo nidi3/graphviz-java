@@ -43,10 +43,19 @@ This project is available via Maven:
     <version>0.15.0</version>
 </dependency>
 ```
-This includes a dependency to J2V8 corresponding to the current operating system (Linux, Mac OS X, Windows).
-If you don't need the J2V8 engine, use `graphviz-java-no-j2v8` as artifactId,
-if you want to include the J2V8 engine for all operating systems, use `graphviz-java-all-j2v8`.
 
+`graphviz-java` contains all needed dependencies including one to `J2V8` for the current platform (Linux, Mac OS X, Windows). 
+This should be ok for most use cases. 
+  
+**gradle does not support this way of defining a dependency.** Gradle users have to manually add a dependency to J2V8:
+e.g. `com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0`
+
+Instead of `graphviz-java` there are two alternative dependencies that can be used: 
+- `graphviz-java-all-j2v8` additionally contains dependencies to _all_ `J2V8` platforms. 
+    So the same application can run on Linux, Mac OS X and Windows.  
+- `graphviz-java-min-deps` contains only dependencies that are absolutely necessary. 
+    All other dependencies are marked as `optional` and must added manually. See the [pom.xml](blob/master/graphviz-java-min-deps/pom.xml) for details.
+    
 ### Logging
 Graphviz-java uses the [SLF4J](https://www.slf4j.org/) facade to log. 
 Users must therefore provide a logging implementation like [LOGBack](https://logback.qos.ch/)
@@ -70,16 +79,6 @@ or [Log4j](https://logging.apache.org/log4j/2.x/)
     <version>2.13.0</version>
 </dependency>
 ```
-
-### Dependencies
-- The `pom.xml` of `graphviz-java` contains all needed dependencies including one to `J2V8` for the current platform. 
-  This should be ok for most use cases. 
-  **gradle does not support this way of defining a dependency.** Gradle users have to manually add a dependency to j2v8:
-  e.g. `com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0`
-- `graphviz-java-all-j2v8` additionally contains dependencies to _all_ `J2V8` platforms. 
-  This is useful if the project is used on different platforms (Linux, Mac OS, Windows).
-- `graphviz-java-min-deps` contains only dependencies that are absolutely necessary. 
-  All other dependencies are marked as `optional` and must added manually. See the [pom.xml](blob/master/graphviz-java-min-deps/pom.xml) for details.
 
 ## API
 The API is separated into a mutable and immutable part.
