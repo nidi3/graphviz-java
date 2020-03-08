@@ -26,7 +26,7 @@ public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
     public GraphvizJdkEngine() {
         super(false, GraphvizJdkEngine::newEngine);
         if (!AVAILABLE) {
-            throw new MissingDependencyException("JDK engine is not available", "net.arnx:nashorn-promise");
+            throw new MissingDependencyException("JDK engine is not available.", "net.arnx:nashorn-promise");
         }
     }
 

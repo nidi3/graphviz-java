@@ -48,20 +48,24 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private String outputFileName;
 
     public GraphvizCmdLineEngine() {
-        this(Optional.ofNullable(System.getenv("PATH")).orElse(""), new CommandLineExecutor());
+        this(Optional.ofNullable(System.getenv("PATH")).orElse(""), defaultExecutor());
     }
 
     public GraphvizCmdLineEngine(String envPath, CommandLineExecutor executor) {
         super(true);
-        if (!AVAILABLE) {
-            throw new MissingDependencyException("Command line engine is not available.",
-                    "org.apache.commons:commons-exec");
-        }
         this.envPath = envPath;
         cmdRunner = new CommandBuilder()
                 .withShellWrapper(true)
                 .withCommandExecutor(executor)
                 .build();
+    }
+
+    private static CommandLineExecutor defaultExecutor() {
+        if (!AVAILABLE) {
+            throw new MissingDependencyException("Command line engine is not available.",
+                    "org.apache.commons:commons-exec");
+        }
+        return new CommandLineExecutor();
     }
 
     @SuppressWarnings("unchecked")
