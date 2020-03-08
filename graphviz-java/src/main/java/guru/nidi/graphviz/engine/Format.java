@@ -24,11 +24,6 @@ import java.util.regex.Pattern;
 public enum Format {
     PNG("svg", "png", true, true) {
         @Override
-        String preProcess(String src) {
-            return encodeXml(super.preProcess(src));
-        }
-
-        @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
             return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, true));
         }
@@ -36,22 +31,12 @@ public enum Format {
 
     SVG("svg", "svg", false, true) {
         @Override
-        String preProcess(String src) {
-            return encodeXml(super.preProcess(src));
-        }
-
-        @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
             return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, true));
         }
     },
 
     SVG_STANDALONE("svg", "svg", false, true) {
-        @Override
-        String preProcess(String src) {
-            return encodeXml(super.preProcess(src));
-        }
-
         @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
             return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, false));
@@ -106,10 +91,6 @@ public enum Format {
             }
         }
         return new String(chars);
-    }
-
-    private static String encodeXml(String src) {
-        return src.replace("&", "&amp;");
     }
 
     private static String postProcessSvg(ProcessOptions options, String result, boolean prefix) {
