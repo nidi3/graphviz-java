@@ -17,13 +17,14 @@ package guru.nidi.graphviz.engine;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class GraphvizServerEngine extends AbstractGraphvizEngine {
     private final List<GraphvizEngine> engines = new ArrayList<>();
+    private String host = "localhost";
+    private int port = GraphvizServer.DEFAULT_PORT;
 
     public GraphvizServerEngine() {
         super(false);
@@ -33,6 +34,16 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         engines.clear();
         engines.add(first);
         engines.addAll(Arrays.asList(rest));
+        return this;
+    }
+
+    public GraphvizServerEngine port(int port) {
+        this.port = port;
+        return this;
+    }
+
+    public GraphvizServerEngine host(String host) {
+        this.host = host;
         return this;
     }
 
@@ -48,14 +59,17 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         } catch (SocketTimeoutException e) {
             throw new GraphvizException("Engine took too long to respond, try setting a higher timout");
         } catch (IOException e) {
-            throw new GraphvizException("Problem in communication with server", e);
+            throw new GraphvizException("Problem in communication with GraphvizServer at " + host + ":" + port, e);
         }
     }
 
     @Override
     protected void doInit() throws IOException {
         if (!canConnect()) {
-            GraphvizServer.start(engines);
+            if (!host.equals("localhost") && !host.equals("127.0.0.1")) {
+                throw new IOException("Could not connect to GraphvizServer at " + host + ":" + port);
+            }
+            GraphvizServer.start(engines, port);
             for (int i = 0; i < 100 && !canConnect(); i++) {
                 try {
                     Thread.sleep(50);
@@ -64,14 +78,14 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
                 }
             }
             if (!canConnect()) {
-                throw new IOException("Could not connect to server");
+                throw new IOException("Could not connect to GraphvizServer at " + host + ":" + port);
             }
         }
     }
 
     public boolean canConnect() {
         try {
-            try (final Socket socket = new Socket("localhost", GraphvizServer.PORT)) {
+            try (final Socket socket = socket(host, port)) {
                 return true;
             }
         } catch (IOException e) {
@@ -80,7 +94,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     private String createSvg(String src, Options options) throws IOException {
-        return communicating(timeout, com -> {
+        return communicating(host, port, timeout, com -> {
             com.writeContent(options.toJson(true) + "@@@" + src);
             final String status = com.readStatus();
             final int len = com.readLen();
@@ -92,9 +106,21 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         });
     }
 
+    public void stopThisServer() {
+        stopServer(host, port);
+    }
+
     public static void stopServer() {
+        stopServer(GraphvizServer.DEFAULT_PORT);
+    }
+
+    public static void stopServer(int port) {
+        stopServer("localhost", port);
+    }
+
+    public static void stopServer(String host, int port) {
         try {
-            communicating(5000, com -> {
+            communicating(host, port, 5000, com -> {
                 com.writeLen(-1);
                 return "";
             });
@@ -107,10 +133,17 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
         T apply(Communicator c) throws IOException;
     }
 
-    private static <T> T communicating(int timeout, ComFunc<T> action) throws IOException {
-        try (final Socket socket = new Socket("localhost", GraphvizServer.PORT);
+    private static <T> T communicating(String host, int port, int timeout, ComFunc<T> action) throws IOException {
+        try (final Socket socket = socket(host, port);
              final Communicator com = new Communicator(socket, timeout)) {
             return action.apply(com);
         }
+    }
+
+    private static Socket socket(String host, int port) throws IOException {
+        final Socket socket = new Socket();
+        socket.setSoTimeout(500);
+        socket.connect(new InetSocketAddress(host, port), 500);
+        return socket;
     }
 }

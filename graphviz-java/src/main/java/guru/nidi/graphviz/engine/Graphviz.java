@@ -77,13 +77,13 @@ public final class Graphviz {
         if (GraphvizV8Engine.AVAILABLE) {
             engines.add(new GraphvizV8Engine());
         }
-        engines.add(new GraphvizServerEngine());
         if (GraphvizJdkEngine.AVAILABLE) {
             engines.add(new GraphvizJdkEngine());
         }
-        if (engines.size() == 1) {
-            LOG.warn("Only GraphvizServerEngine is available."
-                    + " If you want to use other engines, please put the needed dependencies on the classpath.");
+        if (engines.isEmpty()) {
+            LOG.warn("No GraphvizEngine is available."
+                    + " Either add the needed dependencies on the classpath"
+                    + " or explicitly use 'Graphviz.useEngine(new GraphvizServerEngine())'.");
         }
         return engines;
     }

@@ -78,12 +78,12 @@ class EngineTest {
     @Test
     void server() {
         assumeFalse(System.getProperty("os.name").startsWith("Windows"), "I gave up fixing this");
-        GraphvizServerEngine.stopServer();
+        GraphvizServerEngine.stopServer(34567);
         try {
-            Graphviz.useEngine(new GraphvizServerEngine().useEngine(new GraphvizV8Engine()));
+            Graphviz.useEngine(new GraphvizServerEngine().port(34567).useEngine(new GraphvizV8Engine()));
             assertThat(Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString(), startsWith(START1_7));
         } finally {
-            GraphvizServerEngine.stopServer();
+            GraphvizServerEngine.stopServer(34567);
         }
     }
 

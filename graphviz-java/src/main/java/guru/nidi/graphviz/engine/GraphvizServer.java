@@ -25,31 +25,39 @@ import java.net.Socket;
 import java.util.*;
 
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 final class GraphvizServer {
     private static final Logger LOG = LoggerFactory.getLogger(GraphvizServer.class);
-    static final int PORT = 10234;
+    private static final String ENGINE_PACKAGE = "guru.nidi.graphviz.engine";
+    static final int DEFAULT_PORT = 10234;
 
     private GraphvizServer() {
     }
 
     public static void start(List<GraphvizEngine> engines) throws IOException {
+        start(engines, DEFAULT_PORT);
+    }
+
+    public static void start(List<GraphvizEngine> engines, int port) throws IOException {
         final String executable = SystemUtils.executableName("java");
-        final List<String> cmd = new ArrayList<>(Arrays.asList(
+        final List<String> cmd = new ArrayList<>(asList(
                 System.getProperty("java.home") + "/bin/" + executable,
-                "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName()));
+                "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName(), "-p", "" + port));
         cmd.addAll(engines.stream().map(e -> e.getClass().getName()).collect(toList()));
         new ProcessBuilder(cmd).inheritIO().start();
     }
 
     public static void main(String... args) throws IOException {
-        LOG.info("starting graphviz server...");
-        if (args.length > 0) {
-            Graphviz.useEngine(Arrays.stream(args).map(GraphvizServer::engineFromString).collect(toList()));
+        final CmdOptions options = CmdOptions.parse(args);
+        final int port = Integer.parseInt(options.opts.getOrDefault("p", "" + DEFAULT_PORT));
+        LOG.info("starting graphviz server at port " + port + "...");
+        if (!options.args.isEmpty()) {
+            Graphviz.useEngine(options.args.stream().map(GraphvizServer::engineFromString).collect(toList()));
         }
-        LOG.info("started, using engines " + Arrays.toString(args));
-        try (final ServerSocket ss = new ServerSocket(PORT)) {
+        try (final ServerSocket ss = new ServerSocket(port)) {
+            LOG.info("started, using engines " + options.args);
             while (true) {
                 try (final Socket socket = ss.accept();
                      final Communicator com = new Communicator(socket, 500)) {
@@ -84,6 +92,9 @@ final class GraphvizServer {
             }
             return (GraphvizEngine) o;
         } catch (ReflectiveOperationException e) {
+            if (!s.startsWith(ENGINE_PACKAGE)) {
+                return engineFromString(ENGINE_PACKAGE + "." + s);
+            }
             throw new IllegalArgumentException("class " + s + " not found.");
         }
     }
@@ -105,5 +116,36 @@ final class GraphvizServer {
                 .yInvert(options.yInvert)
                 .render(options.format)
                 .toString();
+    }
+
+    private static class CmdOptions {
+        final Map<String, String> opts = new HashMap<>();
+        final List<String> args = new ArrayList<>();
+
+        static CmdOptions parse(String[] args) {
+            final CmdOptions options = new CmdOptions();
+            for (int i = 0; i < args.length; i++) {
+                if (args[i].startsWith("-")) {
+                    final int len = args[i].length();
+                    if (len == 1) {
+                        throw new IllegalArgumentException("Illegal option -");
+                    }
+                    final String name = args[i].substring(1, 2);
+                    String value;
+                    if (len > 2) {
+                        value = args[i].substring(2);
+                    } else if (i == args.length - 1) {
+                        value = "";
+                    } else {
+                        value = args[i + 1];
+                        i++;
+                    }
+                    options.opts.put(name, value);
+                } else {
+                    options.args.add(args[i]);
+                }
+            }
+            return options;
+        }
     }
 }
