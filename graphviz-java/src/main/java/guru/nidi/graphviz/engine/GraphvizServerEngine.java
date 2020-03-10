@@ -66,7 +66,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     @Override
     protected void doInit() throws IOException {
         if (!canConnect()) {
-            if (!host.equals("localhost") && !host.equals("127.0.0.1")) {
+            if (!InetAddress.getByName(host).isLoopbackAddress()) {
                 throw new IOException("Could not connect to GraphvizServer at " + host + ":" + port);
             }
             GraphvizServer.start(engines, port);

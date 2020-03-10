@@ -44,14 +44,15 @@ final class GraphvizServer {
         final String executable = SystemUtils.executableName("java");
         final List<String> cmd = new ArrayList<>(asList(
                 System.getProperty("java.home") + "/bin/" + executable,
-                "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName(), "-p", "" + port));
+                "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName(),
+                "-p", Integer.toString(port)));
         cmd.addAll(engines.stream().map(e -> e.getClass().getName()).collect(toList()));
         new ProcessBuilder(cmd).inheritIO().start();
     }
 
     public static void main(String... args) throws IOException {
         final CmdOptions options = CmdOptions.parse(args);
-        final int port = Integer.parseInt(options.opts.getOrDefault("p", "" + DEFAULT_PORT));
+        final int port = Integer.parseInt(options.opts.getOrDefault("p", Integer.toString(DEFAULT_PORT)));
         LOG.info("starting graphviz server at port " + port + "...");
         if (!options.args.isEmpty()) {
             Graphviz.useEngine(options.args.stream().map(GraphvizServer::engineFromString).collect(toList()));
