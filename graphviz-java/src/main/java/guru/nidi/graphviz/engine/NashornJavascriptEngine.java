@@ -34,9 +34,9 @@ class NashornJavascriptEngine extends AbstractJavascriptEngine {
         }
         final Matcher matcherMajor = JAVA_MAJOR_PATTERN.matcher(version);
         if (matcherMajor.matches() && Integer.parseInt(matcherMajor.group(1)) >= 15) {
-            throw new GraphvizException("You are using a java version of 15 or newer. " +
-                    "It does not include the Nashorn javascript engine any more. " +
-                    "Use javascript of Graal instead by adding this dependency: org.graalvm.js:js");
+            throw new GraphvizException("You are using a java version of 15 or newer. "
+                    + "It does not include the Nashorn javascript engine any more. "
+                    + "Use javascript of Graal instead by adding this dependency: org.graalvm.js:js");
         }
         context.getBindings(ScriptContext.ENGINE_SCOPE).put("handler", resultHandler);
         eval("function result(r){ handler.setResult(r); }" + "function error(r){ handler.setError(r); }");

@@ -50,7 +50,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
 
     @Override
     protected void doInit() {
-        EngineState state = getState();
+        final EngineState state = getState();
         if (state == null || !state.ininted) {
             final JavascriptEngine engine = engine(true);
             engine.executeJavascript(vizJsCode());
@@ -184,7 +184,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         final JavascriptEngine engine;
         boolean ininted;
 
-        private EngineState(JavascriptEngine engine) {
+        EngineState(JavascriptEngine engine) {
             this.engine = engine;
             this.ininted = false;
         }
