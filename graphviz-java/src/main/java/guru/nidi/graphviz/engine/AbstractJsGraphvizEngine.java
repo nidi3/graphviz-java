@@ -35,7 +35,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     private static final String VIZ_BASE = "META-INF/resources/webjars/viz.js-for-graphviz-java/2.1.2/";
     static final boolean AVAILABLE = isOnClasspath(VIZ_BASE + "viz.js");
     private static final Pattern FONT_NAME_PATTERN = Pattern.compile("\"?fontname\"?\\s*=\\s*\"?(.*?)[\",;\\]]");
-    private static final Map<Class<?>, ThreadLocal<JavascriptEngine>> ENGINES = new HashMap<>();
+    private static final Map<Class<?>, ThreadLocal<EngineState>> ENGINES = new HashMap<>();
     private final Supplier<JavascriptEngine> engineSupplier;
     private final FontMeasurer fontMeasurer = new FontMeasurer();
 
@@ -50,31 +50,48 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
 
     @Override
     protected void doInit() {
-        engine().executeJavascript(vizJsCode());
-        engine().executeJavascript(renderJsCode());
-        execute("graph g { a -- b }", Options.create(), null);
+        EngineState state = getState();
+        if (state == null || !state.ininted) {
+            final JavascriptEngine engine = engine(true);
+            engine.executeJavascript(vizJsCode());
+            engine.executeJavascript(renderJsCode());
+            execute("graph g { a -- b }", Options.create(), null);
+        }
     }
 
     protected JavascriptEngine engine() {
-        final ThreadLocal<JavascriptEngine> holder = ENGINES.computeIfAbsent(getClass(), e -> new ThreadLocal<>());
-        JavascriptEngine engine = holder.get();
-        if (engine == null) {
-            engine = engineSupplier.get();
-            holder.set(engine);
-            throwingInit();
+        return engine(false);
+    }
+
+    private JavascriptEngine engine(boolean init) {
+        // TODO thread local causes 2 inits of async engines
+        final ThreadLocal<EngineState> holder = ENGINES.computeIfAbsent(getClass(), e -> new ThreadLocal<>());
+        EngineState state = holder.get();
+        if (state == null) {
+            state = new EngineState(engineSupplier.get());
+            holder.set(state);
+            if (!init) {
+                throwingInit();
+            }
         }
-        return engine;
+        if (init) {
+            state.ininted = true;
+        }
+        return state.engine;
+    }
+
+    @Nullable
+    private EngineState getState() {
+        final ThreadLocal<EngineState> holder = ENGINES.get(getClass());
+        return holder == null ? null : holder.get();
     }
 
     @Override
     public void close() {
-        final ThreadLocal<JavascriptEngine> holder = ENGINES.get(getClass());
-        if (holder != null) {
-            final JavascriptEngine engine = holder.get();
-            if (engine != null) {
-                IoUtils.closeQuietly(engine);
-                holder.remove();
-            }
+        final EngineState state = getState();
+        if (state != null) {
+            IoUtils.closeQuietly(state.engine);
+            ENGINES.get(getClass()).remove();
         }
     }
 
@@ -161,5 +178,15 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
                 + "      .catch(function(err) { initViz(true); error(err.toString()); });"
                 + "  } catch(e) { error(e.toString()); }"
                 + "}";
+    }
+
+    private static class EngineState {
+        final JavascriptEngine engine;
+        boolean ininted;
+
+        private EngineState(JavascriptEngine engine) {
+            this.engine = engine;
+            this.ininted = false;
+        }
     }
 }

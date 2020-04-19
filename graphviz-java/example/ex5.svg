@@ -1,4 +1,5 @@
-<svg width="200px" height="374px" viewBox="0.00 0.00 62.00 116.00" xmlns="http://www.w3.org/2000/svg">
+<svg width="200px" height="374px"
+ viewBox="0.00 0.00 62.00 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1.0 1.0) rotate(0) translate(4 112)">
 <title>example5</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-112 58,-112 58,4 -4,4"/>
@@ -6,13 +7,13 @@
 <g id="node1" class="node">
 <title>abc</title>
 <ellipse fill="none" stroke="#000000" cx="27" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-86.3" font-family="Times,serif" font-size="14.00" fill="#000000">abc</text>
+<text text-anchor="middle" x="27" y="-85.8" font-family="Times,serif" font-size="14.00" fill="#000000">abc</text>
 </g>
 <!-- xyz -->
 <g id="node2" class="node">
 <title>xyz</title>
 <ellipse fill="none" stroke="#000000" cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.3" font-family="Times,serif" font-size="14.00" fill="#000000">xyz</text>
+<text text-anchor="middle" x="27" y="-13.8" font-family="Times,serif" font-size="14.00" fill="#000000">xyz</text>
 </g>
 <!-- abc&#45;&gt;xyz -->
 <g id="edge1" class="edge">
