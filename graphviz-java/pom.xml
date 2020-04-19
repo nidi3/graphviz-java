@@ -11,10 +11,6 @@
     <artifactId>graphviz-java</artifactId>
     <name>${project.artifactId}</name>
 
-    <properties>
-        <graal.version>19.2.1</graal.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -56,29 +52,13 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>org.graalvm.sdk</groupId>
-            <artifactId>graal-sdk</artifactId>
-            <version>${graal.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- these are needed to test with Graal Javascript engine
+        <!-- Only needed for Graal Javascript engine -->
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js</artifactId>
-            <version>${graal.version}</version>
+            <version>20.0.0</version>
+            <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.graalvm.js</groupId>
-            <artifactId>js-scriptengine</artifactId>
-            <version>${graal.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.graalvm.truffle</groupId>
-            <artifactId>truffle-api</artifactId>
-            <version>${graal.version}</version>
-        </dependency>
-        -->
         <!-- Only needed for Javascript Graphviz Engines -->
         <dependency>
             <groupId>org.webjars.npm</groupId>

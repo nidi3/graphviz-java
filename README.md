@@ -24,7 +24,7 @@ To execute the graphviz layout engine, one of these options is used:
 - If the machine has graphviz installed and a `dot` command is available, spawn a new process running `dot`.
 - Use this [javascript version](https://github.com/mdaines/viz.js) of graphviz and execute it on the V8 javascript engine.
 This is done with the bundled [J2V8](https://github.com/eclipsesource/J2V8) library.
-- Alternatively, the javascript can be executed on Java's own Nashorn or GraalVM engine.
+- Alternatively, the javascript can be executed on Java's own Nashorn or GraalVM engine (preferring Graal if both are available).
 
 The method(s) to be used can be configured with the `Graphviz.useEngine()` method. 
 
@@ -56,6 +56,18 @@ Instead of `graphviz-java` there are two alternative dependencies that can be us
 - `graphviz-java-min-deps` contains only dependencies that are absolutely necessary. 
     All other dependencies are marked as `optional` and must added manually. See the [pom.xml](graphviz-java-min-deps/pom.xml#L64-L90) for details.
     
+Instead of `J2V8`, one can also use the JDK javascript engine Nashorn.
+If Nashorn is too slow or on JDK version 15 or newer (where Nashorn has been removed),
+the graal [javascript](https://github.com/graalvm/graaljs) engine is a third option.
+It needs this additional dependency:
+```xml
+<dependency>
+    <groupId>org.graalvm.js</groupId>
+    <artifactId>js</artifactId>
+    <version>20.0.0</version>
+</dependency>
+```
+ 
 ### Logging
 Graphviz-java uses the [SLF4J](https://www.slf4j.org/) facade to log. 
 Users must therefore provide a logging implementation like [LOGBack](https://logback.qos.ch/)
