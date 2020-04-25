@@ -142,8 +142,8 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     private String vizJsCode() {
-        try (final InputStream api = resourceStream("/" + VIZ_BASE + "viz.js");
-             final InputStream engine = resourceStream("/" + VIZ_BASE + "full.render.js")) {
+        try (final InputStream api = resourceStream(VIZ_BASE + "viz.js");
+             final InputStream engine = resourceStream(VIZ_BASE + "full.render.js")) {
             return readStream(api) + readStream(engine);
         } catch (IOException e) {
             throw new AssertionError("Could not load internal javascript resources, is the jar file corrupt?", e);
@@ -151,7 +151,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     protected String promiseJsCode() {
-        try (final InputStream api = resourceStream("/net/arnx/nashorn/lib/promise.js")) {
+        try (final InputStream api = resourceStream("net/arnx/nashorn/lib/promise.js")) {
             return readStream(api);
         } catch (IOException e) {
             throw new AssertionError("Could not load internal javascript resources, is the jar file corrupt?", e);
