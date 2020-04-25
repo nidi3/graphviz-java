@@ -15,17 +15,25 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.attribute.validate.ValidatorFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.DOTALL;
+
 public enum Format {
     PNG("svg", "png", true, true) {
         @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
             return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, true));
+        }
+
+        @Override
+        ValidatorFormat forValidator() {
+            return ValidatorFormat.SVG;
         }
     },
 
@@ -34,6 +42,11 @@ public enum Format {
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
             return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, true));
         }
+
+        @Override
+        ValidatorFormat forValidator() {
+            return ValidatorFormat.SVG;
+        }
     },
 
     SVG_STANDALONE("svg", "svg", false, true) {
@@ -41,23 +54,55 @@ public enum Format {
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
             return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, false));
         }
+
+        @Override
+        ValidatorFormat forValidator() {
+            return ValidatorFormat.SVG;
+        }
+
     },
     DOT("dot", "dot"),
-    XDOT("xdot", "xdot"),
+    XDOT("xdot", "xdot") {
+        @Override
+        ValidatorFormat forValidator() {
+            return ValidatorFormat.XDOT;
+        }
+
+    },
     PLAIN("plain", "txt"),
     PLAIN_EXT("plain-ext", "txt"),
-    PS("ps", "ps"),
-    PS2("ps2", "ps"),
+    PS("ps", "ps") {
+        @Override
+        ValidatorFormat forValidator() {
+            return ValidatorFormat.POSTSCRIPT;
+        }
+    },
+    PS2("ps2", "ps") {
+        @Override
+        ValidatorFormat forValidator() {
+            return ValidatorFormat.POSTSCRIPT;
+        }
+    },
     JSON("json", "json"),
-    IMAP("imap", "imap"),
-    CMAPX("cmapx", "cmapx"),
-    JSON0("json0", "json");
+    JSON0("json0", "json"),
+    IMAP("imap", "imap") {
+        @Override
+        ValidatorFormat forValidator() {
+            return ValidatorFormat.MAP; //TODO correct?
+        }
+    },
+    CMAPX("cmapx", "cmapx") {
+        @Override
+        ValidatorFormat forValidator() {
+            return ValidatorFormat.CMAP; //TODO correct?
+        }
+    };
 
     private static final Logger LOG = LoggerFactory.getLogger(Format.class);
     private static final Pattern SVG_PATTERN = Pattern.compile(
             "<svg width=\"(?<width>\\d+)(?<unit>p[tx])\" height=\"(?<height>\\d+)p[tx]\""
                     + "(?<between>.*?>\\R<g.*?)transform=\"scale\\((?<scaleX>[0-9.]+) (?<scaleY>[0-9.]+)\\)",
-            Pattern.DOTALL);
+            DOTALL);
 
     final String vizName;
     public final String fileExtension;
@@ -81,6 +126,10 @@ public enum Format {
 
     EngineResult postProcess(Graphviz graphviz, EngineResult result) {
         return result;
+    }
+
+    ValidatorFormat forValidator() {
+        return ValidatorFormat.OTHER;
     }
 
     private static String replaceSubSpaces(String src) {

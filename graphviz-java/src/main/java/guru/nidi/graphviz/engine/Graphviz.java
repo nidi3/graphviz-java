@@ -15,8 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
+import guru.nidi.graphviz.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,15 +29,17 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.UNKNOWN_FORMAT;
+import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.POSITION_LOGGING_CONSUMER;
 import static guru.nidi.graphviz.engine.GraphvizLoader.readAsString;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public final class Graphviz {
     private static final Logger LOG = LoggerFactory.getLogger(Graphviz.class);
 
-    private static final Pattern DPI_PATTERN = Pattern.compile("\"?dpi\"?\\s*=\\s*\"?([0-9.]+)\"?",
-            Pattern.CASE_INSENSITIVE);
+    private static final Pattern DPI_PATTERN = Pattern.compile("\"?dpi\"?\\s*=\\s*\"?([0-9.]+)\"?", CASE_INSENSITIVE);
     private static final List<GraphvizEngine> AVAILABLE_ENGINES = availableEngines();
 
     @Nullable
@@ -47,6 +49,7 @@ public final class Graphviz {
 
     @Nullable
     private final MutableGraph graph;
+    @Nullable
     private final String src;
 
     @Nullable
@@ -54,19 +57,23 @@ public final class Graphviz {
     final ProcessOptions processOptions;
     private final Options options;
     private final List<GraphvizFilter> filters;
+    private final Consumer<ValidatorMessage> messageConsumer;
 
-    private Graphviz(@Nullable MutableGraph graph, String src) {
-        this(graph, src, Rasterizer.DEFAULT, new ProcessOptions().dpi(dpi(src)), Options.create(), new ArrayList<>());
+    private Graphviz(@Nullable MutableGraph graph, @Nullable String src, ProcessOptions processOptions) {
+        this(graph, src, Rasterizer.DEFAULT, processOptions, Options.create(),
+                new ArrayList<>(), POSITION_LOGGING_CONSUMER);
     }
 
-    private Graphviz(@Nullable MutableGraph graph, String src, @Nullable Rasterizer rasterizer,
-                     ProcessOptions processOptions, Options options, List<GraphvizFilter> filters) {
+    private Graphviz(@Nullable MutableGraph graph, @Nullable String src, @Nullable Rasterizer rasterizer,
+                     ProcessOptions processOptions, Options options,
+                     List<GraphvizFilter> filters, Consumer<ValidatorMessage> messageConsumer) {
         this.graph = graph;
         this.src = src;
         this.rasterizer = rasterizer;
         this.processOptions = processOptions;
         this.options = options;
         this.filters = filters;
+        this.messageConsumer = messageConsumer;
     }
 
     private static List<GraphvizEngine> availableEngines() {
@@ -183,47 +190,55 @@ public final class Graphviz {
     }
 
     public static Graphviz fromGraph(MutableGraph graph) {
-        return new Graphviz(graph, graph.toString());
+        return new Graphviz(graph, null, new ProcessOptions());
     }
 
     public static Graphviz fromString(String src) {
-        return new Graphviz(null, src);
+        return new Graphviz(null, src, new ProcessOptions().dpi(dpi(src)));
     }
 
     public Graphviz engine(Engine engine) {
-        return new Graphviz(graph, src, rasterizer, processOptions, options.engine(engine), filters);
+        return new Graphviz(graph, src, rasterizer, processOptions, options.engine(engine), filters, messageConsumer);
     }
 
     public Graphviz totalMemory(@Nullable Integer totalMemory) {
-        return new Graphviz(graph, src, rasterizer, processOptions, options.totalMemory(totalMemory), filters);
+        final Options opts = options.totalMemory(totalMemory);
+        return new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
     }
 
     public Graphviz yInvert(@Nullable Boolean yInvert) {
-        return new Graphviz(graph, src, rasterizer, processOptions, options.yInvert(yInvert), filters);
+        final Options opts = options.yInvert(yInvert);
+        return new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
     }
 
     public Graphviz basedir(File basedir) {
-        return new Graphviz(graph, src, rasterizer, processOptions, options.basedir(basedir), filters);
+        final Options opts = options.basedir(basedir);
+        return new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
     }
 
     public Graphviz width(int width) {
-        return new Graphviz(graph, src, rasterizer, processOptions.width(width), options, filters);
+        return new Graphviz(graph, src, rasterizer, processOptions.width(width), options, filters, messageConsumer);
     }
 
     public Graphviz height(int height) {
-        return new Graphviz(graph, src, rasterizer, processOptions.height(height), options, filters);
+        return new Graphviz(graph, src, rasterizer, processOptions.height(height), options, filters, messageConsumer);
     }
 
     public Graphviz scale(double scale) {
-        return new Graphviz(graph, src, rasterizer, processOptions.scale(scale), options, filters);
+        return new Graphviz(graph, src, rasterizer, processOptions.scale(scale), options, filters, messageConsumer);
     }
 
     public Graphviz filter(GraphvizFilter filter) {
         final ArrayList<GraphvizFilter> fs = new ArrayList<>(filters);
         fs.add(filter);
-        return new Graphviz(graph, src, rasterizer, processOptions, options, fs);
+        return new Graphviz(graph, src, rasterizer, processOptions, options, fs, messageConsumer);
     }
 
+    public Graphviz messageConsumer(Consumer<ValidatorMessage> messageConsumer) {
+        return new Graphviz(graph, src, rasterizer, processOptions, options, filters, messageConsumer);
+    }
+
+    // TODO avoid nullable
     public Renderer rasterize(@Nullable Rasterizer rasterizer) {
         if (rasterizer == null) {
             throw new IllegalArgumentException("The provided rasterizer implementation was not found."
@@ -231,16 +246,23 @@ public final class Graphviz {
                     + " 'org.apache.xmlgraphics:batik-rasterizer' is available on the classpath.");
         }
         final Options opts = options.format(rasterizer.format());
-        final Graphviz graphviz = new Graphviz(graph, src, rasterizer, processOptions, opts, filters);
+        final Graphviz graphviz = new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
         return new Renderer(graphviz, null, Format.PNG);
     }
 
     public Renderer render(Format format) {
-        final Graphviz g = new Graphviz(graph, src, rasterizer, processOptions, options.format(format), filters);
+        final Options opts = options.format(format);
+        final Graphviz g = new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
         return new Renderer(g, null, format);
     }
 
     EngineResult execute() {
+        final String source = source();
+        final ProcessOptions processOpts = processOptions.dpi(dpi(source));
+        return new Graphviz(graph, source, rasterizer, processOpts, options, filters, messageConsumer).doExecute();
+    }
+
+    private EngineResult doExecute() {
         final EngineResult result = options.format == Format.DOT
                 ? EngineResult.fromString(src)
                 : getEngine().execute(options.format.preProcess(src), options, rasterizer);
@@ -251,8 +273,17 @@ public final class Graphviz {
         return engineResult;
     }
 
-    Format format() {
-        return options.format;
+    private String source() {
+        if (src != null) {
+            return src;
+        }
+        return new Serializer()
+                .forEngine(options.engine.forValidator())
+                //TODO can we parse the builtInRasterizer for the correct format?
+                //TODO refactor all instanceof BuiltInRasterizer
+                .forFormat(rasterizer instanceof BuiltInRasterizer ? UNKNOWN_FORMAT : options.format.forValidator())
+                .messageConsumer(messageConsumer)
+                .serialize(graph);
     }
 
     private static double dpi(String src) {

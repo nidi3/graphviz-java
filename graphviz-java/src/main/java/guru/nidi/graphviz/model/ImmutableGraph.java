@@ -97,11 +97,6 @@ class ImmutableGraph extends MutableGraph implements Graph {
         return Collections.unmodifiableList(super.links());
     }
 
-    @Override
-    public String toString() {
-        return new Serializer(this).serialize();
-    }
-
     private class GraphAttributed<F extends For> implements Attributed<Graph, F> {
         private final Function<ImmutableGraph, MutableAttributed<MutableGraph, F>> attributeSource;
 

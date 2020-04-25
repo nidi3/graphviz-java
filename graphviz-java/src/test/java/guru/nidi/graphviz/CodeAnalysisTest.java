@@ -48,9 +48,9 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
 
             public void defineRules() {
                 base().mayBeUsedBy(all());
-                engine.mayUse(model, service);
+                engine.mayUse(model, service, attributeValidate);
                 parse.mayUse(model, attribute, attributeValidate);
-                model.mayUse(attribute);
+                model.mayUse(attribute, attributeValidate);
                 attributeValidate.mayUse(attribute);
                 use.mayUse(all());
             }
@@ -99,13 +99,13 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("ExcessiveMethodLength"))
                 .because("It's a bug in PMD?",
                         In.clazz(MutableNode.class).ignore("ConstructorCallsOverridableMethod"),
-                        In.loc("Serializer#doGraph").ignore("ConsecutiveLiteralAppends"))
+                        In.loc("SerializerImpl#doGraph").ignore("ConsecutiveLiteralAppends"))
                 .because("There are a lot of colors", In.clazz(Color.class)
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
                         In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
                         In.locs("LabelTest", "RankTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest").ignore("JUnitTestContainsTooManyAsserts"),
-                        In.loc("Serializer").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
+                        In.loc("SerializerImpl").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
                         In.locs("ThrowingFunction", "GraphvizLoader").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
@@ -114,10 +114,10 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
-                        In.locs("MutableGraph", "Serializer", "ParserImpl", "Label", "Graphviz").ignore("GodClass"),
+                        In.locs("MutableGraph", "SerializerImpl", "ParserImpl", "Label", "Graphviz").ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
-                        In.locs("AttributeConfigs", "AttributeValidator", "FontTools").ignore("TooManyStaticImports"),
+                        In.locs("AttributeConfigs", "AttributeValidator", "FontTools", "Graphviz").ignore("TooManyStaticImports"),
                         In.classes(MutableNode.class, Rasterizer.class).ignore("ConfusingTernary"),
                         In.clazz(ThrowingFunction.class).ignore("AvoidRethrowingException"),
                         In.classes(ThrowingFunction.class, ThrowingBiConsumer.class).ignore("SignatureDeclareThrowsException"))

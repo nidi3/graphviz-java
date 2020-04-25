@@ -30,7 +30,7 @@ class ShapeTest {
     @Test
     void mDiamond() {
         assertEquals(attrs(attr("shape", "Mdiamond")),
-                Shape.M_DIAMOND);
+                attrs(Shape.M_DIAMOND));
     }
 
     @Test

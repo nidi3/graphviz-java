@@ -20,36 +20,25 @@ import guru.nidi.graphviz.attribute.For;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity;
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 import static guru.nidi.graphviz.attribute.validate.AttributeValidator.Scope.*;
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.WARNING;
+import static guru.nidi.graphviz.attribute.validate.ValidatorEngine.*;
+import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.*;
+import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AttributeValidatorTest {
     @Test
     void ok() {
-        assertOk(validate(attr("Damping", 5), GRAPH, null, null));
-        assertOk(validate(attr("Damping", 5), GRAPH, "neato", null));
-        assertOk(validate(attr("URL", 5), GRAPH, null, "svg"));
-    }
-
-    @Test
-    void invalidEngine() {
-        assertThrows(IllegalArgumentException.class, () -> validate(attr("Damping", 5), GRAPH, "hula", null));
-    }
-
-    @Test
-    void invalidFormat() {
-        assertThrows(IllegalArgumentException.class, () -> validate(attr("Damping", 5), GRAPH, null, "hula"));
+        assertOk(validate(attr("Damping", 5), GRAPH, UNKNOWN_ENGINE, UNKNOWN_FORMAT));
+        assertOk(validate(attr("Damping", 5), GRAPH, NEATO, UNKNOWN_FORMAT));
+        assertOk(validate(attr("URL", 5), GRAPH, UNKNOWN_ENGINE, SVG));
     }
 
     @Test
@@ -59,68 +48,68 @@ class AttributeValidatorTest {
 
     @Test
     void wrongScope() {
-        assertMessage(ERROR, "Damping", "Attribute is not allowed for scope 'NODE'.",
+        assertMessage(ERROR, "Damping", "Attribute is not allowed for nodes.",
                 validate(attr("Damping", 5), NODE));
     }
 
     @Test
     void wrongEngine() {
         assertMessage(ERROR, "Damping", "Attribute is not allowed for engine 'DOT'.",
-                validate(attr("Damping", 5), GRAPH, "dot", null));
+                validate(attr("Damping", 5), GRAPH, DOT, UNKNOWN_FORMAT));
     }
 
     @Test
     void wrongFormat() {
         assertMessage(ERROR, "URL", "Attribute is not allowed for format 'CMAP'.",
-                validate(attr("URL", 5), GRAPH, null, "cmap"));
+                validate(attr("URL", 5), GRAPH, null, CMAP));
     }
 
     @Test
     void useDoubleDefault() {
-        assertMessage(WARNING, "Damping", "Attribute is set to its default value '0.99'.",
+        assertMessage(INFO, "Damping", "Attribute is set to its default value '0.99'.",
                 validate(attr("Damping", .99), GRAPH));
-        assertMessage(WARNING, "Damping", "Attribute is set to its default value '0.99'.",
+        assertMessage(INFO, "Damping", "Attribute is set to its default value '0.99'.",
                 validate(attr("Damping", .99000001), GRAPH));
-        assertMessage(WARNING, "Damping", "Attribute is set to its default value '0.99'.",
+        assertMessage(INFO, "Damping", "Attribute is set to its default value '0.99'.",
                 validate(attr("Damping", ".99"), GRAPH));
     }
 
     @Test
     void useIntDefault() {
-        assertMessage(WARNING, "dim", "Attribute is set to its default value '2'.", validate(attr("dim", 2), GRAPH));
-        assertMessage(WARNING, "dim", "Attribute is set to its default value '2'.", validate(attr("dim", "+2"), GRAPH));
+        assertMessage(INFO, "dim", "Attribute is set to its default value '2'.", validate(attr("dim", 2), GRAPH));
+        assertMessage(INFO, "dim", "Attribute is set to its default value '2'.", validate(attr("dim", "+2"), GRAPH));
     }
 
     @Test
     void useBoolDefault() {
-        assertMessage(WARNING, "headclip", "Attribute is set to its default value 'true'.",
+        assertMessage(INFO, "headclip", "Attribute is set to its default value 'true'.",
                 validate(attr("headclip", true), EDGE));
-        assertMessage(WARNING, "headclip", "Attribute is set to its default value 'true'.",
+        assertMessage(INFO, "headclip", "Attribute is set to its default value 'true'.",
                 validate(attr("headclip", "truE"), EDGE));
-        assertMessage(WARNING, "headclip", "Attribute is set to its default value 'true'.",
+        assertMessage(INFO, "headclip", "Attribute is set to its default value 'true'.",
                 validate(attr("headclip", "Yes"), EDGE));
         assertEquals(asList(
-                new ValidatorMessage(WARNING, "headclip", "Attribute is set to its default value 'true'."),
-                new ValidatorMessage(WARNING, "headclip", "Using numerical value '42' as boolean.")),
+                new ValidatorMessage(INFO, "headclip", "Attribute is set to its default value 'true'."),
+                new ValidatorMessage(WARN, "headclip", "Using numerical value '42' as boolean.")),
                 validate(attr("headclip", "42"), EDGE));
-        assertMessage(WARNING, "center", "Attribute is set to its default value 'false'.",
+        assertMessage(INFO, "center", "Attribute is set to its default value 'false'.",
                 validate(attr("center", false), GRAPH));
-        assertMessage(WARNING, "center", "Attribute is set to its default value 'false'.",
+        assertMessage(INFO, "center", "Attribute is set to its default value 'false'.",
                 validate(attr("center", "False"), GRAPH));
-        assertMessage(WARNING, "center", "Attribute is set to its default value 'false'.",
+        assertMessage(INFO, "center", "Attribute is set to its default value 'false'.",
                 validate(attr("center", "NO"), GRAPH));
         assertEquals(asList(
-                new ValidatorMessage(WARNING, "center", "Attribute is set to its default value 'false'."),
-                new ValidatorMessage(WARNING, "center", "Using numerical value '0' as boolean.")),
+                new ValidatorMessage(INFO, "center", "Attribute is set to its default value 'false'."),
+                new ValidatorMessage(WARN, "center", "Using numerical value '0' as boolean.")),
                 validate(attr("center", "0"), GRAPH));
     }
 
     @Test
     void minimum() {
         assertOk(validate(attr("Damping", 0), GRAPH));
-        assertMessage(WARNING, "Damping", "Attribute has a minimum of '0.0' but is set to '-0.1'.",
+        assertMessage(WARN, "Damping", "Attribute has a minimum of '0.0' but is set to '-0.1'.",
                 validate(attr("Damping", -.1), GRAPH));
-        assertMessage(WARNING, "dim", "Attribute has a minimum of '2.0' but is set to '1'.",
+        assertMessage(WARN, "dim", "Attribute has a minimum of '2.0' but is set to '1'.",
                 validate(attr("dim", 1), GRAPH));
     }
 
@@ -205,11 +194,11 @@ class AttributeValidatorTest {
     }
 
     private List<ValidatorMessage> validate(Attributes<? extends For> attr, AttributeValidator.Scope scope) {
-        return validate(attr, scope, null, null);
+        return validate(attr, scope, UNKNOWN_ENGINE, UNKNOWN_FORMAT);
     }
 
     private List<ValidatorMessage> validate(Attributes<? extends For> attr, AttributeValidator.Scope scope,
-                                            @Nullable String engine, @Nullable String format) {
-        return new AttributeValidator(engine, format).validate(attrs(attr), scope);
+                                            ValidatorEngine engine, ValidatorFormat format) {
+        return new AttributeValidator().forEngine(engine).forFormat(format).validate(attrs(attr), scope);
     }
 }

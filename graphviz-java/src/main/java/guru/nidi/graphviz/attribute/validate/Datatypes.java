@@ -16,8 +16,9 @@
 package guru.nidi.graphviz.attribute.validate;
 
 import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.WARNING;
+import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.WARN;
 
+//TODO finish
 final class Datatypes {
     static final Datatype INT = new PatternDatatype("integer", "%d");
     static final Datatype DOUBLE = new PatternDatatype("float", "%f");
@@ -28,13 +29,29 @@ final class Datatypes {
             return boolValue(value.toString()) == null
                     ? new ValidatorMessage(ERROR, "'" + value + "' is not a valid boolean.")
                     : matches(value, "%d")
-                    ? new ValidatorMessage(WARNING, "Using numerical value '" + value + "' as boolean.")
+                    ? new ValidatorMessage(WARN, "Using numerical value '" + value + "' as boolean.")
                     : null;
         }
     };
-    static final Datatype STRING = new PatternDatatype("string", ".*");
-    static final Datatype ESC_STRING = new PatternDatatype("escaped string", ".*");
-    static final Datatype LBL_STRING = new PatternDatatype("label string", ".*");
+    //TODO allow \n for strings
+    static final Datatype STRING = new Datatype("string") {
+        @Override
+        ValidatorMessage validate(Object value) {
+            return null;
+        }
+    };
+    static final Datatype ESC_STRING = new Datatype("escaped string") {
+        @Override
+        ValidatorMessage validate(Object value) {
+            return null;
+        }
+    };
+    static final Datatype LBL_STRING = new Datatype("label string") {
+        @Override
+        ValidatorMessage validate(Object value) {
+            return null;
+        }
+    };
     static final Datatype POINT = new PatternDatatype("point", "%p"); //depends on dim
     static final Datatype POINT_LIST = new PatternDatatype("list of points", "%p( %p)*");
     static final Datatype ADD_POINT = new PatternDatatype("add point", "\\+?%p");

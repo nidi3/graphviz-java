@@ -17,28 +17,28 @@ package guru.nidi.graphviz.attribute.validate;
 
 import java.util.*;
 
-import static guru.nidi.graphviz.attribute.validate.AttributeConfig.Engine.*;
-import static guru.nidi.graphviz.attribute.validate.AttributeConfig.Format.*;
 import static guru.nidi.graphviz.attribute.validate.AttributeConfig.entry;
 import static guru.nidi.graphviz.attribute.validate.Datatypes.*;
+import static guru.nidi.graphviz.attribute.validate.ValidatorEngine.*;
+import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 final class AttributeConfigs {
     private static final double EPSILON = 1e-8;
-    private static final Map<String, List<AttributeConfig>> MAP = new HashMap<>();
+    private static final Map<String, List<AttributeConfig>> CONFIG = new HashMap<>();
 
     private AttributeConfigs() {
     }
 
     static List<AttributeConfig> get(String name) {
-        return MAP.get(name);
+        return CONFIG.get(name);
     }
 
     static {
         add("Damping", entry("G", DOUBLE, 0.99, 0.0).engines(NEATO));
         add("K", entry("GC", DOUBLE, 0.3, 0.0).engines(SFDP, FDP));
-        add("URL", entry("ENGC", ESC_STRING).formats(SVG, POSTSCRIPT, AttributeConfig.Format.MAP));
+        add("URL", entry("ENGC", ESC_STRING).formats(SVG, POSTSCRIPT, MAP));
         add("_background", entry("G", STRING));
         add("area", entry("NC", DOUBLE, 1.0, EPSILON).engines(PATCHWORK));
         add("arrowhead", entry("E", ARROW_TYPE, "normal"));
@@ -63,9 +63,9 @@ final class AttributeConfigs {
         add("diredgeconstraints", entry("G", asList(STRING, BOOL), false).engines(NEATO));
         add("distortion", entry("N", DOUBLE, 0.0, -100.0));
         add("dpi", entry("G", DOUBLE, 72.0).formats(SVG, BITMAP));
-        add("edgeURL", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
-        add("edgehref", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
-        add("edgetarget", entry("E", ESC_STRING).formats(SVG, AttributeConfig.Format.MAP));
+        add("edgeURL", entry("E", ESC_STRING, "").formats(SVG, MAP));
+        add("edgehref", entry("E", ESC_STRING, "").formats(SVG, MAP));
+        add("edgetarget", entry("E", ESC_STRING).formats(SVG, MAP));
         add("edgetooltip", entry("E", ESC_STRING, "").formats(SVG, CMAP));
         add("epsilon", entry("G", DOUBLE, ".0001 * # nodes(mode == KK)<BR>.0001(mode == major)").engines(NEATO));
         add("esep", entry("G", asList(ADD_DOUBLE, ADD_POINT), "+3").engines(NOT_DOT));
@@ -79,24 +79,24 @@ final class AttributeConfigs {
         add("forcelabels", entry("G", BOOL, true));
         add("gradientangle", entry("NCG", INT, 0));
         add("group", entry("N", STRING, "").engines(DOT));
-        add("headURL", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
+        add("headURL", entry("E", ESC_STRING, "").formats(SVG, MAP));
         add("head_lp", entry("E", POINT).formats(WRITE));
         add("headclip", entry("E", BOOL, true));
-        add("headhref", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
+        add("headhref", entry("E", ESC_STRING, "").formats(SVG, MAP));
         add("headlabel", entry("E", LBL_STRING, ""));
         add("headport", entry("E", PORT_POS, "center"));
-        add("headtarget", entry("E", ESC_STRING).formats(SVG, AttributeConfig.Format.MAP));
+        add("headtarget", entry("E", ESC_STRING).formats(SVG, MAP));
         add("headtooltip", entry("E", ESC_STRING, "").formats(SVG, CMAP));
         add("height", entry("N", DOUBLE, 0.5, 0.02));
-        add("href", entry("GCNE", ESC_STRING, "").formats(SVG, POSTSCRIPT, AttributeConfig.Format.MAP));
-        add("id", entry("GCNE", ESC_STRING, "").formats(SVG, POSTSCRIPT, AttributeConfig.Format.MAP));
+        add("href", entry("GCNE", ESC_STRING, "").formats(SVG, POSTSCRIPT, MAP));
+        add("id", entry("GCNE", ESC_STRING, "").formats(SVG, POSTSCRIPT, MAP));
         add("image", entry("N", STRING, ""));
         add("imagepath", entry("G", STRING, ""));
         add("imagepos", entry("N", STRING, "mc"));
         add("imagescale", entry("N", BOOL, false));
         add("inputscale", entry("G", DOUBLE).engines(FDP, NEATO));
         add("label", entry("ENGC", LBL_STRING, "\\N(nodes)<BR>''(otherwise)"));
-        add("labelURL", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
+        add("labelURL", entry("E", ESC_STRING, "").formats(SVG, MAP));
         add("label_scheme", entry("G", INT, 0, 0.0).engines(SFDP));
         add("labelangle", entry("E", DOUBLE, -25.0, -180.0));
         add("labeldistance", entry("E", DOUBLE, 1.0, 0.0));
@@ -104,10 +104,10 @@ final class AttributeConfigs {
         add("labelfontcolor", entry("E", COLOR, "black"));
         add("labelfontname", entry("E", STRING, "Times-Roman"));
         add("labelfontsize", entry("E", DOUBLE, 14.0, 1.0));
-        add("labelhref", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
+        add("labelhref", entry("E", ESC_STRING, "").formats(SVG, MAP));
         add("labeljust", entry("GC", STRING, "c"));
         add("labelloc", entry("NGC", STRING, "'t'(clusters)<BR>'b'(root graphs)<BR>'c'(nodes)"));
-        add("labeltarget", entry("E", ESC_STRING).formats(SVG, AttributeConfig.Format.MAP));
+        add("labeltarget", entry("E", ESC_STRING).formats(SVG, MAP));
         add("labeltooltip", entry("E", ESC_STRING, "").formats(SVG, CMAP));
         add("landscape", entry("G", BOOL, false));
         add("layer", entry("ENC", LAYER_RANGE, ""));
@@ -140,7 +140,9 @@ final class AttributeConfigs {
         add("nslimit", entry("G", DOUBLE).engines(DOT));
         add("nslimit1", entry("G", DOUBLE).engines(DOT));
         add("ordering", entry("GN", STRING, "").engines(DOT));
-        add("orientation", entry("N", DOUBLE, 0.0, 360.0), entry("G", STRING, ""));
+        add("orientation",
+                entry("N", DOUBLE, 0.0, 0.0, 360.0),
+                entry("G", STRING, ""));
         add("outputorder", entry("G", OUTPUT_MODE, "breadthfirst"));
         add("overlap", entry("G", asList(STRING, BOOL), true).engines(NOT_DOT));
         add("overlap_scaling", entry("G", DOUBLE, -4.0, -1.0e10)); //TODO prism only
@@ -187,15 +189,15 @@ final class AttributeConfigs {
         add("start", entry("G", START_TYPE, "").engines(FDP, NEATO));
         add("style", entry("ENCG", STYLE, ""));
         add("stylesheet", entry("G", STRING, "").formats(SVG));
-        add("tailURL", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
+        add("tailURL", entry("E", ESC_STRING, "").formats(SVG, MAP));
         add("tail_lp", entry("E", POINT).formats(WRITE));
         add("tailclip", entry("E", BOOL, true));
-        add("tailhref", entry("E", ESC_STRING, "").formats(SVG, AttributeConfig.Format.MAP));
+        add("tailhref", entry("E", ESC_STRING, "").formats(SVG, MAP));
         add("taillabel", entry("E", LBL_STRING, ""));
         add("tailport", entry("E", PORT_POS, "center"));
-        add("tailtarget", entry("E", ESC_STRING).formats(SVG, AttributeConfig.Format.MAP));
+        add("tailtarget", entry("E", ESC_STRING).formats(SVG, MAP));
         add("tailtooltip", entry("E", ESC_STRING, "").formats(SVG, CMAP));
-        add("target", entry("ENGC", asList(ESC_STRING, STRING)).formats(SVG, AttributeConfig.Format.MAP));
+        add("target", entry("ENGC", asList(ESC_STRING, STRING)).formats(SVG, MAP));
         add("tooltip", entry("NEC", ESC_STRING, "").formats(SVG, CMAP));
         add("truecolor", entry("G", BOOL).formats(BITMAP));
         add("vertices", entry("N", POINT_LIST).formats(WRITE));
@@ -212,10 +214,10 @@ final class AttributeConfigs {
     }
 
     private static void add(String name, AttributeConfig entry) {
-        MAP.put(name, singletonList(entry));
+        CONFIG.put(name, singletonList(entry));
     }
 
     private static void add(String name, AttributeConfig... entries) {
-        MAP.put(name, asList(entries));
+        CONFIG.put(name, asList(entries));
     }
 }

@@ -17,36 +17,52 @@ package guru.nidi.graphviz.attribute.validate;
 
 import guru.nidi.graphviz.attribute.Attributes;
 import guru.nidi.graphviz.attribute.For;
-import guru.nidi.graphviz.attribute.validate.AttributeConfig.Engine;
-import guru.nidi.graphviz.attribute.validate.AttributeConfig.Format;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-import static guru.nidi.graphviz.attribute.validate.AttributeConfig.Engine.DOT;
-import static guru.nidi.graphviz.attribute.validate.AttributeConfig.Engine.NOT_DOT;
 import static guru.nidi.graphviz.attribute.validate.Datatype.*;
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.WARNING;
-import static java.util.Collections.emptyList;
+import static guru.nidi.graphviz.attribute.validate.ValidatorEngine.*;
+import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.OTHER;
+import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.UNKNOWN_FORMAT;
+import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.*;
 import static java.util.Collections.singletonList;
+import static java.util.Locale.ENGLISH;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public final class AttributeValidator {
+    private static final Logger LOG = LoggerFactory.getLogger(AttributeValidator.class);
+
     public enum Scope {
-        GRAPH, SUB_GRAPH, CLUSTER, NODE, EDGE
+        GRAPH, SUB_GRAPH, CLUSTER, NODE, EDGE;
+
+        @Override
+        public String toString() {
+            return name().toLowerCase(ENGLISH).replace("_", "");
+        }
     }
 
-    @Nullable
-    private final Engine engine;
-    @Nullable
-    private final Format format;
+    private final ValidatorEngine engine;
+    private final ValidatorFormat format;
 
-    public AttributeValidator(@Nullable String engine, @Nullable String format) {
-        this.engine = engine == null ? null : Engine.valueOf(engine.toUpperCase(Locale.ENGLISH));
-        this.format = format == null ? null : Format.valueOf(format.toUpperCase(Locale.ENGLISH));
+    public AttributeValidator() {
+        this(UNKNOWN_ENGINE, UNKNOWN_FORMAT);
+    }
+
+    private AttributeValidator(ValidatorEngine engine, ValidatorFormat format) {
+        this.engine = engine;
+        this.format = format;
+    }
+
+    public AttributeValidator forEngine(ValidatorEngine engine) {
+        return new AttributeValidator(engine, format);
+    }
+
+    public AttributeValidator forFormat(ValidatorFormat format) {
+        return new AttributeValidator(engine, format);
     }
 
     public List<ValidatorMessage> validate(Attributes<? extends For> attrs, Scope scope) {
@@ -60,29 +76,49 @@ public final class AttributeValidator {
         if (configs == null) {
             return singletonList(new ValidatorMessage(ERROR, key, "Attribute is unknown."));
         }
-        final AttributeConfig engineConfig = findConfigForEngine(configs);
-        if (engineConfig == null) {
+
+        final List<AttributeConfig> engineConfigs = findConfigsForEngine(configs);
+        if (engineConfigs.isEmpty()) {
             return singletonList(new ValidatorMessage(
                     ERROR, key, "Attribute is not allowed for engine '" + engine + "'."));
         }
-        final AttributeConfig formatConfig = findConfigForFormat(configs);
-        if (formatConfig == null) {
+
+        final List<AttributeConfig> formatConfigs = findConfigsForFormat(configs);
+        if (formatConfigs.isEmpty()) {
             return singletonList(new ValidatorMessage(
                     ERROR, key, "Attribute is not allowed for format '" + format + "'."));
         }
-        if (!engineConfig.equals(formatConfig)) {
+
+        List<AttributeConfig> matchConfigs = intersect(engineConfigs, formatConfigs);
+        if (matchConfigs.isEmpty()) {
             return singletonList(new ValidatorMessage(
                     ERROR, key, "Attribute is not allowed for engine '" + engine + "' and format '" + format + "'."));
         }
-        final List<ValidatorMessage> messages = validateNonType(key, value, scope, engineConfig);
-        messages.addAll(validateType(key, value, engineConfig));
+        if (matchConfigs.size() > 1) {
+            matchConfigs = matchConfigs.stream().filter(c -> c.scopes.contains(scope)).collect(toList());
+        }
+        if (matchConfigs.isEmpty()) {
+            return singletonList(new ValidatorMessage(ERROR, key, "Attribute is not allowed for " + scope + "s."));
+        }
+        if (matchConfigs.size() > 1) {
+            LOG.warn("Found multiple attribute configurations for " + engine + ", " + format + " and " + scope + "."
+                    + " This should not happen.");
+        }
+        final List<ValidatorMessage> messages = new ArrayList<>();
+        validateScope(messages, key, matchConfigs.get(0), scope);
+        validateValue(messages, key, matchConfigs.get(0), value);
+        validateType(messages, key, matchConfigs.get(0), value);
         return messages;
     }
 
-    private AttributeConfig findConfigForEngine(List<AttributeConfig> configs) {
+    private static <T> List<T> intersect(List<T> as, List<T> bs) {
+        return as.stream().filter(bs::contains).collect(toList());
+    }
+
+    private List<AttributeConfig> findConfigsForEngine(List<AttributeConfig> configs) {
         return configs.stream()
                 .filter(c -> {
-                    if (engine == null || c.engines.isEmpty()) {
+                    if (engine == UNKNOWN_ENGINE || c.engines.isEmpty()) {
                         return true;
                     }
                     if (c.engines.contains(NOT_DOT) && engine == DOT) {
@@ -90,48 +126,58 @@ public final class AttributeValidator {
                     }
                     return c.engines.contains(engine);
                 })
-                .findFirst()
-                .orElse(null);
+                .collect(toList());
     }
 
-    private AttributeConfig findConfigForFormat(List<AttributeConfig> configs) {
+    private List<AttributeConfig> findConfigsForFormat(List<AttributeConfig> configs) {
         return configs.stream()
-                .filter(c -> format == null || c.formats.isEmpty() || c.formats.contains(format))
-                .findFirst()
-                .orElse(null);
+                .filter(c -> {
+                    if (format == OTHER && !c.formats.isEmpty()) {
+                        return false;
+                    }
+                    if (format == UNKNOWN_FORMAT || c.formats.isEmpty()) {
+                        return true;
+                    }
+                    return c.formats.contains(format);
+                })
+                .collect(toList());
     }
 
-    private List<ValidatorMessage> validateNonType(String key, Object value, Scope scope, AttributeConfig config) {
-        final List<ValidatorMessage> messages = new ArrayList<>();
+    private void validateScope(List<ValidatorMessage> messages, String key, AttributeConfig config, Scope scope) {
         if (!config.scopes.contains(scope)) {
-            messages.add(new ValidatorMessage(ERROR, key, "Attribute is not allowed for scope '" + scope + "'."));
+            messages.add(new ValidatorMessage(ERROR, key, "Attribute is not allowed for " + scope + "s."));
         }
+    }
+
+    private void validateValue(List<ValidatorMessage> messages, String key, AttributeConfig config, Object value) {
         if (config.defVal != null && isValueEquals(config.defVal, value)) {
             messages.add(new ValidatorMessage(
-                    WARNING, key, "Attribute is set to its default value '" + config.defVal + "'."));
+                    INFO, key, "Attribute is set to its default value '" + config.defVal + "'."));
         }
         final Double val = tryParseDouble(value.toString());
         if (config.min != null && val != null && val < config.min) {
             messages.add(new ValidatorMessage(
-                    WARNING, key, "Attribute has a minimum of '" + config.min + "' but is set to '" + value + "'."));
+                    WARN, key, "Attribute has a minimum of '" + config.min + "' but is set to '" + value + "'."));
         }
-        return messages;
+        if (config.max != null && val != null && val > config.max) {
+            messages.add(new ValidatorMessage(
+                    WARN, key, "Attribute has a maximum of '" + config.max + "' but is set to '" + value + "'."));
+        }
     }
 
-    private List<ValidatorMessage> validateType(String key, Object value, AttributeConfig config) {
+    private void validateType(List<ValidatorMessage> messages, String key, AttributeConfig config, Object value) {
         final List<ValidatorMessage> typeMessages = config.types.stream().map(t -> t.validate(value)).collect(toList());
         if (typeMessages.size() == 1) {
             if (typeMessages.get(0) != null) {
-                return singletonList(typeMessages.get(0).at(key));
+                messages.add(typeMessages.get(0).atAttribute(key));
             }
         } else {
             if (typeMessages.stream().noneMatch(Objects::isNull)) {
-                return singletonList(new ValidatorMessage(
+                messages.add(new ValidatorMessage(
                         ERROR, key, "'" + value + "' is not valid for any of the types '"
                         + config.types.stream().map(t -> t.name).collect(joining(", ")) + "'."));
             }
         }
-        return emptyList();
     }
 
     private boolean isValueEquals(Object config, Object value) {

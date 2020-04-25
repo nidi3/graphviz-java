@@ -25,34 +25,26 @@ import static guru.nidi.graphviz.attribute.validate.AttributeValidator.Scope.*;
 import static java.util.Collections.singletonList;
 
 final class AttributeConfig {
-    enum Engine {
-        //TODO make public or unify with oter engine enum
-        CIRCO, NOT_DOT, DOT, NEATO, OSAGE, TWOPI, FDP, SFDP, PATCHWORK
-    }
-
-    enum Format {
-        //TODO make public or unify with oter format enum
-        WRITE, SVG, BITMAP, MAP, CMAP, POSTSCRIPT, XDOT
-    }
-
+    final EnumSet<Scope> scopes;
     final List<Datatype> types;
     @Nullable
     final Object defVal;
     @Nullable
     final Double min;
-    final EnumSet<Engine> engines;
-    final EnumSet<Format> formats;
-    final EnumSet<Scope> scopes;
+    @Nullable
+    final Double max;
+    final EnumSet<ValidatorEngine> engines;
+    final EnumSet<ValidatorFormat> formats;
 
-    private AttributeConfig(@Nullable EnumSet<Scope> scopes, List<Datatype> types, @Nullable Object defVal,
-                            @Nullable Double min, @Nullable EnumSet<Engine> engines,
-                            @Nullable EnumSet<Format> formats) {
-        this.scopes = scopes == null ? EnumSet.noneOf(Scope.class) : scopes;
+    private AttributeConfig(EnumSet<Scope> scopes, List<Datatype> types, @Nullable Object defVal, @Nullable Double min,
+                            @Nullable Double max, EnumSet<ValidatorEngine> engines, EnumSet<ValidatorFormat> formats) {
+        this.scopes = scopes;
         this.types = types;
         this.defVal = defVal;
         this.min = min;
-        this.engines = engines == null ? EnumSet.noneOf(Engine.class) : engines;
-        this.formats = formats == null ? EnumSet.noneOf(Format.class) : formats;
+        this.max = max;
+        this.engines = engines;
+        this.formats = formats;
     }
 
     static AttributeConfig entry(String scopes, Datatype type) {
@@ -75,16 +67,27 @@ final class AttributeConfig {
         return entry(scopes, singletonList(type), defVal, min);
     }
 
+    static AttributeConfig entry(String scopes, Datatype type, @Nullable Object defVal,
+                                 @Nullable Double min, @Nullable Double max) {
+        return entry(scopes, singletonList(type), defVal, min, max);
+    }
+
     static AttributeConfig entry(String scopes, List<Datatype> types, @Nullable Object defVal, @Nullable Double min) {
-        return new AttributeConfig(scopesOf(scopes), types, defVal, min, null, null);
+        return entry(scopes, types, defVal, min, null);
     }
 
-    AttributeConfig engines(Engine... engines) {
-        return new AttributeConfig(scopes, types, defVal, min, EnumSet.of(engines[0], engines), formats);
+    static AttributeConfig entry(String scopes, List<Datatype> types, @Nullable Object defVal,
+                                 @Nullable Double min, @Nullable Double max) {
+        return new AttributeConfig(scopesOf(scopes), types, defVal, min,
+                max, EnumSet.noneOf(ValidatorEngine.class), EnumSet.noneOf(ValidatorFormat.class));
     }
 
-    AttributeConfig formats(Format... formats) {
-        return new AttributeConfig(scopes, types, defVal, min, engines, EnumSet.of(formats[0], formats));
+    AttributeConfig engines(ValidatorEngine... engines) {
+        return new AttributeConfig(scopes, types, defVal, min, max, EnumSet.of(engines[0], engines), formats);
+    }
+
+    AttributeConfig formats(ValidatorFormat... formats) {
+        return new AttributeConfig(scopes, types, defVal, min, max, engines, EnumSet.of(formats[0], formats));
     }
 
     private static EnumSet<Scope> scopesOf(String scopes) {

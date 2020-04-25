@@ -17,8 +17,6 @@ package guru.nidi.graphviz.attribute;
 
 import javax.annotation.Nullable;
 
-import static guru.nidi.graphviz.attribute.Attributes.attr;
-import static guru.nidi.graphviz.attribute.Attributes.attrs;
 import static guru.nidi.graphviz.attribute.NodeAttr.nodeAttr;
 
 public final class Shape extends SingleAttributes<String, ForNode> {
@@ -76,7 +74,7 @@ public final class Shape extends SingleAttributes<String, ForNode> {
             SIGNATURE = new Shape("signature"),
             INSULATOR = new Shape("insulator"),
             RIBO_SITE = new Shape("ribosite"),
-            RNA_STAB= new Shape("rnastab"),
+            RNA_STAB = new Shape("rnastab"),
             PROTEASE_SITE = new Shape("proteasesite"),
             PROTEIN_STAB = new Shape("proteinstab"),
             R_PROMOTER = new Shape("rpromoter"),

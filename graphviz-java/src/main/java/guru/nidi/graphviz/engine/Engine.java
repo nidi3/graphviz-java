@@ -15,6 +15,45 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.attribute.validate.ValidatorEngine;
+
 public enum Engine {
-    CIRCO, DOT, NEATO, OSAGE, TWOPI, FDP
+    CIRCO {
+        @Override
+        ValidatorEngine forValidator() {
+            return ValidatorEngine.CIRCO;
+        }
+    },
+    DOT {
+        @Override
+        ValidatorEngine forValidator() {
+            return ValidatorEngine.DOT;
+        }
+    },
+    NEATO {
+        @Override
+        ValidatorEngine forValidator() {
+            return ValidatorEngine.NEATO;
+        }
+    },
+    OSAGE {
+        @Override
+        ValidatorEngine forValidator() {
+            return ValidatorEngine.OSAGE;
+        }
+    },
+    TWOPI {
+        @Override
+        ValidatorEngine forValidator() {
+            return ValidatorEngine.TWOPI;
+        }
+    },
+    FDP {
+        @Override
+        ValidatorEngine forValidator() {
+            return ValidatorEngine.FDP;
+        }
+    };
+
+    abstract ValidatorEngine forValidator();
 }

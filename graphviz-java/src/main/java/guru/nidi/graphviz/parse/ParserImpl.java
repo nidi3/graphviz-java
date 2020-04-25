@@ -33,8 +33,8 @@ import static guru.nidi.graphviz.parse.Token.*;
 final class ParserImpl {
     private Token token;
     private final Lexer lexer;
-    private final Consumer<ValidatorMessage> messageConsumer;
     private final AttributeValidator validator;
+    private final Consumer<ValidatorMessage> messageConsumer;
 
     ParserImpl(Lexer lexer, AttributeValidator validator,
                Consumer<ValidatorMessage> messageConsumer) throws IOException {

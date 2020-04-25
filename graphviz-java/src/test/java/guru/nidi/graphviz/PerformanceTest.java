@@ -304,13 +304,13 @@ public class PerformanceTest {
                                 .nodeAttr().with(Style.FILLED)
                                 .graphAttr().with(Color.BLUE, Label.of("process #2"))
                                 .with(node("b0").link(node("b1").link(node("b2").link(node("b3"))))),
-                        node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
+                        node("start").with(Shape.M_DIAMOND).link("a0", "b0"),
                         node("a1").link("b3"),
                         node("b2").link("a3"),
                         node("a3").link("a0"),
                         node("a3").link("end"),
                         node("b3").link("end"),
-                        node("end").with(Shape.mSquare("", ""))
+                        node("end").with(Shape.M_SQUARE)
                 );
         Graphviz.fromGraph(g).render(SVG).toString();
     }

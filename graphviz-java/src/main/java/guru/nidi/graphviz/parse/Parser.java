@@ -15,41 +15,37 @@
  */
 package guru.nidi.graphviz.parse;
 
-import guru.nidi.graphviz.attribute.validate.AttributeValidator;
-import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
+import guru.nidi.graphviz.attribute.validate.*;
 import guru.nidi.graphviz.model.MutableGraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
+import static guru.nidi.graphviz.attribute.validate.ValidatorEngine.UNKNOWN_ENGINE;
+import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.UNKNOWN_FORMAT;
+import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.LINE_LOGGING_CONSUMER;
+
 public final class Parser {
-    private static final Logger LOG = LoggerFactory.getLogger(Parser.class);
-    @Nullable
-    private final String engine;
-    @Nullable
-    private final String format;
+    private final ValidatorEngine engine;
+    private final ValidatorFormat format;
     private final Consumer<ValidatorMessage> messageConsumer;
 
     public Parser() {
-        this(null, null, msg -> LOG.info(String.format("%-7s %-15.15s at %3d:%-3d %s",
-                msg.severity, msg.attribute, msg.line, msg.column, msg.message)));
+        this(UNKNOWN_ENGINE, UNKNOWN_FORMAT, LINE_LOGGING_CONSUMER);
     }
 
-    private Parser(@Nullable String engine, @Nullable String format, Consumer<ValidatorMessage> messageConsumer) {
+    private Parser(ValidatorEngine engine, ValidatorFormat format, Consumer<ValidatorMessage> messageConsumer) {
         this.engine = engine;
         this.format = format;
         this.messageConsumer = messageConsumer;
     }
 
-    public Parser forEngine(@Nullable String engine) {
+    public Parser forEngine(ValidatorEngine engine) {
         return new Parser(engine, format, messageConsumer);
     }
 
-    public Parser forFormat(@Nullable String format) {
+    public Parser forFormat(ValidatorFormat format) {
         return new Parser(engine, format, messageConsumer);
     }
 
@@ -70,6 +66,7 @@ public final class Parser {
     }
 
     public MutableGraph read(Reader dot, String name) throws IOException {
-        return new ParserImpl(new Lexer(dot, name), new AttributeValidator(engine, format), messageConsumer).parse();
+        final AttributeValidator validator = new AttributeValidator().forEngine(engine).forFormat(format);
+        return new ParserImpl(new Lexer(dot, name), validator, messageConsumer).parse();
     }
 }

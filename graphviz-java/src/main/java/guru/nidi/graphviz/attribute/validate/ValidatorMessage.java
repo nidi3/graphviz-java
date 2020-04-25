@@ -15,11 +15,26 @@
  */
 package guru.nidi.graphviz.attribute.validate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class ValidatorMessage {
+    private static final Logger LOG = LoggerFactory.getLogger(ValidatorMessage.class);
+
+    public static final Consumer<ValidatorMessage> LINE_LOGGING_CONSUMER = msg -> LOG.info(
+            String.format("%-5s at %d:%d: '%1.20s' -> %s",
+                    msg.severity, msg.line, msg.column, msg.attribute, msg.message));
+    public static final Consumer<ValidatorMessage> POSITION_LOGGING_CONSUMER = msg -> LOG.info(
+            String.format("%-5s %1.20s: '%1.20s' -> %s",
+                    msg.severity, msg.position, msg.attribute, msg.message));
+    public static final Consumer<ValidatorMessage> NOP_CONSUMER = msg -> {
+    };
+
     public enum Severity {
-        ERROR, WARNING, INFO
+        ERROR, WARN, INFO
     }
 
     public final Severity severity;
@@ -27,29 +42,36 @@ public class ValidatorMessage {
     public final String message;
     public final int line;
     public final int column;
+    public final String position;
 
     ValidatorMessage(Severity severity, String message) {
         this(severity, "", message);
     }
 
     public ValidatorMessage(Severity severity, String attribute, String message) {
-        this(severity, attribute, message, 0, 0);
+        this(severity, attribute, message, 0, 0, "");
     }
 
-    public ValidatorMessage(Severity severity, String attribute, String message, int line, int column) {
+    public ValidatorMessage(Severity severity, String attribute, String message,
+                            int line, int column, String position) {
         this.severity = severity;
         this.attribute = attribute;
         this.message = message;
         this.line = line;
         this.column = column;
+        this.position = position;
     }
 
     public ValidatorMessage at(int line, int column) {
-        return new ValidatorMessage(severity, attribute, message, line, column);
+        return new ValidatorMessage(severity, attribute, message, line, column, position);
     }
 
-    ValidatorMessage at(String attribute) {
-        return new ValidatorMessage(severity, attribute, message, line, column);
+    public ValidatorMessage at(String position) {
+        return new ValidatorMessage(severity, attribute, message, line, column, position);
+    }
+
+    ValidatorMessage atAttribute(String attribute) {
+        return new ValidatorMessage(severity, attribute, message, line, column, position);
     }
 
     @Override
@@ -65,20 +87,18 @@ public class ValidatorMessage {
                 && column == that.column
                 && severity == that.severity
                 && attribute.equals(that.attribute)
-                && message.equals(that.message);
+                && message.equals(that.message)
+                && position.equals(that.position);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(severity, attribute, message, line, column);
+        return Objects.hash(severity, attribute, message, line, column, position);
     }
 
     @Override
     public String toString() {
-        return "ValidatorMessage{"
-                + line + ":" + column + " " + severity
-                + ", attribute='" + attribute + '\''
-                + ", message='" + message + '\''
-                + '}';
+        return severity + " " + position + (line > 0 ? line + ":" + column : "")
+                + ": '" + attribute + "' -> " + message;
     }
 }
