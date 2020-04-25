@@ -41,7 +41,7 @@ final class GraphvizServer {
     }
 
     public static void start(List<GraphvizEngine> engines, int port) throws IOException {
-        final String executable = SystemUtils.executableName("java");
+        final String executable = SystemUtils.executableNames("java").get(0);
         final List<String> cmd = new ArrayList<>(asList(
                 System.getProperty("java.home") + "/bin/" + executable,
                 "-cp", System.getProperty("java.class.path"), GraphvizServer.class.getName(),

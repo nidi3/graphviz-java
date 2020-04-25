@@ -201,7 +201,7 @@ class EngineTest {
     }
 
     private File setUpFakeDotFile() throws IOException {
-        final String filename = SystemUtils.executableName("dot");
+        final String filename = SystemUtils.executableNames("dot").get(0);
         final File dotFile = new File(temp, filename);
         dotFile.createNewFile();
         dotFile.setExecutable(true);

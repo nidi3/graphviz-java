@@ -24,6 +24,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -116,13 +117,16 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     private String getEngineExecutable(@Nullable Engine engine) {
-        final String exe = SystemUtils.executableName(engine == null ? "dot" : engine.toString().toLowerCase(ENGLISH));
-        if (!CommandRunner.isExecutableFound(exe, envPath)) {
-            final GraphvizException e = new GraphvizException(exe + " command not found");
-            e.setStackTrace(new StackTraceElement[0]);
-            throw e;
+        final String cmd = engine == null ? "dot" : engine.toString().toLowerCase(ENGLISH);
+        final List<String> exes = SystemUtils.executableNames(cmd);
+        for (final String exe : exes) {
+            if (CommandRunner.isExecutableFound(exe, envPath)) {
+                return exe;
+            }
         }
-        return exe;
+        final GraphvizException e = new GraphvizException(exes + " command not found");
+        e.setStackTrace(new StackTraceElement[0]);
+        throw e;
     }
 
     private String getFormatName(@Nullable Format format, @Nullable Rasterizer rasterizer) {

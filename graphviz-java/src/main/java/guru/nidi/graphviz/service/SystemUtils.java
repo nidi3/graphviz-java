@@ -25,9 +25,13 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public final class SystemUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SystemUtils.class);
@@ -73,8 +77,10 @@ public final class SystemUtils {
         return uriPathOf(path.getAbsolutePath());
     }
 
-    public static String executableName(String filename) {
-        return IS_OS_WINDOWS ? filename + ".exe" : filename;
+    public static List<String> executableNames(String filename) {
+        return IS_OS_WINDOWS
+                ? asList(filename + ".exe", filename + ".bat", filename + ".cmd")
+                : singletonList(filename);
     }
 
     public static Function<CommandLine, CommandLine> getShellWrapperOrDefault(boolean shellWrapper) {
