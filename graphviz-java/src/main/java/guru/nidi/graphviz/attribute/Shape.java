@@ -25,11 +25,15 @@ public final class Shape extends SingleAttributes<String, ForNode> {
     private static final String SHAPE = "shape";
 
     public static final Shape
+            BOX = new Shape("box"),
             ELLIPSE = new Shape("ellipse"),
+            OVAL = new Shape("oval"),
             CIRCLE = new Shape("circle"),
             POINT = new Shape("point"),
             EGG = new Shape("egg"),
             TRIANGLE = new Shape("triangle"),
+            PLAIN_TEXT = new Shape("plaintext"),
+            PLAIN = new Shape("plain"),
             DIAMOND = new Shape("diamond"),
             TRAPEZIUM = new Shape("trapezium"),
             PARALLELOGRAM = new Shape("parallelogram"),
@@ -44,23 +48,44 @@ public final class Shape extends SingleAttributes<String, ForNode> {
             INV_TRIANGLE = new Shape("invtriangle"),
             INV_TRAPEZIUM = new Shape("invtrapezium"),
             INV_HOUSE = new Shape("invhouse"),
+            M_DIAMOND = new Shape("Mdiamond"),
+            M_SQUARE = new Shape("Msquare"),
+            M_CIRCLE = new Shape("Mcircle"),
+            RECT = new Shape("rect"),
             RECTANGLE = new Shape("rectangle"),
-            NONE = new Shape("none");
+            SQUARE = new Shape("square"),
+            STAR = new Shape("star"),
+            NONE = new Shape("none"),
+            UNDERLINE = new Shape("underline"),
+            CYLINDER = new Shape("cylinder"),
+            NOTE = new Shape("note"),
+            TAB = new Shape("tab"),
+            FOLDER = new Shape("folder"),
+            BOX_3D = new Shape("box3d"),
+            COMPONENT = new Shape("component"),
+            PROMOTER = new Shape("promoter"),
+            CDS = new Shape("cds"),
+            TERMINATOR = new Shape("terminator"),
+            UTR = new Shape("utr"),
+            PRIMER_SITE = new Shape("primersite"),
+            RESTRICTION_SITE = new Shape("restrictionsite"),
+            FIVE_P_OVERHANG = new Shape("fivepoverhang"),
+            THREE_P_OVERHANG = new Shape("threepoverhang"),
+            N_OVERHANG = new Shape("noverhang"),
+            ASSEMBLY = new Shape("assembly"),
+            SIGNATURE = new Shape("signature"),
+            INSULATOR = new Shape("insulator"),
+            RIBO_SITE = new Shape("ribosite"),
+            RNA_STAB= new Shape("rnastab"),
+            PROTEASE_SITE = new Shape("proteasesite"),
+            PROTEIN_STAB = new Shape("proteinstab"),
+            R_PROMOTER = new Shape("rpromoter"),
+            R_ARROW = new Shape("rarrow"),
+            L_ARROW = new Shape("larrow"),
+            L_PROMOTER = new Shape("lpromoter");
 
     private Shape(String value) {
         super(SHAPE, value);
-    }
-
-    public static Attributes<ForNode> mDiamond(String topLabel, String bottomLabel) {
-        return attrs(attr(SHAPE, "Mdiamond"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
-    }
-
-    public static Attributes<ForNode> mSquare(String topLabel, String bottomLabel) {
-        return attrs(attr(SHAPE, "Msquare"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
-    }
-
-    public static Attributes<ForNode> mCircle(String topLabel, String bottomLabel) {
-        return attrs(attr(SHAPE, "Mcircle"), attr("toplabel", topLabel), attr("bottomlabel", bottomLabel));
     }
 
     public static Polygon polygon(int sides) {

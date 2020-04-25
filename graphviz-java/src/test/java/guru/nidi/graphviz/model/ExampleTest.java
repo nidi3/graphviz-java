@@ -91,7 +91,7 @@ class ExampleTest {
                 printf = node("printf");
         final Graph g = graph("ex2").directed()
                 .graphAttr().with(Color.rgb("222222").background())
-                .nodeAttr().with(Font.config("Arial", 14), Color.rgb("bbbbbb").fill(), Style.FILLED)
+                .nodeAttr().with(Font.config("Arial", 15), Color.rgb("bbbbbb").fill(), Style.FILLED)
                 .with(
                         node("main").with(Shape.RECTANGLE).link(
                                 to(node("parse").link(execute)).with(LinkAttr.weight(8)),
@@ -340,13 +340,13 @@ class ExampleTest {
                                 .nodeAttr().with(Style.FILLED)
                                 .graphAttr().with(Color.BLUE, Label.of("process #2"))
                                 .with(node("b0").link(node("b1").link(node("b2").link(node("b3"))))),
-                        node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
+                        node("start").with(Shape.M_DIAMOND).link("a0", "b0"),
                         node("a1").link("b3"),
                         node("b2").link("a3"),
                         node("a3").link("a0"),
                         node("a3").link("end"),
                         node("b3").link("end"),
-                        node("end").with(Shape.mSquare("", ""))
+                        node("end").with(Shape.M_SQUARE)
                 );
         Graphviz.fromGraph(g).render(PNG).toFile(new File("target/ex7"));
     }

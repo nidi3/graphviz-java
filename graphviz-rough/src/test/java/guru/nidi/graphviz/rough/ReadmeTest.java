@@ -46,12 +46,12 @@ class ReadmeTest {
                         .nodeAttr().with(Style.FILLED)
                         .graphAttr().with(Color.BLUE, Label.of("process #2"))
                         .with(node("b0").link(node("b1").link(node("b2")))),
-                node("start").with(Shape.mDiamond("", "")).link("a0", "b0"),
+                node("start").with(Shape.M_DIAMOND).link("a0", "b0"),
                 node("a0").with(Style.FILLED, Color.RED.gradient(Color.BLUE)).link("b1"),
                 node("b1").link("a2"),
                 node("a2").link("end"),
                 node("b2").link("end"),
-                node("end").with(Shape.mSquare("", ""))
+                node("end").with(Shape.M_SQUARE)
         );
 
         Graphviz.fromGraph(g)

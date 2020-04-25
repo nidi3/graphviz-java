@@ -29,20 +29,8 @@ class ShapeTest {
 
     @Test
     void mDiamond() {
-        assertEquals(attrs(attr("shape", "Mdiamond"), attr("toplabel", "top"), attr("bottomlabel", "bottom")),
-                Shape.mDiamond("top", "bottom"));
-    }
-
-    @Test
-    void mSquare() {
-        assertEquals(attrs(attr("shape", "Msquare"), attr("toplabel", "top"), attr("bottomlabel", "bottom")),
-                Shape.mSquare("top", "bottom"));
-    }
-
-    @Test
-    void mCircle() {
-        assertEquals(attrs(attr("shape", "Mcircle"), attr("toplabel", "top"), attr("bottomlabel", "bottom")),
-                Shape.mCircle("top", "bottom"));
+        assertEquals(attrs(attr("shape", "Mdiamond")),
+                Shape.M_DIAMOND);
     }
 
     @Test
