@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +34,15 @@ final class IoUtils {
     }
 
     static boolean isOnClasspath(String resource) {
+        return classLoader().getResource(resource) != null;
+    }
+
+    @Nullable
+    static InputStream resourceStream(String name) {
+        return classLoader().getResourceAsStream(name);
+    }
+
+    private static ClassLoader classLoader() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader == null) {
             classLoader = IoUtils.class.getClassLoader();
@@ -40,7 +50,7 @@ final class IoUtils {
         if (classLoader == null) {
             classLoader = ClassLoader.getSystemClassLoader();
         }
-        return classLoader.getResource(resource) != null;
+        return classLoader;
     }
 
     static void closeQuietly(AutoCloseable c) {

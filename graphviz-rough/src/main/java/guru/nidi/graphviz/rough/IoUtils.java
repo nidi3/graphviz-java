@@ -31,4 +31,15 @@ final class IoUtils {
         }
         return new String(buf, StandardCharsets.UTF_8);
     }
+
+    static ClassLoader classLoader() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (classLoader == null) {
+            classLoader = IoUtils.class.getClassLoader();
+        }
+        if (classLoader == null) {
+            classLoader = ClassLoader.getSystemClassLoader();
+        }
+        return classLoader;
+    }
 }

@@ -26,6 +26,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static guru.nidi.graphviz.rough.IoUtils.classLoader;
+import static guru.nidi.graphviz.rough.IoUtils.readStream;
 import static java.util.stream.Collectors.joining;
 
 public class RoughFilter implements GraphvizFilter {
@@ -138,13 +140,12 @@ public class RoughFilter implements GraphvizFilter {
     }
 
     private static String readCode() {
-        final ClassLoader cl = Thread.currentThread().getContextClassLoader();
         try {
-            try (final InputStream api = cl.getResourceAsStream("graphviz-rough.js")) {
+            try (final InputStream api = classLoader().getResourceAsStream("graphviz-rough.js")) {
                 if (api == null) {
                     throw new AssertionError("graphviz-rough.js not found, corrupted jar file?");
                 }
-                return IoUtils.readStream(api);
+                return readStream(api);
             }
         } catch (IOException e) {
             throw new AssertionError("Could not read graphviz-rough.js", e);

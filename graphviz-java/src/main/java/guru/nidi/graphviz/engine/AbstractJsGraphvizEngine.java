@@ -27,8 +27,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
-import static guru.nidi.graphviz.engine.IoUtils.readStream;
+import static guru.nidi.graphviz.engine.IoUtils.*;
 import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
@@ -143,8 +142,8 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     private String vizJsCode() {
-        try (final InputStream api = getClass().getResourceAsStream("/" + VIZ_BASE + "viz.js");
-             final InputStream engine = getClass().getResourceAsStream("/" + VIZ_BASE + "full.render.js")) {
+        try (final InputStream api = resourceStream("/" + VIZ_BASE + "viz.js");
+             final InputStream engine = resourceStream("/" + VIZ_BASE + "full.render.js")) {
             return readStream(api) + readStream(engine);
         } catch (IOException e) {
             throw new AssertionError("Could not load internal javascript resources, is the jar file corrupt?", e);
@@ -152,7 +151,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     protected String promiseJsCode() {
-        try (final InputStream api = getClass().getResourceAsStream("/net/arnx/nashorn/lib/promise.js")) {
+        try (final InputStream api = resourceStream("/net/arnx/nashorn/lib/promise.js")) {
             return readStream(api);
         } catch (IOException e) {
             throw new AssertionError("Could not load internal javascript resources, is the jar file corrupt?", e);
