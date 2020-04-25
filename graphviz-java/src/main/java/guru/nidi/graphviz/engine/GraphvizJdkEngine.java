@@ -17,7 +17,7 @@ package guru.nidi.graphviz.engine;
 
 import javax.annotation.Nullable;
 
-import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
+import static guru.nidi.graphviz.engine.GraphvizLoader.isOnClasspath;
 
 public class GraphvizJdkEngine extends AbstractJsGraphvizEngine {
     static final boolean AVAILABLE = AbstractJsGraphvizEngine.AVAILABLE

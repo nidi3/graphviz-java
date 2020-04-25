@@ -18,8 +18,6 @@ package guru.nidi.graphviz.engine;
 import guru.nidi.graphviz.service.SystemUtils;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 import java.util.Map.Entry;
@@ -27,7 +25,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static guru.nidi.graphviz.engine.IoUtils.*;
+import static guru.nidi.graphviz.engine.GraphvizLoader.*;
 import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
@@ -89,7 +87,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     public void close() {
         final EngineState state = getState();
         if (state != null) {
-            IoUtils.closeQuietly(state.engine);
+            closeQuietly(state.engine);
             ENGINES.get(getClass()).remove();
         }
     }
@@ -142,20 +140,11 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     private String vizJsCode() {
-        try (final InputStream api = resourceStream(VIZ_BASE + "viz.js");
-             final InputStream engine = resourceStream(VIZ_BASE + "full.render.js")) {
-            return readStream(api) + readStream(engine);
-        } catch (IOException e) {
-            throw new AssertionError("Could not load internal javascript resources, is the jar file corrupt?", e);
-        }
+        return loadAsString(VIZ_BASE + "viz.js") + loadAsString(VIZ_BASE + "full.render.js");
     }
 
     protected String promiseJsCode() {
-        try (final InputStream api = resourceStream("net/arnx/nashorn/lib/promise.js")) {
-            return readStream(api);
-        } catch (IOException e) {
-            throw new AssertionError("Could not load internal javascript resources, is the jar file corrupt?", e);
-        }
+        return loadAsString("net/arnx/nashorn/lib/promise.js");
     }
 
     private String renderJsCode() {

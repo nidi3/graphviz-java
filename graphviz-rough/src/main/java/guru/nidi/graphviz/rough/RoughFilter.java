@@ -17,7 +17,8 @@ package guru.nidi.graphviz.rough;
 
 import guru.nidi.graphviz.engine.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.AbstractMap.SimpleEntry;
@@ -26,8 +27,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static guru.nidi.graphviz.rough.IoUtils.classLoader;
-import static guru.nidi.graphviz.rough.IoUtils.readStream;
+import static guru.nidi.graphviz.engine.GraphvizLoader.loadAsString;
 import static java.util.stream.Collectors.joining;
 
 public class RoughFilter implements GraphvizFilter {
@@ -140,15 +140,6 @@ public class RoughFilter implements GraphvizFilter {
     }
 
     private static String readCode() {
-        try {
-            try (final InputStream api = classLoader().getResourceAsStream("graphviz-rough.js")) {
-                if (api == null) {
-                    throw new AssertionError("graphviz-rough.js not found, corrupted jar file?");
-                }
-                return readStream(api);
-            }
-        } catch (IOException e) {
-            throw new AssertionError("Could not read graphviz-rough.js", e);
-        }
+        return loadAsString("graphviz-rough.js");
     }
 }

@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static guru.nidi.graphviz.engine.IoUtils.readStream;
+import static guru.nidi.graphviz.engine.GraphvizLoader.readAsString;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 
@@ -174,7 +174,7 @@ public final class Graphviz {
 
     public static Graphviz fromFile(File src) throws IOException {
         try (final InputStream in = new FileInputStream(src)) {
-            return fromString(readStream(in)).basedir(src.getAbsoluteFile().getParentFile());
+            return fromString(readAsString(in)).basedir(src.getAbsoluteFile().getParentFile());
         }
     }
 

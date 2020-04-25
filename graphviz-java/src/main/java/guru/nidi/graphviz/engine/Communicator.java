@@ -18,7 +18,7 @@ package guru.nidi.graphviz.engine;
 import java.io.*;
 import java.net.Socket;
 
-import static guru.nidi.graphviz.engine.IoUtils.closeQuietly;
+import static guru.nidi.graphviz.engine.GraphvizLoader.closeQuietly;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 class Communicator implements Closeable {

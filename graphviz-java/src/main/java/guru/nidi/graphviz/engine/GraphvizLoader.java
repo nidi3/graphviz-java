@@ -19,12 +19,30 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
 
-final class IoUtils {
-    private IoUtils() {
+public final class GraphvizLoader {
+    private static Supplier<ClassLoader> classLoaderSupplier = GraphvizLoader.class::getClassLoader;
+
+    private GraphvizLoader() {
     }
 
-    static String readStream(InputStream in) throws IOException {
+    public static void useClassLoader(Supplier<ClassLoader> supplier) {
+        classLoaderSupplier = supplier;
+    }
+
+    public static String loadAsString(String name) {
+        try (final InputStream in = load(name)) {
+            if (in == null) {
+                throw new GraphvizException("Could not find resource '" + name + "' on the classpath.");
+            }
+            return readAsString(in);
+        } catch (IOException e) {
+            throw new GraphvizException("Problem reading resource '" + name + "' from the classpath.", e);
+        }
+    }
+
+    static String readAsString(InputStream in) throws IOException {
         final byte[] buf = new byte[in.available()];
         int read, total = 0;
         while ((read = in.read(buf, total, Math.min(100000, buf.length - total))) > 0) {
@@ -37,20 +55,8 @@ final class IoUtils {
         return classLoader().getResource(resource) != null;
     }
 
-    @Nullable
-    static InputStream resourceStream(String name) {
-        return classLoader().getResourceAsStream(name);
-    }
-
-    private static ClassLoader classLoader() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null) {
-            classLoader = IoUtils.class.getClassLoader();
-        }
-        if (classLoader == null) {
-            classLoader = ClassLoader.getSystemClassLoader();
-        }
-        return classLoader;
+    static ClassLoader classLoader() {
+        return classLoaderSupplier.get();
     }
 
     static void closeQuietly(AutoCloseable c) {
@@ -59,5 +65,10 @@ final class IoUtils {
         } catch (Exception e) {
             //ignore
         }
+    }
+
+    @Nullable
+    private static InputStream load(String name) {
+        return classLoader().getResourceAsStream(name);
     }
 }

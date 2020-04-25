@@ -106,7 +106,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
                         In.locs("LabelTest", "RankTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest").ignore("JUnitTestContainsTooManyAsserts"),
                         In.loc("Serializer").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
-                        In.locs("ThrowingFunction", "IoUtils").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
+                        In.locs("ThrowingFunction", "GraphvizLoader").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static guru.nidi.graphviz.engine.IoUtils.isOnClasspath;
+import static guru.nidi.graphviz.engine.GraphvizLoader.isOnClasspath;
 import static java.util.Locale.ENGLISH;
 
 /**
