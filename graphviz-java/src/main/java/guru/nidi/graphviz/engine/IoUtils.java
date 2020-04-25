@@ -33,7 +33,14 @@ final class IoUtils {
     }
 
     static boolean isOnClasspath(String resource) {
-        return Thread.currentThread().getContextClassLoader().getResource(resource) != null;
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (classLoader == null) {
+            classLoader = IoUtils.class.getClassLoader();
+        }
+        if (classLoader == null) {
+            classLoader = ClassLoader.getSystemClassLoader();
+        }
+        return classLoader.getResource(resource) != null;
     }
 
     static void closeQuietly(AutoCloseable c) {
