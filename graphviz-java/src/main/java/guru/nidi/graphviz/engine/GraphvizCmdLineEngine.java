@@ -129,7 +129,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         throw e;
     }
 
-    private String getFormatName(@Nullable Format format, Rasterizer rasterizer) {
+    private String getFormatName(Format format, Rasterizer rasterizer) {
         if (rasterizer instanceof BuiltInRasterizer) {
             final BuiltInRasterizer natRast = (BuiltInRasterizer) rasterizer;
             String f = natRast.format;
@@ -141,7 +141,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
             }
             return f;
         }
-        return format == null ? "svg" : format.vizName;
+        return format.vizName;
     }
 
     private File getOrCreateTempDirectory() {
