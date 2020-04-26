@@ -5,7 +5,7 @@
     <parent>
         <groupId>guru.nidi</groupId>
         <artifactId>guru-nidi-parent-pom</artifactId>
-        <version>1.1.29</version>
+        <version>1.1.30</version>
         <relativePath />
     </parent>
 
@@ -19,6 +19,7 @@
     <inceptionYear>2015</inceptionYear>
 
     <properties>
+        <suppressionFile>owasp-suppression.xml</suppressionFile>
         <dependency-check.fail-on-error>false</dependency-check.fail-on-error>
         <java.version>1.8</java.version>
         <j2v8.version>4.6.0</j2v8.version>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <cve>CVE-2020-2799</cve>
+        <cve>CVE-2020-2802</cve>
+        <cve>CVE-2020-2900</cve>
+        <cpe>cpe:2.3:a:oracle:graalvm:20.0.0</cpe>
+    </suppress>
+</suppressions>
