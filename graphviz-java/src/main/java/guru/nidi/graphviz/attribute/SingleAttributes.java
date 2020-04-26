@@ -20,18 +20,18 @@ import java.lang.reflect.ParameterizedType;
 
 class SingleAttributes<T, F extends For> implements Attributes<F> {
     protected final String key;
-    protected final T value;
+    public final T value;
 
     protected SingleAttributes(String key, T value) {
         this.key = key;
         this.value = value;
     }
 
-    public <E> E key(String key) {
+    protected <E> E key(String key) {
         return newInstance(key, value);
     }
 
-    public <E> E value(T value) {
+    protected <E> E value(T value) {
         return newInstance(key, value);
     }
 

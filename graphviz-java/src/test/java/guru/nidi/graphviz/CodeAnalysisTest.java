@@ -104,7 +104,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
                         In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
-                        In.locs("LabelTest", "RankTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest").ignore("JUnitTestContainsTooManyAsserts"),
+                        In.locs("LabelTest", "RankTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest", "ArrowDatatypeTest", "ColorListDatatypeTest", "ShapeDatatypeTest")
+                                .ignore("JUnitTestContainsTooManyAsserts"),
                         In.loc("SerializerImpl").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
                         In.locs("ThrowingFunction", "GraphvizLoader").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.loc("GraphvizServer").ignore("AvoidInstantiatingObjectsInLoops"),

@@ -89,7 +89,10 @@ class SerializerTest {
     @Test
     void linkAttr() {
         assertSerialize(graph("x").linkAttr().with("color", "#blu"),
-                "graph 'x' {\nedge ['color'='#blu']\n}"); //TODO this should not be ok
+                "graph 'x' {\nedge ['color'='#blu']\n}",
+                msg(ERROR, "color", "'#blu' is not valid for any of the possible types:\n"
+                        + "As color: '#blu' is not a valid color.\n"
+                        + "As list of colors: '#blu' is not a valid color.", "Edge attrs of 'x'"));
     }
 
     @Test

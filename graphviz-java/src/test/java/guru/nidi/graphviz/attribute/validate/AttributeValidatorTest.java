@@ -126,7 +126,9 @@ class AttributeValidatorTest {
     @Test
     void floatList() {
         assertOk(validate(attr("ranksep", "1.2:-4:5e2"), GRAPH));
-        assertMessage(ERROR, "ranksep", "'1.2:-4;5e2' is not valid for any of the types 'float, list of floats'.",
+        assertMessage(ERROR, "ranksep", "'1.2:-4;5e2' is not valid for any of the possible types:\n"
+                        + "As float: '1.2:-4;5e2' is not a valid float.\n"
+                        + "As list of floats: '1.2:-4;5e2' is not a valid list of floats.",
                 validate(attr("ranksep", "1.2:-4;5e2"), GRAPH));
     }
 
@@ -152,37 +154,33 @@ class AttributeValidatorTest {
     }
 
     @Test
-    void arrowTypeOk() {
-        assertOk(validate(attr("arrowhead", "box"), EDGE));
-        assertOk(validate(attr("arrowhead", "obox"), EDGE));
-        assertOk(validate(attr("arrowhead", "lbox"), EDGE));
-        assertOk(validate(attr("arrowhead", "olbox"), EDGE));
+    void viewPortOK() {
+        assertOk(validate(attr("viewport", "1,5.5"), GRAPH));
+        assertOk(validate(attr("viewport", "1,5.5,6"), GRAPH));
+        assertOk(validate(attr("viewport", "1,5.5,6,7,8e2"), GRAPH));
+        assertOk(validate(attr("viewport", "1,5.5,6,'bla'"), GRAPH));
     }
 
     @Test
-    void arrowTypeWrongShape() {
-        assertMessage(ERROR, "arrowhead", "Unknown shape 'hula'.", validate(attr("arrowhead", "ohula"), EDGE));
+    void viewPortNoK() {
+        assertMessage(ERROR, "viewport", "'a' is not a valid view port.", validate(attr("viewport", "a"), GRAPH));
+        assertMessage(ERROR, "viewport", "'1,5.5,6,7' is not a valid view port.", validate(attr("viewport", "1,5.5,6,7"), GRAPH));
     }
 
     @Test
-    void arrowTypeWrongPrefix() {
-        assertMessage(ERROR, "arrowhead", "Shape 'crow' is not allowed a 'o' prefix.",
-                validate(attr("arrowhead", "ocrow"), EDGE));
-        assertMessage(ERROR, "arrowhead", "Shape 'dot' is not allowed a 'l'/'r' prefix.",
-                validate(attr("arrowhead", "ldot"), EDGE));
+    void colorOk() {
+        assertOk(validate(attr("fontcolor", "#12af 44"), NODE));
+        assertOk(validate(attr("fontcolor", "#12af 44 0d"), NODE));
+        assertOk(validate(attr("fontcolor", ".12, 0.5,.111"), NODE));
+        assertOk(validate(attr("fontcolor", "blu"), NODE));
     }
 
     @Test
-    void arrowTypeTooManyShapes() {
-        assertMessage(ERROR, "arrowhead", "More than 4 shapes in 'dotcrowboxdotcrow'.",
-                validate(attr("arrowhead", "dotcrowboxdotcrow"), EDGE));
-    }
-
-    @Test
-    void arrowTypeNone() {
-        assertOk(validate(attr("arrowhead", "none"), EDGE));
-        assertMessage(ERROR, "arrowhead", "Last shape cannot be 'none' in 'dotnone'.",
-                validate(attr("arrowhead", "dotnone"), EDGE));
+    void colorNok() {
+        assertMessage(ERROR, "fontcolor", "'#12' is not a valid color.", validate(attr("fontcolor", "#12"), NODE));
+        assertMessage(ERROR, "fontcolor", "'#12 gg hh' is not a valid color.", validate(attr("fontcolor", "#12 gg hh"), NODE));
+        assertMessage(ERROR, "fontcolor", "'1,2,3' is not a valid color.", validate(attr("fontcolor", "1,2,3"), NODE));
+        assertMessage(ERROR, "fontcolor", "'.4,.5,.6,.7' is not a valid color.", validate(attr("fontcolor", ".4,.5,.6,.7"), NODE));
     }
 
     private void assertMessage(Severity severity, String attribute, String message, List<ValidatorMessage> actual) {

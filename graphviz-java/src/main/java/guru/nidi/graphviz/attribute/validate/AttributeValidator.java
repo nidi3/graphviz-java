@@ -30,7 +30,6 @@ import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.UNKNOWN_FORM
 import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.*;
 import static java.util.Collections.singletonList;
 import static java.util.Locale.ENGLISH;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public final class AttributeValidator {
@@ -173,9 +172,12 @@ public final class AttributeValidator {
             }
         } else {
             if (typeMessages.stream().noneMatch(Objects::isNull)) {
-                messages.add(new ValidatorMessage(
-                        ERROR, key, "'" + value + "' is not valid for any of the types '"
-                        + config.types.stream().map(t -> t.name).collect(joining(", ")) + "'."));
+                final List<String> lines = new ArrayList<>();
+                for (int i = 0; i < config.types.size(); i++) {
+                    lines.add("As " + config.types.get(i).name + ": " + typeMessages.get(i).message);
+                }
+                messages.add(new ValidatorMessage(ERROR, key,
+                        "'" + value + "' is not valid for any of the possible types:\n" + String.join("\n", lines)));
             }
         }
     }
