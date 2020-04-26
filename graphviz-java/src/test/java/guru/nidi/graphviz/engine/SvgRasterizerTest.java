@@ -17,7 +17,6 @@ package guru.nidi.graphviz.engine;
 
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
@@ -28,7 +27,8 @@ class SvgRasterizerTest {
     @Test
     void preProcess() {
         final DummyRasterizer rasterizer = new DummyRasterizer();
-        rasterizer.rasterize(Graphviz.fromString(""), null, quote(
+        rasterizer.rasterize(Graphviz.fromString(""), Graphics2D -> {
+        }, quote(
                 "<svg width='62px' height='116px' viewBox='0.00 0.00 62.00 116.00'>" +
                         "<g id='graph0' class='graph' transform=' rotate(0) translate(4 112)'>\n" +
                         "<text xlink:href='ref' stroke='transparent'>a</text>\n" +
@@ -51,7 +51,7 @@ class SvgRasterizerTest {
         String svg = "";
 
         @Override
-        BufferedImage doRasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String svg) {
+        BufferedImage doRasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String svg) {
             this.svg = svg;
             return new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
         }

@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.UNKNOWN_FORMAT;
 import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.POSITION_LOGGING_CONSUMER;
 import static guru.nidi.graphviz.engine.GraphvizLoader.readAsString;
+import static guru.nidi.graphviz.engine.Rasterizer.NONE;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
@@ -52,7 +53,6 @@ public final class Graphviz {
     @Nullable
     private final String src;
 
-    @Nullable
     final Rasterizer rasterizer;
     final ProcessOptions processOptions;
     private final Options options;
@@ -64,7 +64,7 @@ public final class Graphviz {
                 new ArrayList<>(), POSITION_LOGGING_CONSUMER);
     }
 
-    private Graphviz(@Nullable MutableGraph graph, @Nullable String src, @Nullable Rasterizer rasterizer,
+    private Graphviz(@Nullable MutableGraph graph, @Nullable String src, Rasterizer rasterizer,
                      ProcessOptions processOptions, Options options,
                      List<GraphvizFilter> filters, Consumer<ValidatorMessage> messageConsumer) {
         this.graph = graph;
@@ -238,22 +238,21 @@ public final class Graphviz {
         return new Graphviz(graph, src, rasterizer, processOptions, options, filters, messageConsumer);
     }
 
-    // TODO avoid nullable
-    public Renderer rasterize(@Nullable Rasterizer rasterizer) {
-        if (rasterizer == null) {
+    public Renderer rasterize(Rasterizer rasterizer) {
+        if (rasterizer == NONE) {
             throw new IllegalArgumentException("The provided rasterizer implementation was not found."
                     + " Make sure that either 'guru.nidi.com.kitfox:svgSalamander' or"
                     + " 'org.apache.xmlgraphics:batik-rasterizer' is available on the classpath.");
         }
         final Options opts = options.format(rasterizer.format());
         final Graphviz graphviz = new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
-        return new Renderer(graphviz, null, Format.PNG);
+        return new Renderer(graphviz, Format.PNG);
     }
 
     public Renderer render(Format format) {
         final Options opts = options.format(format);
         final Graphviz g = new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
-        return new Renderer(g, null, format);
+        return new Renderer(g, format);
     }
 
     EngineResult execute() {
@@ -297,7 +296,7 @@ public final class Graphviz {
         }
 
         @Override
-        public EngineResult execute(String src, Options options, @Nullable Rasterizer rasterizer) {
+        public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
             return EngineResult.fromString("");
         }
 

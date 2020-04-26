@@ -19,6 +19,7 @@ import guru.nidi.graphviz.attribute.Label;
 
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 class PortSource implements LinkSource {
     final Port port;
 

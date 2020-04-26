@@ -25,5 +25,5 @@ import java.util.function.Consumer;
 public interface GraphvizEngine extends AutoCloseable {
     void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError);
 
-    EngineResult execute(String src, Options options, @Nullable Rasterizer rasterizer);
+    EngineResult execute(String src, Options options, Rasterizer rasterizer);
 }

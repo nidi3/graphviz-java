@@ -52,7 +52,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
             final JavascriptEngine engine = engine(true);
             engine.executeJavascript(vizJsCode());
             engine.executeJavascript(renderJsCode());
-            execute("graph g { a -- b }", Options.create(), null);
+            execute("graph g { a -- b }", Options.create(), Rasterizer.NONE);
         }
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public EngineResult execute(String src, Options options, @Nullable Rasterizer rasterizer) {
+    public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
         if (rasterizer instanceof BuiltInRasterizer) {
             throw new GraphvizException("Built-in Rasterizer can only be used together with GraphvizCmdLineEngine.");
         }

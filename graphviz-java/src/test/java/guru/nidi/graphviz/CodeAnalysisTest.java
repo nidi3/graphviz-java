@@ -76,12 +76,11 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                                 .ignore("UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"))
                 .because("It's ok",
                         In.loc("Datatype").ignore("NP_BOOLEAN_RETURN_NULL"),
-                        In.loc("BuiltInRasterizer").ignore("NP_NONNULL_RETURN_VIOLATION"),
+                        In.locs("BuiltInRasterizer#rasterize","NopRasterizer","PortSource").ignore("NP_NONNULL_RETURN_VIOLATION"),
                         In.loc("CommandLineExecutor").ignore("DM_DEFAULT_ENCODING"),
                         In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
                         In.locs("AbstractGraphvizEngine", "Options", "GraphvizCmdLineEngine", "EngineTest", "SystemUtils", "Renderer").ignore("PATH_TRAVERSAL_IN"),
                         In.locs("EngineTest", "RendererTest", "EngineResult").ignore("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
-                        In.loc("PortSource").ignore("NP_NONNULL_RETURN_VIOLATION"),
                         In.loc("OptionsTest").ignore("DMI_HARDCODED_ABSOLUTE_FILENAME"),
                         In.loc("SimpleLabel").ignore("IM_BAD_CHECK_FOR_ODD"),
                         In.loc("JavascriptEngineTest").ignore("PREDICTABLE_RANDOM"),
@@ -103,6 +102,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("There are a lot of colors", In.clazz(Color.class)
                         .ignore("FieldDeclarationsShouldBeAtStartOfClass"))
                 .because("it's ok here",
+                        In.loc("Rasterizer#getDefault").ignore("CompareObjectsWithEquals"),
                         In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
                         In.locs("LabelTest", "RankTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest", "ArrowDatatypeTest", "ColorListDatatypeTest", "ShapeDatatypeTest")
                                 .ignore("JUnitTestContainsTooManyAsserts"),

@@ -15,7 +15,6 @@
  */
 package guru.nidi.graphviz.engine;
 
-import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,16 +23,22 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.function.Consumer;
 
+import static guru.nidi.graphviz.engine.Rasterizer.NONE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Locale.ENGLISH;
 
 public class Renderer {
+    private static final Consumer<Graphics2D> NOP_GRAPHICS_CONFIGURER = Graphics2D -> {
+    };
     private final Graphviz graphviz;
-    @Nullable
     private final Consumer<Graphics2D> graphicsConfigurer;
     private final Format output;
 
-    Renderer(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, Format output) {
+    Renderer(Graphviz graphviz, Format output) {
+        this(graphviz, NOP_GRAPHICS_CONFIGURER, output);
+    }
+
+    Renderer(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, Format output) {
         this.graphviz = graphviz;
         this.graphicsConfigurer = graphicsConfigurer;
         this.output = output;
@@ -110,7 +115,7 @@ public class Renderer {
     }
 
     private BufferedImage toImage(String content) {
-        if (graphviz.rasterizer == null) {
+        if (graphviz.rasterizer == NONE) {
             throw new IllegalStateException("- Rasterizer explicitly set no null or\n"
                     + "- neither 'guru.nidi.com.kitfox:svgSalamander' nor 'org.apache.xmlgraphics:batik-rasterizer'"
                     + " found on classpath.");

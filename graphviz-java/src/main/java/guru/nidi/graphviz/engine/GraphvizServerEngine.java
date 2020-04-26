@@ -53,7 +53,7 @@ public class GraphvizServerEngine extends AbstractGraphvizEngine {
     }
 
     @Override
-    public EngineResult execute(String src, Options options, @Nullable Rasterizer rasterizer) {
+    public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
         try {
             return EngineResult.fromString(createSvg(src, options));
         } catch (SocketTimeoutException e) {

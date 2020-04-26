@@ -39,7 +39,8 @@ class BuiltInRasterizer implements Rasterizer {
     }
 
     @Override
-    public BufferedImage rasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String input) {
+    @SuppressWarnings("ConstantConditions")
+    public BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input) {
         return null;
     }
 }

@@ -15,27 +15,19 @@
  */
 package guru.nidi.graphviz.engine;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
-abstract class SvgRasterizer implements Rasterizer {
+@SuppressWarnings("ConstantConditions")
+class NopRasterizer implements Rasterizer {
     @Override
     public Format format() {
-        return Format.SVG;
+        return null;
     }
 
     @Override
     public BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input) {
-        final String svg = input
-                .replace("xlink:href=\"", "xlink:href=\"file://")
-                .replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"")
-                .replace("stroke: transparent", "stroke: #fff; stroke-opacity: 0.0")
-                .replace("fill=\"transparent\"", "fill=\"#fff\" fill-opacity=\"0.0\"")
-                .replace("fill: transparent", "fill: #fff; fill-opacity: 0.0");
-        return doRasterize(graphviz, graphicsConfigurer, svg);
+        return null;
     }
-
-    abstract BufferedImage doRasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String svg);
 }

@@ -17,7 +17,6 @@ package guru.nidi.graphviz.engine;
 
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
@@ -25,17 +24,14 @@ import java.util.function.Consumer;
 import static guru.nidi.graphviz.engine.GraphvizLoader.isOnClasspath;
 
 public interface Rasterizer {
-    @Nullable
-    Rasterizer BATIK = isOnClasspath("org/apache/batik/transcoder/Transcoder.class") ? new BatikRasterizer() : null;
-    @Nullable
-    Rasterizer SALAMANDER = isOnClasspath("com/kitfox/svg/SVGDiagram.class") ? new SalamanderRasterizer() : null;
-    @Nullable
+    Rasterizer NONE = new NopRasterizer();
+    Rasterizer BATIK = isOnClasspath("org/apache/batik/transcoder/Transcoder.class") ? new BatikRasterizer() : NONE;
+    Rasterizer SALAMANDER = isOnClasspath("com/kitfox/svg/SVGDiagram.class") ? new SalamanderRasterizer() : NONE;
     Rasterizer DEFAULT = getDefault();
 
-    @Nullable
     static Rasterizer getDefault() {
-        final Rasterizer r = BATIK != null ? BATIK : SALAMANDER;
-        if (r == null) {
+        final Rasterizer r = BATIK != NONE ? BATIK : SALAMANDER;
+        if (r == NONE) {
             LoggerFactory.getLogger(Rasterizer.class).warn("Neither Batik nor Salamander found on classpath");
         }
         return r;
@@ -55,5 +51,5 @@ public interface Rasterizer {
 
     Format format();
 
-    BufferedImage rasterize(Graphviz graphviz, @Nullable Consumer<Graphics2D> graphicsConfigurer, String input);
+    BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input);
 }
