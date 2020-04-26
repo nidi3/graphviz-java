@@ -154,11 +154,9 @@ class EngineTest {
 
     @Test
     void cmdLine() throws IOException, InterruptedException {
-        final File dotFile = setUpFakeDotFile();
-        final CommandLineExecutor cmdExecutor = setUpFakeStubCommandExecutor();
-
-        final String envPath = dotFile.getParent();
-        Graphviz.useEngine(new GraphvizCmdLineEngine(envPath, cmdExecutor));
+        Graphviz.useEngine(new GraphvizCmdLineEngine("dot")
+                .searchPath(setUpFakeDotFile().getParent())
+                .executor(setUpFakeStubCommandExecutor()));
 
         final String actual = Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
         assertThat(actual, startsWith(START1_7.replace("\n", System.lineSeparator())));
@@ -169,17 +167,14 @@ class EngineTest {
      */
     @Test
     void cmdLineOutputDotFile() throws IOException, InterruptedException {
-        final File dotFile = setUpFakeDotFile();
-        final CommandLineExecutor cmdExecutor = setUpFakeStubCommandExecutor();
-
-        final String envPath = dotFile.getParent();
-
         final File dotOutputFolder = new File(temp, "out");
         dotOutputFolder.mkdir();
         final String dotOutputName = "test123";
 
         // Configure engine to output the dotFile to dotOutputFolder
-        final GraphvizCmdLineEngine engine = new GraphvizCmdLineEngine(envPath, cmdExecutor);
+        final GraphvizCmdLineEngine engine = new GraphvizCmdLineEngine()
+                .searchPath(setUpFakeDotFile().getParent())
+                .executor(setUpFakeStubCommandExecutor());
         engine.setDotOutputFile(dotOutputFolder.getAbsolutePath(), dotOutputName);
 
         Graphviz.useEngine(engine);

@@ -83,6 +83,10 @@ public final class SystemUtils {
                 : singletonList(filename);
     }
 
+    public static boolean fileNameEquals(String file1, String file2) {
+        return IS_OS_WINDOWS ? file1.equalsIgnoreCase(file2) : file1.equals(file2);
+    }
+
     public static Function<CommandLine, CommandLine> getShellWrapperOrDefault(boolean shellWrapper) {
         if (!shellWrapper) {
             return Function.identity();

@@ -29,6 +29,9 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static guru.nidi.graphviz.engine.GraphvizLoader.isOnClasspath;
+import static guru.nidi.graphviz.service.CommandRunner.isExecutableFile;
+import static guru.nidi.graphviz.service.CommandRunner.isExecutableFound;
+import static guru.nidi.graphviz.service.SystemUtils.pathOf;
 import static java.util.Locale.ENGLISH;
 
 /**
@@ -40,6 +43,8 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
     static final boolean AVAILABLE = isOnClasspath("org/apache/commons/exec/CommandLine.class");
 
+    @Nullable
+    private final String executable;
     private final String envPath;
     private final CommandRunner cmdRunner;
 
@@ -49,13 +54,30 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private String outputFileName;
 
     public GraphvizCmdLineEngine() {
-        this(Optional.ofNullable(System.getenv("PATH")).orElse(""), defaultExecutor());
+        this(null, Optional.ofNullable(System.getenv("PATH")).orElse(""), runner(defaultExecutor()));
     }
 
-    public GraphvizCmdLineEngine(String envPath, CommandLineExecutor executor) {
+    public GraphvizCmdLineEngine(String executable) {
+        this(executable, Optional.ofNullable(System.getenv("PATH")).orElse(""), runner(defaultExecutor()));
+    }
+
+    private GraphvizCmdLineEngine(@Nullable String executable, String envPath, CommandRunner cmdRunner) {
         super(true);
+        this.executable = executable;
         this.envPath = envPath;
-        cmdRunner = new CommandBuilder()
+        this.cmdRunner = cmdRunner;
+    }
+
+    public GraphvizCmdLineEngine searchPath(String path) {
+        return new GraphvizCmdLineEngine(executable, path, cmdRunner);
+    }
+
+    public GraphvizCmdLineEngine executor(CommandLineExecutor executor) {
+        return new GraphvizCmdLineEngine(executable, envPath, runner(executor));
+    }
+
+    private static CommandRunner runner(CommandLineExecutor executor) {
+        return new CommandBuilder()
                 .withShellWrapper(true)
                 .withCommandExecutor(executor)
                 .build();
@@ -76,7 +98,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
     @Override
     protected void doInit() {
-        getEngineExecutable(Engine.DOT);
+        getEngineExecutable();
     }
 
     @Override
@@ -96,10 +118,10 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
     private EngineResult doExecute(Path path, File dotFile, Options options, Rasterizer rasterizer)
             throws IOException, InterruptedException {
-        final String engine = getEngineExecutable(options.engine);
         final String format = getFormatName(options.format, rasterizer);
-        final String command = engine
+        final String command = getEngineExecutable()
                 + (options.yInvert != null && options.yInvert ? " -y" : "")
+                + " -K" + options.engine.toString().toLowerCase(ENGLISH)
                 + " -T" + format
                 + " " + dotFile.getAbsolutePath() + " -ooutfile." + format;
         cmdRunner.exec(command, path.toFile(), timeout);
@@ -116,11 +138,16 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         return replacePaths(imgReplaced, IMAGE_ATTR, path -> replacePath(path, options.basedir));
     }
 
-    private String getEngineExecutable(@Nullable Engine engine) {
-        final String cmd = engine == null ? "dot" : engine.toString().toLowerCase(ENGLISH);
-        final List<String> exes = SystemUtils.executableNames(cmd);
+    private String getEngineExecutable() {
+        if (executable != null) {
+            if (isExecutableFile(pathOf(executable)) || isExecutableFound(executable, envPath)) {
+                return executable;
+            }
+            LOG.warn("Executable '" + executable + "' not found directly and not on PATH. Trying with 'dot'.");
+        }
+        final List<String> exes = SystemUtils.executableNames("dot");
         for (final String exe : exes) {
-            if (CommandRunner.isExecutableFound(exe, envPath)) {
+            if (isExecutableFound(exe, envPath)) {
                 return exe;
             }
         }

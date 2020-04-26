@@ -26,8 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static guru.nidi.graphviz.service.SystemUtils.fileNameEquals;
+import static java.util.stream.Collectors.toList;
 
 public class CommandRunner {
     private static final Logger LOG = LoggerFactory.getLogger(CommandRunner.class);
@@ -68,7 +70,6 @@ public class CommandRunner {
         cmdExec.execute(wrappedCmd, workDir, timeout);
     }
 
-    // Cross-platform way of finding an executable in the $PATH.
     static Stream<Path> which(String program) {
         return which(program, Optional.ofNullable(System.getenv("PATH")).orElse(""));
     }
@@ -85,19 +86,9 @@ public class CommandRunner {
                 .map(path -> {
                     try (Stream<Path> entries = Files.list(path)) {
                         return entries
-                                // Filter on the filename
-                                // Doing a case-sensitive compare here, that's not correct on windows ?
-                                .filter(filePath -> program.equals(filePath.getFileName().toString()))
-
-                                // Filter out folders
-                                .filter(filePath -> Files.isRegularFile(filePath))
-
-                                // Check if the file is executable
-                                // Does this check work on Windows this way ?
-                                .filter(Files::isExecutable)
-
-                                // Consume the stream here - we're inside a try-with-resources
-                                .collect(Collectors.toList())
+                                .filter(filePath -> fileNameEquals(program, filePath.getFileName().toString()))
+                                .filter(CommandRunner::isExecutableFile)
+                                .collect(toList())
                                 .stream();
                     } catch (IOException e) {
                         LOG.error("Problem finding path for {}", program, e);
@@ -105,6 +96,10 @@ public class CommandRunner {
                     }
                 })
                 .flatMap(stream -> stream);
+    }
+
+    public static boolean isExecutableFile(Path path) {
+        return Files.isRegularFile(path) && Files.isExecutable(path); //TODO Does this check work on Windows this way ?
     }
 
     static boolean isExecutableFound(String program) {
