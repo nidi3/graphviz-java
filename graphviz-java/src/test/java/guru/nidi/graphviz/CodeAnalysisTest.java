@@ -85,6 +85,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.loc("OptionsTest").ignore("DMI_HARDCODED_ABSOLUTE_FILENAME"),
                         In.loc("SimpleLabel").ignore("IM_BAD_CHECK_FOR_ODD"),
                         In.loc("JavascriptEngineTest").ignore("PREDICTABLE_RANDOM"),
+                        In.loc("DatatypeTest").ignore("SIC_INNER_SHOULD_BE_STATIC"),
                         In.loc("Communicator").ignore("RR_NOT_CHECKED"));
         return new FindBugsAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector).analyze();
     }
@@ -105,8 +106,9 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("it's ok here",
                         In.loc("Rasterizer#getDefault").ignore("CompareObjectsWithEquals"),
                         In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
-                        In.locs("LabelTest", "RankTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest", "ArrowDatatypeTest", "ColorListDatatypeTest", "ShapeDatatypeTest")
+                        In.locs("LabelTest", "RankTest", "*DatatypeTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest")
                                 .ignore("JUnitTestContainsTooManyAsserts"),
+                        In.locs("DatatypeTest").ignore("TestClassWithoutTestCases"),
                         In.loc("SerializerImpl").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
                         In.locs("ThrowingFunction", "GraphvizLoader").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.locs("GraphvizServer", "SerializerImpl").ignore("AvoidInstantiatingObjectsInLoops"),

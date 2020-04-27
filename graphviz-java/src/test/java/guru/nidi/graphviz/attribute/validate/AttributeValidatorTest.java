@@ -132,57 +132,6 @@ class AttributeValidatorTest {
                 validate(attr("ranksep", "1.2:-4;5e2"), GRAPH));
     }
 
-    @Test
-    void point() {
-        assertOk(validate(attr("head_lp", "1.2,4.5"), EDGE));
-        assertOk(validate(attr("head_lp", "1.2,4.5!"), EDGE));
-        assertOk(validate(attr("head_lp", "1.2,4.5,5!"), EDGE));
-        assertMessage(ERROR, "head_lp", "has the invalid point value '1.2'.",
-                validate(attr("head_lp", "1.2"), EDGE));
-        assertMessage(ERROR, "head_lp", "has the invalid point value '1.2,3,4,5'.",
-                validate(attr("head_lp", "1.2,3,4,5"), EDGE));
-    }
-
-    @Test
-    void pointList() {
-        assertOk(validate(attr("vertices", "1.2,4.5"), NODE));
-        assertOk(validate(attr("vertices", "1.2,4.5! 3,4,5"), NODE));
-        assertMessage(ERROR, "vertices", "has the invalid list of points value '1.2'.",
-                validate(attr("vertices", "1.2"), NODE));
-        assertMessage(ERROR, "vertices", "has the invalid list of points value '1.2,3,4,5'.",
-                validate(attr("vertices", "1.2,3,4,5"), NODE));
-    }
-
-    @Test
-    void viewPortOK() {
-        assertOk(validate(attr("viewport", "1,5.5"), GRAPH));
-        assertOk(validate(attr("viewport", "1,5.5,6"), GRAPH));
-        assertOk(validate(attr("viewport", "1,5.5,6,7,8e2"), GRAPH));
-        assertOk(validate(attr("viewport", "1,5.5,6,'bla'"), GRAPH));
-    }
-
-    @Test
-    void viewPortNoK() {
-        assertMessage(ERROR, "viewport", "has the invalid view port value 'a'.", validate(attr("viewport", "a"), GRAPH));
-        assertMessage(ERROR, "viewport", "has the invalid view port value '1,5.5,6,7'.", validate(attr("viewport", "1,5.5,6,7"), GRAPH));
-    }
-
-    @Test
-    void colorOk() {
-        assertOk(validate(attr("fontcolor", "#12af 44"), NODE));
-        assertOk(validate(attr("fontcolor", "#12af 44 0d"), NODE));
-        assertOk(validate(attr("fontcolor", ".12, 0.5,.111"), NODE));
-        assertOk(validate(attr("fontcolor", "blu"), NODE));
-    }
-
-    @Test
-    void colorNok() {
-        assertMessage(ERROR, "fontcolor", "has the invalid color value '#12'.", validate(attr("fontcolor", "#12"), NODE));
-        assertMessage(ERROR, "fontcolor", "has the invalid color value '#12 gg hh'.", validate(attr("fontcolor", "#12 gg hh"), NODE));
-        assertMessage(ERROR, "fontcolor", "has the invalid color value '1,2,3'.", validate(attr("fontcolor", "1,2,3"), NODE));
-        assertMessage(ERROR, "fontcolor", "has the invalid color value '.4,.5,.6,.7'.", validate(attr("fontcolor", ".4,.5,.6,.7"), NODE));
-    }
-
     private void assertMessage(Severity severity, String attribute, String message, List<ValidatorMessage> actual) {
         assertEquals(singletonList(new ValidatorMessage(severity, attribute, message)), actual);
     }

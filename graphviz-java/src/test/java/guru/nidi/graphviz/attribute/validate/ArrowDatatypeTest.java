@@ -17,46 +17,38 @@ package guru.nidi.graphviz.attribute.validate;
 
 import org.junit.jupiter.api.Test;
 
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+class ArrowDatatypeTest extends DatatypeTestBase {
+    ArrowDatatypeTest() {
+        super(new ArrowDatatype());
+    }
 
-class ArrowDatatypeTest {
     @Test
     void arrowTypeOk() {
-        assertNull(new ArrowDatatype().validate("box"));
-        assertNull(new ArrowDatatype().validate("obox"));
-        assertNull(new ArrowDatatype().validate("lbox"));
-        assertNull(new ArrowDatatype().validate("olbox"));
+        assertOk("box");
+        assertOk("obox");
+        assertOk("lbox");
+        assertOk("olbox");
     }
 
     @Test
     void arrowTypeWrongShape() {
-        assertMessage("has unknown shape 'hula'.", new ArrowDatatype().validate("ohula"));
+        assertMessage("has unknown shape 'hula'.", "ohula");
     }
 
     @Test
     void arrowTypeWrongPrefix() {
-        assertMessage("has not allowed 'o' prefix in 'ocrow'.",
-                new ArrowDatatype().validate("ocrow"));
-        assertMessage("has not allowed 'l' prefix in 'ldot'.",
-                new ArrowDatatype().validate("ldot"));
+        assertMessage("has not allowed 'o' prefix in 'ocrow'.", "ocrow");
+        assertMessage("has not allowed 'l' prefix in 'ldot'.", "ldot");
     }
 
     @Test
     void arrowTypeTooManyShapes() {
-        assertMessage("has more than 4 shapes in 'dotcrowboxdotcrow'.",
-                new ArrowDatatype().validate("dotcrowboxdotcrow"));
+        assertMessage("has more than 4 shapes in 'dotcrowboxdotcrow'.", "dotcrowboxdotcrow");
     }
 
     @Test
     void arrowTypeNone() {
-        assertNull(new ArrowDatatype().validate("none"));
-        assertMessage("has 'none' at last position in 'dotnone'.",
-                new ArrowDatatype().validate("dotnone"));
-    }
-
-    private void assertMessage(String message, ValidatorMessage actual) {
-        assertEquals(new ValidatorMessage(ERROR, "", message), actual);
+        assertOk("none");
+        assertMessage("has 'none' at last position in 'dotnone'.", "dotnone");
     }
 }

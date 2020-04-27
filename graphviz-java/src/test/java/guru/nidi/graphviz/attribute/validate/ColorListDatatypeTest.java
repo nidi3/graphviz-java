@@ -17,35 +17,26 @@ package guru.nidi.graphviz.attribute.validate;
 
 import org.junit.jupiter.api.Test;
 
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+class ColorListDatatypeTest extends DatatypeTestBase {
 
-class ColorListDatatypeTest {
+    ColorListDatatypeTest() {
+        super(new ColorListDatatype());
+    }
 
     @Test
     void colorListOk() {
-        assertNull(new ColorListDatatype().validate("#12af 44"));
-        assertNull(new ColorListDatatype().validate("#12af 44;.5"));
-        assertNull(new ColorListDatatype().validate("#12af 44:blu"));
-        assertNull(new ColorListDatatype().validate("#12af 44;1:blu;0"));
+        assertOk("#12af 44");
+        assertOk("#12af 44;.5");
+        assertOk("#12af 44:blu");
+        assertOk("#12af 44;1:blu;0");
     }
 
     @Test
     void colorListNok() {
-        assertMessage("has the invalid color value '#12'.",
-                new ColorListDatatype().validate("#12;1"));
-        assertMessage("has the invalid color factor 'a' in '#121314;a'.",
-                new ColorListDatatype().validate("#121314;a"));
-        assertMessage("is missing color factor after ';' in '#121314;'.",
-                new ColorListDatatype().validate("#121314;"));
-        assertMessage("has a color factor '2' not between 0 and 1 in '#121314;2'.",
-                new ColorListDatatype().validate("#121314;2"));
-        assertMessage("has a sum of factors 2.0 > 1 in 'blu;1:red;1'.",
-                new ColorListDatatype().validate("blu;1:red;1"));
-    }
-
-    private void assertMessage(String message, ValidatorMessage actual) {
-        assertEquals(new ValidatorMessage(ERROR, "", message), actual);
+        assertMessage("has the invalid color value '#12'.", "#12;1");
+        assertMessage("has the invalid color factor 'a' in '#121314;a'.", "#121314;a");
+        assertMessage("is missing color factor after ';' in '#121314;'.", "#121314;");
+        assertMessage("has a color factor '2' not between 0 and 1 in '#121314;2'.", "#121314;2");
+        assertMessage("has a sum of factors 2.0 > 1 in 'blu;1:red;1'.", "blu;1:red;1");
     }
 }

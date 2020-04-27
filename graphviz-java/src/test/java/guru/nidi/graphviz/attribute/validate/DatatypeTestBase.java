@@ -15,23 +15,21 @@
  */
 package guru.nidi.graphviz.attribute.validate;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-class ShapeDatatypeTest extends DatatypeTestBase {
-    ShapeDatatypeTest() {
-        super(new ShapeDatatype());
+class DatatypeTestBase {
+    protected final Datatype datatype;
+
+    DatatypeTestBase(Datatype datatype) {
+        this.datatype = datatype;
     }
 
-    @Test
-    void shapeOk() {
-        assertOk("record");
-        assertOk("Mrecord");
-        assertOk("diamond");
-        assertOk("box3d");
+    protected void assertOk(String value) {
+        assertNull(datatype.validate(value));
     }
 
-    @Test
-    void shapeNok() {
-        assertMessage("has the invalid shape 'bla'.", "bla");
+    protected void assertMessage(String message, String value) {
+        assertEquals(message, datatype.validate(value).message);
     }
 }
