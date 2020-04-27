@@ -25,6 +25,7 @@ import guru.nidi.codeassert.junit.CodeAssertJunit5Test;
 import guru.nidi.codeassert.model.Model;
 import guru.nidi.codeassert.pmd.*;
 import guru.nidi.graphviz.attribute.*;
+import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.*;
 import guru.nidi.graphviz.service.CommandRunner;
@@ -119,7 +120,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
                         In.locs("AttributeConfigs", "AttributeValidator", "FontTools", "Graphviz", "GraphvizCmdLineEngine").ignore("TooManyStaticImports"),
-                        In.classes(MutableNode.class, Rasterizer.class).ignore("ConfusingTernary"),
+                        In.classes(MutableNode.class, Rasterizer.class, ValidatorMessage.class).ignore("ConfusingTernary"),
                         In.clazz(ThrowingFunction.class).ignore("AvoidRethrowingException"),
                         In.classes(ThrowingFunction.class, ThrowingBiConsumer.class).ignore("SignatureDeclareThrowsException"))
                 .because("It's command line tool", In.loc("GraphvizServer")

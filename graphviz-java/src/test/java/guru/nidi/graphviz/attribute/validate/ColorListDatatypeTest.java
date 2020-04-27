@@ -41,7 +41,7 @@ class ColorListDatatypeTest {
                 new ColorListDatatype().validate("#121314;"));
         assertMessage("has a color factor '2' not between 0 and 1 in '#121314;2'.",
                 new ColorListDatatype().validate("#121314;2"));
-        assertMessage("has a sum of factors 2.0 greater than 1 in 'blu;1:red;1'.",
+        assertMessage("has a sum of factors 2.0 > 1 in 'blu;1:red;1'.",
                 new ColorListDatatype().validate("blu;1:red;1"));
     }
 

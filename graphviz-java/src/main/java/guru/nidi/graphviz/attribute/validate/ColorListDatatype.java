@@ -39,7 +39,7 @@ class ColorListDatatype extends Datatype {
             }
         }
         if (sum[0] > 1) {
-            return new ValidatorMessage(ERROR, "has a sum of factors " + sum[0] + " greater than 1 in '" + value + "'.");
+            return new ValidatorMessage(ERROR, "has a sum of factors " + sum[0] + " > 1 in '" + value + "'.");
         }
         return null;
     }
