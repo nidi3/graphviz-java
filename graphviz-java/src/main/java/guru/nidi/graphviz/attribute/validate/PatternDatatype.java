@@ -28,6 +28,6 @@ class PatternDatatype extends Datatype {
     @Override
     ValidatorMessage validate(Object value) {
         return matches(value, pattern)
-                ? null : new ValidatorMessage(ERROR, "'" + value + "' is not a valid " + name + ".");
+                ? null : new ValidatorMessage(ERROR, "has the invalid " + name + " value '" + value + "'.");
     }
 }

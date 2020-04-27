@@ -33,15 +33,15 @@ class ColorListDatatypeTest {
 
     @Test
     void colorListNok() {
-        assertMessage("'#12' is not a valid color.",
+        assertMessage("has the invalid color value '#12'.",
                 new ColorListDatatype().validate("#12;1"));
-        assertMessage("'#121314;a': a is not a valid number.",
+        assertMessage("has the invalid color factor 'a' in '#121314;a'.",
                 new ColorListDatatype().validate("#121314;a"));
-        assertMessage("'#121314;': missing color factor after ';'.",
+        assertMessage("is missing color factor after ';' in '#121314;'.",
                 new ColorListDatatype().validate("#121314;"));
-        assertMessage("'#121314;2': 2 is not between 0 and 1.",
+        assertMessage("has a color factor '2' not between 0 and 1 in '#121314;2'.",
                 new ColorListDatatype().validate("#121314;2"));
-        assertMessage("'blu;1:red;1': The sum of the factors is greater than 1.",
+        assertMessage("has a sum of factors 2.0 greater than 1 in 'blu;1:red;1'.",
                 new ColorListDatatype().validate("blu;1:red;1"));
     }
 

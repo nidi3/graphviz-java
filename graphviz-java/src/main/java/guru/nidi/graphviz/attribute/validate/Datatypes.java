@@ -27,9 +27,9 @@ final class Datatypes {
         @Override
         ValidatorMessage validate(Object value) {
             return boolValue(value.toString()) == null
-                    ? new ValidatorMessage(ERROR, "'" + value + "' is not a valid boolean.")
+                    ? new ValidatorMessage(ERROR, "has the invalid boolean value '" + value + "'.")
                     : matches(value, "%d")
-                    ? new ValidatorMessage(WARN, "Using numerical value '" + value + "' as boolean.")
+                    ? new ValidatorMessage(WARN, "uses the numerical value '" + value + "' as boolean.")
                     : null;
         }
     };
@@ -81,7 +81,7 @@ final class Datatypes {
             return matches(value, "#%x%x ?%x%x ?%x%x( ?%x%x)?")
                     || matches(value, "%n[, ]+%n[, ]+%n")
                     || matches(value, "[/A-Za-z][/0-9A-Za-z]*")
-                    ? null : new ValidatorMessage(ERROR, "'" + value + "' is not a valid " + name + ".");
+                    ? null : new ValidatorMessage(ERROR, "has the invalid " + name + " value '" + value + "'.");
         }
     };
     static final Datatype COLOR_LIST = new ColorListDatatype();

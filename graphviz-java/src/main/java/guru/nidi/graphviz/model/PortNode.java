@@ -15,14 +15,12 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.Named;
 
 import javax.annotation.Nullable;
 
-public interface PortNode extends LinkSource, LinkTarget {
+public interface PortNode extends Named, LinkSource, LinkTarget {
     <N extends LinkSource & LinkTarget> N node();
-
-    Label name();
 
     PortNode port(@Nullable String record);
 

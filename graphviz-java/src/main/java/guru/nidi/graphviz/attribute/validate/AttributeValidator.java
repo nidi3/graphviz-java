@@ -73,31 +73,31 @@ public final class AttributeValidator {
     public List<ValidatorMessage> validate(String key, Object value, Scope scope) {
         final List<AttributeConfig> configs = AttributeConfigs.get(key);
         if (configs == null) {
-            return singletonList(new ValidatorMessage(ERROR, key, "Attribute is unknown."));
+            return singletonList(new ValidatorMessage(ERROR, key, "is unknown."));
         }
 
         final List<AttributeConfig> engineConfigs = findConfigsForEngine(configs);
         if (engineConfigs.isEmpty()) {
             return singletonList(new ValidatorMessage(
-                    ERROR, key, "Attribute is not allowed for engine '" + engine + "'."));
+                    ERROR, key, "is not allowed for engine '" + engine + "'."));
         }
 
         final List<AttributeConfig> formatConfigs = findConfigsForFormat(configs);
         if (formatConfigs.isEmpty()) {
             return singletonList(new ValidatorMessage(
-                    ERROR, key, "Attribute is not allowed for format '" + format + "'."));
+                    ERROR, key, "is not allowed for format '" + format + "'."));
         }
 
         List<AttributeConfig> matchConfigs = intersect(engineConfigs, formatConfigs);
         if (matchConfigs.isEmpty()) {
             return singletonList(new ValidatorMessage(
-                    ERROR, key, "Attribute is not allowed for engine '" + engine + "' and format '" + format + "'."));
+                    ERROR, key, "is not allowed for engine '" + engine + "' and format '" + format + "'."));
         }
         if (matchConfigs.size() > 1) {
             matchConfigs = matchConfigs.stream().filter(c -> c.scopes.contains(scope)).collect(toList());
         }
         if (matchConfigs.isEmpty()) {
-            return singletonList(new ValidatorMessage(ERROR, key, "Attribute is not allowed for " + scope + "s."));
+            return singletonList(new ValidatorMessage(ERROR, key, "is not allowed for " + scope + "s."));
         }
         if (matchConfigs.size() > 1) {
             LOG.warn("Found multiple attribute configurations for " + engine + ", " + format + " and " + scope + "."
@@ -144,23 +144,23 @@ public final class AttributeValidator {
 
     private void validateScope(List<ValidatorMessage> messages, String key, AttributeConfig config, Scope scope) {
         if (!config.scopes.contains(scope)) {
-            messages.add(new ValidatorMessage(ERROR, key, "Attribute is not allowed for " + scope + "s."));
+            messages.add(new ValidatorMessage(ERROR, key, "is not allowed for " + scope + "s."));
         }
     }
 
     private void validateValue(List<ValidatorMessage> messages, String key, AttributeConfig config, Object value) {
         if (config.defVal != null && isValueEquals(config.defVal, value)) {
             messages.add(new ValidatorMessage(
-                    INFO, key, "Attribute is set to its default value '" + config.defVal + "'."));
+                    INFO, key, "has its default value '" + config.defVal + "'."));
         }
         final Double val = tryParseDouble(value.toString());
         if (config.min != null && val != null && val < config.min) {
             messages.add(new ValidatorMessage(
-                    WARN, key, "Attribute has a minimum of '" + config.min + "' but is set to '" + value + "'."));
+                    WARN, key, "has the value '" + value + "' smaller than the minimum of '" + config.min + "'."));
         }
         if (config.max != null && val != null && val > config.max) {
             messages.add(new ValidatorMessage(
-                    WARN, key, "Attribute has a maximum of '" + config.max + "' but is set to '" + value + "'."));
+                    WARN, key, "has the value '" + value + "' greater than the maximum of '" + config.max + "'."));
         }
     }
 
@@ -168,16 +168,16 @@ public final class AttributeValidator {
         final List<ValidatorMessage> typeMessages = config.types.stream().map(t -> t.validate(value)).collect(toList());
         if (typeMessages.size() == 1) {
             if (typeMessages.get(0) != null) {
-                messages.add(typeMessages.get(0).atAttribute(key));
+                messages.add(typeMessages.get(0).attribute(key));
             }
         } else {
             if (typeMessages.stream().noneMatch(Objects::isNull)) {
                 final List<String> lines = new ArrayList<>();
                 for (int i = 0; i < config.types.size(); i++) {
-                    lines.add("As " + config.types.get(i).name + ": " + typeMessages.get(i).message);
+                    lines.add("As " + config.types.get(i).name + " it " + typeMessages.get(i).message);
                 }
-                messages.add(new ValidatorMessage(ERROR, key,
-                        "'" + value + "' is not valid for any of the possible types:\n" + String.join("\n", lines)));
+                messages.add(new ValidatorMessage(ERROR, key, "has the value '" + value
+                        + "' which is not valid for any of the possible types:\n" + String.join("\n", lines)));
             }
         }
     }

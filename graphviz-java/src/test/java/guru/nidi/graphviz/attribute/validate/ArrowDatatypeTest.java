@@ -32,27 +32,27 @@ class ArrowDatatypeTest {
 
     @Test
     void arrowTypeWrongShape() {
-        assertMessage("Unknown shape 'hula'.", new ArrowDatatype().validate("ohula"));
+        assertMessage("has unknown shape 'hula'.", new ArrowDatatype().validate("ohula"));
     }
 
     @Test
     void arrowTypeWrongPrefix() {
-        assertMessage("Shape 'crow' is not allowed a 'o' prefix.",
+        assertMessage("has not allowed 'o' prefix in 'ocrow'.",
                 new ArrowDatatype().validate("ocrow"));
-        assertMessage("Shape 'dot' is not allowed a 'l'/'r' prefix.",
+        assertMessage("has not allowed 'l' prefix in 'ldot'.",
                 new ArrowDatatype().validate("ldot"));
     }
 
     @Test
     void arrowTypeTooManyShapes() {
-        assertMessage("More than 4 shapes in 'dotcrowboxdotcrow'.",
+        assertMessage("has more than 4 shapes in 'dotcrowboxdotcrow'.",
                 new ArrowDatatype().validate("dotcrowboxdotcrow"));
     }
 
     @Test
     void arrowTypeNone() {
         assertNull(new ArrowDatatype().validate("none"));
-        assertMessage("Last shape cannot be 'none' in 'dotnone'.",
+        assertMessage("has 'none' at last position in 'dotnone'.",
                 new ArrowDatatype().validate("dotnone"));
     }
 

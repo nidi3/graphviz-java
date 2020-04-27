@@ -62,14 +62,14 @@ public final class Link implements Attributed<Link, ForLink>, LinkTarget {
     }
 
     public Link with(Attributes<? extends ForLink> attrs) {
-        @SuppressWarnings("unchecked") final Attributes<? extends ForLink> as =
-                (Attributes) attrs.applyTo(attributes.copy());
+        @SuppressWarnings("unchecked") //
+        final Attributes<? extends ForLink> as = (Attributes) attrs.applyTo(attributes.copy());
         return new Link(from, to, as);
     }
 
     @Override
     public Label name() {
-        return to.name();
+        return Label.of((from == null ? "" : from.name()) + "--" + to.name());
     }
 
     @Override

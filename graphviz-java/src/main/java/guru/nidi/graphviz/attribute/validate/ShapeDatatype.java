@@ -50,7 +50,7 @@ class ShapeDatatype extends Datatype {
     @Override
     ValidatorMessage validate(Object value) {
         if (!NAMES.contains(value.toString())) {
-            return new ValidatorMessage(ERROR, "'" + value + "' is not a valid shape.");
+            return new ValidatorMessage(ERROR, "has the invalid shape '" + value + "'.");
         }
         return null;
     }

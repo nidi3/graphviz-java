@@ -15,63 +15,67 @@
  */
 package guru.nidi.graphviz.attribute.validate;
 
+import guru.nidi.graphviz.attribute.Named;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import static java.util.Locale.ENGLISH;
+
 public class ValidatorMessage {
-    private static final Logger LOG = LoggerFactory.getLogger(ValidatorMessage.class);
-
-    public static final Consumer<ValidatorMessage> LINE_LOGGING_CONSUMER = msg -> LOG.info(
-            String.format("%-5s at %d:%d: '%1.20s' -> %s",
-                    msg.severity, msg.line, msg.column, msg.attribute, msg.message));
-    public static final Consumer<ValidatorMessage> POSITION_LOGGING_CONSUMER = msg -> LOG.info(
-            String.format("%-5s %1.20s: '%1.20s' -> %s",
-                    msg.severity, msg.position, msg.attribute, msg.message));
-    public static final Consumer<ValidatorMessage> NOP_CONSUMER = msg -> {
-    };
-
-    public enum Severity {
-        ERROR, WARN, INFO
-    }
-
     public final Severity severity;
     public final String attribute;
     public final String message;
-    public final int line;
-    public final int column;
-    public final String position;
+    @Nullable
+    public final Position position;
+    @Nullable
+    public final Location location;
+
+    public static Consumer<ValidatorMessage> emptyConsumer() {
+        return msg -> {
+        };
+    }
+
+    public static Consumer<ValidatorMessage> loggingConsumer(Logger logger) {
+        return msg -> {
+            final Location loc = msg.location;
+            final Position pos = msg.position;
+            final String where = loc != null ? String.format("%s '%1.30s'", loc.type.desc(), loc.name.name())
+                    : pos != null ? String.format("%s:%s:%s", pos.name, pos.line, pos.column)
+                    : "";
+            logger.info(String.format("%-5s %s -> '%1.20s' %s", msg.severity, where, msg.attribute, msg.message));
+        };
+    }
 
     ValidatorMessage(Severity severity, String message) {
         this(severity, "", message);
     }
 
     public ValidatorMessage(Severity severity, String attribute, String message) {
-        this(severity, attribute, message, 0, 0, "");
+        this(severity, attribute, message, null, null);
     }
 
     public ValidatorMessage(Severity severity, String attribute, String message,
-                            int line, int column, String position) {
+                            @Nullable Position position, @Nullable Location location) {
         this.severity = severity;
         this.attribute = attribute;
         this.message = message;
-        this.line = line;
-        this.column = column;
         this.position = position;
+        this.location = location;
     }
 
-    public ValidatorMessage at(int line, int column) {
-        return new ValidatorMessage(severity, attribute, message, line, column, position);
+    public ValidatorMessage at(Position position) {
+        return new ValidatorMessage(severity, attribute, message, position, location);
     }
 
-    public ValidatorMessage at(String position) {
-        return new ValidatorMessage(severity, attribute, message, line, column, position);
+    public ValidatorMessage at(Location location) {
+        return new ValidatorMessage(severity, attribute, message, position, location);
     }
 
-    ValidatorMessage atAttribute(String attribute) {
-        return new ValidatorMessage(severity, attribute, message, line, column, position);
+    ValidatorMessage attribute(String attribute) {
+        return new ValidatorMessage(severity, attribute, message, position, location);
     }
 
     @Override
@@ -83,22 +87,112 @@ public class ValidatorMessage {
             return false;
         }
         final ValidatorMessage that = (ValidatorMessage) o;
-        return line == that.line
-                && column == that.column
-                && severity == that.severity
+        return severity == that.severity
                 && attribute.equals(that.attribute)
                 && message.equals(that.message)
-                && position.equals(that.position);
+                && Objects.equals(position, that.position)
+                && Objects.equals(location, that.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(severity, attribute, message, line, column, position);
+        return Objects.hash(severity, attribute, message, position, location);
     }
 
     @Override
     public String toString() {
-        return severity + " " + position + (line > 0 ? line + ":" + column : "")
-                + ": '" + attribute + "' -> " + message;
+        return severity + " "
+                + (location == null ? "" : location)
+                + (position == null ? "" : position)
+                + ": '" + attribute + "' " + message;
+    }
+
+    public enum Severity {
+        ERROR, WARN, INFO
+    }
+
+    public static class Position {
+        public final String name;
+        public final int line;
+        public final int column;
+
+        public Position(String name, int line, int column) {
+            this.name = name;
+            this.line = line;
+            this.column = column;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            final Position position = (Position) o;
+            return line == position.line
+                    && column == position.column
+                    && name.equals(position.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, line, column);
+        }
+
+        @Override
+        public String toString() {
+            return "Position{"
+                    + "name='" + name + '\''
+                    + ", line=" + line
+                    + ", column=" + column
+                    + '}';
+        }
+    }
+
+    public static class Location {
+        public enum Type {
+            NODE, LINK, GRAPH_ATTRS, NODE_ATTRS, LINK_ATTRS;
+
+            public String desc() {
+                final String s = super.toString().toLowerCase(ENGLISH);
+                return s.replace("_", " ") + (s.contains("_") ? " of" : "");
+            }
+        }
+
+        public final Type type;
+        public final Named name;
+
+        public Location(Type type, Named name) {
+            this.type = type;
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            final Location location = (Location) o;
+            return type == location.type
+                    && name.equals(location.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(type, name);
+        }
+
+        @Override
+        public String toString() {
+            return "Location{"
+                    + "type=" + type
+                    + ", name=" + name.name()
+                    + '}';
+        }
     }
 }

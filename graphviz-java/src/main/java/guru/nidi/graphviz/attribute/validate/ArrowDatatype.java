@@ -56,10 +56,10 @@ class ArrowDatatype extends Datatype {
                 shapes++;
             } while (pos < s.length() && shapes < 4);
             if (pos < s.length() - 1) {
-                return new ValidatorMessage(ERROR, "More than 4 shapes in '" + s + "'.");
+                return new ValidatorMessage(ERROR, "has more than 4 shapes in '" + s + "'.");
             }
             if (shapes > 1 && s.endsWith("none")) {
-                return new ValidatorMessage(ERROR, "Last shape cannot be 'none' in '" + s + "'.");
+                return new ValidatorMessage(ERROR, "has 'none' at last position in '" + s + "'.");
             }
             return null;
         }
@@ -70,24 +70,24 @@ class ArrowDatatype extends Datatype {
                 o = true;
                 pos++;
             }
-            boolean lr = false;
+            Character lr = null;
             if (pos < s.length() && (s.charAt(pos) == 'l' || s.charAt(pos) == 'r')) {
-                lr = true;
+                lr = s.charAt(pos);
                 pos++;
             }
             return validateShape(o, lr);
         }
 
-        private ValidatorMessage validateShape(boolean o, boolean lr) {
+        private ValidatorMessage validateShape(boolean o, Character lr) {
             final Shape shape = findShape();
             if (shape == null) {
-                return new ValidatorMessage(ERROR, "Unknown shape '" + s.substring(pos) + "'.");
+                return new ValidatorMessage(ERROR, "has unknown shape '" + s.substring(pos) + "'.");
             }
             if (o && !shape.o) {
-                return new ValidatorMessage(ERROR, "Shape '" + shape.name + "' is not allowed a 'o' prefix.");
+                return new ValidatorMessage(ERROR, "has not allowed 'o' prefix in 'o" + shape.name + "'.");
             }
-            if (lr && !shape.lr) {
-                return new ValidatorMessage(ERROR, "Shape '" + shape.name + "' is not allowed a 'l'/'r' prefix.");
+            if (lr != null && !shape.lr) {
+                return new ValidatorMessage(ERROR, "has not allowed '" + lr + "' prefix in '" + lr + shape.name + "'.");
             }
             return null;
         }

@@ -43,92 +43,92 @@ class AttributeValidatorTest {
 
     @Test
     void wrongName() {
-        assertMessage(ERROR, "hula", "Attribute is unknown.", validate(attr("hula", 5), NODE));
+        assertMessage(ERROR, "hula", "is unknown.", validate(attr("hula", 5), NODE));
     }
 
     @Test
     void wrongScope() {
-        assertMessage(ERROR, "Damping", "Attribute is not allowed for nodes.",
+        assertMessage(ERROR, "Damping", "is not allowed for nodes.",
                 validate(attr("Damping", 5), NODE));
     }
 
     @Test
     void wrongEngine() {
-        assertMessage(ERROR, "Damping", "Attribute is not allowed for engine 'DOT'.",
+        assertMessage(ERROR, "Damping", "is not allowed for engine 'DOT'.",
                 validate(attr("Damping", 5), GRAPH, DOT, UNKNOWN_FORMAT));
     }
 
     @Test
     void wrongFormat() {
-        assertMessage(ERROR, "URL", "Attribute is not allowed for format 'CMAP'.",
+        assertMessage(ERROR, "URL", "is not allowed for format 'CMAP'.",
                 validate(attr("URL", 5), GRAPH, null, CMAP));
     }
 
     @Test
     void useDoubleDefault() {
-        assertMessage(INFO, "Damping", "Attribute is set to its default value '0.99'.",
+        assertMessage(INFO, "Damping", "has its default value '0.99'.",
                 validate(attr("Damping", .99), GRAPH));
-        assertMessage(INFO, "Damping", "Attribute is set to its default value '0.99'.",
+        assertMessage(INFO, "Damping", "has its default value '0.99'.",
                 validate(attr("Damping", .99000001), GRAPH));
-        assertMessage(INFO, "Damping", "Attribute is set to its default value '0.99'.",
+        assertMessage(INFO, "Damping", "has its default value '0.99'.",
                 validate(attr("Damping", ".99"), GRAPH));
     }
 
     @Test
     void useIntDefault() {
-        assertMessage(INFO, "dim", "Attribute is set to its default value '2'.", validate(attr("dim", 2), GRAPH));
-        assertMessage(INFO, "dim", "Attribute is set to its default value '2'.", validate(attr("dim", "+2"), GRAPH));
+        assertMessage(INFO, "dim", "has its default value '2'.", validate(attr("dim", 2), GRAPH));
+        assertMessage(INFO, "dim", "has its default value '2'.", validate(attr("dim", "+2"), GRAPH));
     }
 
     @Test
     void useBoolDefault() {
-        assertMessage(INFO, "headclip", "Attribute is set to its default value 'true'.",
+        assertMessage(INFO, "headclip", "has its default value 'true'.",
                 validate(attr("headclip", true), EDGE));
-        assertMessage(INFO, "headclip", "Attribute is set to its default value 'true'.",
+        assertMessage(INFO, "headclip", "has its default value 'true'.",
                 validate(attr("headclip", "truE"), EDGE));
-        assertMessage(INFO, "headclip", "Attribute is set to its default value 'true'.",
+        assertMessage(INFO, "headclip", "has its default value 'true'.",
                 validate(attr("headclip", "Yes"), EDGE));
         assertEquals(asList(
-                new ValidatorMessage(INFO, "headclip", "Attribute is set to its default value 'true'."),
-                new ValidatorMessage(WARN, "headclip", "Using numerical value '42' as boolean.")),
+                new ValidatorMessage(INFO, "headclip", "has its default value 'true'."),
+                new ValidatorMessage(WARN, "headclip", "uses the numerical value '42' as boolean.")),
                 validate(attr("headclip", "42"), EDGE));
-        assertMessage(INFO, "center", "Attribute is set to its default value 'false'.",
+        assertMessage(INFO, "center", "has its default value 'false'.",
                 validate(attr("center", false), GRAPH));
-        assertMessage(INFO, "center", "Attribute is set to its default value 'false'.",
+        assertMessage(INFO, "center", "has its default value 'false'.",
                 validate(attr("center", "False"), GRAPH));
-        assertMessage(INFO, "center", "Attribute is set to its default value 'false'.",
+        assertMessage(INFO, "center", "has its default value 'false'.",
                 validate(attr("center", "NO"), GRAPH));
         assertEquals(asList(
-                new ValidatorMessage(INFO, "center", "Attribute is set to its default value 'false'."),
-                new ValidatorMessage(WARN, "center", "Using numerical value '0' as boolean.")),
+                new ValidatorMessage(INFO, "center", "has its default value 'false'."),
+                new ValidatorMessage(WARN, "center", "uses the numerical value '0' as boolean.")),
                 validate(attr("center", "0"), GRAPH));
     }
 
     @Test
     void minimum() {
         assertOk(validate(attr("Damping", 0), GRAPH));
-        assertMessage(WARN, "Damping", "Attribute has a minimum of '0.0' but is set to '-0.1'.",
+        assertMessage(WARN, "Damping", "has the value '-0.1' smaller than the minimum of '0.0'.",
                 validate(attr("Damping", -.1), GRAPH));
-        assertMessage(WARN, "dim", "Attribute has a minimum of '2.0' but is set to '1'.",
+        assertMessage(WARN, "dim", "has the value '1' smaller than the minimum of '2.0'.",
                 validate(attr("dim", 1), GRAPH));
     }
 
     @Test
     void invalidInt() {
-        assertMessage(ERROR, "dim", "'a' is not a valid integer.", validate(attr("dim", "a"), GRAPH));
+        assertMessage(ERROR, "dim", "has the invalid integer value 'a'.", validate(attr("dim", "a"), GRAPH));
     }
 
     @Test
     void invalidFloat() {
-        assertMessage(ERROR, "Damping", "'1.2.3' is not a valid float.", validate(attr("Damping", "1.2.3"), GRAPH));
+        assertMessage(ERROR, "Damping", "has the invalid float value '1.2.3'.", validate(attr("Damping", "1.2.3"), GRAPH));
     }
 
     @Test
     void floatList() {
         assertOk(validate(attr("ranksep", "1.2:-4:5e2"), GRAPH));
-        assertMessage(ERROR, "ranksep", "'1.2:-4;5e2' is not valid for any of the possible types:\n"
-                        + "As float: '1.2:-4;5e2' is not a valid float.\n"
-                        + "As list of floats: '1.2:-4;5e2' is not a valid list of floats.",
+        assertMessage(ERROR, "ranksep", "has the value '1.2:-4;5e2' which is not valid for any of the possible types:\n" +
+                        "As float it has the invalid float value '1.2:-4;5e2'.\n" +
+                        "As list of floats it has the invalid list of floats value '1.2:-4;5e2'.",
                 validate(attr("ranksep", "1.2:-4;5e2"), GRAPH));
     }
 
@@ -137,9 +137,9 @@ class AttributeValidatorTest {
         assertOk(validate(attr("head_lp", "1.2,4.5"), EDGE));
         assertOk(validate(attr("head_lp", "1.2,4.5!"), EDGE));
         assertOk(validate(attr("head_lp", "1.2,4.5,5!"), EDGE));
-        assertMessage(ERROR, "head_lp", "'1.2' is not a valid point.",
+        assertMessage(ERROR, "head_lp", "has the invalid point value '1.2'.",
                 validate(attr("head_lp", "1.2"), EDGE));
-        assertMessage(ERROR, "head_lp", "'1.2,3,4,5' is not a valid point.",
+        assertMessage(ERROR, "head_lp", "has the invalid point value '1.2,3,4,5'.",
                 validate(attr("head_lp", "1.2,3,4,5"), EDGE));
     }
 
@@ -147,9 +147,9 @@ class AttributeValidatorTest {
     void pointList() {
         assertOk(validate(attr("vertices", "1.2,4.5"), NODE));
         assertOk(validate(attr("vertices", "1.2,4.5! 3,4,5"), NODE));
-        assertMessage(ERROR, "vertices", "'1.2' is not a valid list of points.",
+        assertMessage(ERROR, "vertices", "has the invalid list of points value '1.2'.",
                 validate(attr("vertices", "1.2"), NODE));
-        assertMessage(ERROR, "vertices", "'1.2,3,4,5' is not a valid list of points.",
+        assertMessage(ERROR, "vertices", "has the invalid list of points value '1.2,3,4,5'.",
                 validate(attr("vertices", "1.2,3,4,5"), NODE));
     }
 
@@ -163,8 +163,8 @@ class AttributeValidatorTest {
 
     @Test
     void viewPortNoK() {
-        assertMessage(ERROR, "viewport", "'a' is not a valid view port.", validate(attr("viewport", "a"), GRAPH));
-        assertMessage(ERROR, "viewport", "'1,5.5,6,7' is not a valid view port.", validate(attr("viewport", "1,5.5,6,7"), GRAPH));
+        assertMessage(ERROR, "viewport", "has the invalid view port value 'a'.", validate(attr("viewport", "a"), GRAPH));
+        assertMessage(ERROR, "viewport", "has the invalid view port value '1,5.5,6,7'.", validate(attr("viewport", "1,5.5,6,7"), GRAPH));
     }
 
     @Test
@@ -177,10 +177,10 @@ class AttributeValidatorTest {
 
     @Test
     void colorNok() {
-        assertMessage(ERROR, "fontcolor", "'#12' is not a valid color.", validate(attr("fontcolor", "#12"), NODE));
-        assertMessage(ERROR, "fontcolor", "'#12 gg hh' is not a valid color.", validate(attr("fontcolor", "#12 gg hh"), NODE));
-        assertMessage(ERROR, "fontcolor", "'1,2,3' is not a valid color.", validate(attr("fontcolor", "1,2,3"), NODE));
-        assertMessage(ERROR, "fontcolor", "'.4,.5,.6,.7' is not a valid color.", validate(attr("fontcolor", ".4,.5,.6,.7"), NODE));
+        assertMessage(ERROR, "fontcolor", "has the invalid color value '#12'.", validate(attr("fontcolor", "#12"), NODE));
+        assertMessage(ERROR, "fontcolor", "has the invalid color value '#12 gg hh'.", validate(attr("fontcolor", "#12 gg hh"), NODE));
+        assertMessage(ERROR, "fontcolor", "has the invalid color value '1,2,3'.", validate(attr("fontcolor", "1,2,3"), NODE));
+        assertMessage(ERROR, "fontcolor", "has the invalid color value '.4,.5,.6,.7'.", validate(attr("fontcolor", ".4,.5,.6,.7"), NODE));
     }
 
     private void assertMessage(Severity severity, String attribute, String message, List<ValidatorMessage> actual) {

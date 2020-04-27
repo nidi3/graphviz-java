@@ -18,11 +18,13 @@ package guru.nidi.graphviz.parse;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity;
+import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,20 +71,20 @@ class ParserTest {
                         .graphAttrs().add(attr("x", "y"), attr("a", "b"))
                         .add(mutNode("a").add(attr("c", "d")).addLink(to(mutNode("b").add(attr("c", "d")))
                                 .with(attr("e", "f"), attr("g", "h"), attr("i", "j")))),
-                msg(ERROR, "x", "Attribute is unknown.", 1, 9),
-                msg(ERROR, "a", "Attribute is unknown.", 1, 21),
-                msg(ERROR, "c", "Attribute is unknown.", 1, 32),
-                msg(ERROR, "e", "Attribute is unknown.", 1, 42),
-                msg(ERROR, "g", "Attribute is unknown.", 1, 46),
-                msg(ERROR, "i", "Attribute is unknown.", 1, 51));
+                msg(ERROR, "x", "is unknown.", 1, 9),
+                msg(ERROR, "a", "is unknown.", 1, 21),
+                msg(ERROR, "c", "is unknown.", 1, 32),
+                msg(ERROR, "e", "is unknown.", 1, 42),
+                msg(ERROR, "g", "is unknown.", 1, 46),
+                msg(ERROR, "i", "is unknown.", 1, 51));
     }
 
     @Test
     void nodes() throws IOException {
         assertParse("graph { simple with[\"dpi\"=b]}", //TODO with port? "d:1 full:1:ne
                 mutGraph().add(mutNode("simple"), mutNode("with").add("dpi", "b")),
-                msg(ERROR, "dpi", "Attribute is not allowed for nodes.", 1, 23),
-                msg(ERROR, "dpi", "'b' is not a valid float.", 1, 23));
+                msg(ERROR, "dpi", "is not allowed for nodes.", 1, 23),
+                msg(ERROR, "dpi", "has the invalid float value 'b'.", 1, 23));
     }
 
     @Test
@@ -97,7 +99,7 @@ class ParserTest {
                         simple.addLink(to(c.port("2")).with("a", "b")),
                         c.addLink(between(port("2"), d.port(SOUTH_WEST)).with("a", "b")),
                         d.addLink(between(port(SOUTH_WEST), full.port("2", NORTH_EAST)).with("a", "b"))),
-                msg(ERROR, "a", "Attribute is unknown.", 1, 45));
+                msg(ERROR, "a", "is unknown.", 1, 45));
     }
 
     @Test
@@ -107,10 +109,10 @@ class ParserTest {
                         mutGraph("s").graphAttrs().add("dpi", "b"),
                         mutGraph().graphAttrs().add("c", "d"),
                         mutGraph().graphAttrs().add("e", "f")),
-                msg(ERROR, "dpi", "Attribute is not allowed for subgraphs.", 1, 22),
-                msg(ERROR, "dpi", "'b' is not a valid float.", 1, 22),
-                msg(ERROR, "c", "Attribute is unknown.", 1, 42),
-                msg(ERROR, "e", "Attribute is unknown.", 1, 51));
+                msg(ERROR, "dpi", "is not allowed for subgraphs.", 1, 22),
+                msg(ERROR, "dpi", "has the invalid float value 'b'.", 1, 22),
+                msg(ERROR, "c", "is unknown.", 1, 42),
+                msg(ERROR, "e", "is unknown.", 1, 51));
     }
 
     @Test
@@ -120,7 +122,7 @@ class ParserTest {
                         mutGraph().addLink(to(mutNode("x")).with("a", "b")),
                         mutGraph().addLink(mutNode("y")),
                         mutGraph("a").addLink(mutNode("z"))),
-                msg(ERROR, "a", "Attribute is unknown.", 1, 17));
+                msg(ERROR, "a", "is unknown.", 1, 17));
     }
 
     @Test
@@ -130,7 +132,7 @@ class ParserTest {
                         mutNode("x").addLink(to(mutGraph()).with("a", "b")),
                         mutNode("y").addLink(mutGraph()),
                         mutNode("z").addLink(mutGraph("a"))),
-                msg(ERROR, "a", "Attribute is unknown.", 1, 17));
+                msg(ERROR, "a", "is unknown.", 1, 17));
     }
 
     @Test
@@ -140,7 +142,7 @@ class ParserTest {
                         mutGraph().addLink(to(mutGraph()).with("a", "b")),
                         mutGraph().addLink(mutGraph()),
                         mutGraph().addLink(mutGraph("a"))),
-                msg(ERROR, "a", "Attribute is unknown.", 1, 18));
+                msg(ERROR, "a", "is unknown.", 1, 18));
     }
 
     @Test
@@ -162,7 +164,7 @@ class ParserTest {
         final MutableNode a = mutNode("a").add(Color.RED, attr("dpi", "1")).addLink(b);
         assertParse("graph { node[color=red, dpi=1] a node[color=blue, shape=egg] a -- b }",
                 mutGraph().add(a),
-                msg(ERROR, "dpi", "Attribute is not allowed for nodes.", 1, 25));
+                msg(ERROR, "dpi", "is not allowed for nodes.", 1, 25));
     }
 
     @Test
@@ -172,9 +174,9 @@ class ParserTest {
                 .addLink(to(b).with(Color.BLUE, attr("width", "x"), attr("a", "b")));
         assertParse("graph { edge[color=red, width=x] a -- b edge[color=blue, a=b] a -- b }",
                 mutGraph().add(a),
-                msg(ERROR, "width", "Attribute is not allowed for edges.", 1, 25),
-                msg(ERROR, "width", "'x' is not a valid float.", 1, 25),
-                msg(ERROR, "a", "Attribute is unknown.", 1, 58));
+                msg(ERROR, "width", "is not allowed for edges.", 1, 25),
+                msg(ERROR, "width", "has the invalid float value 'x'.", 1, 25),
+                msg(ERROR, "a", "is unknown.", 1, 58));
     }
 
     @Test
@@ -189,7 +191,7 @@ class ParserTest {
     }
 
     private ValidatorMessage msg(Severity severity, String attribute, String message, int line, int column) {
-        return new ValidatorMessage(severity, attribute, message, line, column, "");
+        return new ValidatorMessage(severity, attribute, message, new ValidatorMessage.Position("<string>", line, column), null);
     }
 
     static class Pars {

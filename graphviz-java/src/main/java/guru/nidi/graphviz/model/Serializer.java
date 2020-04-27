@@ -16,20 +16,24 @@
 package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.validate.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
 import static guru.nidi.graphviz.attribute.validate.ValidatorEngine.UNKNOWN_ENGINE;
 import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.UNKNOWN_FORMAT;
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.POSITION_LOGGING_CONSUMER;
+import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.loggingConsumer;
 
 public final class Serializer {
+    private static final Logger LOG = LoggerFactory.getLogger(Serializer.class);
+
     private final ValidatorEngine engine;
     private final ValidatorFormat format;
     private final Consumer<ValidatorMessage> messageConsumer;
 
     public Serializer() {
-        this(UNKNOWN_ENGINE, UNKNOWN_FORMAT, POSITION_LOGGING_CONSUMER);
+        this(UNKNOWN_ENGINE, UNKNOWN_FORMAT, loggingConsumer(LOG));
     }
 
     private Serializer(ValidatorEngine engine, ValidatorFormat format, Consumer<ValidatorMessage> messageConsumer) {

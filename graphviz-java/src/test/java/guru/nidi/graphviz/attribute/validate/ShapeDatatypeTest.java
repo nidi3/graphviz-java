@@ -32,7 +32,7 @@ class ShapeDatatypeTest {
 
     @Test
     void shapeNok() {
-        assertMessage("'bla' is not a valid shape.", new ShapeDatatype().validate("bla"));
+        assertMessage("has the invalid shape 'bla'.", new ShapeDatatype().validate("bla"));
     }
 
     private void assertMessage(String message, ValidatorMessage actual) {

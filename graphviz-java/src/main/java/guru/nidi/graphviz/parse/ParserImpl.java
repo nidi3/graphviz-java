@@ -296,8 +296,8 @@ final class ParserImpl {
     }
 
     private void validate(Token key, Token value, Scope scope, Position pos) {
-        validator.validate(key.value, value.value, scope).forEach(msg ->
-                messageConsumer.accept(msg.at(pos.getLine(), pos.getCol())));
+        validator.validate(key.value, value.value, scope).forEach(msg -> messageConsumer.accept(
+                msg.at(new ValidatorMessage.Position(pos.getName(), pos.getLine(), pos.getCol()))));
     }
 
     private Token nextToken() throws IOException {

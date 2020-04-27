@@ -35,11 +35,11 @@ class ColorListDatatype extends Datatype {
             }
             final String factorMsg = checkFactor(pos, color, sum);
             if (factorMsg != null) {
-                return new ValidatorMessage(ERROR, "'" + value + "': " + factorMsg);
+                return new ValidatorMessage(ERROR, factorMsg + " in '" + value + "'.");
             }
         }
         if (sum[0] > 1) {
-            return new ValidatorMessage(ERROR, "'" + value + "': The sum of the factors is greater than 1.");
+            return new ValidatorMessage(ERROR, "has a sum of factors " + sum[0] + " greater than 1 in '" + value + "'.");
         }
         return null;
     }
@@ -47,15 +47,15 @@ class ColorListDatatype extends Datatype {
     private String checkFactor(int pos, String color, double[] sum) {
         if (pos >= 0) {
             if (pos == color.length() - 1) {
-                return "missing color factor after ';'.";
+                return "is missing color factor after ';'";
             }
             final String factor = color.substring(pos + 1);
             final Double factorValue = doubleValue(factor);
             if (factorValue == null) {
-                return factor + " is not a valid number.";
+                return "has the invalid color factor '" + factor + "'";
             }
             if (factorValue < 0 || factorValue > 1) {
-                return factor + " is not between 0 and 1.";
+                return "has a color factor '" + factor + "' not between 0 and 1";
             }
             sum[0] += factorValue;
         }

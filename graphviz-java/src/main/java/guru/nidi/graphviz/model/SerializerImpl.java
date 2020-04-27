@@ -18,6 +18,7 @@ package guru.nidi.graphviz.model;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.attribute.validate.AttributeValidator;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
+import guru.nidi.graphviz.attribute.validate.ValidatorMessage.Location;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -26,6 +27,7 @@ import java.util.stream.Stream;
 
 import static guru.nidi.graphviz.attribute.validate.AttributeValidator.Scope;
 
+//TODO is creating a new Location always too costly?
 class SerializerImpl {
     private final MutableGraph graph;
     private final StringBuilder str;
@@ -65,7 +67,8 @@ class SerializerImpl {
     private void doGraph(MutableGraph graph, boolean useDir, Scope scope) {
         str.append("{\n");
         if (useDir && graph.graphAttrs.get("dir") == null) {
-            attributes("edge", Attributes.attr("dir", graph.directed ? "forward" : "none"), Scope.EDGE, "");
+            attributes("edge", Attributes.attr("dir", graph.directed ? "forward" : "none"), Scope.EDGE,
+                    new Location(Location.Type.LINK, graph));
         }
         graphAttrs(graph, scope);
 
@@ -103,9 +106,9 @@ class SerializerImpl {
     }
 
     private void graphAttrs(MutableGraph graph, Scope scope) {
-        attributes("graph", graph.graphAttrs, scope, "Graph attrs of '" + graph.name.toString() + "'");
-        attributes("node", graph.nodeAttrs, Scope.NODE, "Node attrs of '" + graph.name.toString() + "'");
-        attributes("edge", graph.linkAttrs, Scope.EDGE, "Edge attrs of '" + graph.name.toString() + "'");
+        attributes("graph", graph.graphAttrs, scope, new Location(Location.Type.GRAPH_ATTRS, graph));
+        attributes("node", graph.nodeAttrs, Scope.NODE, new Location(Location.Type.NODE_ATTRS, graph));
+        attributes("edge", graph.linkAttrs, Scope.EDGE, new Location(Location.Type.LINK_ATTRS, graph));
     }
 
     private int indexOfName(List<MutableNode> nodes, Label name) {
@@ -117,10 +120,10 @@ class SerializerImpl {
         return -1;
     }
 
-    private void attributes(String name, Attributes<?> attributed, Scope scope, String pos) {
+    private void attributes(String name, Attributes<?> attributed, Scope scope, Location location) {
         if (!attributed.isEmpty()) {
             str.append(name);
-            attrs(attributed, scope, pos);
+            attrs(attributed, scope, location);
             str.append('\n');
         }
     }
@@ -154,7 +157,7 @@ class SerializerImpl {
 
     private void node(MutableNode node) {
         str.append(node.name.serialized());
-        attrs(node.attributes, Scope.NODE, "Node '" + node.name.toString() + "'");
+        attrs(node.attributes, Scope.NODE, new Location(Location.Type.NODE, node));
     }
 
     private boolean isLinked(MutableNode node, List<MutableNode> nodes) {
@@ -198,8 +201,7 @@ class SerializerImpl {
                 linkTarget(link.from, useDir);
                 str.append(graph.directed || useDir ? " -> " : " -- ");
                 linkTarget(link.to, useDir);
-                attrs(link.attributes, Scope.EDGE,
-                        "Edge '" + link.from.name().toString() + "--" + link.to.name().toString() + "'");
+                attrs(link.attributes, Scope.EDGE, new Location(Location.Type.LINK, link));
                 str.append('\n');
             }
         }
@@ -229,7 +231,7 @@ class SerializerImpl {
         }
     }
 
-    private void attrs(Attributes<?> attrs, Scope scope, String pos) {
+    private void attrs(Attributes<?> attrs, Scope scope, Location location) {
         if (!attrs.isEmpty()) {
             str.append(" [");
             boolean first = true;
@@ -240,21 +242,21 @@ class SerializerImpl {
                     } else {
                         str.append(',');
                     }
-                    attr(attr.getKey(), attr.getValue(), scope, pos);
+                    attr(attr.getKey(), attr.getValue(), scope, location);
                 }
             }
             str.append(']');
         }
     }
 
-    private void attr(String key, Object value, Scope scope, String pos) {
+    private void attr(String key, Object value, Scope scope, Location location) {
         str.append(SimpleLabel.of(key).serialized())
                 .append('=')
                 .append(SimpleLabel.of(value).serialized());
-        validate(key, value, scope, pos);
+        validate(key, value, scope, location);
     }
 
-    private void validate(String key, Object value, Scope scope, String pos) {
-        validator.validate(key, value, scope).forEach(msg -> messageConsumer.accept(msg.at(pos)));
+    private void validate(String key, Object value, Scope scope, Location location) {
+        validator.validate(key, value, scope).forEach(msg -> messageConsumer.accept(msg.at(location)));
     }
 }

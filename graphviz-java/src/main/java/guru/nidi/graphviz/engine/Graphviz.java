@@ -30,7 +30,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static guru.nidi.graphviz.attribute.validate.ValidatorFormat.UNKNOWN_FORMAT;
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.POSITION_LOGGING_CONSUMER;
 import static guru.nidi.graphviz.engine.GraphvizLoader.readAsString;
 import static guru.nidi.graphviz.engine.Rasterizer.NONE;
 import static java.lang.Double.parseDouble;
@@ -57,16 +56,16 @@ public final class Graphviz {
     final ProcessOptions processOptions;
     private final Options options;
     private final List<GraphvizFilter> filters;
+    @Nullable
     private final Consumer<ValidatorMessage> messageConsumer;
 
     private Graphviz(@Nullable MutableGraph graph, @Nullable String src, ProcessOptions processOptions) {
-        this(graph, src, Rasterizer.DEFAULT, processOptions, Options.create(),
-                new ArrayList<>(), POSITION_LOGGING_CONSUMER);
+        this(graph, src, Rasterizer.DEFAULT, processOptions, Options.create(), new ArrayList<>(), null);
     }
 
     private Graphviz(@Nullable MutableGraph graph, @Nullable String src, Rasterizer rasterizer,
                      ProcessOptions processOptions, Options options,
-                     List<GraphvizFilter> filters, Consumer<ValidatorMessage> messageConsumer) {
+                     List<GraphvizFilter> filters, @Nullable Consumer<ValidatorMessage> messageConsumer) {
         this.graph = graph;
         this.src = src;
         this.rasterizer = rasterizer;
@@ -256,9 +255,23 @@ public final class Graphviz {
     }
 
     EngineResult execute() {
-        final String source = source();
+        final String source = src == null ? serializer().serialize(graph) : src;
         final ProcessOptions processOpts = processOptions.dpi(dpi(source));
         return new Graphviz(graph, source, rasterizer, processOpts, options, filters, messageConsumer).doExecute();
+    }
+
+    private Serializer serializer() {
+        final Serializer serializer = new Serializer()
+                .forEngine(options.engine.forValidator())
+                //TODO can we parse the builtInRasterizer for the correct format?
+                //TODO refactor all instanceof BuiltInRasterizer
+                .forFormat(rasterizer instanceof BuiltInRasterizer ? UNKNOWN_FORMAT : options.format.forValidator());
+        return messageConsumer == null ? serializer : serializer.messageConsumer(messageConsumer);
+    }
+
+    private static double dpi(String src) {
+        final Matcher matcher = DPI_PATTERN.matcher(src);
+        return matcher.find() ? parseDouble(matcher.group(1)) : 72;
     }
 
     private EngineResult doExecute() {
@@ -270,24 +283,6 @@ public final class Graphviz {
             engineResult = filter.filter(options.format, engineResult);
         }
         return engineResult;
-    }
-
-    private String source() {
-        if (src != null) {
-            return src;
-        }
-        return new Serializer()
-                .forEngine(options.engine.forValidator())
-                //TODO can we parse the builtInRasterizer for the correct format?
-                //TODO refactor all instanceof BuiltInRasterizer
-                .forFormat(rasterizer instanceof BuiltInRasterizer ? UNKNOWN_FORMAT : options.format.forValidator())
-                .messageConsumer(messageConsumer)
-                .serialize(graph);
-    }
-
-    private static double dpi(String src) {
-        final Matcher matcher = DPI_PATTERN.matcher(src);
-        return matcher.find() ? parseDouble(matcher.group(1)) : 72;
     }
 
     private static class ErrorGraphvizEngine implements GraphvizEngine {

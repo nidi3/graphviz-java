@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.model;
+package guru.nidi.graphviz.attribute;
 
-import guru.nidi.graphviz.attribute.Named;
-
-public interface LinkTarget extends Named {
-    Link linkTo();
-
-    LinkSource asLinkSource();
+public interface Named {
+    Label name();
 }
