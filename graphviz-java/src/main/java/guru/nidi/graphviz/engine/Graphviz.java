@@ -78,24 +78,26 @@ public final class Graphviz {
     }
 
     private static List<GraphvizEngine> availableEngines() {
-        if (availableEngines == null) {
-            availableEngines = new ArrayList<>();
-            if (GraphvizCmdLineEngine.AVAILABLE) {
-                availableEngines.add(new GraphvizCmdLineEngine());
+        synchronized (Graphviz.class) {
+            if (availableEngines == null) {
+                availableEngines = new ArrayList<>();
+                if (GraphvizCmdLineEngine.AVAILABLE) {
+                    availableEngines.add(new GraphvizCmdLineEngine());
+                }
+                if (GraphvizV8Engine.AVAILABLE) {
+                    availableEngines.add(new GraphvizV8Engine());
+                }
+                if (GraphvizJdkEngine.AVAILABLE) {
+                    availableEngines.add(new GraphvizJdkEngine());
+                }
+                if (availableEngines.isEmpty()) {
+                    LOG.warn("No GraphvizEngine is available."
+                            + " Either add the needed dependencies on the classpath"
+                            + " or explicitly use 'Graphviz.useEngine(new GraphvizServerEngine())'.");
+                }
             }
-            if (GraphvizV8Engine.AVAILABLE) {
-                availableEngines.add(new GraphvizV8Engine());
-            }
-            if (GraphvizJdkEngine.AVAILABLE) {
-                availableEngines.add(new GraphvizJdkEngine());
-            }
-            if (availableEngines.isEmpty()) {
-                LOG.warn("No GraphvizEngine is available."
-                        + " Either add the needed dependencies on the classpath"
-                        + " or explicitly use 'Graphviz.useEngine(new GraphvizServerEngine())'.");
-            }
+            return availableEngines;
         }
-        return availableEngines;
     }
 
     public static void useDefaultEngines() {
