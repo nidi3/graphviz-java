@@ -40,7 +40,8 @@ public final class Graphviz {
     private static final Logger LOG = LoggerFactory.getLogger(Graphviz.class);
 
     private static final Pattern DPI_PATTERN = Pattern.compile("\"?dpi\"?\\s*=\\s*\"?([0-9.]+)\"?", CASE_INSENSITIVE);
-    private static final List<GraphvizEngine> AVAILABLE_ENGINES = availableEngines();
+    @Nullable
+    private static List<GraphvizEngine> AVAILABLE_ENGINES = null;
 
     @Nullable
     private static volatile BlockingQueue<GraphvizEngine> engineQueue;
@@ -76,6 +77,9 @@ public final class Graphviz {
     }
 
     private static List<GraphvizEngine> availableEngines() {
+        if (AVAILABLE_ENGINES != null) {
+            return AVAILABLE_ENGINES;
+        }
         final List<GraphvizEngine> engines = new ArrayList<>();
         if (GraphvizCmdLineEngine.AVAILABLE) {
             engines.add(new GraphvizCmdLineEngine());
@@ -91,11 +95,11 @@ public final class Graphviz {
                     + " Either add the needed dependencies on the classpath"
                     + " or explicitly use 'Graphviz.useEngine(new GraphvizServerEngine())'.");
         }
-        return engines;
+        return AVAILABLE_ENGINES = engines;
     }
 
     public static void useDefaultEngines() {
-        useEngine(AVAILABLE_ENGINES);
+        useEngine(availableEngines());
     }
 
     public static void useEngine(GraphvizEngine first, GraphvizEngine... rest) {
