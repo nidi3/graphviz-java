@@ -79,22 +79,21 @@ public final class Graphviz {
 
     private static List<GraphvizEngine> availableEngines() {
         if (availableEngines == null) {
-            final List<GraphvizEngine> engines = new ArrayList<>();
+            availableEngines = new ArrayList<>();
             if (GraphvizCmdLineEngine.AVAILABLE) {
-                engines.add(new GraphvizCmdLineEngine());
+                availableEngines.add(new GraphvizCmdLineEngine());
             }
             if (GraphvizV8Engine.AVAILABLE) {
-                engines.add(new GraphvizV8Engine());
+                availableEngines.add(new GraphvizV8Engine());
             }
             if (GraphvizJdkEngine.AVAILABLE) {
-                engines.add(new GraphvizJdkEngine());
+                availableEngines.add(new GraphvizJdkEngine());
             }
-            if (engines.isEmpty()) {
+            if (availableEngines.isEmpty()) {
                 LOG.warn("No GraphvizEngine is available."
                         + " Either add the needed dependencies on the classpath"
                         + " or explicitly use 'Graphviz.useEngine(new GraphvizServerEngine())'.");
             }
-            availableEngines = engines;
         }
         return availableEngines;
     }
