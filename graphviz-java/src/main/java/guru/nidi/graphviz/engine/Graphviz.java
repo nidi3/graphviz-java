@@ -78,29 +78,25 @@ public final class Graphviz {
     }
 
     private static List<GraphvizEngine> availableEngines() {
-        final List<GraphvizEngine> availableEngines = Graphviz.availableEngines;
-        if (availableEngines != null) {
-            return availableEngines;
+        if (availableEngines == null) {
+            final List<GraphvizEngine> engines = new ArrayList<>();
+            if (GraphvizCmdLineEngine.AVAILABLE) {
+                engines.add(new GraphvizCmdLineEngine());
+            }
+            if (GraphvizV8Engine.AVAILABLE) {
+                engines.add(new GraphvizV8Engine());
+            }
+            if (GraphvizJdkEngine.AVAILABLE) {
+                engines.add(new GraphvizJdkEngine());
+            }
+            if (engines.isEmpty()) {
+                LOG.warn("No GraphvizEngine is available."
+                        + " Either add the needed dependencies on the classpath"
+                        + " or explicitly use 'Graphviz.useEngine(new GraphvizServerEngine())'.");
+            }
+            availableEngines = engines;
         }
-
-        final List<GraphvizEngine> engines = new ArrayList<>();
-        if (GraphvizCmdLineEngine.AVAILABLE) {
-            engines.add(new GraphvizCmdLineEngine());
-        }
-        if (GraphvizV8Engine.AVAILABLE) {
-            engines.add(new GraphvizV8Engine());
-        }
-        if (GraphvizJdkEngine.AVAILABLE) {
-            engines.add(new GraphvizJdkEngine());
-        }
-        if (engines.isEmpty()) {
-            LOG.warn("No GraphvizEngine is available."
-                    + " Either add the needed dependencies on the classpath"
-                    + " or explicitly use 'Graphviz.useEngine(new GraphvizServerEngine())'.");
-        }
-        Graphviz.availableEngines = engines;
-
-        return engines;
+        return availableEngines;
     }
 
     public static void useDefaultEngines() {
