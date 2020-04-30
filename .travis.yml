@@ -7,7 +7,6 @@ os:
 
 env:
   - JDK="adopt@1.8.0-242"
-  - JDK="adopt@1.9.0-4"
 
 cache:
   directories:
