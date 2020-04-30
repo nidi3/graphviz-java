@@ -41,7 +41,8 @@ public final class Parser {
         this(UNKNOWN_ENGINE, UNKNOWN_FORMAT, loggingConsumer(LOG));
     }
 
-    private Parser(ValidatorEngine engine, ValidatorFormat format, @Nullable Consumer<ValidatorMessage> messageConsumer) {
+    private Parser(ValidatorEngine engine, ValidatorFormat format,
+                   @Nullable Consumer<ValidatorMessage> messageConsumer) {
         this.engine = engine;
         this.format = format;
         this.messageConsumer = messageConsumer;
