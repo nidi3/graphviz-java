@@ -20,6 +20,7 @@ import guru.nidi.graphviz.model.MutableGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
@@ -33,13 +34,14 @@ public final class Parser {
 
     private final ValidatorEngine engine;
     private final ValidatorFormat format;
+    @Nullable
     private final Consumer<ValidatorMessage> messageConsumer;
 
     public Parser() {
         this(UNKNOWN_ENGINE, UNKNOWN_FORMAT, loggingConsumer(LOG));
     }
 
-    private Parser(ValidatorEngine engine, ValidatorFormat format, Consumer<ValidatorMessage> messageConsumer) {
+    private Parser(ValidatorEngine engine, ValidatorFormat format, @Nullable Consumer<ValidatorMessage> messageConsumer) {
         this.engine = engine;
         this.format = format;
         this.messageConsumer = messageConsumer;
@@ -53,7 +55,11 @@ public final class Parser {
         return new Parser(engine, format, messageConsumer);
     }
 
-    public Parser messageConsumer(Consumer<ValidatorMessage> messageConsumer) {
+    public Parser notValidating() {
+        return new Parser(engine, format, null);
+    }
+
+    public Parser validating(Consumer<ValidatorMessage> messageConsumer) {
         return new Parser(engine, format, messageConsumer);
     }
 

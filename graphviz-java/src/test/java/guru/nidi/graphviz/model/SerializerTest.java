@@ -225,6 +225,6 @@ class SerializerTest {
 
     static class Ser {
         final List<ValidatorMessage> messages = new ArrayList<>();
-        final Serializer serializer = new Serializer().messageConsumer(messages::add);
+        final Serializer serializer = new Serializer().validating(messages::add);
     }
 }

@@ -21,7 +21,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.emptyConsumer;
 import static java.util.Arrays.asList;
 
 public class MutableGraph implements LinkSource, LinkTarget {
@@ -260,6 +259,6 @@ public class MutableGraph implements LinkSource, LinkTarget {
 
     @Override
     public String toString() {
-        return new Serializer().messageConsumer(emptyConsumer()).serialize(this);
+        return new Serializer().notValidating().serialize(this);
     }
 }

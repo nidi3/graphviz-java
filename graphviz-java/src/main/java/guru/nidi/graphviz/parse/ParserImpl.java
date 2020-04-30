@@ -22,6 +22,7 @@ import guru.nidi.graphviz.attribute.validate.AttributeValidator.Scope;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
 import guru.nidi.graphviz.model.*;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
@@ -34,10 +35,11 @@ final class ParserImpl {
     private Token token;
     private final Lexer lexer;
     private final AttributeValidator validator;
+    @Nullable
     private final Consumer<ValidatorMessage> messageConsumer;
 
     ParserImpl(Lexer lexer, AttributeValidator validator,
-               Consumer<ValidatorMessage> messageConsumer) throws IOException {
+               @Nullable Consumer<ValidatorMessage> messageConsumer) throws IOException {
         this.lexer = lexer;
         this.validator = validator;
         this.messageConsumer = messageConsumer;
@@ -296,8 +298,10 @@ final class ParserImpl {
     }
 
     private void validate(Token key, Token value, Scope scope, Position pos) {
-        validator.validate(key.value, value.value, scope).forEach(msg -> messageConsumer.accept(
-                msg.at(new ValidatorMessage.Position(pos.getName(), pos.getLine(), pos.getCol()))));
+        if (messageConsumer != null) {
+            validator.validate(key.value, value.value, scope).forEach(msg -> messageConsumer.accept(
+                    msg.at(new ValidatorMessage.Position(pos.getName(), pos.getLine(), pos.getCol()))));
+        }
     }
 
     private Token nextToken() throws IOException {

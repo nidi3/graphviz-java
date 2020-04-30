@@ -20,6 +20,7 @@ import guru.nidi.graphviz.attribute.validate.AttributeValidator;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage.Location;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -32,9 +33,11 @@ class SerializerImpl {
     private final MutableGraph graph;
     private final StringBuilder str;
     private final AttributeValidator validator;
+    @Nullable
     private final Consumer<ValidatorMessage> messageConsumer;
 
-    SerializerImpl(MutableGraph graph, AttributeValidator validator, Consumer<ValidatorMessage> messageConsumer) {
+    SerializerImpl(MutableGraph graph, AttributeValidator validator,
+                   @Nullable Consumer<ValidatorMessage> messageConsumer) {
         this.graph = graph;
         this.validator = validator;
         this.messageConsumer = messageConsumer;
@@ -257,6 +260,8 @@ class SerializerImpl {
     }
 
     private void validate(String key, Object value, Scope scope, Location location) {
-        validator.validate(key, value, scope).forEach(msg -> messageConsumer.accept(msg.at(location)));
+        if (messageConsumer != null) {
+            validator.validate(key, value, scope).forEach(msg -> messageConsumer.accept(msg.at(location)));
+        }
     }
 }

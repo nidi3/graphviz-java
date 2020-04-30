@@ -196,6 +196,6 @@ class ParserTest {
 
     static class Pars {
         final List<ValidatorMessage> messages = new ArrayList<>();
-        final Parser parser = new Parser().messageConsumer(messages::add);
+        final Parser parser = new Parser().validating(messages::add);
     }
 }

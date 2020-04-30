@@ -239,7 +239,11 @@ public final class Graphviz {
         return new Graphviz(graph, src, rasterizer, processOptions, options, fs, messageConsumer);
     }
 
-    public Graphviz messageConsumer(Consumer<ValidatorMessage> messageConsumer) {
+    public Graphviz notValidating() {
+        return new Graphviz(graph, src, rasterizer, processOptions, options, filters, null);
+    }
+
+    public Graphviz validating(Consumer<ValidatorMessage> messageConsumer) {
         return new Graphviz(graph, src, rasterizer, processOptions, options, filters, messageConsumer);
     }
 
@@ -272,7 +276,7 @@ public final class Graphviz {
                 //TODO can we parse the builtInRasterizer for the correct format?
                 //TODO refactor all instanceof BuiltInRasterizer
                 .forFormat(rasterizer instanceof BuiltInRasterizer ? UNKNOWN_FORMAT : options.format.forValidator());
-        return messageConsumer == null ? serializer : serializer.messageConsumer(messageConsumer);
+        return messageConsumer == null ? serializer : serializer.validating(messageConsumer);
     }
 
     private static double dpi(String src) {

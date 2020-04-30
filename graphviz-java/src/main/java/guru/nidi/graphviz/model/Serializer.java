@@ -19,6 +19,7 @@ import guru.nidi.graphviz.attribute.validate.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 import static guru.nidi.graphviz.attribute.validate.ValidatorEngine.UNKNOWN_ENGINE;
@@ -30,13 +31,15 @@ public final class Serializer {
 
     private final ValidatorEngine engine;
     private final ValidatorFormat format;
+    @Nullable
     private final Consumer<ValidatorMessage> messageConsumer;
 
     public Serializer() {
         this(UNKNOWN_ENGINE, UNKNOWN_FORMAT, loggingConsumer(LOG));
     }
 
-    private Serializer(ValidatorEngine engine, ValidatorFormat format, Consumer<ValidatorMessage> messageConsumer) {
+    private Serializer(ValidatorEngine engine, ValidatorFormat format,
+                       @Nullable Consumer<ValidatorMessage> messageConsumer) {
         this.engine = engine;
         this.format = format;
         this.messageConsumer = messageConsumer;
@@ -50,7 +53,11 @@ public final class Serializer {
         return new Serializer(engine, format, messageConsumer);
     }
 
-    public Serializer messageConsumer(Consumer<ValidatorMessage> messageConsumer) {
+    public Serializer notValidating() {
+        return new Serializer(engine, format, null);
+    }
+
+    public Serializer validating(Consumer<ValidatorMessage> messageConsumer) {
         return new Serializer(engine, format, messageConsumer);
     }
 

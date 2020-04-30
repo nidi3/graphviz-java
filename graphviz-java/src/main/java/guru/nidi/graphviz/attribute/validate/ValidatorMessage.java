@@ -33,11 +33,6 @@ public class ValidatorMessage {
     @Nullable
     public final Location location;
 
-    public static Consumer<ValidatorMessage> emptyConsumer() {
-        return msg -> {
-        };
-    }
-
     public static Consumer<ValidatorMessage> loggingConsumer(Logger logger) {
         return msg -> {
             final Location loc = msg.location;
