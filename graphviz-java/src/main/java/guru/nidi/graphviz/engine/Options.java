@@ -138,10 +138,11 @@ public final class Options {
                 throw new GraphvizException("Problem loading image " + path, e);
             }
         }
-        final File file = new File(path).isAbsolute() ? new File(path) : new File(basedir, path);
+        final boolean absolute = new File(path).isAbsolute();
+        final File file = absolute ? new File(path) : new File(basedir, path);
         try {
             final BufferedImage img = ImageIO.read(file);
-            return new Image(SystemUtils.uriPathOf(file), img.getWidth(), img.getHeight());
+            return new Image(absolute ? SystemUtils.uriPathOf(file) : SystemUtils.uriPathOf(path), img.getWidth(), img.getHeight());
         } catch (IOException e) {
             throw new GraphvizException("Problem loading image " + file, e);
         }
