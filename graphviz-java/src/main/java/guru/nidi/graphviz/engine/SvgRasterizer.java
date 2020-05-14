@@ -15,7 +15,6 @@
  */
 package guru.nidi.graphviz.engine;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
@@ -29,6 +28,9 @@ abstract class SvgRasterizer implements Rasterizer {
     @Override
     public BufferedImage rasterize(Graphviz graphviz, Consumer<Graphics2D> graphicsConfigurer, String input) {
         final String svg = input
+                .replace("xlink:href=\"file://", "xlink:href= \"file://")
+                .replace("xlink:href=\"http://", "xlink:href= \"http://")
+                .replace("xlink:href=\"https://", "xlink:href= \"https://")
                 .replace("xlink:href=\"", "xlink:href=\"file://")
                 .replace("stroke=\"transparent\"", "stroke=\"#fff\" stroke-opacity=\"0.0\"")
                 .replace("stroke: transparent", "stroke: #fff; stroke-opacity: 0.0")
