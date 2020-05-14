@@ -247,6 +247,10 @@ public final class Graphviz {
         return new Graphviz(graph, src, rasterizer, processOptions, options, filters, messageConsumer);
     }
 
+    public Graphviz image(String image) {
+        return new Graphviz(graph, src, rasterizer, processOptions, options.image(image), filters, messageConsumer);
+    }
+
     public Renderer rasterize(Rasterizer rasterizer) {
         if (rasterizer == NONE) {
             throw new IllegalArgumentException("The provided rasterizer implementation was not found."
