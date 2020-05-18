@@ -15,8 +15,6 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.service.SystemUtils;
-
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,6 +28,8 @@ import java.util.regex.Pattern;
 import static guru.nidi.graphviz.engine.GraphvizLoader.readAsBytes;
 import static guru.nidi.graphviz.engine.StringFunctions.replaceNonWordChars;
 import static guru.nidi.graphviz.engine.TempFiles.tempDir;
+import static guru.nidi.graphviz.service.SystemUtils.uriPathOf;
+import static java.lang.Integer.parseInt;
 import static java.util.Locale.ENGLISH;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -99,7 +99,7 @@ public final class Options {
         return new Options(
                 Engine.valueOf(engine.group(1)),
                 Format.valueOf(format.group(1)),
-                hasMemory ? Integer.parseInt(memory.group(1)) : null,
+                hasMemory ? parseInt(memory.group(1)) : null,
                 hasYInvert ? Boolean.parseBoolean(yInvert.group(1)) : null,
                 new File(hasBasedir ? basedir.group(1) : "."),
                 Arrays.stream(imgList).map(Image::fromJson).collect(toList()));
@@ -150,7 +150,7 @@ public final class Options {
                 : new File(basedir, path).getPath();
     }
 
-    private static boolean isUrl(String path) {
+    static boolean isUrl(String path) {
         return path.startsWith("http://") || path.startsWith("https://");
     }
 
@@ -222,9 +222,9 @@ public final class Options {
                     return new Image(path, file.getAbsolutePath(), image.getWidth(), image.getHeight());
                 }
                 final BufferedImage image = ImageIO.read(new File(completePath));
-                return new Image(completePath, SystemUtils.uriPathOf(new File(completePath)), image.getWidth(), image.getHeight());
+                return new Image(completePath, uriPathOf(new File(completePath)), image.getWidth(), image.getHeight());
             } catch (IOException e) {
-                throw new GraphvizException("Could not load image '" + path + "'.");
+                throw new GraphvizException("Could not load image '" + path + "'.", e);
             }
         }
 
@@ -247,7 +247,7 @@ public final class Options {
             final Matcher height = HEIGHT.matcher(json);
             height.find();
 
-            return new Image(path.group(1), path.group(1), Integer.parseInt(width.group(1)), Integer.parseInt(height.group(1)));
+            return new Image(path.group(1), path.group(1), parseInt(width.group(1)), parseInt(height.group(1)));
         }
 
         @Override

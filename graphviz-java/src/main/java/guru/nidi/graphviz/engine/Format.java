@@ -42,7 +42,8 @@ public enum Format {
     SVG("svg", "svg", false, true) {
         @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
-            return result.mapString(s -> restoreImagePaths(graphviz.options, postProcessSvg(graphviz.processOptions, s, true)));
+            return result.mapString(s ->
+                    restoreImagePaths(graphviz.options, postProcessSvg(graphviz.processOptions, s, true)));
         }
 
         @Override
@@ -54,7 +55,8 @@ public enum Format {
     SVG_STANDALONE("svg", "svg", false, true) {
         @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
-            return result.mapString(s -> restoreImagePaths(graphviz.options, postProcessSvg(graphviz.processOptions, s, false)));
+            return result.mapString(s ->
+                    restoreImagePaths(graphviz.options, postProcessSvg(graphviz.processOptions, s, false)));
         }
 
         @Override

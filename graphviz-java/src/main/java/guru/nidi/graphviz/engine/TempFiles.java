@@ -20,12 +20,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-class TempFiles {
+final class TempFiles {
     private static final long TIME_TO_LIVE = 1000 * 3600 * 24 * 3;
-    private static final File TEMP_DIR = new File(System.getProperty("java.io.tmpdir") + File.separator + "GraphvizJava");
+    private static final File TEMP_DIR = new File(
+            System.getProperty("java.io.tmpdir") + File.separator + "GraphvizJava");
 
     static {
-        TEMP_DIR.mkdirs();
+        mkdir();
         cleanup();
     }
 
@@ -34,6 +35,12 @@ class TempFiles {
 
     static Path tempDir(String name) throws IOException {
         return Files.createTempDirectory(TEMP_DIR.toPath(), name);
+    }
+
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static void mkdir() {
+        TEMP_DIR.mkdirs();
     }
 
     private static void cleanup() {
@@ -47,6 +54,7 @@ class TempFiles {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void deleteDir(File f) {
         if (f.isFile()) {
             f.delete();

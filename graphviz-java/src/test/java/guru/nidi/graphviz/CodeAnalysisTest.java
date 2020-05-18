@@ -77,6 +77,8 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                                 .ignore("UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"))
                 .because("It's ok",
                         In.loc("Datatype").ignore("NP_BOOLEAN_RETURN_NULL"),
+                        In.loc("TempFiles").ignore("PATH_TRAVERSAL_IN", "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
+                        In.loc("Options").ignore("URLCONNECTION_SSRF_FD"),
                         In.locs("BuiltInRasterizer#rasterize", "NopRasterizer", "PortSource").ignore("NP_NONNULL_RETURN_VIOLATION"),
                         In.loc("CommandLineExecutor").ignore("DM_DEFAULT_ENCODING"),
                         In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
@@ -121,7 +123,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("MutableGraph", "SerializerImpl", "ParserImpl", "Label", "Graphviz").ignore("GodClass"),
                         In.locs("ImmutableGraph", "MutableGraph").ignore("ExcessiveMethodLength", "ExcessiveParameterList", "LooseCoupling"),
                         In.locs("Format", "ImmutableGraph$GraphAttributed").ignore("AccessorMethodGeneration"),
-                        In.locs("AttributeConfigs", "AttributeValidator", "FontTools", "Graphviz", "GraphvizCmdLineEngine").ignore("TooManyStaticImports"),
+                        In.locs("AttributeConfigs", "AttributeValidator", "FontTools", "Graphviz", "GraphvizCmdLineEngine", "Options").ignore("TooManyStaticImports"),
                         In.classes(MutableNode.class, Rasterizer.class, ValidatorMessage.class).ignore("ConfusingTernary"),
                         In.clazz(ThrowingFunction.class).ignore("AvoidRethrowingException"),
                         In.classes(ThrowingFunction.class, ThrowingBiConsumer.class).ignore("SignatureDeclareThrowsException"))

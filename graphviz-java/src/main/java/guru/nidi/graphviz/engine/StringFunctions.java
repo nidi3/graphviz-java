@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class StringFunctions {
+final class StringFunctions {
     private StringFunctions() {
     }
 
@@ -40,20 +40,21 @@ class StringFunctions {
         return js.replace("\\", "\\\\").replace("'", "\\'").replaceAll("\\R", "\\\\n");
     }
 
-    static String replaceSubSpaces(String src) {
-        final char[] chars = src.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] < ' ' && chars[i] != '\t' && chars[i] != '\r' && chars[i] != '\n') {
-                chars[i] = ' ';
+    static String replaceSubSpaces(String s) {
+        final char[] cs = s.toCharArray();
+        for (int i = 0; i < cs.length; i++) {
+            if (cs[i] < ' ' && cs[i] != '\t' && cs[i] != '\r' && cs[i] != '\n') {
+                cs[i] = ' ';
             }
         }
-        return new String(chars);
+        return new String(cs);
     }
 
     static String replaceNonWordChars(String s) {
         final char[] cs = s.toCharArray();
         for (int i = 0; i < cs.length; i++) {
-            if (!(cs[i] == '.' || (cs[i] >= '0' && cs[i] <= '9') || (cs[i] >= 'A' && cs[i] <= 'Z') || (cs[i] >= 'a' && cs[i] <= 'z'))) {
+            if (!(cs[i] == '.' || (cs[i] >= '0' && cs[i] <= '9')
+                    || (cs[i] >= 'A' && cs[i] <= 'Z') || (cs[i] >= 'a' && cs[i] <= 'z'))) {
                 cs[i] = '-';
             }
         }
