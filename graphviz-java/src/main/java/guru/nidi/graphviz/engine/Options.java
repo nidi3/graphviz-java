@@ -274,7 +274,7 @@ public final class Options {
         public String toString() {
             return "Image{"
                     + "originalPath='" + originalPath + '\''
-                    + "processPath='" + processPath + '\''
+                    + ", processPath='" + processPath + '\''
                     + ", width=" + width
                     + ", height=" + height
                     + '}';

@@ -45,18 +45,21 @@ class OptionsTest {
 
     @Test
     void fromJsonOneImage() {
+        final File file = new File("example/ex1.png");
         final Options options = Options.fromJson("{engine:'DOT',format:'PNG',images:["
-                + "{path:'" + uriPathOf(new File("./example/ex1.png")) + "',width:'550px',height:'100px'}]}");
-        final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image("example/ex1.png");
+                + "{path:'" + uriPathOf(file) + "',width:'550px',height:'100px'}]}");
+        final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image(file.getAbsolutePath());
         assertEquals(expected, options);
     }
 
     @Test
     void fromJsonTwoImages() {
+        final File file1 = new File("example/ex1.png");
+        final File file2 = new File("example/ex2.png");
         final Options options = Options.fromJson("{engine:'DOT',format:'PNG',images:["
-                + "{path:'" + uriPathOf(new File("./example/ex1.png")) + "',width:'550px',height:'100px'},"
-                + "{path:'" + uriPathOf(new File("./example/ex2.png")) + "',width:'900px',height:'964px']}");
-        final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image("example/ex1.png").image("example/ex2.png");
+                + "{path:'" + uriPathOf(file1) + "',width:'550px',height:'100px'},"
+                + "{path:'" + uriPathOf(file2) + "',width:'900px',height:'964px']}");
+        final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image(file1.getAbsolutePath()).image(file2.getAbsolutePath());
         assertEquals(expected, options);
     }
 
