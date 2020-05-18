@@ -48,7 +48,7 @@ class OptionsTest {
         final File file = new File("example/ex1.png");
         final Options options = Options.fromJson("{engine:'DOT',format:'PNG',images:["
                 + "{path:'" + uriPathOf(file) + "',width:'550px',height:'100px'}]}");
-        final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image(file.getAbsolutePath());
+        final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image(uriPathOf(file));
         assertEquals(expected, options);
     }
 
@@ -59,7 +59,7 @@ class OptionsTest {
         final Options options = Options.fromJson("{engine:'DOT',format:'PNG',images:["
                 + "{path:'" + uriPathOf(file1) + "',width:'550px',height:'100px'},"
                 + "{path:'" + uriPathOf(file2) + "',width:'900px',height:'964px']}");
-        final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image(file1.getAbsolutePath()).image(file2.getAbsolutePath());
+        final Options expected = Options.create().engine(Engine.DOT).format(Format.PNG).image(uriPathOf(file1)).image(uriPathOf(file2));
         assertEquals(expected, options);
     }
 
