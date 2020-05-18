@@ -25,6 +25,7 @@ import guru.nidi.codeassert.junit.CodeAssertJunit5Test;
 import guru.nidi.codeassert.model.Model;
 import guru.nidi.codeassert.pmd.*;
 import guru.nidi.graphviz.rough.FillStyle;
+import guru.nidi.graphviz.rough.FillStyleTest;
 import net.sourceforge.pmd.RulePriority;
 import org.junit.jupiter.api.Test;
 
@@ -69,6 +70,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected PmdResult analyzePmd() {
         final PmdViolationCollector collector = new PmdViolationCollector().minPriority(RulePriority.MEDIUM)
                 .apply(PmdConfigs.minimalPmdIgnore())
+                .because("It's a ok", In.clazz(FillStyleTest.class).ignore("JUnitTestContainsTooManyAsserts"))
                 .because("It's a bug?", In.clazz(FillStyle.class).ignore("AccessorMethodGeneration"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)
                 .withRulesets(PmdConfigs.defaultPmdRulesets())

@@ -185,7 +185,7 @@ public class FillStyle {
         return new FillStyle("solid");
     }
 
-    public static FillStyle zigzag() {
+    public static Zigzag zigzag() {
         return new Zigzag();
     }
 

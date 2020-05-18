@@ -219,8 +219,6 @@ public final class Options {
                         out.write(readAsBytes(in));
                     }
                     final BufferedImage image = ImageIO.read(file);
-                    System.out.println("******************" + file + " " + uriPathOf(file)
-                            + " " + file.exists() + " " + image.getWidth());
                     return new Image(path, uriPathOf(file), image.getWidth(), image.getHeight());
                 }
                 final BufferedImage image = ImageIO.read(new File(completePath));

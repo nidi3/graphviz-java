@@ -57,6 +57,7 @@ class ReadmeTest {
         Graphviz.fromGraph(g)
                 .filter(new RoughFilter()
                         .bowing(2)
+                        .curveStepCount(6)
                         .roughness(1)
                         .fillStyle(FillStyle.hachure().width(2).gap(5).angle(0))
                         .font("*serif", "Comic Sans MS"))
