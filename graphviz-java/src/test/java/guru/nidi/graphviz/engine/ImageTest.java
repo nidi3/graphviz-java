@@ -32,7 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ImageTest {
     @BeforeEach
     void init(RepetitionInfo info) {
-        if (info.getCurrentRepetition() == 1) {
+        //on CI we don't have dot installed
+        if (info.getCurrentRepetition() == 1 || System.getenv("CI") != null) {
             Graphviz.useEngine(new GraphvizV8Engine());
         } else {
             Graphviz.useEngine(new GraphvizCmdLineEngine());
