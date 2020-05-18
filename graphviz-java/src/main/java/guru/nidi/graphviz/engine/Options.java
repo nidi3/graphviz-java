@@ -20,14 +20,16 @@ import guru.nidi.graphviz.service.SystemUtils;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.Collections.emptyList;
+import static guru.nidi.graphviz.engine.GraphvizLoader.readAsBytes;
+import static guru.nidi.graphviz.engine.StringFunctions.replaceNonWordChars;
+import static guru.nidi.graphviz.engine.TempFiles.tempDir;
 import static java.util.Locale.ENGLISH;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -76,7 +78,7 @@ public final class Options {
     }
 
     public static Options create() {
-        return new Options(Engine.DOT, Format.SVG, null, null, new File("."), emptyList());
+        return new Options(Engine.DOT, Format.SVG, null, null, new File("."), new ArrayList<>());
     }
 
     public static Options fromJson(String json) {
@@ -123,29 +125,33 @@ public final class Options {
         return new Options(engine, format, totalMemory, yInvert, basedir, images);
     }
 
-    public Options image(String image) {
-        final List<Image> imgs = new ArrayList<>(this.images);
-        imgs.add(loadImage(image));
-        return new Options(engine, format, totalMemory, yInvert, basedir, imgs);
+    public Options image(String path) {
+        images.add(Image.create(path, completePath(path)));
+        return this;
     }
 
-    private Image loadImage(String path) {
-        if (path.startsWith("http://") || path.startsWith("https://")) {
-            try {
-                final BufferedImage img = ImageIO.read(new URL(path));
-                return new Image(path, img.getWidth(), img.getHeight());
-            } catch (IOException e) {
-                throw new GraphvizException("Problem loading image " + path, e);
-            }
-        }
-        final boolean absolute = new File(path).isAbsolute();
-        final File file = absolute ? new File(path) : new File(basedir, path);
-        try {
-            final BufferedImage img = ImageIO.read(file);
-            return new Image(absolute ? SystemUtils.uriPathOf(file) : SystemUtils.uriPathOf(path), img.getWidth(), img.getHeight());
-        } catch (IOException e) {
-            throw new GraphvizException("Problem loading image " + file, e);
-        }
+    public String processImagePath(String originalPath) {
+        return images.stream()
+                .filter(i -> i.originalPath.equals(completePath(originalPath)))
+                .map(i -> i.processPath)
+                .findFirst().orElse(originalPath);
+    }
+
+    public String originalImagePath(String processPath) {
+        return images.stream()
+                .filter(i -> i.processPath.equals(processPath))
+                .map(i -> i.originalPath)
+                .findFirst().orElse(processPath);
+    }
+
+    private String completePath(String path) {
+        return isUrl(path) || new File(path).isAbsolute() || basedir.getPath().equals(".")
+                ? path
+                : new File(basedir, path).getPath();
+    }
+
+    private static boolean isUrl(String path) {
+        return path.startsWith("http://") || path.startsWith("https://");
     }
 
     public String toJson(boolean raw) {
@@ -198,18 +204,39 @@ public final class Options {
                 WIDTH = Pattern.compile("width:'(.*?)px'"),
                 HEIGHT = Pattern.compile("height:'(.*?)px'");
 
-        final String path;
+        final String originalPath;
+        final String processPath;
         final int width;
         final int height;
 
-        Image(String path, int width, int height) {
-            this.path = path;
+        static Image create(String path, String completePath) {
+            try {
+                if (isUrl(path)) {
+                    final Path dir = tempDir("Images");
+                    final File file = dir.resolve(replaceNonWordChars(path)).toFile();
+                    try (final InputStream in = new URL(path).openStream();
+                         final OutputStream out = new FileOutputStream(file)) {
+                        out.write(readAsBytes(in));
+                    }
+                    final BufferedImage image = ImageIO.read(file);
+                    return new Image(path, file.getAbsolutePath(), image.getWidth(), image.getHeight());
+                }
+                final BufferedImage image = ImageIO.read(new File(completePath));
+                return new Image(completePath, SystemUtils.uriPathOf(new File(completePath)), image.getWidth(), image.getHeight());
+            } catch (IOException e) {
+                throw new GraphvizException("Could not load image '" + path + "'.");
+            }
+        }
+
+        private Image(String originalPath, String processPath, int width, int height) {
+            this.originalPath = originalPath;
+            this.processPath = processPath;
             this.width = width;
             this.height = height;
         }
 
         String toJson() {
-            return "{path:'" + path + "',width:'" + width + "px',height:'" + height + "px'}";
+            return "{path:'" + processPath + "',width:'" + width + "px',height:'" + height + "px'}";
         }
 
         static Image fromJson(String json) {
@@ -220,7 +247,7 @@ public final class Options {
             final Matcher height = HEIGHT.matcher(json);
             height.find();
 
-            return new Image(path.group(1), Integer.parseInt(width.group(1)), Integer.parseInt(height.group(1)));
+            return new Image(path.group(1), path.group(1), Integer.parseInt(width.group(1)), Integer.parseInt(height.group(1)));
         }
 
         @Override
@@ -234,18 +261,20 @@ public final class Options {
             final Image image = (Image) o;
             return width == image.width
                     && height == image.height
-                    && path.equals(image.path);
+                    && originalPath.equals(image.originalPath)
+                    && processPath.equals(image.processPath);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(path, width, height);
+            return Objects.hash(originalPath, processPath, width, height);
         }
 
         @Override
         public String toString() {
             return "Image{"
-                    + "path='" + path + '\''
+                    + "originalPath='" + originalPath + '\''
+                    + "processPath='" + processPath + '\''
                     + ", width=" + width
                     + ", height=" + height
                     + '}';

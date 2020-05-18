@@ -15,9 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.attribute.Named;
-import guru.nidi.graphviz.attribute.Attributed;
-import guru.nidi.graphviz.attribute.ForNode;
+import guru.nidi.graphviz.attribute.*;
 
 import javax.annotation.Nullable;
 import java.util.List;

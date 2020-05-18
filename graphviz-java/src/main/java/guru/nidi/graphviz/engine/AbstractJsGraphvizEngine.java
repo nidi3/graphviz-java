@@ -15,17 +15,14 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.service.SystemUtils;
-
 import javax.annotation.Nullable;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static guru.nidi.graphviz.engine.GraphvizLoader.*;
+import static guru.nidi.graphviz.engine.StringFunctions.replaceRegex;
 import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
@@ -106,11 +103,10 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         }
         final String memory = options.totalMemory == null ? "" : "totalMemory=" + options.totalMemory + ";";
         measureFonts(src);
-        final Entry<String, Options> srcAndOpts = preprocessCode(src, options);
         return engine().executeJavascript(
                 memory + "render(",
-                srcAndOpts.getKey(),
-                "," + srcAndOpts.getValue().toJson(false) + ");");
+                preprocessCode(src, options),
+                "," + options.toJson(false) + ");");
     }
 
     private void measureFonts(String src) {
@@ -125,18 +121,12 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         }
     }
 
-    protected Entry<String, Options> preprocessCode(String src, Options options) {
+    protected String preprocessCode(String src, Options options) {
         if (src.contains("<img")) {
             throw new GraphvizException("Found <img> tag. This is not supported by JS engines. "
                     + "Either use the GraphvizCmdLineEngine or a node with image attribute.");
         }
-        final Options[] opts = new Options[]{options};
-        final String pathsReplaced = replacePaths(src, IMAGE_ATTR, path -> {
-            final String realPath = SystemUtils.uriPathOf(replacePath(path, options.basedir));
-            opts[0] = opts[0].image(realPath);
-            return realPath;
-        });
-        return new SimpleEntry<>(pathsReplaced, opts[0]);
+        return replaceRegex(src, IMAGE_ATTR, path -> options.image(path).processImagePath(path));
     }
 
     private String vizJsCode() {

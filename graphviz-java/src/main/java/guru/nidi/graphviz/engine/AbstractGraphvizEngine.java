@@ -18,12 +18,9 @@ package guru.nidi.graphviz.engine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -63,25 +60,6 @@ public abstract class AbstractGraphvizEngine implements GraphvizEngine {
     protected <T extends AbstractGraphvizEngine> T timeout(int amount, TimeUnit unit) {
         this.timeout = (int) MILLISECONDS.convert(amount, unit);
         return (T) this;
-    }
-
-    protected String replacePaths(String src, Pattern pattern, Function<String, String> replacer) {
-        final Matcher matcher = pattern.matcher(src);
-        final StringBuilder s = new StringBuilder();
-        int last = 0;
-        while (matcher.find()) {
-            final String attr = matcher.group(1);
-            s.append(src, last, matcher.start(1));
-            s.append(replacer.apply(attr));
-            last = matcher.end(1);
-        }
-        return s.append(src.substring(last)).toString();
-    }
-
-    protected String replacePath(String path, File basedir) {
-        return path.startsWith("http://") || path.startsWith("https://") || new File(path).isAbsolute()
-                ? path
-                : new File(basedir, path).getAbsolutePath();
     }
 
     @Override

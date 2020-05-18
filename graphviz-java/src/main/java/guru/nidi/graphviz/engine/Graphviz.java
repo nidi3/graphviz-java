@@ -56,7 +56,7 @@ public final class Graphviz {
 
     final Rasterizer rasterizer;
     final ProcessOptions processOptions;
-    private final Options options;
+    final Options options;
     private final List<GraphvizFilter> filters;
     @Nullable
     private final Consumer<ValidatorMessage> messageConsumer;
@@ -245,10 +245,6 @@ public final class Graphviz {
 
     public Graphviz validating(Consumer<ValidatorMessage> messageConsumer) {
         return new Graphviz(graph, src, rasterizer, processOptions, options, filters, messageConsumer);
-    }
-
-    public Graphviz image(String image) {
-        return new Graphviz(graph, src, rasterizer, processOptions, options.image(image), filters, messageConsumer);
     }
 
     public Renderer rasterize(Rasterizer rasterizer) {

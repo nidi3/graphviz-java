@@ -15,7 +15,6 @@
  */
 package guru.nidi.graphviz.engine;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 /**

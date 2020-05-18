@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static guru.nidi.graphviz.engine.StringFunctions.replaceRegex;
+import static guru.nidi.graphviz.engine.StringFunctions.replaceSubSpaces;
 import static java.util.regex.Pattern.DOTALL;
 
 public enum Format {
@@ -40,7 +42,7 @@ public enum Format {
     SVG("svg", "svg", false, true) {
         @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
-            return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, true));
+            return result.mapString(s -> restoreImagePaths(graphviz.options, postProcessSvg(graphviz.processOptions, s, true)));
         }
 
         @Override
@@ -52,7 +54,7 @@ public enum Format {
     SVG_STANDALONE("svg", "svg", false, true) {
         @Override
         EngineResult postProcess(Graphviz graphviz, EngineResult result) {
-            return result.mapString(s -> postProcessSvg(graphviz.processOptions, s, false));
+            return result.mapString(s -> restoreImagePaths(graphviz.options, postProcessSvg(graphviz.processOptions, s, false)));
         }
 
         @Override
@@ -103,6 +105,7 @@ public enum Format {
             "<svg width=\"(?<width>\\d+)(?<unit>p[tx])\" height=\"(?<height>\\d+)p[tx]\""
                     + "(?<between>.*?>\\R<g.*?)transform=\"scale\\((?<scaleX>[0-9.]+) (?<scaleY>[0-9.]+)\\)",
             DOTALL);
+    private static final Pattern LINK_PATTERN = Pattern.compile("xlink:href=\"(.+?)\"");
 
     final String vizName;
     public final String fileExtension;
@@ -132,14 +135,8 @@ public enum Format {
         return ValidatorFormat.OTHER;
     }
 
-    private static String replaceSubSpaces(String src) {
-        final char[] chars = src.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] < ' ' && chars[i] != '\t' && chars[i] != '\r' && chars[i] != '\n') {
-                chars[i] = ' ';
-            }
-        }
-        return new String(chars);
+    private static String restoreImagePaths(Options options, String svg) {
+        return replaceRegex(svg, LINK_PATTERN, options::originalImagePath);
     }
 
     private static String postProcessSvg(ProcessOptions options, String result, boolean prefix) {

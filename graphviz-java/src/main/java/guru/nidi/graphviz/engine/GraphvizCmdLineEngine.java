@@ -29,6 +29,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static guru.nidi.graphviz.engine.GraphvizLoader.isOnClasspath;
+import static guru.nidi.graphviz.engine.StringFunctions.replaceRegex;
+import static guru.nidi.graphviz.engine.TempFiles.tempDir;
 import static guru.nidi.graphviz.service.CommandRunner.isExecutableFile;
 import static guru.nidi.graphviz.service.CommandRunner.isExecutableFound;
 import static guru.nidi.graphviz.service.SystemUtils.pathOf;
@@ -104,7 +106,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     @Override
     public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
         try {
-            final Path path = Files.createTempDirectory(getOrCreateTempDirectory().toPath(), "DotEngine");
+            final Path path = tempDir("DotEngine");
             final File dotFile = getDotFile(path);
             try (final BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(dotFile), StandardCharsets.UTF_8))) {
@@ -134,8 +136,9 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     }
 
     protected String preprocessCode(String src, Options options) {
-        final String imgReplaced = replacePaths(src, IMG_SRC, path -> replacePath(path, options.basedir));
-        return replacePaths(imgReplaced, IMAGE_ATTR, path -> replacePath(path, options.basedir));
+        return replaceRegex(replaceRegex(src,
+                IMG_SRC, path -> options.image(path).processImagePath(path)),
+                IMAGE_ATTR, path -> options.image(path).processImagePath(path));
     }
 
     private String getEngineExecutable() {
@@ -169,14 +172,6 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
             return f;
         }
         return format.vizName;
-    }
-
-    private File getOrCreateTempDirectory() {
-        final File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "GraphvizJava");
-        if (!tempDir.exists() && tempDir.mkdir()) {
-            LOG.debug("Created GraphvizJava temporary directory");
-        }
-        return tempDir;
     }
 
     private File getDotFile(Path path) {

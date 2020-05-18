@@ -16,10 +16,10 @@
 package guru.nidi.graphviz.engine;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 import java.util.function.Supplier;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class GraphvizLoader {
     private static Supplier<ClassLoader> classLoaderSupplier = GraphvizLoader.class::getClassLoader;
@@ -43,12 +43,18 @@ public final class GraphvizLoader {
     }
 
     static String readAsString(InputStream in) throws IOException {
-        final byte[] buf = new byte[in.available()];
-        int read, total = 0;
-        while ((read = in.read(buf, total, Math.min(100000, buf.length - total))) > 0) {
-            total += read;
+        return new String(readAsBytes(in), UTF_8);
+    }
+
+    static byte[] readAsBytes(InputStream in) throws IOException {
+        final ByteArrayOutputStream res = new ByteArrayOutputStream();
+        final byte[] buf = new byte[100000];
+        int read;
+        while ((read = in.read(buf)) > 0) {
+            res.write(buf, 0, read);
         }
-        return new String(buf, StandardCharsets.UTF_8);
+        res.flush();
+        return res.toByteArray();
     }
 
     static boolean isOnClasspath(String resource) {
