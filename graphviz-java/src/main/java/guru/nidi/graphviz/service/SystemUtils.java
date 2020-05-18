@@ -69,12 +69,11 @@ public final class SystemUtils {
         return Paths.get(IS_OS_WINDOWS ? path.replace("\"", "") : path);
     }
 
-    public static String relativeUriPathOf(String path) {
-        return IS_OS_WINDOWS ? path.replace('\\', '/') : path;
-    }
-
     public static String uriPathOf(String path) {
-        return IS_OS_WINDOWS ? "/" + path.replace('\\', '/') : path;
+        if (IS_OS_WINDOWS) {
+            return (path.substring(1, 3).equals(":\\") ? "/" : "") + path.replace('\\', '/');
+        }
+        return path;
     }
 
     public static String uriPathOf(File path) {

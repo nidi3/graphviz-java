@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
 import static guru.nidi.graphviz.engine.GraphvizLoader.readAsBytes;
 import static guru.nidi.graphviz.engine.StringFunctions.replaceNonWordChars;
 import static guru.nidi.graphviz.engine.TempFiles.tempDir;
-import static guru.nidi.graphviz.service.SystemUtils.relativeUriPathOf;
 import static guru.nidi.graphviz.service.SystemUtils.uriPathOf;
 import static java.lang.Integer.parseInt;
 import static java.util.Locale.ENGLISH;
@@ -148,7 +147,7 @@ public final class Options {
     private String completePath(String path) {
         return isUrl(path) || new File(path).isAbsolute() || basedir.getPath().equals(".")
                 ? path
-                : relativeUriPathOf(new File(basedir, path).getPath());
+                : uriPathOf(new File(basedir, path).getPath());
     }
 
     static boolean isUrl(String path) {
@@ -219,9 +218,9 @@ public final class Options {
                          final OutputStream out = new FileOutputStream(file)) {
                         out.write(readAsBytes(in));
                     }
-                    System.out.println("******************" + file + " " + file.exists());
                     final BufferedImage image = ImageIO.read(file);
-                    return new Image(path, file.getAbsolutePath(), image.getWidth(), image.getHeight());
+                    System.out.println("******************" + file + " " + uriPathOf(file) + " " + file.exists() + " " + image.getWidth());
+                    return new Image(path, uriPathOf(file), image.getWidth(), image.getHeight());
                 }
                 final BufferedImage image = ImageIO.read(new File(completePath));
                 return new Image(completePath, uriPathOf(new File(completePath)), image.getWidth(), image.getHeight());
