@@ -15,8 +15,6 @@
  */
 package guru.nidi.graphviz.engine;
 
-import guru.nidi.graphviz.service.SystemUtils;
-
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -221,6 +219,7 @@ public final class Options {
                          final OutputStream out = new FileOutputStream(file)) {
                         out.write(readAsBytes(in));
                     }
+                    System.out.println(file + " " + file.exists());
                     final BufferedImage image = ImageIO.read(file);
                     return new Image(path, file.getAbsolutePath(), image.getWidth(), image.getHeight());
                 }

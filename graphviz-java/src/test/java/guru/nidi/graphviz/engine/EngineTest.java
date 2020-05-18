@@ -169,7 +169,7 @@ class EngineTest {
 
         final File file = new File("target/out.svg");
         Graphviz.fromString("graph g {a--b}").rasterize(Rasterizer.builtIn("svg", "render", "format")).toFile(file);
-        assertThat(new String(Files.readAllBytes(file.toPath()), UTF_8), startsWith("[-c, dot -Kdot -Tsvg:render:format "));
+        assertThat(new String(Files.readAllBytes(file.toPath()), UTF_8), containsString("-Tsvg:render:format"));
     }
 
     /**

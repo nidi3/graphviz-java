@@ -26,6 +26,7 @@ import static guru.nidi.graphviz.engine.Format.PNG;
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
+import static guru.nidi.graphviz.service.SystemUtils.uriPathOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -65,7 +66,7 @@ class ImageTest {
         final File out = new File("target/img-base-relative.png");
         g.render(PNG).toFile(out);
         assertTrue(out.length() > 15000);
-        assertThat(g.render(SVG).toString(), Matchers.containsString("\"" + absBase + "/graphviz.png\""));
+        assertThat(g.render(SVG).toString(), Matchers.containsString("\"" + uriPathOf(absBase) + "/graphviz.png\""));
     }
 
     @RepeatedTest(2)
