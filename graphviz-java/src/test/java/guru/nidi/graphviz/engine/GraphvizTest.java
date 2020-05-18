@@ -15,15 +15,29 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
+import guru.nidi.graphviz.attribute.validate.ValidatorMessage.Location;
 import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Node;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Location.Type.NODE;
+import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
+import static guru.nidi.graphviz.engine.Format.SVG;
+import static guru.nidi.graphviz.engine.Rasterizer.NONE;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GraphvizTest {
     @BeforeAll
@@ -37,43 +51,78 @@ class GraphvizTest {
     }
 
     @Test
-    void scaleMethodChainCheck() {
+    void scaleMethodChain() {
         final Graph graph = graph().with(node("a").link("b"));
         final Graphviz graphviz = Graphviz.fromGraph(graph).height(20).width(30).scale(3);
-
         assertThatGraphvizHasFields(graphviz, 20, 30, 3d);
     }
 
     @Test
-    void heightMethodChainCheck() {
+    void heightMethodChain() {
         final Graph graph = graph().with(node("a").link("b"));
         final Graphviz graphviz = Graphviz.fromGraph(graph).scale(3).width(30).height(20);
-
         assertThatGraphvizHasFields(graphviz, 20, 30, 3d);
     }
 
     @Test
-    void widthMethodChainCheck() {
+    void widthMethodChain() {
         final Graph graph = graph().with(node("a").link("b"));
         final Graphviz graphviz = Graphviz.fromGraph(graph).scale(3).height(20).width(30);
-
         assertThatGraphvizHasFields(graphviz, 20, 30, 3d);
     }
 
     @Test
-    void executeWithTotalMemory() {
+    void fromFile() throws IOException {
+        final String result = Graphviz.fromFile(new File("src/test/resources/color.dot")).render(SVG).toString();
+        assertThat(result, containsString("rank=same; cyan; yellow; pink"));
+    }
+
+    @Test
+    void withTotalMemory() {
         final Graph graph = graph().with(node("a").link("b"));
-        final String result = Graphviz.fromGraph(graph).totalMemory(32000).render(Format.SVG).toString();
+        final String result = Graphviz.fromGraph(graph).totalMemory(32000).render(SVG).toString();
         assertThat(result, is("totalMemory=32000;render('graph {\\n\"a\" -- \"b\"\\n}',"
                 + "{format:'svg',engine:'dot',totalMemory:'32000',basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
     }
 
     @Test
-    void executeWithoutTotalMemory() {
+    void withoutTotalMemory() {
         final Graph graph = graph().with(node("a").link("b"));
-        final String result = Graphviz.fromGraph(graph).render(Format.SVG).toString();
+        final String result = Graphviz.fromGraph(graph).render(SVG).toString();
         assertThat(result, is("render('graph {\\n\"a\" -- \"b\"\\n}',"
                 + "{format:'svg',engine:'dot',basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
+    }
+
+    @Test
+    void withYInvert() {
+        final Graph graph = graph().with(node("a").link("b"));
+        final String result = Graphviz.fromGraph(graph).yInvert(true).render(SVG).toString();
+        assertThat(result, is("render('graph {\\n\"a\" -- \"b\"\\n}',"
+                + "{format:'svg',engine:'dot',yInvert:true,basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
+    }
+
+    @Test
+    void validating() {
+        final List<ValidatorMessage> messages = new ArrayList<>();
+        final Node a = node("a").with("c", "d").link("b");
+        Graphviz.fromGraph(graph().with(a)).validating(messages::add).render(SVG).toString();
+        assertEquals(asList(new ValidatorMessage(ERROR, "c", "is unknown.", null, new Location(NODE, a))), messages);
+    }
+
+    @Test
+    void noRasterizer() {
+        final Graph graph = graph().with(node("a").link("b"));
+        assertThrows(IllegalArgumentException.class, () -> Graphviz.fromGraph(graph).rasterize(NONE));
+    }
+
+    @Test
+    void filter() {
+        final Graph graph = graph().with(node("a").link("b"));
+        final String result = Graphviz.fromGraph(graph)
+                .filter((format, engineResult) -> EngineResult.fromString("hula"))
+                .filter((format, engineResult) -> engineResult.mapString((s) -> s + "2"))
+                .render(SVG).toString();
+        assertEquals("hula2", result);
     }
 
     private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {
