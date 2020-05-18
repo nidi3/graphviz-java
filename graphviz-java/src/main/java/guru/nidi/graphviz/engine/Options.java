@@ -15,6 +15,8 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.service.SystemUtils;
+
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -28,6 +30,7 @@ import java.util.regex.Pattern;
 import static guru.nidi.graphviz.engine.GraphvizLoader.readAsBytes;
 import static guru.nidi.graphviz.engine.StringFunctions.replaceNonWordChars;
 import static guru.nidi.graphviz.engine.TempFiles.tempDir;
+import static guru.nidi.graphviz.service.SystemUtils.relativeUriPathOf;
 import static guru.nidi.graphviz.service.SystemUtils.uriPathOf;
 import static java.lang.Integer.parseInt;
 import static java.util.Locale.ENGLISH;
@@ -147,7 +150,7 @@ public final class Options {
     private String completePath(String path) {
         return isUrl(path) || new File(path).isAbsolute() || basedir.getPath().equals(".")
                 ? path
-                : new File(basedir, path).getPath();
+                : relativeUriPathOf(new File(basedir, path).getPath());
     }
 
     static boolean isUrl(String path) {
