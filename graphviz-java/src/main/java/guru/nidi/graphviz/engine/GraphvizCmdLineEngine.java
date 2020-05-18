@@ -120,14 +120,14 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
     private EngineResult doExecute(Path path, File dotFile, Options options, Rasterizer rasterizer)
             throws IOException, InterruptedException {
-        final String format = getFormatName(options.format, rasterizer);
+        final String simpleFormat = simpleFormat(options.format, rasterizer);
         final String command = getEngineExecutable()
                 + (options.yInvert != null && options.yInvert ? " -y" : "")
                 + " -K" + options.engine.toString().toLowerCase(ENGLISH)
-                + " -T" + format
-                + " " + dotFile.getAbsolutePath() + " -ooutfile." + format;
+                + " -T" + completeFormat(options.format, rasterizer)
+                + " " + dotFile.getAbsolutePath() + " -ooutfile." + simpleFormat;
         cmdRunner.exec(command, path.toFile(), timeout);
-        final Path outFile = path.resolve("outfile." + format);
+        final Path outFile = path.resolve("outfile." + simpleFormat);
         if (rasterizer instanceof BuiltInRasterizer) {
             return EngineResult.fromFile(outFile.toFile());
         }
@@ -159,7 +159,13 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
         throw e;
     }
 
-    private String getFormatName(Format format, Rasterizer rasterizer) {
+    private String simpleFormat(Format format, Rasterizer rasterizer) {
+        return rasterizer instanceof BuiltInRasterizer
+                ? ((BuiltInRasterizer) rasterizer).format
+                : format.vizName;
+    }
+
+    private String completeFormat(Format format, Rasterizer rasterizer) {
         if (rasterizer instanceof BuiltInRasterizer) {
             final BuiltInRasterizer natRast = (BuiltInRasterizer) rasterizer;
             String f = natRast.format;

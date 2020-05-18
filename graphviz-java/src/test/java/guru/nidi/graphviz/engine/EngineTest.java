@@ -25,12 +25,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
 
@@ -155,11 +153,22 @@ class EngineTest {
     @Test
     void cmdLine() throws IOException, InterruptedException {
         Graphviz.useEngine(new GraphvizCmdLineEngine("dot")
-                .searchPath(setUpFakeDotFile().getParent())
-                .executor(setUpFakeStubCommandExecutor()));
+                .searchPath(fakeDotFile().getParent())
+                .executor(fileCommandExecutor()));
 
         final String actual = Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
         assertThat(actual, startsWith(START1_7.replace("\n", System.lineSeparator())));
+    }
+
+    @Test
+    void cmdLineBuiltInRasterizer() throws IOException, InterruptedException {
+        Graphviz.useEngine(new GraphvizCmdLineEngine("dot")
+                .searchPath(fakeDotFile().getParent())
+                .executor(argumentsCommandExecutor()));
+
+        final File file = new File("target/out.svg");
+        Graphviz.fromString("graph g {a--b}").rasterize(Rasterizer.builtIn("svg", "render", "format")).toFile(file);
+        assertThat(new String(Files.readAllBytes(file.toPath())), startsWith("[-c, dot -Kdot -Tsvg:render:format "));
     }
 
     /**
@@ -173,8 +182,8 @@ class EngineTest {
 
         // Configure engine to output the dotFile to dotOutputFolder
         final GraphvizCmdLineEngine engine = new GraphvizCmdLineEngine()
-                .searchPath(setUpFakeDotFile().getParent())
-                .executor(setUpFakeStubCommandExecutor());
+                .searchPath(fakeDotFile().getParent())
+                .executor(fileCommandExecutor());
         engine.setDotOutputFile(dotOutputFolder.getAbsolutePath(), dotOutputName);
 
         Graphviz.useEngine(engine);
@@ -195,7 +204,7 @@ class EngineTest {
         assertThat(Graphviz.fromGraph(graph().with(node("Z\u0001a\u001fg"))).render(SVG).toString(), containsString(">Z a g<"));
     }
 
-    private File setUpFakeDotFile() throws IOException {
+    private File fakeDotFile() throws IOException {
         final String filename = SystemUtils.executableNames("dot").get(0);
         final File dotFile = new File(temp, filename);
         dotFile.createNewFile();
@@ -203,13 +212,25 @@ class EngineTest {
         return dotFile;
     }
 
-    private CommandLineExecutor setUpFakeStubCommandExecutor() throws IOException, InterruptedException {
+    private CommandLineExecutor fileCommandExecutor() throws IOException, InterruptedException {
         final CommandLineExecutor cmdExecutor = mock(CommandLineExecutor.class);
-        doAnswer(invocationOnMock -> {
-            final File workingDirectory = invocationOnMock.getArgumentAt(1, File.class);
+        doAnswer(invocation -> {
+            final File workingDirectory = invocation.getArgumentAt(1, File.class);
             final File svgInput = new File(getClass().getClassLoader().getResource("outfile1.svg").getFile());
-            final File svgOutputFile = new File(workingDirectory.getAbsolutePath() + "/outfile.svg");
-            Files.copy(svgInput.toPath(), svgOutputFile.toPath());
+            final File svgOutput = new File(workingDirectory.getAbsolutePath() + "/outfile.svg");
+            Files.copy(svgInput.toPath(), svgOutput.toPath());
+            return null;
+        }).when(cmdExecutor).execute(any(CommandLine.class), any(File.class), any(Integer.class));
+        return cmdExecutor;
+    }
+
+    private CommandLineExecutor argumentsCommandExecutor() throws IOException, InterruptedException {
+        final CommandLineExecutor cmdExecutor = mock(CommandLineExecutor.class);
+        doAnswer(invocation -> {
+            final File workingDirectory = invocation.getArgumentAt(1, File.class);
+            try (final FileWriter out = new FileWriter(new File(workingDirectory.getAbsolutePath() + "/outfile.svg"))) {
+                out.write(Arrays.toString(invocation.getArgumentAt(0, CommandLine.class).getArguments()));
+            }
             return null;
         }).when(cmdExecutor).execute(any(CommandLine.class), any(File.class), any(Integer.class));
         return cmdExecutor;

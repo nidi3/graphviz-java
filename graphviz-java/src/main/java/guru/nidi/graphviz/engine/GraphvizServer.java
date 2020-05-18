@@ -119,7 +119,7 @@ final class GraphvizServer {
                 .toString();
     }
 
-    private static class CmdOptions {
+    static class CmdOptions {
         final Map<String, String> opts = new HashMap<>();
         final List<String> args = new ArrayList<>();
 
