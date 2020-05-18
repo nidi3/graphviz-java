@@ -37,6 +37,7 @@ import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static guru.nidi.graphviz.engine.FormatTest.START1_7;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -168,7 +169,7 @@ class EngineTest {
 
         final File file = new File("target/out.svg");
         Graphviz.fromString("graph g {a--b}").rasterize(Rasterizer.builtIn("svg", "render", "format")).toFile(file);
-        assertThat(new String(Files.readAllBytes(file.toPath())), startsWith("[-c, dot -Kdot -Tsvg:render:format "));
+        assertThat(new String(Files.readAllBytes(file.toPath()), UTF_8), startsWith("[-c, dot -Kdot -Tsvg:render:format "));
     }
 
     /**
@@ -228,7 +229,7 @@ class EngineTest {
         final CommandLineExecutor cmdExecutor = mock(CommandLineExecutor.class);
         doAnswer(invocation -> {
             final File workingDirectory = invocation.getArgumentAt(1, File.class);
-            try (final FileWriter out = new FileWriter(new File(workingDirectory.getAbsolutePath() + "/outfile.svg"))) {
+            try (final Writer out = new OutputStreamWriter(new FileOutputStream(new File(workingDirectory.getAbsolutePath() + "/outfile.svg")), UTF_8)) {
                 out.write(Arrays.toString(invocation.getArgumentAt(0, CommandLine.class).getArguments()));
             }
             return null;

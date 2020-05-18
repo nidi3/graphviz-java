@@ -108,7 +108,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("it's ok here",
                         In.loc("Rasterizer#getDefault").ignore("CompareObjectsWithEquals"),
                         In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
-                        In.locs("LabelTest", "RankTest", "*DatatypeTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest")
+                        In.locs("LabelTest", "RankTest", "*DatatypeTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest", "GraphvizServerTest")
                                 .ignore("JUnitTestContainsTooManyAsserts"),
                         In.locs("DatatypeTest").ignore("TestClassWithoutTestCases"),
                         In.loc("SerializerImpl").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),

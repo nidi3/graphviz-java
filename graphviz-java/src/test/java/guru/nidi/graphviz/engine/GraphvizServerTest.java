@@ -18,6 +18,7 @@ package guru.nidi.graphviz.engine;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,33 +33,31 @@ public class GraphvizServerTest {
     @Test
     void cmdLineSimple() {
         final GraphvizServer.CmdOptions opts = GraphvizServer.CmdOptions.parse(new String[]{"-a"});
-        assertEquals(new HashMap<String, String>() {{
-            put("a", "");
-        }}, opts.opts);
+        assertEquals(map("a", ""), opts.opts);
     }
 
     @Test
     void cmdLineValue() {
         final GraphvizServer.CmdOptions opts = GraphvizServer.CmdOptions.parse(new String[]{"-ab"});
-        assertEquals(new HashMap<String, String>() {{
-            put("a", "b");
-        }}, opts.opts);
+        assertEquals(map("a", "b"), opts.opts);
     }
 
     @Test
     void cmdLineValueSeparated() {
         final GraphvizServer.CmdOptions opts = GraphvizServer.CmdOptions.parse(new String[]{"-a", "b"});
-        assertEquals(new HashMap<String, String>() {{
-            put("a", "b");
-        }}, opts.opts);
+        assertEquals(map("a", "b"), opts.opts);
     }
 
     @Test
     void cmdLineArgs() {
         final GraphvizServer.CmdOptions opts = GraphvizServer.CmdOptions.parse(new String[]{"-ab", "c", "d"});
-        assertEquals(new HashMap<String, String>() {{
-            put("a", "b");
-        }}, opts.opts);
+        assertEquals(map("a", "b"), opts.opts);
         assertEquals(asList("c", "d"), opts.args);
+    }
+
+    private Map<String, String> map(String a, String b) {
+        final Map<String, String> res = new HashMap<>();
+        res.put(a, b);
+        return res;
     }
 }
