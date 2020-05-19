@@ -26,7 +26,7 @@ import static guru.nidi.graphviz.engine.StringFunctions.replaceRegex;
 import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
-    private static final String VIZ_BASE = "META-INF/resources/webjars/viz.js-for-graphviz-java/2.1.2/";
+    private static final String VIZ_BASE = "META-INF/resources/webjars/viz.js-for-graphviz-java/2.1.3/";
     static final boolean AVAILABLE = isOnClasspath(VIZ_BASE + "viz.js");
     private static final Pattern FONT_NAME_PATTERN = Pattern.compile("\"?fontname\"?\\s*=\\s*\"?(.*?)[\",;\\]]");
     private static final Map<Class<?>, ThreadLocal<EngineState>> ENGINES = new HashMap<>();
