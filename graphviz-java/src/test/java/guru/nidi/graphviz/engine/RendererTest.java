@@ -22,14 +22,17 @@ import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.io.File;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.io.*;
 import java.nio.file.Files;
 
+import static guru.nidi.graphviz.engine.Format.PNG;
+import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RendererTest {
@@ -53,7 +56,7 @@ class RendererTest {
         Files.deleteIfExists(expectedFile.getParentFile().toPath());
 
         final Graph graph = graph("example1").directed().with(node("a").link(node("b")));
-        Graphviz.fromGraph(graph).width(200).render(Format.PNG).toFile(giveFile);
+        Graphviz.fromGraph(graph).width(200).render(PNG).toFile(giveFile);
 
         assertTrue(expectedFile.exists() && expectedFile.isFile());
     }
@@ -64,7 +67,7 @@ class RendererTest {
         Files.deleteIfExists(file.toPath());
         try {
             final Graph graph = graph("example1").directed().with(node("a").link(node("b")));
-            Graphviz.fromGraph(graph).width(200).render(Format.PNG).toFile(file);
+            Graphviz.fromGraph(graph).width(200).render(PNG).toFile(file);
             assertTrue(file.exists());
         } finally {
             Files.deleteIfExists(file.toPath());
@@ -72,10 +75,27 @@ class RendererTest {
     }
 
     @Test
+    void outputStream() throws IOException {
+        final Graphviz g = Graphviz.fromGraph(graph().with(node("a")));
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        g.render(SVG).toOutputStream(baos);
+        assertThat(new String(baos.toByteArray(), UTF_8), allOf(startsWith("<svg"), endsWith("</svg>\n")));
+    }
+
+    @Test
+    void toImage() throws IOException {
+        final Graphviz g = Graphviz.fromGraph(graph().with(node("a")));
+        final File file = new File("target/toImage.png");
+        file.delete();
+        ImageIO.write(g.render(PNG).toImage(), "png", file);
+        assertTrue(file.exists());
+    }
+
+    @Test
     void image() throws IOException {
         final File out = new File("target/image.png");
         final Graphviz g = Graphviz.fromGraph(graph().with(node(" ").with(Image.of("graphviz.png"))));
-        g.basedir(new File("example")).render(Format.PNG).toFile(out);
+        g.basedir(new File("example")).render(PNG).toFile(out);
         assertThat((int) out.length(), greaterThan(19000));
     }
 
