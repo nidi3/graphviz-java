@@ -18,11 +18,16 @@
 package guru.nidi.graphviz
 
 import guru.nidi.graphviz.engine.Graphviz
-import guru.nidi.graphviz.model.*
-import guru.nidi.graphviz.model.Factory.*
+import guru.nidi.graphviz.model.Factory.mutGraph
+import guru.nidi.graphviz.model.MutableGraph
 
-fun graph(name: String = "", strict: Boolean = false, directed: Boolean = false, cluster: Boolean = false,
-          config: KraphvizContext.() -> Unit = { }): MutableGraph =
+fun graph(
+    name: String = "",
+    strict: Boolean = false,
+    directed: Boolean = false,
+    cluster: Boolean = false,
+    config: KraphvizContext.() -> Unit = { }
+): MutableGraph =
         mutGraph(name).apply {
             isStrict = strict
             isDirected = directed
