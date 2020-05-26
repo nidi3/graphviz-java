@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 
-class FontMeasurer {
+final class FontMeasurer {
     private static final FontRenderContext FONT_RENDER_CONTEXT =
             new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR).createGraphics().getFontRenderContext();
     private static final double COURIER_WIDTH = .5999;
@@ -29,7 +29,10 @@ class FontMeasurer {
     private static final double COURIER_SPACE_WIDTH = charWidth(COURIER, ' ');
     private static final double COURIER_BORDER_WIDTH = borderWidth(COURIER);
     private static final double[] COURIER_WIDTHS = courierWidths();
-    private final Set<String> fonts = new HashSet<>();
+    private static final Set<String> FONTS = new HashSet<>();
+
+    private FontMeasurer() {
+    }
 
     private static double[] courierWidths() {
         double[] w = new double[256];
@@ -47,11 +50,11 @@ class FontMeasurer {
         return font.createGlyphVector(FONT_RENDER_CONTEXT, new char[]{56, 56}).getVisualBounds().getWidth();
     }
 
-    double[] measureFont(String name) {
-        if (fonts.contains(name)) {
+    static double[] measureFont(String name) {
+        if (FONTS.contains(name)) {
             return new double[0];
         }
-        fonts.add(name);
+        FONTS.add(name);
         final Font font = new Font(name, Font.PLAIN, 10);
         final double spaceWidth = charWidth(font, ' ');
         final double borderWidth = borderWidth(font);

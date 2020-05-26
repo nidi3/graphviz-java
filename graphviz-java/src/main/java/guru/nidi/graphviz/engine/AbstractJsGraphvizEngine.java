@@ -31,7 +31,6 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
     private static final Pattern FONT_NAME_PATTERN = Pattern.compile("\"?fontname\"?\\s*=\\s*\"?(.*?)[\",;\\]]");
     private static final Map<Class<?>, ThreadLocal<EngineState>> ENGINES = new HashMap<>();
     private final Supplier<JavascriptEngine> engineSupplier;
-    private final FontMeasurer fontMeasurer = new FontMeasurer();
 
     protected AbstractJsGraphvizEngine(boolean sync, Supplier<JavascriptEngine> engineSupplier) {
         super(sync);
@@ -113,7 +112,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         final Matcher matcher = FONT_NAME_PATTERN.matcher(src);
         while (matcher.find()) {
             final String font = matcher.group(1).trim();
-            final double[] widths = fontMeasurer.measureFont(font);
+            final double[] widths = FontMeasurer.measureFont(font);
             if (widths.length > 0) {
                 final String widthsString = Arrays.stream(widths).mapToObj(Double::toString).collect(joining(","));
                 engine().executeJavascript("initViz().setFontWidth('" + font + "',[" + widthsString + "])");

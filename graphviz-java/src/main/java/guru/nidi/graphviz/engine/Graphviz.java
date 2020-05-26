@@ -37,6 +37,12 @@ import static java.util.Arrays.asList;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public final class Graphviz {
+    static {
+        if (System.getProperty("java.awt.headless") == null) {
+            System.setProperty("java.awt.headless", "true");
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(Graphviz.class);
 
     private static final Pattern DPI_PATTERN = Pattern.compile("\"?dpi\"?\\s*=\\s*\"?([0-9.]+)\"?", CASE_INSENSITIVE);
@@ -182,6 +188,10 @@ public final class Graphviz {
         } catch (Exception e) {
             throw new GraphvizException("Problem closing engine", e);
         }
+    }
+
+    public static void noHeadless() {
+        System.setProperty("java.awt.headless", "false");
     }
 
     public static Graphviz fromFile(File src) throws IOException {
