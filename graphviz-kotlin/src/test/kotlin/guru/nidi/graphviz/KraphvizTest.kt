@@ -34,12 +34,15 @@ class KraphvizTest {
             edge[Arrow.TEE]
             node[GREEN]
             graph[GREY.background()]
+        }
 
+        g {
             "e" - "f"
 
             ("a"[RED] - "b")[Arrow.VEE]
             ("c" / "rec" / SOUTH)[BLUE] - "d" / WEST
         }
+
         val h = mutGraph().setDirected(true)
                 .graphAttrs().add(GREY.background())
                 .add(node("e").with(GREEN).link(Link.to(node("f").with(GREEN)).with(RED, Arrow.TEE)))
