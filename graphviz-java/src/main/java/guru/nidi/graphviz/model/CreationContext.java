@@ -47,6 +47,15 @@ public final class CreationContext {
         }
     }
 
+    public <T> T reuse(ThrowingFunction<CreationContext, T> actions) {
+        CONTEXT.get().push(this);
+        try {
+            return actions.applyNotThrowing(this);
+        } finally {
+            end();
+        }
+    }
+
     public static Optional<CreationContext> current() {
         final Stack<CreationContext> cs = CONTEXT.get();
         return cs.empty() ? Optional.empty() : Optional.of(cs.peek());

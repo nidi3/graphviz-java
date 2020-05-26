@@ -25,6 +25,8 @@ import static java.util.Arrays.asList;
 
 public class MutableGraph implements LinkSource, LinkTarget {
     private static final SafeRecursion<MutableGraph> RECURSION = new SafeRecursion<>();
+    private static final String CONTEXT = "$context";
+
     protected boolean strict;
     protected boolean directed;
     protected boolean cluster;
@@ -71,9 +73,21 @@ public class MutableGraph implements LinkSource, LinkTarget {
 
     public MutableGraph use(ThrowingBiConsumer<MutableGraph, CreationContext> actions) {
         return CreationContext.use(this, ctx -> {
+            graphAttrs.add(CONTEXT, ctx);
             actions.accept(this, ctx);
             return this;
         });
+    }
+
+    public MutableGraph reuse(ThrowingBiConsumer<MutableGraph, CreationContext> actions) {
+        final Object c = graphAttrs.get(CONTEXT);
+        if (c instanceof CreationContext) {
+            return ((CreationContext) c).reuse(ctx -> {
+                actions.accept(this, ctx);
+                return this;
+            });
+        }
+        return use(actions);
     }
 
     public MutableGraph setStrict(boolean strict) {

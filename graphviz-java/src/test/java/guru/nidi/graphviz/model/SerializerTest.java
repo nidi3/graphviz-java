@@ -214,6 +214,12 @@ class SerializerTest {
                 "digraph {\nedge ['dir'='none']\n'a' -> {\nedge ['dir'='forward']\n'b' -> 'c'\n}\n}");
     }
 
+    @Test
+    void privateAttribute() {
+        assertSerialize(graph().graphAttr().with("$a", "b").with(node("a").with("$b", "c")),
+                "graph {\n'a'\n}");
+    }
+
     private void assertSerialize(Graph graph, String expectedString, ValidatorMessage... expectedMessages) {
         assertEquals(expectedString.replace("'", "\""), ser.serializer.serialize(graph));
         assertEquals(asList(expectedMessages), ser.messages);

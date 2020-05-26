@@ -124,9 +124,12 @@ class SerializerImpl {
     }
 
     private void attributes(String name, Attributes<?> attributed, Scope scope, Location location) {
-        if (!attributed.isEmpty()) {
-            str.append(name);
-            attrs(attributed, scope, location);
+        final int len = str.length();
+        str.append(name);
+        attrs(attributed, scope, location);
+        if (str.length() == len + name.length()) {
+            str.delete(len, str.length());
+        } else {
             str.append('\n');
         }
     }
@@ -235,19 +238,19 @@ class SerializerImpl {
     }
 
     private void attrs(Attributes<?> attrs, Scope scope, Location location) {
-        if (!attrs.isEmpty()) {
-            str.append(" [");
-            boolean first = true;
-            for (final Entry<String, Object> attr : attrs) {
-                if (attr.getValue() != null) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        str.append(',');
-                    }
-                    attr(attr.getKey(), attr.getValue(), scope, location);
+        boolean first = true;
+        for (final Entry<String, Object> attr : attrs) {
+            if (!attr.getKey().startsWith("$") && attr.getValue() != null) {
+                if (first) {
+                    str.append(" [");
+                    first = false;
+                } else {
+                    str.append(',');
                 }
+                attr(attr.getKey(), attr.getValue(), scope, location);
             }
+        }
+        if (!first) {
             str.append(']');
         }
     }
