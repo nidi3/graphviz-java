@@ -37,7 +37,12 @@ public final class Arrow extends SingleAttributes<String, ForLink> {
             NONE = new Arrow("none"),
             NORMAL = new Arrow("normal"),
             TEE = new Arrow("tee"),
-            VEE = new Arrow("vee");
+            VEE = new Arrow("vee"),
+            EMPTY = NORMAL.open(),
+            INV_EMPTY = INV.open(),
+            EDIAMOND = DIAMOND.open(),
+            OPEN = VEE,
+            HALF_OPEN = VEE.left();
 
     private Arrow(String key, String value) {
         super(key, value);
