@@ -71,7 +71,7 @@ public final class SystemUtils {
 
     public static String uriPathOf(String path) {
         if (IS_OS_WINDOWS) {
-            return (path.substring(1, 3).equals(":\\") ? "/" : "") + path.replace('\\', '/');
+            return (path.startsWith(":\\", 1) ? "/" : "") + path.replace('\\', '/');
         }
         return path;
     }

@@ -34,6 +34,7 @@ import static guru.nidi.graphviz.engine.TempFiles.tempDir;
 import static guru.nidi.graphviz.service.CommandRunner.isExecutableFile;
 import static guru.nidi.graphviz.service.CommandRunner.isExecutableFound;
 import static guru.nidi.graphviz.service.SystemUtils.pathOf;
+import static guru.nidi.graphviz.service.SystemUtils.uriPathOf;
 import static java.util.Locale.ENGLISH;
 
 /**
@@ -42,7 +43,7 @@ import static java.util.Locale.ENGLISH;
  * @author daank
  */
 public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractGraphvizEngine.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GraphvizCmdLineEngine.class);
     static final boolean AVAILABLE = isOnClasspath("org/apache/commons/exec/CommandLine.class");
 
     @Nullable
@@ -126,8 +127,10 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
                 + " -K" + options.engine.toString().toLowerCase(ENGLISH)
                 + " -T" + completeFormat(options.format, rasterizer)
                 + " " + dotFile.getAbsolutePath() + " -ooutfile." + simpleFormat;
+        LOG.info("input  file://{}", uriPathOf(dotFile));
         cmdRunner.exec(command, path.toFile(), timeout);
         final Path outFile = path.resolve("outfile." + simpleFormat);
+        LOG.info("output file://{}", uriPathOf(outFile.toFile()));
         if (rasterizer instanceof BuiltInRasterizer) {
             return EngineResult.fromFile(outFile.toFile());
         }
