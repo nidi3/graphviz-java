@@ -187,4 +187,13 @@ class ReadmeTest {
         g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex8.png"));
         //## image
     }
+
+    @Test
+    void ex9() throws IOException {
+        //## processor
+        Graphviz g = Graphviz.fromGraph(graph().with(node("bad word").link("god word")))
+                .preProcessor((source, options, processOptions) -> source.replace("bad word", "unicorn"));
+        g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex9.png"));
+        //## image
+    }
 }

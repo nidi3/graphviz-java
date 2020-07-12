@@ -15,6 +15,9 @@
  */
 package guru.nidi.graphviz.engine;
 
-public interface GraphvizFilter {
-    EngineResult filter(Format format, EngineResult engineResult);
+@FunctionalInterface
+public interface GraphvizPreProcessor extends GraphvizProcessor {
+    default EngineResult postProcess(EngineResult result, Options options, ProcessOptions processOptions) {
+        return result;
+    }
 }

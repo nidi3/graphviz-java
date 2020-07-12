@@ -21,7 +21,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static guru.nidi.graphviz.engine.Format.SVG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FormatTest {
@@ -48,9 +47,8 @@ class FormatTest {
     @ParameterizedTest
     @MethodSource
     void postProcess(Entry<String, String> values) {
-        assertEquals(EngineResult.fromString(values.getValue()), SVG.postProcess(
-                Graphviz.fromString("graph {dpi=96}"),
-                EngineResult.fromString(START1_7 + values.getKey())));
+        assertEquals(EngineResult.fromString(values.getValue()), new SvgSizeAdjuster().postProcess(
+                EngineResult.fromString(START1_7 + values.getKey()), Options.create(), Graphviz.fromString("graph {dpi=96}").processOptions));
     }
 
     static Set<Entry<String, String>> postProcess() {

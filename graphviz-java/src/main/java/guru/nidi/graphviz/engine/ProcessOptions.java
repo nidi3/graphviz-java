@@ -15,11 +15,11 @@
  */
 package guru.nidi.graphviz.engine;
 
-class ProcessOptions {
-    final int width;
-    final int height;
-    final double scale;
-    final double dpi;
+public class ProcessOptions {
+    public final int width;
+    public final int height;
+    public final double scale;
+    public final double dpi;
 
     ProcessOptions() {
         this(0, 0, 1, 72);

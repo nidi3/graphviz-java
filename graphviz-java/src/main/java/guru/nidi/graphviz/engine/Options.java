@@ -58,8 +58,8 @@ public final class Options {
             BASE_DIR = Pattern.compile("basedir:'(.*?)'"),
             IMAGES = Pattern.compile("images:\\[(.*?)]");
 
-    final Engine engine;
-    final Format format;
+    public final Engine engine;
+    public final Format format;
     @Nullable
     final Integer totalMemory;
     @Nullable

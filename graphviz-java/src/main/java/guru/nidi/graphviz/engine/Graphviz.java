@@ -45,6 +45,8 @@ public final class Graphviz {
 
     private static final Logger LOG = LoggerFactory.getLogger(Graphviz.class);
 
+    private static final List<GraphvizProcessor> DEFAULT_PROCESSORS =
+            asList(new InvalidCharsRemover(), new SvgSizeAdjuster(), new SvgImagePathsRestorer());
     private static final Pattern DPI_PATTERN = Pattern.compile("\"?dpi\"?\\s*=\\s*\"?([0-9.]+)\"?", CASE_INSENSITIVE);
 
     @Nullable
@@ -63,23 +65,23 @@ public final class Graphviz {
     final Rasterizer rasterizer;
     final ProcessOptions processOptions;
     final Options options;
-    private final List<GraphvizFilter> filters;
+    private final List<GraphvizProcessor> processors;
     @Nullable
     private final Consumer<ValidatorMessage> messageConsumer;
 
     private Graphviz(@Nullable MutableGraph graph, @Nullable String src, ProcessOptions processOptions) {
-        this(graph, src, Rasterizer.DEFAULT, processOptions, Options.create(), new ArrayList<>(), null);
+        this(graph, src, Rasterizer.DEFAULT, processOptions, Options.create(), DEFAULT_PROCESSORS, null);
     }
 
     private Graphviz(@Nullable MutableGraph graph, @Nullable String src, Rasterizer rasterizer,
                      ProcessOptions processOptions, Options options,
-                     List<GraphvizFilter> filters, @Nullable Consumer<ValidatorMessage> messageConsumer) {
+                     List<GraphvizProcessor> processors, @Nullable Consumer<ValidatorMessage> messageConsumer) {
         this.graph = graph;
         this.src = src;
         this.rasterizer = rasterizer;
         this.processOptions = processOptions;
         this.options = options;
-        this.filters = filters;
+        this.processors = processors;
         this.messageConsumer = messageConsumer;
     }
 
@@ -213,48 +215,58 @@ public final class Graphviz {
     }
 
     public Graphviz engine(Engine engine) {
-        return new Graphviz(graph, src, rasterizer, processOptions, options.engine(engine), filters, messageConsumer);
+        return new Graphviz(
+                graph, src, rasterizer, processOptions, options.engine(engine), processors, messageConsumer);
     }
 
     public Graphviz totalMemory(@Nullable Integer totalMemory) {
         final Options opts = options.totalMemory(totalMemory);
-        return new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
+        return new Graphviz(graph, src, rasterizer, processOptions, opts, processors, messageConsumer);
     }
 
     public Graphviz yInvert(@Nullable Boolean yInvert) {
         final Options opts = options.yInvert(yInvert);
-        return new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
+        return new Graphviz(graph, src, rasterizer, processOptions, opts, processors, messageConsumer);
     }
 
     public Graphviz basedir(File basedir) {
         final Options opts = options.basedir(basedir);
-        return new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
+        return new Graphviz(graph, src, rasterizer, processOptions, opts, processors, messageConsumer);
     }
 
     public Graphviz width(int width) {
-        return new Graphviz(graph, src, rasterizer, processOptions.width(width), options, filters, messageConsumer);
+        return new Graphviz(graph, src, rasterizer, processOptions.width(width), options, processors, messageConsumer);
     }
 
     public Graphviz height(int height) {
-        return new Graphviz(graph, src, rasterizer, processOptions.height(height), options, filters, messageConsumer);
+        return new Graphviz(
+                graph, src, rasterizer, processOptions.height(height), options, processors, messageConsumer);
     }
 
     public Graphviz scale(double scale) {
-        return new Graphviz(graph, src, rasterizer, processOptions.scale(scale), options, filters, messageConsumer);
+        return new Graphviz(graph, src, rasterizer, processOptions.scale(scale), options, processors, messageConsumer);
     }
 
-    public Graphviz filter(GraphvizFilter filter) {
-        final ArrayList<GraphvizFilter> fs = new ArrayList<>(filters);
-        fs.add(filter);
-        return new Graphviz(graph, src, rasterizer, processOptions, options, fs, messageConsumer);
+    public Graphviz preProcessor(GraphvizPreProcessor preProcessor) {
+        return processor(preProcessor);
+    }
+
+    public Graphviz postProcessor(GraphvizPostProcessor postProcessor) {
+        return processor(postProcessor);
+    }
+
+    public Graphviz processor(GraphvizProcessor processor) {
+        final ArrayList<GraphvizProcessor> ps = new ArrayList<>(processors);
+        ps.add(processor);
+        return new Graphviz(graph, src, rasterizer, processOptions, options, ps, messageConsumer);
     }
 
     public Graphviz notValidating() {
-        return new Graphviz(graph, src, rasterizer, processOptions, options, filters, null);
+        return new Graphviz(graph, src, rasterizer, processOptions, options, processors, null);
     }
 
     public Graphviz validating(Consumer<ValidatorMessage> messageConsumer) {
-        return new Graphviz(graph, src, rasterizer, processOptions, options, filters, messageConsumer);
+        return new Graphviz(graph, src, rasterizer, processOptions, options, processors, messageConsumer);
     }
 
     public Renderer rasterize(Rasterizer rasterizer) {
@@ -264,20 +276,20 @@ public final class Graphviz {
                     + " 'org.apache.xmlgraphics:batik-rasterizer' is available on the classpath.");
         }
         final Options opts = options.format(rasterizer.format());
-        final Graphviz graphviz = new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
-        return new Renderer(graphviz, Format.PNG);
+        final Graphviz g = new Graphviz(graph, src, rasterizer, processOptions, opts, processors, messageConsumer);
+        return new Renderer(g, Format.PNG);
     }
 
     public Renderer render(Format format) {
         final Options opts = options.format(format);
-        final Graphviz g = new Graphviz(graph, src, rasterizer, processOptions, opts, filters, messageConsumer);
+        final Graphviz g = new Graphviz(graph, src, rasterizer, processOptions, opts, processors, messageConsumer);
         return new Renderer(g, format);
     }
 
     EngineResult execute() {
         final String source = src == null ? serializer().serialize(graph) : src;
         final ProcessOptions processOpts = processOptions.dpi(dpi(source));
-        return new Graphviz(graph, source, rasterizer, processOpts, options, filters, messageConsumer).doExecute();
+        return new Graphviz(graph, source, rasterizer, processOpts, options, processors, messageConsumer).doExecute();
     }
 
     private Serializer serializer() {
@@ -295,14 +307,25 @@ public final class Graphviz {
     }
 
     private EngineResult doExecute() {
-        final EngineResult result = options.format == Format.DOT
+        return applyPostProcessors(options.format == Format.DOT
                 ? EngineResult.fromString(src)
-                : getEngine().execute(options.format.preProcess(src), options, rasterizer);
-        EngineResult engineResult = options.format.postProcess(this, result);
-        for (final GraphvizFilter filter : filters) {
-            engineResult = filter.filter(options.format, engineResult);
+                : getEngine().execute(applyPreProcessors(src), options, rasterizer));
+    }
+
+    private String applyPreProcessors(String source) {
+        String src = source;
+        for (final GraphvizProcessor proc : processors) {
+            src = proc.preProcess(src, options, processOptions);
         }
-        return engineResult;
+        return src;
+    }
+
+    private EngineResult applyPostProcessors(EngineResult result) {
+        EngineResult res = result;
+        for (final GraphvizProcessor proc : processors) {
+            res = proc.postProcess(res, options, processOptions);
+        }
+        return res;
     }
 
     private static class ErrorGraphvizEngine implements GraphvizEngine {

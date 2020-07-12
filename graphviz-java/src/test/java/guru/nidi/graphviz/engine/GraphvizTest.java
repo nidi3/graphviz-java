@@ -33,8 +33,7 @@ import static guru.nidi.graphviz.engine.Rasterizer.NONE;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -116,13 +115,15 @@ class GraphvizTest {
     }
 
     @Test
-    void filter() {
+    void processor() {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph)
-                .filter((format, engineResult) -> EngineResult.fromString("hula"))
-                .filter((format, engineResult) -> engineResult.mapString((s) -> s + "2"))
+                .preProcessor((String source, Options options, ProcessOptions processOptions) ->
+                        source.replace("\"a\"", "aaa"))
+                .postProcessor((EngineResult res, Options options, ProcessOptions processOptions) ->
+                        res.mapString((s) -> s + "2"))
                 .render(SVG).toString();
-        assertEquals("hula2", result);
+        assertThat(result, startsWith("render('graph {\\naaa -- \"b\"\\n}'"));
     }
 
     private void assertThatGraphvizHasFields(Graphviz graphviz, int expectedHeight, int expectedWidth, double expectedScale) {

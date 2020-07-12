@@ -55,7 +55,7 @@ class ReadmeTest {
         );
 
         Graphviz.fromGraph(g)
-                .filter(new RoughFilter()
+                .processor(new Roughifyer()
                         .bowing(2)
                         .curveStepCount(6)
                         .roughness(1)

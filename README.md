@@ -364,7 +364,21 @@ To rasterize with batik, provide this library on the classpath:
     <version>1.10</version>
 </dependency>
 ```
-  
+
+### Processors
+Processors can be registered to futher customize what goes in and out of the graphviz engine. 
+- Pre processors change the dot file that is fed into the graphviz engine.
+- Post processor change the result of the graphviz engine (image, svg,...). 
+
+[//]: # (processor)
+```java
+Graphviz g = Graphviz.fromGraph(graph().with(node("bad word").link("god word")))
+        .preProcessor((source, options, processOptions) -> source.replace("bad word", "unicorn"));
+g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex9.png"));
+```
+[//]: # (end)
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-rough/example/ex9.png" width="200">
+
 ## Javadoc
 To use graphviz inside javadoc comments, add this to `pom.xml`:
 ```xml
@@ -403,7 +417,7 @@ public class GraphvizTaglet implements Taglet {}
 ```
 
 ## Sketchy
-To change the appearance of the graph into something more sketchy / hand drawn, the `RoughFilter` can be used.
+To change the appearance of the graph into something more sketchy / hand drawn, the `Roughifyer` processor can be used.
 First, add the rough module to the dependencies: 
 
 ```xml
@@ -414,7 +428,7 @@ First, add the rough module to the dependencies:
 </dependency>
 ```
 
-Then, apply the `RoughFilter` to the graph: 
+Then, apply the `Roughifyer` to the graph: 
 
 [//]: # (rough)
 ```java
@@ -436,7 +450,7 @@ final Graph g = graph("ex1").directed().with(
 );
 
 Graphviz.fromGraph(g)
-        .filter(new RoughFilter()
+        .processor(new Roughifyer()
                 .bowing(2)
                 .curveStepCount(6)
                 .roughness(1)
