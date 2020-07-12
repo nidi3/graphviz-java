@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.engine;
+package guru.nidi.graphviz.model;
 
-import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.model.Link;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.annotation.Nullable;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.*;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 import java.io.*;
+import java.util.function.Consumer;
 
 public class SvgElementFinder {
-    private static final DocumentBuilderFactory FACTORY = DocumentBuilderFactory.newInstance();
-    private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
+    private static final DocumentBuilderFactory FACTORY = builderFactory();
+    private static final TransformerFactory TRANSFORMER_FACTORY = transformerFactory();
     private static final VariableResolver RESOLVER = new VariableResolver();
     private static final XPath X_PATH = xPath(RESOLVER);
     private static final XPathExpression EXPR_G = pathExpression(X_PATH, "//g");
@@ -42,11 +41,17 @@ public class SvgElementFinder {
     private static final XPathExpression EXPR_TITLE_OR = pathExpression(X_PATH, "//title[text()=$var or text()=$alt]");
     private final Document doc;
 
+    public static String use(String svg, Consumer<SvgElementFinder> actions) {
+        final SvgElementFinder finder = new SvgElementFinder(svg);
+        actions.accept(finder);
+        return finder.getSvg();
+    }
+
     public SvgElementFinder(String svg) {
         try {
             doc = builder().parse(new InputSource(new StringReader(svg)));
         } catch (SAXException | IOException e) {
-            throw new GraphvizException("Could not read SVG", e);
+            throw new AssertionError("Could not read SVG", e);
         }
     }
 
@@ -60,50 +65,71 @@ public class SvgElementFinder {
         }
     }
 
-    public Node findGraph() {
-        return nodeExpr(EXPR_G, "");
+    public Element findGraph() {
+        return (Element) nodeExpr(EXPR_G, "");
     }
 
     @Nullable
-    public Node findNode(guru.nidi.graphviz.model.Node node) {
+    public Element findNode(guru.nidi.graphviz.model.Node node) {
         return findNode(node.name().toString());
     }
 
     @Nullable
-    public Node findNode(String name) {
-        final Node title = nodeExpr(EXPR_TITLE, name);
-        return title == null ? null : title.getParentNode();
+    public Element findNode(String name) {
+        final org.w3c.dom.Node title = nodeExpr(EXPR_TITLE, name);
+        return title == null ? null : (Element) title.getParentNode();
     }
 
     @Nullable
-    public Node findLink(Link link) {
+    public Element findLink(Link link) {
         return findLink(link.from().name().toString(), link.to().name().toString());
     }
 
     @Nullable
-    public Node findLink(String from, String to) {
-        final Node title = nodeExpr(EXPR_TITLE_OR, from + "--" + to);
-        return title == null ? null : title.getParentNode();
+    public Element findLink(String from, String to) {
+        final org.w3c.dom.Node title = nodeExpr(EXPR_TITLE_OR, from + "--" + to);
+        return title == null ? null : (Element) title.getParentNode();
     }
 
     @Nullable
-    public Node findCluster(Graph cluster) {
+    public Element findCluster(Graph cluster) {
         return findCluster(cluster.name().toString());
     }
 
     @Nullable
-    public Node findCluster(String name) {
-        final Node title = nodeExpr(EXPR_TITLE, "cluster_" + name);
-        return title == null ? null : title.getParentNode();
+    public Element findCluster(String name) {
+        final org.w3c.dom.Node title = nodeExpr(EXPR_TITLE, "cluster_" + name);
+        return title == null ? null : (Element) title.getParentNode();
     }
 
     @Nullable
-    private Node nodeExpr(XPathExpression expr, String var) {
+    private org.w3c.dom.Node nodeExpr(XPathExpression expr, String var) {
         RESOLVER.set(var);
         try {
-            return (Node) expr.evaluate(doc, XPathConstants.NODE);
+            return (org.w3c.dom.Node) expr.evaluate(doc, XPathConstants.NODE);
         } catch (XPathExpressionException e) {
             throw new AssertionError("Could not execute XPath", e);
+        }
+    }
+
+    private static DocumentBuilderFactory builderFactory() {
+        try {
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            return factory;
+        } catch (ParserConfigurationException e) {
+            throw new AssertionError("Could not initialize DOM", e);
+        }
+    }
+
+    private static TransformerFactory transformerFactory() {
+        try {
+            final TransformerFactory factory = TransformerFactory.newInstance();
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            return factory;
+        } catch (TransformerConfigurationException e) {
+            throw new AssertionError("Could not initialize DOM", e);
         }
     }
 
@@ -111,7 +137,7 @@ public class SvgElementFinder {
         try {
             return FACTORY.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-            throw new RuntimeException("Could not initialize DOM", e);
+            throw new AssertionError("Could not initialize DOM", e);
         }
     }
 
@@ -130,15 +156,15 @@ public class SvgElementFinder {
     }
 
     private static class VariableResolver implements XPathVariableResolver {
-        private final static ThreadLocal<String> var = new ThreadLocal<>();
+        private static final ThreadLocal<String> VAR = new ThreadLocal<>();
 
         public void set(String value) {
-            var.set(value);
+            VAR.set(value);
         }
 
         @Override
         public Object resolveVariable(QName varName) {
-            return varName.getLocalPart().equals("var") ? var.get() : var.get().replace("--", "->");
+            return varName.getLocalPart().equals("var") ? VAR.get() : VAR.get().replace("--", "->");
         }
     }
 }
