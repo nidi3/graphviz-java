@@ -32,6 +32,7 @@ import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.engine.Rasterizer.NONE;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
+import static guru.nidi.graphviz.service.SystemUtils.uriPathOf;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -81,7 +82,7 @@ class GraphvizTest {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph).totalMemory(32000).render(SVG).toString();
         assertThat(result, is("totalMemory=32000;render('graph {\\n\"a\" -- \"b\"\\n}',"
-                + "{format:'svg',engine:'dot',totalMemory:'32000',basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
+                + "{format:'svg',engine:'dot',totalMemory:'32000',basedir:'" + uriPathOf(new File(".")) + "',images:[]});"));
     }
 
     @Test
@@ -89,7 +90,7 @@ class GraphvizTest {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph).render(SVG).toString();
         assertThat(result, is("render('graph {\\n\"a\" -- \"b\"\\n}',"
-                + "{format:'svg',engine:'dot',basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
+                + "{format:'svg',engine:'dot',basedir:'" + uriPathOf(new File(".")) + "',images:[]});"));
     }
 
     @Test
@@ -97,7 +98,7 @@ class GraphvizTest {
         final Graph graph = graph().with(node("a").link("b"));
         final String result = Graphviz.fromGraph(graph).yInvert(true).render(SVG).toString();
         assertThat(result, is("render('graph {\\n\"a\" -- \"b\"\\n}',"
-                + "{format:'svg',engine:'dot',yInvert:true,basedir:'" + new File(".").getAbsolutePath() + "',images:[]});"));
+                + "{format:'svg',engine:'dot',yInvert:true,basedir:'" + uriPathOf(new File(".")) + "',images:[]});"));
     }
 
     @Test

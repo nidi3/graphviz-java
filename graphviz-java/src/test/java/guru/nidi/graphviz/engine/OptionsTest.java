@@ -66,27 +66,27 @@ class OptionsTest {
     @Test
     void toJsonMinimal() {
         final String s = Options.create().engine(Engine.DOT).format(Format.PNG).toJson(false);
-        assertEquals("{format:'svg',engine:'dot',basedir:'" + new File(".").getAbsolutePath() + "',images:[]}", s);
+        assertEquals("{format:'svg',engine:'dot',basedir:'" + uriPathOf(new File(".")) + "',images:[]}", s);
     }
 
     @Test
     void toJsonEmptyImages() {
         final File basedir = new File("/hula");
         final String s = Options.create().engine(Engine.DOT).format(Format.PNG).totalMemory(42).yInvert(true).basedir(basedir).toJson(false);
-        assertEquals("{format:'svg',engine:'dot',totalMemory:'42',yInvert:true,basedir:'" + basedir.getAbsolutePath() + "',images:[]}", s);
+        assertEquals("{format:'svg',engine:'dot',totalMemory:'42',yInvert:true,basedir:'" + uriPathOf(basedir) + "',images:[]}", s);
     }
 
     @Test
     void toJsonOneImage() {
         final String s = Options.create().engine(Engine.DOT).format(Format.PNG).basedir(new File("example")).image("ex1.png").toJson(false);
-        assertEquals("{format:'svg',engine:'dot',basedir:'" + new File("example").getAbsolutePath() + "',images:[" +
+        assertEquals("{format:'svg',engine:'dot',basedir:'" + uriPathOf(new File("example")) + "',images:[" +
                 "{path:'" + uriPathOf(new File("example/ex1.png")) + "',width:'550px',height:'100px'}]}", s);
     }
 
     @Test
     void toJsonTwoImages() {
         final String s = Options.create().engine(Engine.DOT).format(Format.PNG).basedir(new File("example")).image("ex1.png").image("ex2.png").toJson(false);
-        assertEquals("{format:'svg',engine:'dot',basedir:'" + new File("example").getAbsolutePath() + "',images:["
+        assertEquals("{format:'svg',engine:'dot',basedir:'" + uriPathOf(new File("example")) + "',images:["
                 + "{path:'" + uriPathOf(new File("example/ex1.png")) + "',width:'550px',height:'100px'},"
                 + "{path:'" + uriPathOf(new File("example/ex2.png")) + "',width:'900px',height:'964px'}]}", s);
     }
