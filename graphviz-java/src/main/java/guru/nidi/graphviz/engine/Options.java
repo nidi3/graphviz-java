@@ -159,7 +159,7 @@ public final class Options {
         final String eng = ",engine:'" + (raw ? engine : engine.toString().toLowerCase(ENGLISH)) + "'";
         final String mem = totalMemory == null ? "" : (",totalMemory:'" + totalMemory + "'");
         final String yInv = yInvert == null ? "" : (",yInvert:" + yInvert);
-        final String base = ",basedir:'" + basedir.getAbsolutePath() + "'";
+        final String base = ",basedir:'" + uriPathOf(basedir) + "'";
         final String imgs = ",images:[" + images.stream().map(Image::toJson).collect(joining(",")) + "]";
         return "{" + form + eng + mem + yInv + base + imgs + "}";
     }
