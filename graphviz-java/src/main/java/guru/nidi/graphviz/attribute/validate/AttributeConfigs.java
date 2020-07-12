@@ -48,6 +48,7 @@ final class AttributeConfigs {
         add("bgcolor", entry("GC", asList(COLOR, COLOR_LIST)));
         add("center", entry("G", BOOL, false));
         add("charset", entry("G", STRING, "UTF-8"));
+        add("class", entry("ENGC", STRING));
         add("clusterrank", entry("G", CLUSTER_MODE, "local").engines(DOT));
         add("color", entry("ENC", asList(COLOR, COLOR_LIST), "black"));
         add("colorscheme", entry("ENCG", STRING, ""));
