@@ -40,7 +40,7 @@ This project is available via Maven:
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-java</artifactId>
-    <version>0.16.3</version>
+    <version>0.17.0</version>
 </dependency>
 ```
 
@@ -165,7 +165,7 @@ digraph example1 {
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-kotlin</artifactId>
-    <version>0.16.3</version>
+    <version>0.17.0</version>
 </dependency>
 ```
 
@@ -372,13 +372,13 @@ Processors can be registered to futher customize what goes in and out of the gra
 
 [//]: # (processor)
 ```java
-Graph graph = graph().with(node("bad word").link("god word"));
+Graph graph = graph().with(node("bad word").link("good word"));
 Graphviz g = Graphviz.fromGraph(graph)
         .preProcessor((source, options, processOptions) -> source.replace("bad word", "unicorn"))
         .postProcessor(((result, options, processOptions) ->
                 result.mapString(svg ->
                         SvgElementFinder.use(svg, finder -> {
-                            finder.findNode("unicorn").setAttribute("class", "red");
+                            finder.findNode("unicorn").setAttribute("class", "pink");
                         })
                 )
         ));
@@ -400,7 +400,7 @@ To use graphviz inside javadoc comments, add this to `pom.xml`:
         <tagletArtifact>
           <groupId>guru.nidi</groupId>
           <artifactId>graphviz-taglet</artifactId>
-          <version>0.16.3</version>
+          <version>0.17.0</version>
         </tagletArtifact>
       </configuration>
     </plugin>
@@ -432,7 +432,7 @@ First, add the rough module to the dependencies:
 <dependency>
     <groupId>guru.nidi</groupId>
     <artifactId>graphviz-rough</artifactId>
-    <version>0.16.3</version>
+    <version>0.17.0</version>
 </dependency>
 ```
 
