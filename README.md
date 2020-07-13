@@ -366,7 +366,7 @@ To rasterize with batik, provide this library on the classpath:
 ```
 
 ### Processors
-Processors can be registered to futher customize what goes in and out of the graphviz engine. 
+Processors can be registered to further customize what goes in and out of the graphviz engine. 
 - Pre processors change the dot file that is fed into the graphviz engine.
 - Post processor change the result of the graphviz engine (image, svg,...). 
 
@@ -385,7 +385,7 @@ Graphviz g = Graphviz.fromGraph(graph)
 g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex9.png"));
 ```
 [//]: # (end)
-<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-rough/example/ex9.png" width="200">
+<img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex9.png" width="200">
 
 ## Javadoc
 To use graphviz inside javadoc comments, add this to `pom.xml`:
