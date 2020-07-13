@@ -375,13 +375,11 @@ Processors can be registered to further customize what goes in and out of the gr
 Graph graph = graph().with(node("bad word").link("good word"));
 Graphviz g = Graphviz.fromGraph(graph)
         .preProcessor((source, options, processOptions) -> source.replace("bad word", "unicorn"))
-        .postProcessor(((result, options, processOptions) ->
+        .postProcessor((result, options, processOptions) ->
                 result.mapString(svg ->
                         SvgElementFinder.use(svg, finder -> {
                             finder.findNode("unicorn").setAttribute("class", "pink");
-                        })
-                )
-        ));
+                        })));
 g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex9.png"));
 ```
 [//]: # (end)
