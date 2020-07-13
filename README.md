@@ -101,21 +101,26 @@ The basic usage is as follows (assuming `import static guru.nidi.graphviz.model.
 ```java
 Graph g = graph("example1").directed()
         .graphAttr().with(Rank.dir(LEFT_TO_RIGHT))
+        .nodeAttr().with(Font.name("arial"))
+        .linkAttr().with("class", "link-class")
         .with(
                 node("a").with(Color.RED).link(node("b")),
-                node("b").link(to(node("c")).with(Style.DASHED))
+                node("b").link(
+                        to(node("c")).with(attr("weight", 5), Style.DASHED)
+                )
         );
 Graphviz.fromGraph(g).height(100).render(Format.PNG).toFile(new File("example/ex1.png"));
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1.png" height="100">
 
-Global attributes are set using the `graphAttr`, `linkAttr` and `nodeAttr` methods.
-Nodes are styled using the `with` method. 
-To style edges, use the static method `to` which returns a `Link` that also has a `with` method.
-The `with` method accepts predefined attributes like `Style`, `Arrow` or `Shape` 
+- Global attributes are set using the `graphAttr`, `linkAttr` and `nodeAttr` methods.
+- Nodes are styled using the `with` method. 
+- To style edges, use the static method `to` which returns a `Link` that also has a `with` method.
+- The `with` method accepts predefined attributes like `Style`, `Arrow` or `Shape` 
 as well as everything defined in the [Graphviz reference](https://graphviz.gitlab.io/_pages/doc/info/attrs.html)
-e.g. `with("weight", 5)`
+e.g. `with("weight", 5)` or even arbitrary custom attributes.
+- Custom attribute classes can be defined by extending `SingleAttributes` or `MapAttributes`.
  
 **Attention:** `Node a = node("a"); a.with(Color.RED);` Is not working as it might be expected. 
 All "mutating" methods like `with` on nodes, links and graphs create new objects and leave the original object unchanged.
@@ -131,6 +136,11 @@ Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex1m.png" width="100">
+
+The mutable API provides similar functions as the immutable one with slightly different syntax:
+- `mutGraph` instead of `graph`, `mutNode` instead of `node`
+- use setters: `setDirected` instead of `directed`
+- `add` instead of `width`  
 
 ### Imperative
 There is a third possibility to use the API, based on the mutable version.
@@ -380,7 +390,7 @@ Graphviz g = Graphviz.fromGraph(graph)
                         SvgElementFinder.use(svg, finder -> {
                             finder.findNode("unicorn").setAttribute("class", "pink");
                         })));
-g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex9.png"));
+g.render(Format.PNG).toFile(new File("example/ex9.png"));
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-java/example/ex9.png" width="200">

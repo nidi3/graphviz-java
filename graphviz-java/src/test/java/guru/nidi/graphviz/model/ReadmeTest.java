@@ -24,6 +24,7 @@ import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
+import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.attribute.Label.Justification.LEFT;
 import static guru.nidi.graphviz.attribute.Rank.RankDir.LEFT_TO_RIGHT;
 import static guru.nidi.graphviz.attribute.Records.rec;
@@ -48,12 +49,16 @@ class ReadmeTest {
         //## basic
         Graph g = graph("example1").directed()
                 .graphAttr().with(Rank.dir(LEFT_TO_RIGHT))
+                .nodeAttr().with(Font.name("arial"))
+                .linkAttr().with("class", "link-class")
                 .with(
                         node("a").with(Color.RED).link(node("b")),
-                        node("b").link(to(node("c")).with(Style.DASHED))
+                        node("b").link(
+                                to(node("c")).with(attr("weight", 5), Style.DASHED)
+                        )
                 );
         Graphviz.fromGraph(g).height(100).render(Format.PNG).toFile(new File("example/ex1.png"));
-        //## end
+        //##
     }
 
     @Test
@@ -62,7 +67,7 @@ class ReadmeTest {
         MutableGraph g = mutGraph("example1").setDirected(true).add(
                 mutNode("a").add(Color.RED).addLink(mutNode("b")));
         Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1m.png"));
-        //## end
+        //##
     }
 
     @Test
@@ -74,7 +79,7 @@ class ReadmeTest {
             mutNode("a").addLink(mutNode("b"));
         });
         Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1i.png"));
-        //## end
+        //##
     }
 
     @Test
@@ -100,7 +105,7 @@ class ReadmeTest {
                 init.link(mkString));
 
         Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex2.png"));
-        //## end
+        //##
     }
 
     @Test
@@ -127,7 +132,7 @@ class ReadmeTest {
                         node2.link(between(port("p"), node6.port(NORTH_WEST))),
                         node4.link(between(port("p"), node7.port(SOUTH_WEST))));
         Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File("example/ex3.png"));
-        //## end
+        //##
     }
 
     @Test
@@ -146,7 +151,7 @@ class ReadmeTest {
                             Style.lineWidth(4).and(Style.FILLED)));
             Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-2.png"));
         }
-        //## end
+        //##
     }
 
     @Test
@@ -163,7 +168,7 @@ class ReadmeTest {
         String dot = viz.render(Format.DOT).toString();
         String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
         BufferedImage image = viz.render(Format.PNG).toImage();
-        //## end
+        //##
         end();
         init();
     }
@@ -176,7 +181,7 @@ class ReadmeTest {
         Graphviz g = Graphviz.fromGraph(graph()
                 .with(node(Label.html("<table border='0'><tr><td><img src='graphviz.png' /></td></tr></table>"))));
         g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex7.png"));
-        //## img
+        //##
     }
 
     @Test
@@ -185,7 +190,7 @@ class ReadmeTest {
         Graphviz g = Graphviz.fromGraph(graph()
                 .with(node(" ").with(Size.std().margin(.8, .7), Image.of("graphviz.png"))));
         g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex8.png"));
-        //## image
+        //##
     }
 
     @Test
@@ -199,7 +204,7 @@ class ReadmeTest {
                                 SvgElementFinder.use(svg, finder -> {
                                     finder.findNode("unicorn").setAttribute("class", "pink");
                                 })));
-        g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex9.png"));
-        //## image
+        g.render(Format.PNG).toFile(new File("example/ex9.png"));
+        //##
     }
 }
