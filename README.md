@@ -372,8 +372,16 @@ Processors can be registered to futher customize what goes in and out of the gra
 
 [//]: # (processor)
 ```java
-Graphviz g = Graphviz.fromGraph(graph().with(node("bad word").link("god word")))
-        .preProcessor((source, options, processOptions) -> source.replace("bad word", "unicorn"));
+Graph graph = graph().with(node("bad word").link("god word"));
+Graphviz g = Graphviz.fromGraph(graph)
+        .preProcessor((source, options, processOptions) -> source.replace("bad word", "unicorn"))
+        .postProcessor(((result, options, processOptions) ->
+                result.mapString(svg ->
+                        SvgElementFinder.use(svg, finder -> {
+                            finder.findNode("unicorn").setAttribute("class", "red");
+                        })
+                )
+        ));
 g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex9.png"));
 ```
 [//]: # (end)

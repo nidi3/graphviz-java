@@ -191,8 +191,16 @@ class ReadmeTest {
     @Test
     void ex9() throws IOException {
         //## processor
-        Graphviz g = Graphviz.fromGraph(graph().with(node("bad word").link("god word")))
-                .preProcessor((source, options, processOptions) -> source.replace("bad word", "unicorn"));
+        Graph graph = graph().with(node("bad word").link("good word"));
+        Graphviz g = Graphviz.fromGraph(graph)
+                .preProcessor((source, options, processOptions) -> source.replace("bad word", "unicorn"))
+                .postProcessor(((result, options, processOptions) ->
+                        result.mapString(svg ->
+                                SvgElementFinder.use(svg, finder -> {
+                                    finder.findNode("unicorn").setAttribute("class", "pink");
+                                })
+                        )
+                ));
         g.basedir(new File("example")).render(Format.PNG).toFile(new File("example/ex9.png"));
         //## image
     }

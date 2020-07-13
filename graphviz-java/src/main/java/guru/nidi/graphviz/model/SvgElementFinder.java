@@ -39,6 +39,7 @@ public class SvgElementFinder {
     private static final XPathExpression EXPR_G = pathExpression(X_PATH, "//g");
     private static final XPathExpression EXPR_TITLE = pathExpression(X_PATH, "//title[text()=$var]");
     private static final XPathExpression EXPR_TITLE_OR = pathExpression(X_PATH, "//title[text()=$var or text()=$alt]");
+    private final boolean hasHeader;
     private final Document doc;
 
     public static String use(String svg, Consumer<SvgElementFinder> actions) {
@@ -50,6 +51,7 @@ public class SvgElementFinder {
     public SvgElementFinder(String svg) {
         try {
             doc = builder().parse(new InputSource(new StringReader(svg)));
+            hasHeader = svg.startsWith("<?xml");
         } catch (SAXException | IOException e) {
             throw new AssertionError("Could not read SVG", e);
         }
@@ -59,7 +61,8 @@ public class SvgElementFinder {
         final StringWriter sw = new StringWriter();
         try {
             TRANSFORMER_FACTORY.newTransformer().transform(new DOMSource(doc), new StreamResult(sw));
-            return sw.toString();
+            final String out = sw.toString().replace("xmlns=\"\"", ""); //rasterizer don't like empty xmlns !?
+            return hasHeader ? out : out.substring(out.indexOf("?>") + 2);
         } catch (TransformerException e) {
             throw new AssertionError("Could not generate string from DOM", e);
         }

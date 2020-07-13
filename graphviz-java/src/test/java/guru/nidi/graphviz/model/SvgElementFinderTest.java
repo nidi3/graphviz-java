@@ -17,7 +17,6 @@ package guru.nidi.graphviz.model;
 
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.*;
 import org.junit.jupiter.api.Test;
 
 import static guru.nidi.graphviz.engine.Format.SVG;
