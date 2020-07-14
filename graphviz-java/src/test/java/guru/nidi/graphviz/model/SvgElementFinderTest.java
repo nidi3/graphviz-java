@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.model.Factory.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SvgElementFinderTest {
