@@ -10,6 +10,10 @@
     <artifactId>graphviz-taglet</artifactId>
     <name>${project.artifactId}</name>
 
+    <properties>
+        <module.name>guru.nidi.graphviz.taglet</module.name>
+    </properties>
+
     <build>
         <plugins>
             <plugin>

@@ -11,6 +11,10 @@
     <artifactId>graphviz-java</artifactId>
     <name>${project.artifactId}</name>
 
+    <properties>
+        <module.name>guru.nidi.graphviz</module.name>
+    </properties>
+
     <build>
         <plugins>
             <plugin>

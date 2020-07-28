@@ -13,6 +13,7 @@
 
     <properties>
         <kotlin.version>1.3.61</kotlin.version>
+        <module.name>guru.nidi.graphviz.kotlin</module.name>
     </properties>
 
     <build>

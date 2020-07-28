@@ -11,6 +11,10 @@
     <artifactId>graphviz-rough</artifactId>
     <name>${project.artifactId}</name>
 
+    <properties>
+        <module.name>guru.nidi.graphviz.rough</module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>

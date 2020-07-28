@@ -11,6 +11,10 @@
     <artifactId>graphviz-java-all-j2v8</artifactId>
     <name>${project.artifactId}</name>
 
+    <properties>
+        <module.name>guru.nidi.graphviz.allj2v8</module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>

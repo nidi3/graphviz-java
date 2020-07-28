@@ -11,6 +11,10 @@
     <artifactId>graphviz-java-min-deps</artifactId>
     <name>${project.artifactId}</name>
 
+    <properties>
+        <module.name>guru.nidi.graphviz.mindeps</module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
