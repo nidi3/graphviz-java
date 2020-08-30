@@ -48,6 +48,7 @@ public final class Shape extends SingleAttributes<String, ForNode> {
             INV_HOUSE = new Shape("invhouse"),
             M_DIAMOND = new Shape("Mdiamond"),
             M_SQUARE = new Shape("Msquare"),
+            M_RECORD = new Shape("Mrecord"),
             M_CIRCLE = new Shape("Mcircle"),
             RECT = new Shape("rect"),
             RECTANGLE = new Shape("rectangle"),
