@@ -371,7 +371,7 @@ To rasterize with batik, provide this library on the classpath:
 <dependency>
     <groupId>org.apache.xmlgraphics</groupId>
     <artifactId>batik-rasterizer</artifactId>
-    <version>1.10</version>
+    <version>1.13</version>
 </dependency>
 ```
 
