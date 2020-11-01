@@ -1,6 +1,6 @@
 {
   "name": "graphviz-rough",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "scripts": {
     "webpack": "webpack"
   },
