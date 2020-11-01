@@ -18,13 +18,11 @@ package guru.nidi.graphviz.parse;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity;
-import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +36,7 @@ import static guru.nidi.graphviz.model.Link.between;
 import static guru.nidi.graphviz.model.Link.to;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ParserTest {
     Pars pars = new Pars();
@@ -183,6 +182,29 @@ class ParserTest {
     void cluster() throws IOException {
         assertParse("graph { subgraph cluster_sub {} }",
                 mutGraph().add(mutGraph("sub").setCluster(true)));
+    }
+
+    @Test
+    void comment() throws IOException {
+        assertParse("graph //bla \n#blu \n {/*hula*/}", mutGraph());
+    }
+
+    @Test
+    void missingBrace() {
+        final ParserException e = assertThrows(ParserException.class, () -> pars.parser.read("graph\n { a-b"));
+        assertException("'}' expected.", 2, 7, e);
+    }
+
+    @Test
+    void missingNodeOrSubgraph() {
+        final ParserException e = assertThrows(ParserException.class, () -> pars.parser.read("graph\n { a-- }"));
+        assertException("node or 'graph' or '{' expected.", 2, 9, e);
+    }
+
+    private void assertException(String message, int line, int col, ParserException e) {
+        assertEquals(message, e.getMessage());
+        assertEquals(line, e.getPosition().getLine());
+        assertEquals(col, e.getPosition().getCol());
     }
 
     private void assertParse(String input, MutableGraph expectedGraph, ValidatorMessage... expectedMessages) throws IOException {

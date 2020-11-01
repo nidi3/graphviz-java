@@ -180,7 +180,7 @@ class Lexer {
     }
 
     private void sync() throws IOException {
-        if (ch <= ' ') {
+        if (ch <= ' ' && ch != CH_EOF) {
             readChar();
         }
     }
@@ -190,16 +190,6 @@ class Lexer {
             readRawChar();
             if (ch == '/') {
                 readComment();
-            } else if (ch == '\n') {
-                pos.newLine();
-                final char next = readRawChar();
-                if (next == '#') {
-                    do {
-                        readRawChar();
-                    } while (ch != '\n' && ch != CH_EOF);
-                } else {
-                    unread('\n', next);
-                }
             }
         } while (ch <= ' ' && ch != CH_EOF);
     }
@@ -224,6 +214,25 @@ class Lexer {
     }
 
     private char readRawChar() throws IOException {
+        if (ch != CH_EOF) {
+            doReadRawChar();
+            if (ch == '\n') {
+                pos.newLine();
+                final char next = doReadRawChar();
+                if (next == '#') {
+                    do {
+                        doReadRawChar();
+                    } while (ch != '\n' && ch != CH_EOF);
+                    pos.newChar();
+                } else {
+                    unread('\n', next);
+                }
+            }
+        }
+        return ch;
+    }
+
+    private char doReadRawChar() throws IOException {
         pos.newChar();
         return ch = (char) in.read();
     }

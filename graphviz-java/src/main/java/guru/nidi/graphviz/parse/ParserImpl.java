@@ -56,7 +56,7 @@ final class ParserImpl {
             if (token.type == DIGRAPH) {
                 graph.setDirected(true);
             } else if (token.type != GRAPH) {
-                fail("'graph' or 'digraph' expected");
+                fail("'graph' or 'digraph' expected.");
             }
             nextToken();
             if (token.type == ID) {
@@ -169,6 +169,8 @@ final class ParserImpl {
                 points.add(nodeId(id));
             } else if (token.type == SUBGRAPH || token.type == BRACE_OPEN) {
                 points.add(subgraph(graph.isDirected()));
+            } else {
+                fail("node or 'graph' or '{' expected.");
             }
         } while (token.type == MINUS_MINUS || token.type == ARROW);
         final List<Token> attrs = (token.type == BRACKET_OPEN) ? attributeList(Scope.EDGE) : Collections.emptyList();
@@ -182,7 +184,7 @@ final class ParserImpl {
 
     private Compass compass(String name) {
         return Compass.of(name).orElseThrow(() ->
-                new ParserException(lexer.pos, "Invalid compass value '" + name + "'"));
+                new ParserException(lexer.pos, "Invalid compass value '" + name + "'."));
     }
 
     private void nodeStatement(MutableGraph graph, PortNode nodeId) throws IOException {
@@ -321,7 +323,7 @@ final class ParserImpl {
 
     private void checkToken(int type) {
         if (token.type != type) {
-            fail("'" + Token.desc(type) + "' expected");
+            fail("'" + Token.desc(type) + "' expected.");
         }
     }
 
