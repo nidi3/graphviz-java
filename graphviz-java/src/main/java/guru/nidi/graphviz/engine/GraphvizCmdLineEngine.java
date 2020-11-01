@@ -35,7 +35,11 @@ import static guru.nidi.graphviz.service.CommandRunner.isExecutableFile;
 import static guru.nidi.graphviz.service.CommandRunner.isExecutableFound;
 import static guru.nidi.graphviz.service.SystemUtils.pathOf;
 import static guru.nidi.graphviz.service.SystemUtils.uriPathOf;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Locale.ENGLISH;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Engine that tries to parse the dot file using the GraphvizEngine installed on the host.
@@ -48,6 +52,7 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
     @Nullable
     private final String executable;
+    private final List<Option> cmdOptions;
     private final String envPath;
     private final CommandRunner cmdRunner;
 
@@ -57,26 +62,30 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     private String outputFileName;
 
     public GraphvizCmdLineEngine() {
-        this(null, Optional.ofNullable(System.getenv("PATH")).orElse(""), runner(defaultExecutor()));
+        this(null, emptyList(), Optional.ofNullable(System.getenv("PATH")).orElse(""),
+                runner(defaultExecutor()));
     }
 
-    public GraphvizCmdLineEngine(String executable) {
-        this(executable, Optional.ofNullable(System.getenv("PATH")).orElse(""), runner(defaultExecutor()));
+    public GraphvizCmdLineEngine(String executable, Option... options) {
+        this(executable, asList(options), Optional.ofNullable(System.getenv("PATH")).orElse(""),
+                runner(defaultExecutor()));
     }
 
-    private GraphvizCmdLineEngine(@Nullable String executable, String envPath, CommandRunner cmdRunner) {
+    private GraphvizCmdLineEngine(@Nullable String executable, List<Option> options,
+                                  String envPath, CommandRunner cmdRunner) {
         super(true);
         this.executable = executable;
+        this.cmdOptions = options;
         this.envPath = envPath;
         this.cmdRunner = cmdRunner;
     }
 
     public GraphvizCmdLineEngine searchPath(String path) {
-        return new GraphvizCmdLineEngine(executable, path, cmdRunner);
+        return new GraphvizCmdLineEngine(executable, cmdOptions, path, cmdRunner);
     }
 
     public GraphvizCmdLineEngine executor(CommandLineExecutor executor) {
-        return new GraphvizCmdLineEngine(executable, envPath, runner(executor));
+        return new GraphvizCmdLineEngine(executable, cmdOptions, envPath, runner(executor));
     }
 
     private static CommandRunner runner(CommandLineExecutor executor) {
@@ -121,11 +130,20 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
 
     private EngineResult doExecute(Path path, File dotFile, Options options, Rasterizer rasterizer)
             throws IOException, InterruptedException {
+        final List<Option> nonMatchingOptions = cmdOptions.stream()
+                .filter(o -> (o instanceof NeatoOption && options.engine != Engine.NEATO)
+                        || (o instanceof FdpOption && options.engine != Engine.FDP))
+                .collect(toList());
+        if (!nonMatchingOptions.isEmpty()) {
+            LOG.warn("Option(s) '" + nonMatchingOptions.stream().map(o -> o.name).collect(joining(", "))
+                    + "' are not supported by engine " + options.engine);
+        }
         final String simpleFormat = simpleFormat(options.format, rasterizer);
         final String command = getEngineExecutable()
                 + (options.yInvert != null && options.yInvert ? " -y" : "")
                 + " -K" + options.engine.toString().toLowerCase(ENGLISH)
                 + " -T" + completeFormat(options.format, rasterizer)
+                + " " + cmdOptions.stream().map(o -> o.name).collect(joining(" "))
                 + " " + dotFile.getAbsolutePath() + " -ooutfile." + simpleFormat;
         LOG.info("input  file://{}", uriPathOf(dotFile));
         cmdRunner.exec(command, path.toFile(), timeout);
@@ -192,5 +210,52 @@ public class GraphvizCmdLineEngine extends AbstractGraphvizEngine {
     public void setDotOutputFile(String path, String name) {
         outputFilePath = path;
         outputFileName = name;
+    }
+
+    public static class Option {
+        final String name;
+
+        protected Option(String name) {
+            this.name = name;
+        }
+    }
+
+    public static final class NeatoOption extends Option {
+        public static final NeatoOption REDUCE_GRAPH = new NeatoOption("-x");
+        public static final NeatoOption NO_LAYOUT_AVOID_OVERLAP = new NeatoOption("-n");
+        public static final NeatoOption NO_LAYOUT_ALLOW_OVERLAP = new NeatoOption("-n2");
+
+        private NeatoOption(String name) {
+            super(name);
+        }
+    }
+
+    public static final class FdpOption extends Option {
+        public static final FdpOption NO_GRID = new FdpOption("-Lg");
+        public static final FdpOption OLD_FORCE = new FdpOption("-LO");
+
+        private FdpOption(String name) {
+            super(name);
+        }
+
+        public static FdpOption iterations(int n) {
+            return new FdpOption("-Ln" + n);
+        }
+
+        public static FdpOption unscaledFactor(double v) {
+            return new FdpOption("-LU" + v);
+        }
+
+        public static FdpOption overlapExpansionFactor(double v) {
+            return new FdpOption("-LC" + v);
+        }
+
+        public static FdpOption temperature(double v) {
+            return new FdpOption("-LT" + v);
+        }
+
+        public static FdpOption temperatureFactor(double v) {
+            return new FdpOption("-LT*" + v);
+        }
     }
 }
