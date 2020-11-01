@@ -22,6 +22,13 @@ import static guru.nidi.graphviz.attribute.NodeAttr.nodeAttr;
 public final class Shape extends SingleAttributes<String, ForNode> {
     private static final String SHAPE = "shape";
 
+    /**
+     * Records are better supported by the {@link Records} class.
+     */
+    public static final Shape
+            RECORD = new Shape("record"),
+            M_RECORD = new Shape("Mrecord");
+
     public static final Shape
             BOX = new Shape("box"),
             ELLIPSE = new Shape("ellipse"),
@@ -48,7 +55,6 @@ public final class Shape extends SingleAttributes<String, ForNode> {
             INV_HOUSE = new Shape("invhouse"),
             M_DIAMOND = new Shape("Mdiamond"),
             M_SQUARE = new Shape("Msquare"),
-            M_RECORD = new Shape("Mrecord"),
             M_CIRCLE = new Shape("Mcircle"),
             RECT = new Shape("rect"),
             RECTANGLE = new Shape("rectangle"),

@@ -22,6 +22,7 @@ public final class Records {
     private static final String
             SHAPE = "shape",
             RECORD = "record",
+            M_RECORD = "Mrecord",
             LABEL = "label";
 
     private Records() {
@@ -32,7 +33,7 @@ public final class Records {
     }
 
     public static Attributes<ForNode> mLabel(String label) {
-        return attrs(attr(SHAPE, "Mrecord"), attr(LABEL, label));
+        return attrs(attr(SHAPE, M_RECORD), attr(LABEL, label));
     }
 
     public static Attributes<ForNode> of(String... recs) {
@@ -40,7 +41,7 @@ public final class Records {
     }
 
     public static Attributes<ForNode> mOf(String... recs) {
-        return attrs(attr(SHAPE, "Mrecord"), attr(LABEL, String.join("|", recs)));
+        return attrs(attr(SHAPE, M_RECORD), attr(LABEL, String.join("|", recs)));
     }
 
     public static String rec(String tag, String label) {
