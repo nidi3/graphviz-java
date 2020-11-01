@@ -5,7 +5,7 @@
     <parent>
         <groupId>guru.nidi</groupId>
         <artifactId>graphviz-java-parent</artifactId>
-        <version>0.17.1</version>
+        <version>0.17.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>graphviz-java-min-deps</artifactId>
