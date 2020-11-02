@@ -25,6 +25,11 @@ import static guru.nidi.graphviz.attribute.Label.Location.TOP;
 import static java.util.stream.Collectors.joining;
 
 public final class Label extends SimpleLabel implements Attributes<ForAll> {
+    public static final String NODE_NAME = "\\N";
+    public static final String GRAPH_NAME = "\\G";
+    public static final String HEAD_NAME = "\\H";
+    public static final String TAIL_NAME = "\\T";
+
     public enum Justification {
         LEFT, MIDDLE, RIGHT
     }
@@ -67,7 +72,7 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
      * @return the Label
      */
     public static Label nodeName() {
-        return of("\\N");
+        return of(NODE_NAME);
     }
 
     /**
@@ -76,7 +81,7 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
      * @return the Label
      */
     public static Label graphName() {
-        return of("\\G");
+        return of(GRAPH_NAME);
     }
 
     /**
@@ -85,7 +90,7 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
      * @return the Label
      */
     public static Label headName() {
-        return of("\\H");
+        return of(HEAD_NAME);
     }
 
     /**
@@ -94,7 +99,7 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
      * @return the Label
      */
     public static Label tailName() {
-        return of("\\T");
+        return of(TAIL_NAME);
     }
 
     /**

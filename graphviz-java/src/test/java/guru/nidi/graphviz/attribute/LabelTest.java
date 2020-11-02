@@ -60,4 +60,83 @@ class LabelTest {
         assertEquals(attrs(attr("label", label.locate(BOTTOM)), attr("labelloc", "b")), attrs(label.locate(BOTTOM)));
     }
 
+    @Test
+    void nodeName() {
+        assertEquals("\\N", Label.nodeName().value());
+    }
+
+    @Test
+    void graphName() {
+        assertEquals("\\G", Label.graphName().value());
+    }
+
+    @Test
+    void headName() {
+        assertEquals("\\H", Label.headName().value());
+    }
+
+    @Test
+    void tailName() {
+        assertEquals("\\T", Label.tailName().value());
+    }
+
+    @Test
+    void lines() {
+        assertEquals("a\nb\nc\n", Label.lines("a", "b", "c").value);
+        assertEquals("a\\lb\\lc\\l", Label.lines(LEFT, "a", "b", "c").value);
+        assertEquals("a\\rb\\rc\\r", Label.lines(RIGHT, "a", "b", "c").value);
+    }
+
+    @Test
+    void htmlLines() {
+        assertEquals("a<br/>b<br/>", Label.htmlLines("a", "b").value);
+        assertEquals("a<br align=\"left\"/>b<br align=\"left\"/>", Label.htmlLines(LEFT, "a", "b").value);
+        assertEquals("a<br align=\"right\"/>b<br align=\"right\"/>", Label.htmlLines(RIGHT, "a", "b").value);
+    }
+
+    @Test
+    void html() {
+        assertEquals("<html>", Label.html("html").serialized());
+    }
+
+    @Test
+    void backslashAtEnd() {
+        assertEquals("\"a\\\\\"", Label.of("a\\").serialized());
+        assertEquals("\"a\\\\\"", Label.of("a\\\\").serialized());
+    }
+
+    @Test
+    void newlines() {
+        assertEquals("\"1\\n2\\n3\\n4\\n\\n5\"", Label.of("1\n2\r3\r\n4\n\r5").serialized());
+    }
+
+    @Test
+    void markdown() {
+        assertEquals("a<br/>b <b>b<i>ol</i>d</b> <s>s</s> <sub>sub</sub> <sup>sup</sup> <o>o</o> *",
+                Label.markdown("a\nb **b*ol*d** ~~s~~ __sub__ ^^sup^^ ^o^ \\*").value);
+    }
+
+    @Test
+    void raw() {
+        assertEquals("\"hula\"", Label.raw("hula").serialized());
+        assertEquals("<hula>", Label.raw("<hula>").serialized());
+        assertEquals("<hula<b>bold</b>**star**>", Label.raw("<hula<b>bold</b>**star**>").serialized());
+        assertEquals("<hula<b>bold</b>>", Label.raw("<hula**bold**>").serialized());
+    }
+
+    @Test
+    void head() {
+        assertEquals(attrs(attr("headlabel", EndLabel.head(Label.of("hula"), null, null))),
+                attrs(label.head()));
+        assertEquals(attrs(attr("headlabel", EndLabel.head(Label.of("hula"), 1.2, 3.4)), attr("labelangle", 1.2), attr("labeldistance", 3.4)),
+                attrs(label.head(1.2, 3.4)));
+    }
+
+    @Test
+    void tail() {
+        assertEquals(attrs(attr("taillabel", EndLabel.tail(Label.of("hula"), null, null))),
+                attrs(label.tail()));
+        assertEquals(attrs(attr("taillabel", EndLabel.tail(Label.of("hula"), 1.2, 3.4)), attr("labelangle", 1.2), attr("labeldistance", 3.4)),
+                attrs(label.tail(1.2, 3.4)));
+    }
 }
