@@ -113,10 +113,10 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                                 .ignore("JUnitTestContainsTooManyAsserts"),
                         In.locs("DatatypeTest").ignore("TestClassWithoutTestCases"),
                         In.loc("SerializerImpl").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
-                        In.locs("ThrowingFunction", "GraphvizLoader").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
+                        In.locs("ThrowingFunction", "GraphvizLoader", "GraphvizServerTest").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.locs("GraphvizServer", "SerializerImpl").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
-                        In.loc("CommandRunnerTest").ignore("JUnitTestsShouldIncludeAssert"),
+                        In.locs("CommandRunnerTest", "EngineResultTest", "GraphvizServerTest").ignore("JUnitTestsShouldIncludeAssert"),
                         In.locs("Lexer", "ParserImpl", "ImmutableGraph", "MutableGraph", "Label#applyTo", "Rank$GraphRank#applyTo", "Options#toJson", "Options#fromJson")
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)

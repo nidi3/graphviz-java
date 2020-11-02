@@ -35,6 +35,8 @@ import java.util.function.Supplier;
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.engine.Format.SVG_STANDALONE;
 import static guru.nidi.graphviz.engine.FormatTest.START1_7;
+import static guru.nidi.graphviz.engine.GraphvizCmdLineEngine.FdpOption;
+import static guru.nidi.graphviz.engine.GraphvizCmdLineEngine.NeatoOption;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -159,6 +161,30 @@ class EngineTest {
 
         final String actual = Graphviz.fromString("graph g {a--b}").render(SVG_STANDALONE).toString();
         assertThat(actual, startsWith(START1_7.replace("\n", System.lineSeparator())));
+    }
+
+    @Test
+    void cmdLineNeato() throws IOException, InterruptedException {
+        Graphviz.useEngine(new GraphvizCmdLineEngine("dot", NeatoOption.NO_LAYOUT_ALLOW_OVERLAP, NeatoOption.REDUCE_GRAPH)
+                .searchPath(fakeDotFile().getParent())
+                .executor(argumentsCommandExecutor()));
+
+        final File file = new File("target/out.svg");
+        Graphviz.fromString("graph g {a--b}").render(SVG).toFile(file);
+        assertThat(new String(Files.readAllBytes(file.toPath()), UTF_8), containsString("-n2 -x"));
+    }
+
+    @Test
+    void cmdLineFdp() throws IOException, InterruptedException {
+        Graphviz.useEngine(new GraphvizCmdLineEngine("dot",
+                FdpOption.NO_GRID, FdpOption.OLD_FORCE, FdpOption.overlapExpansionFactor(1.2), FdpOption.iterations(3),
+                FdpOption.unscaledFactor(2.3), FdpOption.temperature(42))
+                .searchPath(fakeDotFile().getParent())
+                .executor(argumentsCommandExecutor()));
+
+        final File file = new File("target/out.svg");
+        Graphviz.fromString("graph g {a--b}").render(SVG).toFile(file);
+        assertThat(new String(Files.readAllBytes(file.toPath()), UTF_8), containsString("-Lg -LO -LC1.2 -Ln3 -LU2.3 -LT42.0"));
     }
 
     @Test
