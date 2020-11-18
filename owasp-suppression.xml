@@ -6,4 +6,25 @@
         <cve>CVE-2020-2900</cve>
         <cpe>cpe:2.3:a:oracle:graalvm:20.0.0</cpe>
     </suppress>
+    <suppress>
+        <cve>CVE-2020-15366</cve>
+        <cpe>cpe:2.3:a:ajv.js:ajv:6.12.2</cpe>
+    </suppress>
+    <suppress>
+        <cve>CVE-2020-13822</cve>
+        <vulnerabilityName>1547</vulnerabilityName>
+        <vulnerabilityName>CWE-190: Integer Overflow or Wraparound</vulnerabilityName>
+        <cpe>cpe:2.3:a:*:elliptic:6.5.2</cpe>
+    </suppress>
+    <suppress>
+        <vulnerabilityName>1548</vulnerabilityName>
+        <vulnerabilityName>CWE-502: Deserialization of Untrusted Data</vulnerabilityName>
+        <cpe>cpe:2.3:a:*:serialize-javascript:2.1.2</cpe>
+    </suppress>
+    <suppress>
+        <cve>CVE-2020-8203</cve>
+        <vulnerabilityName>1523</vulnerabilityName>
+        <vulnerabilityName>CWE-770: Allocation of Resources Without Limits or Throttling</vulnerabilityName>
+        <cpe>cpe:2.3:a:*:lodash:4.17.15</cpe>
+    </suppress>
 </suppressions>
