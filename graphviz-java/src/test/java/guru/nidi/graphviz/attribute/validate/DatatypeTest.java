@@ -93,4 +93,23 @@ class DatatypeTest {
             assertMessage("has the invalid color value '.4,.5,.6,.7'.", ".4,.5,.6,.7");
         }
     }
+
+    @Nested
+    class Style extends DatatypeTestBase {
+        Style() {
+            super(Datatypes.STYLE);
+        }
+
+        @Test
+        void styleOk() {
+            assertOk("dashed");
+            assertOk("dashed,filled, wedged");
+        }
+
+        @Test
+        void styleNok() {
+            assertMessage("has the invalid style value(s) 'hula'.", "hula");
+            assertMessage("has the invalid style value(s) 'bla, hula'.", "bla,dashed,hula");
+        }
+    }
 }

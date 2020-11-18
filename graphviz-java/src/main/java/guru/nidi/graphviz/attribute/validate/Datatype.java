@@ -15,7 +15,13 @@
  */
 package guru.nidi.graphviz.attribute.validate;
 
+import java.lang.reflect.Field;
+import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toSet;
 
 abstract class Datatype {
     final String name;
@@ -78,4 +84,28 @@ abstract class Datatype {
             return null;
         }
     }
+
+    static Set<String> fieldNames(Class<?> clazz) {
+        final Field valueField = silently(() -> {
+            try {
+                return clazz.getDeclaredField("value");
+            } catch (ReflectiveOperationException e) {
+                return clazz.getSuperclass().getDeclaredField("value");
+            }
+        });
+        valueField.setAccessible(true);
+        return Stream.of(clazz.getFields())
+                .filter(f -> f.getType() == clazz)
+                .map(f -> silently(() -> (String) valueField.get(f.get(null))))
+                .collect(toSet());
+    }
+
+    private static <T> T silently(Callable<T> s) {
+        try {
+            return s.call();
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
+    }
+
 }

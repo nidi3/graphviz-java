@@ -15,30 +15,18 @@
  */
 package guru.nidi.graphviz.attribute.validate;
 
-import guru.nidi.graphviz.attribute.Shape;
-
-import java.util.Set;
-
 import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
 
-class ShapeDatatype extends Datatype {
-    private static final Set<String> NAMES = shapeNames();
-
-    private static Set<String> shapeNames() {
-        final Set<String> names = fieldNames(Shape.class);
-        names.add("polygon");
-        return names;
-    }
-
-    ShapeDatatype() {
-        super("shape");
+class ColorDatatype extends Datatype {
+    ColorDatatype() {
+        super("color");
     }
 
     @Override
     ValidatorMessage validate(Object value) {
-        if (!NAMES.contains(value.toString())) {
-            return new ValidatorMessage(ERROR, "has the invalid shape '" + value + "'.");
-        }
-        return null;
+        return matches(value, "#%x%x ?%x%x ?%x%x( ?%x%x)?")
+                || matches(value, "%n[, ]+%n[, ]+%n")
+                || matches(value, "[/A-Za-z][/0-9A-Za-z]*")
+                ? null : new ValidatorMessage(ERROR, "has the invalid " + name + " value '" + value + "'.");
     }
 }

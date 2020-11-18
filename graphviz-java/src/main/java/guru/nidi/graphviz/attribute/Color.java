@@ -15,7 +15,10 @@
  */
 package guru.nidi.graphviz.attribute;
 
+import java.util.stream.Stream;
+
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
+import static java.util.stream.Collectors.joining;
 
 public class Color extends SingleAttributes<String, ForAll> {
     private Color(String key, String value) {
@@ -43,10 +46,22 @@ public class Color extends SingleAttributes<String, ForAll> {
     }
 
     public Color gradient(Color c) {
-        return new Color(value + ":" + c.value);
+        return and(c);
     }
 
     public Color gradient(Color c, double at) {
+        return and(c, at);
+    }
+
+    public Color and(Color c) {
+        return new Color(value + ":" + c.value);
+    }
+
+    public Color and(Color... cs) {
+        return new Color(value + ":" + Stream.of(cs).map(c -> c.value).collect(joining(":")));
+    }
+
+    public Color and(Color c, double at) {
         return new Color(value + ":" + c.value + ";" + at);
     }
 
@@ -54,12 +69,23 @@ public class Color extends SingleAttributes<String, ForAll> {
         return attrs(this, new SingleAttributes<>("gradientangle", angle));
     }
 
-    public Attributes<ForAll> radial() {
+    public Attributes<ForGraphNode> radial() {
         return radial(0);
     }
 
-    public Attributes<ForAll> radial(int angle) {
-        return attrs(this, new SingleAttributes<>("gradientangle", angle), Style.RADIAL);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Attributes<ForGraphNode> radial(int angle) {
+        return attrs((Attributes) this, new SingleAttributes<>("gradientangle", angle), Style.RADIAL);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Attributes<ForGraphNode> striped() {
+        return attrs((Attributes) this, Style.STRIPED);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Attributes<ForGraphNode> wedged() {
+        return attrs((Attributes) this, Style.WEDGED);
     }
 
     public static Color rgb(String rgb) {

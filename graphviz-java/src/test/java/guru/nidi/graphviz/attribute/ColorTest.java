@@ -94,13 +94,13 @@ class ColorTest {
     }
 
     @Test
-    void gradient() {
-        assertColor(attr("color", "red:blue"), Color.RED.gradient(Color.BLUE));
+    void and() {
+        assertColor(attr("color", "red:blue"), Color.RED.and(Color.BLUE));
     }
 
     @Test
-    void gradientAt() {
-        assertColor(attr("color", "red:blue;0.3"), Color.RED.gradient(Color.BLUE, .3));
+    void andAt() {
+        assertColor(attr("color", "red:blue;0.3"), Color.RED.and(Color.BLUE, .3));
     }
 
     @Test
@@ -112,6 +112,18 @@ class ColorTest {
     void radial() {
         assertEquals(attrs(attr("color", "red"), attr("style", "radial"), attr("gradientangle", 45)),
                 Color.RED.radial(45));
+    }
+
+    @Test
+    void striped() {
+        assertEquals(attrs(attr("color", "red:green"), attr("style", "striped")),
+                Color.RED.and(Color.GREEN).striped());
+    }
+
+    @Test
+    void wedged() {
+        assertEquals(attrs(attr("color", "red:blue:green"), attr("style", "wedged")),
+                Color.RED.and(Color.BLUE, Color.GREEN).wedged());
     }
 
     private void assertColor(Attributes value, Color color) {

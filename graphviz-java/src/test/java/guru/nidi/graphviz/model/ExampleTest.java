@@ -362,7 +362,7 @@ class ExampleTest {
         final Attributes<ForAll> attr = attrs(Color.rgb("bbbbbb"), Color.rgb("bbbbbb").font(), Font.name("Arial"));
         final Graph g = graph("ex8").directed()
                 .graphAttr().with(Color.rgb("444444").background())
-                .nodeAttr().with(Style.FILLED.and(Style.ROUNDED), attr, Color.BLACK.font(), Color.rgb("bbbbbb").fill(), Shape.RECTANGLE)
+                .nodeAttr().with(Style.combine(Style.DASHED, Style.ROUNDED), attr, Color.BLACK.font(), Color.rgb("bbbbbb").fill(), Shape.RECTANGLE)
                 .linkAttr().with(Color.rgb("888888"), Style.lineWidth(2))
                 .with(
                         node("input").link(split.link(redString, redNum)),

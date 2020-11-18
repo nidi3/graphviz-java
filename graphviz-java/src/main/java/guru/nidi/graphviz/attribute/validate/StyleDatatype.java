@@ -15,30 +15,28 @@
  */
 package guru.nidi.graphviz.attribute.validate;
 
-import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.Style;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static guru.nidi.graphviz.attribute.validate.ValidatorMessage.Severity.ERROR;
+import static java.util.stream.Collectors.joining;
 
-class ShapeDatatype extends Datatype {
-    private static final Set<String> NAMES = shapeNames();
+//TODO support shape dependent styles
+class StyleDatatype extends Datatype {
+    private static final Set<String> STYLES = fieldNames(Style.class);
 
-    private static Set<String> shapeNames() {
-        final Set<String> names = fieldNames(Shape.class);
-        names.add("polygon");
-        return names;
-    }
-
-    ShapeDatatype() {
-        super("shape");
+    StyleDatatype() {
+        super("style");
     }
 
     @Override
     ValidatorMessage validate(Object value) {
-        if (!NAMES.contains(value.toString())) {
-            return new ValidatorMessage(ERROR, "has the invalid shape '" + value + "'.");
-        }
-        return null;
+        final String[] styles = value.toString().split(",");
+        final String invalids = Stream.of(styles).filter(s -> !STYLES.contains(s.trim())).collect(joining(", "));
+        return invalids.isEmpty()
+                ? null
+                : new ValidatorMessage(ERROR, "has the invalid " + name + " value(s) '" + invalids + "'.");
     }
 }

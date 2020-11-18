@@ -24,7 +24,8 @@ import guru.nidi.codeassert.findbugs.*;
 import guru.nidi.codeassert.junit.CodeAssertJunit5Test;
 import guru.nidi.codeassert.model.Model;
 import guru.nidi.codeassert.pmd.*;
-import guru.nidi.graphviz.attribute.*;
+import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.validate.ValidatorMessage;
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.*;
@@ -117,7 +118,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("GraphvizServer", "SerializerImpl").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.locs("CommandRunnerTest", "EngineResultTest", "GraphvizServerTest").ignore("JUnitTestsShouldIncludeAssert"),
-                        In.locs("Lexer", "ParserImpl", "ImmutableGraph", "MutableGraph", "Label#applyTo", "Rank$GraphRank#applyTo", "Options#toJson", "Options#fromJson")
+                        In.locs("Lexer", "ParserImpl", "ImmutableGraph", "MutableGraph", "Label#applyTo", "Rank$GraphRank#applyTo", "Options#toJson", "Options#fromJson", "Style")
                                 .ignore("CyclomaticComplexity", "StdCyclomaticComplexity", "ModifiedCyclomaticComplexity", "NPathComplexity"),
                         In.classes(GraphvizJdkEngine.class, GraphvizV8Engine.class, GraphvizServerEngine.class, AbstractGraphvizEngine.class)
                                 .ignore("PreserveStackTrace", "SignatureDeclareThrowsException", "AvoidCatchingGenericException"),
@@ -138,7 +139,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.clazz(CommandRunner.class).ignore("OptimizableToArrayCall"),
                         In.everywhere().ignore("SimplifyStartsWith"))
                 .because("It's wrapping an Exception with a RuntimeException",
-                        In.classes(Graphviz.class, CreationContext.class).ignore("AvoidCatchingGenericException"));
+                        In.locs("Graphviz", "CreationContext", "Datatype").ignore("AvoidCatchingGenericException"));
         return new PmdAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector)
                 .withRulesets(PmdConfigs.defaultPmdRulesets())
                 .analyze();
@@ -160,7 +161,6 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(CheckstyleConfigs.minimalCheckstyleIgnore())
                 .just(In.locs("Color", "Arrow", "Rank", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr").ignore("empty.line.separator"))
-                .just(In.clazz(For.class).ignore("one.top.level.class"))
                 .just(In.locs("EngineResult", "IOFunction").ignore("abbreviation.as.word"))
                 .just(In.clazz(Renderer.class).ignore("indentation.error"));
         final StyleChecks checks = CheckstyleConfigs.adjustedGoogleStyleChecks();

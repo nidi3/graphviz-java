@@ -67,23 +67,10 @@ final class Datatypes {
     static final Datatype SMOOTH_TYPE = new PatternDatatype("smooth type",
             "none|avg_dist|graph_dist|power_dist|rng|spring|triangle");
     static final Datatype START_TYPE = new PatternDatatype("start type", "(regular|self|random)?.*");
-    static final Datatype STYLE = new Datatype("style") { //TODO
-        @Override
-        ValidatorMessage validate(Object value) {
-            return null;
-        }
-    };
+    static final Datatype STYLE = new StyleDatatype();
     static final Datatype SHAPE = new ShapeDatatype();
     static final Datatype VIEW_PORT = new PatternDatatype("view port", "%f,%f(,%f(,(%f,%f|'.*'))?)?");
-    static final Datatype COLOR = new Datatype("color") {
-        @Override
-        ValidatorMessage validate(Object value) {
-            return matches(value, "#%x%x ?%x%x ?%x%x( ?%x%x)?")
-                    || matches(value, "%n[, ]+%n[, ]+%n")
-                    || matches(value, "[/A-Za-z][/0-9A-Za-z]*")
-                    ? null : new ValidatorMessage(ERROR, "has the invalid " + name + " value '" + value + "'.");
-        }
-    };
+    static final Datatype COLOR = new ColorDatatype();
     static final Datatype COLOR_LIST = new ColorListDatatype();
 
     private Datatypes() {

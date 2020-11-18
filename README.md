@@ -239,7 +239,7 @@ try (InputStream dot = getClass().getResourceAsStream("/color.dot")) {
             .nodes().forEach(node ->
             node.add(
                     Color.named(node.name().toString()),
-                    Style.lineWidth(4).and(Style.FILLED)));
+                    Style.lineWidth(4), Style.FILLED));
     Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-2.png"));
 }
 ```
