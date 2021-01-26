@@ -3,8 +3,7 @@
 [![codecov](https://codecov.io/gh/nidi3/graphviz-java/branch/master/graph/badge.svg)](https://codecov.io/gh/nidi3/graphviz-java)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/guru.nidi/graphviz-java/badge.svg)](https://maven-badges.herokuapp.com/maven-central/guru.nidi/graphviz-java)
-[![Beerpay](https://beerpay.io/nidi3/graphviz-java/badge.svg?style=beer)](https://beerpay.io/nidi3/graphviz-java)
-[![Beerpay](https://beerpay.io/nidi3/graphviz-java/make-wish.svg?style=plastic)](https://beerpay.io/nidi3/graphviz-java?focus=wish)
+[![](https://img.shields.io/github/sponsors/nidi3?style=social)](https://github.com/sponsors/nidi3)
 
 Use graphviz with pure java. Create graphviz models using java code and convert them into nice graphics.
 
@@ -477,9 +476,3 @@ Graphviz.fromGraph(g)
 ```
 [//]: # (end)
 <img src="https://rawgit.com/nidi3/graphviz-java/master/graphviz-rough/example/ex1-rough.png" width="200">
-
-## Support on Beerpay
-I like :beers:!
-
-[![Beerpay](https://beerpay.io/nidi3/graphviz-java/badge.svg?style=beer)](https://beerpay.io/nidi3/graphviz-java)
-[![Beerpay](https://beerpay.io/nidi3/graphviz-java/make-wish.svg?style=plastic)](https://beerpay.io/nidi3/graphviz-java?focus=wish)
