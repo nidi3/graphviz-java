@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
+import guru.nidi.graphviz.attribute.Named;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -29,9 +30,13 @@ public class GraphElementFinder extends SvgElementFinder {
 
     GraphElementFinder(SvgElementFinder finder, MutableGraph graph) {
         super(finder);
-        nodes = graph.nodes().stream().collect(toMap(n -> n.name().simpleSerialized(), n -> n));
-        links = graph.edges().stream().collect(toMap(e -> e.from().name().simpleSerialized() + "--" + e.to().name().simpleSerialized(), e -> e));
-        graphs = graph.graphs().stream().collect(toMap(g -> g.name().simpleSerialized(), g -> g));
+        nodes = graph.nodes().stream().collect(toMap(n -> name(n), n -> n));
+        links = graph.edges().stream().collect(toMap(e -> name(e.from()) + "--" + name(e.to()), e -> e));
+        graphs = graph.graphs().stream().collect(toMap(g -> name(g), g -> g));
+    }
+
+    private static String name(Named named) {
+        return named.name().simpleSerialized();
     }
 
     public MutableNode nodeOf(Element e) {

@@ -18,18 +18,10 @@ package guru.nidi.graphviz.engine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static guru.nidi.graphviz.engine.Format.*;
-import static java.util.regex.Pattern.DOTALL;
 
 class SvgSizeAdjuster implements GraphvizPostProcessor {
     private static final Logger LOG = LoggerFactory.getLogger(SvgSizeAdjuster.class);
-    private static final Pattern SVG_PATTERN = Pattern.compile(
-            "<svg width=\"(?<width>\\d+)(?<unit>p[tx])\" height=\"(?<height>\\d+)p[tx]\""
-                    + "(?<between>.*?>\\R<g.*?)transform=\"scale\\((?<scaleX>[0-9.]+) (?<scaleY>[0-9.]+)\\)",
-            DOTALL);
 
     @Override
     public EngineResult postProcess(EngineResult result, Options options, ProcessOptions procOptions) {
@@ -51,17 +43,20 @@ class SvgSizeAdjuster implements GraphvizPostProcessor {
     }
 
     private static String pointsToPixels(String svg, double dpi, int width, int height, double scale) {
-        final Matcher m = SVG_PATTERN.matcher(svg);
-        if (!m.find()) {
-            LOG.warn("Generated SVG has not the expected format. There might be image size problems.");
+        try {
+            final SvgSizeAnalyzer analyzer = new SvgSizeAnalyzer(svg);
+            setSize(analyzer, width, height, scale);
+            setScale(analyzer, dpi);
+            return analyzer.adjusted();
+        } catch (IllegalArgumentException e) {
+            LOG.warn(e.getMessage());
             return svg;
         }
-        return m.replaceFirst("<svg " + svgSize(m, width, height, scale) + m.group("between") + svgScale(m, dpi));
     }
 
-    private static String svgSize(Matcher m, int width, int height, double scale) {
-        double w = Integer.parseInt(m.group("width"));
-        double h = Integer.parseInt(m.group("height"));
+    private static void setSize(SvgSizeAnalyzer analyzer, int width, int height, double scale) {
+        double w = analyzer.getWidth();
+        double h = analyzer.getHeight();
         if (width > 0 && height > 0) {
             w = width;
             h = height;
@@ -72,14 +67,14 @@ class SvgSizeAdjuster implements GraphvizPostProcessor {
             w *= height / h;
             h = height;
         }
-        return "width=\"" + Math.round(w * scale) + "px\" height=\"" + Math.round(h * scale) + "px\"";
+        analyzer.setSize((int) Math.round(w * scale), (int) Math.round(h * scale));
     }
 
-    private static String svgScale(Matcher m, double dpi) {
-        final double pixelScale = m.group("unit").equals("px") ? 1 : Math.round(10000 * dpi / 72) / 10000d;
-        final double scaleX = Double.parseDouble(m.group("scaleX")) / pixelScale;
-        final double scaleY = Double.parseDouble(m.group("scaleY")) / pixelScale;
-        return "transform=\"scale(" + scaleX + " " + scaleY + ")";
+    private static void setScale(SvgSizeAnalyzer analyzer, double dpi) {
+        final double pixelScale = analyzer.getUnit().equals("px") ? 1 : Math.round(10000 * dpi / 72) / 10000d;
+        final double scaleX = analyzer.getScaleX() / pixelScale;
+        final double scaleY = analyzer.getScaleY() / pixelScale;
+        analyzer.setScale(scaleX, scaleY);
     }
 
 }
