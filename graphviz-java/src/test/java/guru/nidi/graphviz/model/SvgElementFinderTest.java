@@ -19,8 +19,10 @@ import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.engine.Graphviz;
 import org.junit.jupiter.api.Test;
 
+import static guru.nidi.graphviz.attribute.Attributes.attr;
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.model.Factory.*;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +46,22 @@ class SvgElementFinderTest {
     }
 
     @Test
+    void findNodes() {
+        final Node a = node("a").with(attr("class", "aclass")).link(node("b").with("class", "bclass"));
+        final String svg = Graphviz.fromGraph(graph().with(a)).render(SVG).toString();
+        final SvgElementFinder finder = new SvgElementFinder(svg);
+        assertEquals("node aclass", finder.findNodes().get(0).getAttribute("class"));
+        assertEquals("node bclass", finder.findNodes().get(1).getAttribute("class"));
+    }
+
+    @Test
+    void nodeNameOf() {
+        final String svg = Graphviz.fromGraph(graph().with(node("a"))).render(SVG).toString();
+        final SvgElementFinder finder = new SvgElementFinder(svg);
+        assertEquals("a", SvgElementFinder.nodeNameOf(finder.findNodes().get(0)));
+    }
+
+    @Test
     void findEdge() {
         final Node a = node("a'").with(Label.of("hula")).link(to(node("b")).with("class", "link"));
         final String svg = Graphviz.fromGraph(graph().with(a)).render(SVG).toString();
@@ -55,12 +73,49 @@ class SvgElementFinderTest {
     }
 
     @Test
+    void findEdges() {
+        final Node b = node("b");
+        final Node a = node("a").link(to(b).with("class", "a-b"));
+        final String svg = Graphviz.fromGraph(graph().with(a, b.link(to(a).with("class", "b-a")))).render(SVG).toString();
+        final SvgElementFinder finder = new SvgElementFinder(svg);
+        assertEquals("edge a-b", finder.findLinks().get(0).getAttribute("class"));
+        assertEquals("edge b-a", finder.findLinks().get(1).getAttribute("class"));
+    }
+
+    @Test
+    void linkedNodeNamesOf() {
+        final String svg = Graphviz.fromGraph(graph().with(node("a").link("b"))).render(SVG).toString();
+        final SvgElementFinder finder = new SvgElementFinder(svg);
+        assertEquals(asList("a", "b"), SvgElementFinder.linkedNodeNamesOf(finder.findLinks().get(0)));
+    }
+
+    @Test
     void findCluster() {
         final Graph sub = graph("sub").cluster().graphAttr().with("class", "c").with(node("a"));
         final String svg = Graphviz.fromGraph(graph().with(sub)).render(SVG).toString();
         final SvgElementFinder finder = new SvgElementFinder(svg);
         assertEquals("cluster c", finder.findCluster("sub").getAttribute("class"));
         assertEquals("cluster c", finder.findCluster(sub).getAttribute("class"));
+    }
+
+    @Test
+    void findClusters() {
+        final String svg = Graphviz.fromGraph(graph().with(
+                graph("sub1").cluster().graphAttr().with("class", "c").with(node("a")),
+                graph("sub2").cluster().graphAttr().with("class", "d").with(node("b"))))
+                .render(SVG).toString();
+        final SvgElementFinder finder = new SvgElementFinder(svg);
+        assertEquals("cluster c", finder.findClusters().get(0).getAttribute("class"));
+        assertEquals("cluster d", finder.findClusters().get(1).getAttribute("class"));
+    }
+
+    @Test
+    void clusterNameOf() {
+        final String svg = Graphviz.fromGraph(graph().with(
+                graph("sub1").cluster().graphAttr().with("class", "c").with(node("a"))))
+                .render(SVG).toString();
+        final SvgElementFinder finder = new SvgElementFinder(svg);
+        assertEquals("sub1", SvgElementFinder.clusterNameOf(finder.findClusters().get(0)));
     }
 
     @Test

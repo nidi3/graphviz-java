@@ -15,8 +15,7 @@
  */
 package guru.nidi.graphviz.model;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -29,23 +28,36 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
+
+import static java.util.Arrays.asList;
 
 public class SvgElementFinder {
     private static final DocumentBuilderFactory FACTORY = builderFactory();
     private static final TransformerFactory TRANSFORMER_FACTORY = transformerFactory();
     private static final VariableResolver RESOLVER = new VariableResolver();
     private static final XPath X_PATH = xPath(RESOLVER);
-    private static final XPathExpression EXPR_G = pathExpression(X_PATH, "//g");
-    private static final XPathExpression EXPR_TITLE = pathExpression(X_PATH, "//title[text()=$var]");
-    private static final XPathExpression EXPR_TITLE_OR = pathExpression(X_PATH, "//title[text()=$var or text()=$alt]");
-    private final boolean hasHeader;
+    private static final XPathExpression
+            EXPR_G = pathExpression(X_PATH, "//g"),
+            EXPR_TITLE = pathExpression(X_PATH, "//title[text()=$var]"),
+            EXPR_TITLE_OR = pathExpression(X_PATH, "//title[text()=$var or text()=$alt]"),
+            EXPR_NODE = pathExpression(X_PATH, "//g[contains(@class,'node')]"),
+            EXPR_EDGE = pathExpression(X_PATH, "//g[contains(@class,'edge')]"),
+            EXPR_CLUSTER = pathExpression(X_PATH, "//g[contains(@class,'cluster')]");
     private final Document doc;
+    private final boolean hasHeader;
 
     public static String use(String svg, Consumer<SvgElementFinder> actions) {
         final SvgElementFinder finder = new SvgElementFinder(svg);
         actions.accept(finder);
         return finder.getSvg();
+    }
+
+    SvgElementFinder(SvgElementFinder finder) {
+        this.doc = finder.doc;
+        this.hasHeader = finder.hasHeader;
     }
 
     public SvgElementFinder(String svg) {
@@ -83,6 +95,14 @@ public class SvgElementFinder {
         return title == null ? null : (Element) title.getParentNode();
     }
 
+    public List<Element> findNodes() {
+        return listOf(nodeExpr(EXPR_NODE));
+    }
+
+    public static String nodeNameOf(Element e) {
+        return e.getElementsByTagName("title").item(0).getTextContent();
+    }
+
     @Nullable
     public Element findLink(Link link) {
         return findLink(link.from().name().toString(), link.to().name().toString());
@@ -92,6 +112,15 @@ public class SvgElementFinder {
     public Element findLink(String from, String to) {
         final org.w3c.dom.Node title = nodeExpr(EXPR_TITLE_OR, from + "--" + to);
         return title == null ? null : (Element) title.getParentNode();
+    }
+
+    public List<Element> findLinks() {
+        return listOf(nodeExpr(EXPR_EDGE));
+    }
+
+    public static List<String> linkedNodeNamesOf(Element e) {
+        final String name = e.getElementsByTagName("title").item(0).getTextContent();
+        return asList(name.split("--"));
     }
 
     @Nullable
@@ -105,6 +134,22 @@ public class SvgElementFinder {
         return title == null ? null : (Element) title.getParentNode();
     }
 
+    public List<Element> findClusters() {
+        return listOf(nodeExpr(EXPR_CLUSTER));
+    }
+
+    public static String clusterNameOf(Element e) {
+        return e.getElementsByTagName("title").item(0).getTextContent().substring("cluster_".length());
+    }
+
+    public GraphElementFinder fromGraph(Graph g) {
+        return fromGraph((MutableGraph) g);
+    }
+
+    public GraphElementFinder fromGraph(MutableGraph g) {
+        return new GraphElementFinder(this, g);
+    }
+
     @Nullable
     private org.w3c.dom.Node nodeExpr(XPathExpression expr, String var) {
         RESOLVER.set(var);
@@ -113,6 +158,22 @@ public class SvgElementFinder {
         } catch (XPathExpressionException e) {
             throw new AssertionError("Could not execute XPath", e);
         }
+    }
+
+    private org.w3c.dom.NodeList nodeExpr(XPathExpression expr) {
+        try {
+            return (org.w3c.dom.NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            throw new AssertionError("Could not execute XPath", e);
+        }
+    }
+
+    private List<Element> listOf(NodeList nodes) {
+        final List<Element> res = new ArrayList<>();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            res.add((Element) nodes.item(i));
+        }
+        return res;
     }
 
     private static DocumentBuilderFactory builderFactory() {

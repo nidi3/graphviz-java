@@ -35,7 +35,11 @@ public class SimpleLabel {
     }
 
     public String serialized() {
-        return html ? ("<" + value + ">") : quoted();
+        return html ? ("<" + value + ">") : ("\"" + quoted() + "\"");
+    }
+
+    public String simpleSerialized() {
+        return html ? value : quoted();
     }
 
     private String quoted() {
@@ -46,7 +50,7 @@ public class SimpleLabel {
         }
         final String end = endSlashes % 2 == 1 ? "\\" : "";
         //TODO check if works for cmdline engine too
-        return "\"" + value.replace("\"", "\\\"").replaceAll("\\R", "\\\\n") + end + "\"";
+        return value.replace("\"", "\\\"").replaceAll("\\R", "\\\\n") + end;
     }
 
     public String value() {
