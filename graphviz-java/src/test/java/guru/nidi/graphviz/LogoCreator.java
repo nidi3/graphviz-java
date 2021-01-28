@@ -16,7 +16,6 @@
 package guru.nidi.graphviz;
 
 import guru.nidi.graphviz.attribute.*;
-import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.Node;
@@ -28,13 +27,19 @@ import static guru.nidi.graphviz.attribute.Color.GREY80;
 import static guru.nidi.graphviz.attribute.Color.WHITE;
 import static guru.nidi.graphviz.attribute.GraphAttr.pad;
 import static guru.nidi.graphviz.attribute.Rank.RankDir.LEFT_TO_RIGHT;
+import static guru.nidi.graphviz.attribute.Size.Mode.FIXED;
+import static guru.nidi.graphviz.attribute.Style.FILLED;
+import static guru.nidi.graphviz.engine.Format.PNG;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 
-class LogoCreator {
+final class LogoCreator {
+    private LogoCreator() {
+    }
+
     public static void main(String[] args) throws IOException {
         final Image duke = Image.of("graphviz-java/src/test/resources/duke.png");
-        final Size size = Size.mode(Size.Mode.FIXED).size(30, 20);
+        final Size size = Size.mode(FIXED).size(30, 20);
         final Node d = node("b").with(Label.of(""), duke, size);
         final Node c = node("\n\n\nJava").with(duke, size).link(d);
         final Node b = node("\n\n\nGraphviz").with(duke, size).link(d);
@@ -43,8 +48,8 @@ class LogoCreator {
         final Graph g = graph()
                 .graphAttr().with(GREY80.gradient(WHITE).background().angle(90), Rank.dir(LEFT_TO_RIGHT), pad(5, 5))
                 .linkAttr().with(lineWidth)
-                .nodeAttr().with(lineWidth, Style.FILLED, Color.WHITE.fill(), Font.size(140))
+                .nodeAttr().with(lineWidth, FILLED, WHITE.fill(), Font.size(140))
                 .with(a);
-        Graphviz.fromGraph(g).width(1280).height(640).render(Format.PNG).toFile(new File("logo"));
+        Graphviz.fromGraph(g).width(1280).height(640).render(PNG).toFile(new File("logo"));
     }
 }
