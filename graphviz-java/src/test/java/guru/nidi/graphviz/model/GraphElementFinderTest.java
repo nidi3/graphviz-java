@@ -26,25 +26,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GraphElementFinderTest {
     @Test
-    void nodeOf() {
-        final Node c = node(Label.html("c"));
-        final Node a = node("a\nb").link(c);
+    void nodeOfNormal() {
+        final Node a = node("a\nb");
         final Graph g = graph().with(a);
         final String svg = Graphviz.fromGraph(g).render(SVG).toString();
         final GraphElementFinder finder = new SvgElementFinder(svg).fromGraph(g);
-        assertEquals(c, finder.nodeOf(finder.findNodes().get(0)));
-        assertEquals(a, finder.nodeOf(finder.findNodes().get(1)));
+        assertEquals(a, finder.nodeOf(finder.findNodes().get(0)));
+    }
+    @Test
+    void nodeOfHtml() {
+        final Node a = node(Label.html("c"));
+        final Graph g = graph().with(a);
+        final String svg = Graphviz.fromGraph(g).render(SVG).toString();
+        final GraphElementFinder finder = new SvgElementFinder(svg).fromGraph(g);
+        assertEquals(a, finder.nodeOf(finder.findNodes().get(0)));
     }
 
     @Test
     void linkOf() {
         final Node a = node("a").link("b");
-        final Graph g = graph().with(a);
+        final Graph g = graph().directed().with(a);
         final String svg = Graphviz.fromGraph(g).render(SVG).toString();
         final GraphElementFinder finder = new SvgElementFinder(svg).fromGraph(g);
         assertEquals(a.links().get(0), finder.linkOf(finder.findLinks().get(0)));
     }
-
 
     @Test
     void clusterOf() {

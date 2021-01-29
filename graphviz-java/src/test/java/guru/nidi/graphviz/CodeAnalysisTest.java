@@ -110,11 +110,11 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                 .because("it's ok here",
                         In.loc("Rasterizer#getDefault").ignore("CompareObjectsWithEquals"),
                         In.locs("Format", "AttributeConfigs").ignore("AvoidDuplicateLiterals"),
-                        In.locs("LabelTest", "RankTest", "*DatatypeTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest", "GraphvizServerTest", "SvgElementFinderTest")
+                        In.locs("LabelTest", "RankTest", "*DatatypeTest", "AttributeValidatorTest", "ParserTest", "JavascriptEngineTest", "GraphvizServerTest", "SvgElementFinderTest", "SvgSizeAnalyzerTest")
                                 .ignore("JUnitTestContainsTooManyAsserts"),
                         In.locs("DatatypeTest").ignore("TestClassWithoutTestCases"),
                         In.loc("SerializerImpl").ignore("AvoidStringBufferField", "CompareObjectsWithEquals"),
-                        In.locs("ThrowingFunction", "GraphvizLoader", "GraphvizServerTest").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
+                        In.locs("ThrowingFunction", "GraphvizLoader", "GraphvizServerTest", "GraphvizPanel").ignore("AvoidThrowingRawExceptionTypes", "AvoidCatchingGenericException"),
                         In.locs("GraphvizServer", "SerializerImpl").ignore("AvoidInstantiatingObjectsInLoops"),
                         In.clazz(Shape.class).ignore("AvoidFieldNameMatchingTypeName"),
                         In.locs("CommandRunnerTest", "EngineResultTest", "GraphvizServerTest").ignore("JUnitTestsShouldIncludeAssert"),
@@ -160,7 +160,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
     protected CheckstyleResult analyzeCheckstyle() {
         final StyleEventCollector collector = new StyleEventCollector()
                 .apply(CheckstyleConfigs.minimalCheckstyleIgnore())
-                .just(In.locs("Color", "Arrow", "Rank", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr").ignore("empty.line.separator"))
+                .just(In.locs("Color", "Arrow", "Rank", "Shape", "Token", "Style", "Options", "Records", "SystemUtils", "GraphAttr", "SvgElementFinder").ignore("empty.line.separator"))
                 .just(In.locs("EngineResult", "IOFunction").ignore("abbreviation.as.word"))
                 .just(In.clazz(Renderer.class).ignore("indentation.error"));
         final StyleChecks checks = CheckstyleConfigs.adjustedGoogleStyleChecks();

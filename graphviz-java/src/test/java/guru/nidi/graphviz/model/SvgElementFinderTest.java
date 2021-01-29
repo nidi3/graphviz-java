@@ -84,7 +84,7 @@ class SvgElementFinderTest {
 
     @Test
     void linkedNodeNamesOf() {
-        final String svg = Graphviz.fromGraph(graph().with(node("a").link("b"))).render(SVG).toString();
+        final String svg = Graphviz.fromGraph(graph().directed().with(node("a").link("b"))).render(SVG).toString();
         final SvgElementFinder finder = new SvgElementFinder(svg);
         assertEquals(asList("a", "b"), SvgElementFinder.linkedNodeNamesOf(finder.findLinks().get(0)));
     }

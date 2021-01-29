@@ -46,7 +46,7 @@ public class SvgElementFinder {
             EXPR_NODE = pathExpression(X_PATH, "//g[contains(@class,'node')]"),
             EXPR_EDGE = pathExpression(X_PATH, "//g[contains(@class,'edge')]"),
             EXPR_CLUSTER = pathExpression(X_PATH, "//g[contains(@class,'cluster')]");
-    private final Document doc;
+    protected final Document doc;
     private final boolean hasHeader;
 
     public static String use(String svg, Consumer<SvgElementFinder> actions) {
@@ -120,7 +120,7 @@ public class SvgElementFinder {
 
     public static List<String> linkedNodeNamesOf(Element e) {
         final String name = e.getElementsByTagName("title").item(0).getTextContent();
-        return asList(name.split("--"));
+        return asList(name.split(name.contains("--") ? "--" : "->"));
     }
 
     @Nullable

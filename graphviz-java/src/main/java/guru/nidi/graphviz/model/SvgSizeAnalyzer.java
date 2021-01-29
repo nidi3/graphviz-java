@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guru.nidi.graphviz.engine;
+package guru.nidi.graphviz.model;
 
 import javax.annotation.Nullable;
 import java.util.regex.Matcher;
@@ -21,13 +21,16 @@ import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.DOTALL;
 
-class SvgSizeAnalyzer {
+public final class SvgSizeAnalyzer {
+    private static final Pattern TRANSFORM_PATTERN = Pattern.compile(
+            "scale\\((?<scaleX>[0-9.]+) (?<scaleY>[0-9.]+)\\) "
+                    + "rotate\\((?<rotate>[0-9.]+)\\) "
+                    + "translate\\((?<translateX>[0-9.]+) (?<translateY>[0-9.]+)\\)",
+            DOTALL);
     private static final Pattern SVG_PATTERN = Pattern.compile(
             "<svg width=\"(?<width>\\d+)(?<unit>p[tx])\" height=\"(?<height>\\d+)p[tx]\""
                     + "(?<between>.*?>\\R<g.*?)transform=\""
-                    + "scale\\((?<scaleX>[0-9.]+) (?<scaleY>[0-9.]+)\\) "
-                    + "rotate\\((?<rotate>[0-9.]+)\\) "
-                    + "translate\\((?<translateX>[0-9.]+) (?<translateY>[0-9.]+)\\)",
+                    + TRANSFORM_PATTERN.pattern(),
             DOTALL);
     private final Matcher matcher;
     @Nullable
@@ -38,26 +41,48 @@ class SvgSizeAnalyzer {
     private Double scaleX;
     @Nullable
     private Double scaleY;
+    @Nullable
+    private Double rotate;
+    @Nullable
+    private Double translateX;
+    @Nullable
+    private Double translateY;
 
-    SvgSizeAnalyzer(String svg) {
-        matcher = SVG_PATTERN.matcher(svg);
+    public static SvgSizeAnalyzer svg(String svg) {
+        return new SvgSizeAnalyzer(SVG_PATTERN, svg);
+    }
+
+    public static SvgSizeAnalyzer transform(String transform) {
+        return new SvgSizeAnalyzer(TRANSFORM_PATTERN, transform);
+    }
+
+    private SvgSizeAnalyzer(Pattern pattern, String input) {
+        matcher = pattern.matcher(input);
         if (!matcher.find()) {
             throw new IllegalArgumentException("Generated SVG has not the expected format. "
                     + "There might be image size problems.");
         }
     }
 
-    public String adjusted() {
+    public String getSvg() {
         final String size = width == null
                 ? "width=\"" + getWidth() + getUnit() + "\" height=\"" + getHeight() + getUnit() + "\""
                 : "width=\"" + width + "px\" height=\"" + height + "px\"";
+        return matcher.replaceFirst("<svg " + size + matcher.group("between")
+                + "transform=\"" + getTransform());
+    }
+
+    public String getTransform() {
         final String scale = scaleX == null
                 ? "scale(" + getScaleX() + " " + getScaleY() + ") "
                 : "scale(" + scaleX + " " + scaleY + ") ";
-        final String rotate = "rotate(" + getRotate() + ") ";
-        final String translate = "translate(" + getTranslateX() + " " + getTranslateY() + ")";
-        return matcher.replaceFirst("<svg " + size + matcher.group("between") +
-                "transform=\"" + scale + rotate + translate);
+        final String rot = rotate == null
+                ? "rotate(" + getRotate() + ") "
+                : "rotate(" + rotate + ") ";
+        final String translate = translateX == null
+                ? "translate(" + getTranslateX() + " " + getTranslateY() + ")"
+                : "translate(" + translateX + " " + translateY + ")";
+        return scale + rot + translate;
     }
 
     public int getWidth() {
@@ -100,5 +125,14 @@ class SvgSizeAnalyzer {
     public void setScale(double scaleX, double scaleY) {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+    }
+
+    public void setRotate(double rotate) {
+        this.rotate = rotate;
+    }
+
+    public void setTranslate(double translateX, double translateY) {
+        this.translateX = translateX;
+        this.translateY = translateY;
     }
 }

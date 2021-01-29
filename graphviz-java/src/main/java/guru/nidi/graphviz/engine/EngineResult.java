@@ -18,9 +18,13 @@ package guru.nidi.graphviz.engine;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class EngineResult {
     @Nullable
@@ -60,6 +64,10 @@ public final class EngineResult {
         return res;
     }
 
+    public String asString() throws IOException {
+        return mapIO(EngineResult::readFile, string -> string);
+    }
+
     <T> T mapIO(IOFunction<File, T> fileMapper, IOFunction<String, T> stringMapper) throws IOException {
         final T res = string == null ? fileMapper.apply(file) : stringMapper.apply(string);
         close();
@@ -70,6 +78,14 @@ public final class EngineResult {
         if (file != null) {
             file.delete();
         }
+    }
+
+    private static String readFile(File file) throws IOException {
+        final StringBuilder s = new StringBuilder();
+        try (Stream<String> stream = Files.lines(file.toPath(), UTF_8)) {
+            stream.forEach(line -> s.append(line).append("\n"));
+        }
+        return s.toString();
     }
 
     @Override

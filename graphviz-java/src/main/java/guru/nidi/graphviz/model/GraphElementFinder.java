@@ -20,6 +20,7 @@ import org.w3c.dom.Element;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -27,6 +28,12 @@ public class GraphElementFinder extends SvgElementFinder {
     private final Map<String, MutableNode> nodes;
     private final Map<String, Link> links;
     private final Map<String, MutableGraph> graphs;
+
+    public static String use(String svg, Graph g, Consumer<GraphElementFinder> actions) {
+        final GraphElementFinder finder = new SvgElementFinder(svg).fromGraph(g);
+        actions.accept(finder);
+        return finder.getSvg();
+    }
 
     GraphElementFinder(SvgElementFinder finder, MutableGraph graph) {
         super(finder);

@@ -15,6 +15,7 @@
  */
 package guru.nidi.graphviz.engine;
 
+import guru.nidi.graphviz.model.SvgSizeAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,10 +45,10 @@ class SvgSizeAdjuster implements GraphvizPostProcessor {
 
     private static String pointsToPixels(String svg, double dpi, int width, int height, double scale) {
         try {
-            final SvgSizeAnalyzer analyzer = new SvgSizeAnalyzer(svg);
+            final SvgSizeAnalyzer analyzer = SvgSizeAnalyzer.svg(svg);
             setSize(analyzer, width, height, scale);
             setScale(analyzer, dpi);
-            return analyzer.adjusted();
+            return analyzer.getSvg();
         } catch (IllegalArgumentException e) {
             LOG.warn(e.getMessage());
             return svg;
