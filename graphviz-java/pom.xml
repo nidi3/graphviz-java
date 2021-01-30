@@ -60,7 +60,7 @@
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js</artifactId>
-            <version>20.0.0</version>
+            <version>21.0.0</version>
             <optional>true</optional>
         </dependency>
         <!-- Only needed for Javascript Graphviz Engines -->
