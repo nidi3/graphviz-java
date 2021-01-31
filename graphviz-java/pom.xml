@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -66,7 +67,7 @@
         <!-- Only needed for Javascript Graphviz Engines -->
         <dependency>
             <groupId>org.webjars.npm</groupId>
-            <artifactId>viz.js-for-graphviz-java</artifactId>
+            <artifactId>viz.js-graphviz-java</artifactId>
         </dependency>
         <!-- Only needed for SALAMANDER renderer -->
         <dependency>
@@ -135,7 +136,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>com.eclipsesource.j2v8</groupId>
+                    <groupId>guru.nidi.com.eclipsesource.j2v8</groupId>
                     <artifactId>j2v8_macosx_x86_64</artifactId>
                     <scope>compile</scope>
                 </dependency>
@@ -150,7 +151,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>com.eclipsesource.j2v8</groupId>
+                    <groupId>guru.nidi.com.eclipsesource.j2v8</groupId>
                     <artifactId>j2v8_linux_x86_64</artifactId>
                     <scope>compile</scope>
                 </dependency>
@@ -166,7 +167,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>com.eclipsesource.j2v8</groupId>
+                    <groupId>guru.nidi.com.eclipsesource.j2v8</groupId>
                     <artifactId>j2v8_win32_x86</artifactId>
                     <scope>compile</scope>
                 </dependency>
@@ -182,7 +183,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>com.eclipsesource.j2v8</groupId>
+                    <groupId>guru.nidi.com.eclipsesource.j2v8</groupId>
                     <artifactId>j2v8_win32_x86_64</artifactId>
                     <scope>compile</scope>
                 </dependency>

@@ -17,8 +17,7 @@ package guru.nidi.graphviz;
 
 import edu.umd.cs.findbugs.Priorities;
 import guru.nidi.codeassert.checkstyle.*;
-import guru.nidi.codeassert.config.AnalyzerConfig;
-import guru.nidi.codeassert.config.In;
+import guru.nidi.codeassert.config.*;
 import guru.nidi.codeassert.dependency.*;
 import guru.nidi.codeassert.findbugs.*;
 import guru.nidi.codeassert.junit.CodeAssertJunit5Test;
@@ -33,7 +32,11 @@ import guru.nidi.graphviz.service.CommandRunner;
 import net.sourceforge.pmd.RulePriority;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static guru.nidi.codeassert.junit.CodeAssertMatchers.matchesRulesExactly;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class CodeAnalysisTest extends CodeAssertJunit5Test {
@@ -70,28 +73,31 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
 
     @Override
     protected FindBugsResult analyzeFindBugs() {
+        final List<Ignore> ok = new ArrayList<>(asList(In.loc("Datatype").ignore("NP_BOOLEAN_RETURN_NULL"),
+                In.loc("TempFiles").ignore("PATH_TRAVERSAL_IN", "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
+                In.loc("Options").ignore("URLCONNECTION_SSRF_FD"),
+                In.locs("BuiltInRasterizer#rasterize", "NopRasterizer", "PortSource").ignore("NP_NONNULL_RETURN_VIOLATION"),
+                In.loc("CommandLineExecutor").ignore("DM_DEFAULT_ENCODING"),
+                In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
+                In.locs("AbstractGraphvizEngine", "Options", "GraphvizCmdLineEngine", "EngineTest", "SystemUtils", "Renderer").ignore("PATH_TRAVERSAL_IN"),
+                In.locs("EngineTest", "RendererTest", "EngineResult").ignore("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
+                In.loc("OptionsTest").ignore("DMI_HARDCODED_ABSOLUTE_FILENAME"),
+                In.loc("SimpleLabel").ignore("IM_BAD_CHECK_FOR_ODD"),
+                In.loc("JavascriptEngineTest").ignore("PREDICTABLE_RANDOM"),
+                In.loc("DatatypeTest").ignore("SIC_INNER_SHOULD_BE_STATIC"),
+                In.loc("SvgElementFinder").ignore("XXE_DOCUMENT"),
+                In.loc("Communicator").ignore("RR_NOT_CHECKED")));
+        if (!System.getProperty("java.version").startsWith("1.8")) {
+            ok.add(In.loc("LinkList").ignore("EQ_DOESNT_OVERRIDE_EQUALS"));
+        }
+
         final BugCollector collector = new BugCollector().minPriority(Priorities.NORMAL_PRIORITY)
                 .apply(FindBugsConfigs.dependencyTestIgnore(CodeAnalysisTest.class))
                 .because("It's examples", In.loc("ReadmeTest").ignore("DLS_DEAD_LOCAL_STORE"))
                 .because("GraphvizServer is on localhost",
                         In.locs("GraphvizServer", "GraphvizServerEngine")
                                 .ignore("UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"))
-                .because("It's ok",
-                        In.loc("Datatype").ignore("NP_BOOLEAN_RETURN_NULL"),
-                        In.loc("TempFiles").ignore("PATH_TRAVERSAL_IN", "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
-                        In.loc("Options").ignore("URLCONNECTION_SSRF_FD"),
-                        In.locs("BuiltInRasterizer#rasterize", "NopRasterizer", "PortSource").ignore("NP_NONNULL_RETURN_VIOLATION"),
-                        In.loc("CommandLineExecutor").ignore("DM_DEFAULT_ENCODING"),
-                        In.loc("GraphvizServer").ignore("COMMAND_INJECTION", "CRLF_INJECTION_LOGS"),
-                        In.locs("AbstractGraphvizEngine", "Options", "GraphvizCmdLineEngine", "EngineTest", "SystemUtils", "Renderer").ignore("PATH_TRAVERSAL_IN"),
-                        In.locs("EngineTest", "RendererTest", "EngineResult").ignore("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"),
-                        In.loc("OptionsTest").ignore("DMI_HARDCODED_ABSOLUTE_FILENAME"),
-                        In.loc("SimpleLabel").ignore("IM_BAD_CHECK_FOR_ODD"),
-                        In.loc("JavascriptEngineTest").ignore("PREDICTABLE_RANDOM"),
-                        In.loc("DatatypeTest").ignore("SIC_INNER_SHOULD_BE_STATIC"),
-                        In.loc("SvgElementFinder").ignore("XXE_DOCUMENT"),
-                        In.loc("LinkList").ignore("EQ_DOESNT_OVERRIDE_EQUALS"),
-                        In.loc("Communicator").ignore("RR_NOT_CHECKED"));
+                .because("It's ok", ok.toArray(new Ignore[0]));
         return new FindBugsAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector).analyze();
     }
 
@@ -137,7 +143,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.locs("CommandRunnerTest", "AbstractJsGraphvizEngine").ignore("SimplifiedTernary"))
                 .because("I don't agree",
                         In.loc("Datatype").ignore("PositionLiteralsFirstInCaseInsensitiveComparisons"),
-                        In.clazz(CommandRunner.class).ignore("OptimizableToArrayCall"),
+                        In.classes(CommandRunner.class, CodeAnalysisTest.class).ignore("OptimizableToArrayCall"),
                         In.everywhere().ignore("SimplifyStartsWith"))
                 .because("It's wrapping an Exception with a RuntimeException",
                         In.locs("Graphviz", "CreationContext", "Datatype").ignore("AvoidCatchingGenericException"));

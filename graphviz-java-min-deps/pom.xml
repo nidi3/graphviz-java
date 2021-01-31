@@ -31,7 +31,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.webjars.npm</groupId>
-                    <artifactId>viz.js-for-graphviz-java</artifactId>
+                    <artifactId>viz.js-graphviz-java</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>guru.nidi.com.kitfox</groupId>
@@ -44,22 +44,22 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.eclipsesource.j2v8</groupId>
+            <groupId>guru.nidi.com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_macosx_x86_64</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.eclipsesource.j2v8</groupId>
+            <groupId>guru.nidi.com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_linux_x86_64</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.eclipsesource.j2v8</groupId>
+            <groupId>guru.nidi.com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_win32_x86_64</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.eclipsesource.j2v8</groupId>
+            <groupId>guru.nidi.com.eclipsesource.j2v8</groupId>
             <artifactId>j2v8_win32_x86</artifactId>
             <optional>true</optional>
         </dependency>
@@ -67,7 +67,7 @@
         <!-- Only needed for Javascript Graphviz Engines -->
         <dependency>
             <groupId>org.webjars.npm</groupId>
-            <artifactId>viz.js-for-graphviz-java</artifactId>
+            <artifactId>viz.js-graphviz-java</artifactId>
             <optional>true</optional>
         </dependency>
 
