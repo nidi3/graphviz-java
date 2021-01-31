@@ -403,7 +403,7 @@ To use graphviz inside javadoc comments, add this to `pom.xml`:
       <artifactId>maven-javadoc-plugin</artifactId>
       <version>3.1.0</version>
       <configuration>
-        <taglet>guru.nidi.graphviz.GraphvizTaglet</taglet>
+        <taglet>guru.nidi.graphviz.taglet.GraphvizTaglet</taglet>
         <tagletArtifact>
           <groupId>guru.nidi</groupId>
           <artifactId>graphviz-taglet</artifactId>
