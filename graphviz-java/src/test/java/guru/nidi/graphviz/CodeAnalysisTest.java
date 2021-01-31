@@ -90,6 +90,7 @@ class CodeAnalysisTest extends CodeAssertJunit5Test {
                         In.loc("JavascriptEngineTest").ignore("PREDICTABLE_RANDOM"),
                         In.loc("DatatypeTest").ignore("SIC_INNER_SHOULD_BE_STATIC"),
                         In.loc("SvgElementFinder").ignore("XXE_DOCUMENT"),
+                        In.loc("LinkList").ignore("EQ_DOESNT_OVERRIDE_EQUALS"),
                         In.loc("Communicator").ignore("RR_NOT_CHECKED"));
         return new FindBugsAnalyzer(AnalyzerConfig.maven().mainAndTest(), collector).analyze();
     }
