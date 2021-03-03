@@ -1,0 +1,31 @@
+digraph map {
+    splines=ortho;
+    layout="dot";
+    rankdir="LR";
+
+    # Clusters
+    subgraph "cluster_1" {
+        node [style=filled];
+        style=filled;
+
+        label="Cluster 1";
+        color="pink";
+
+        #Nodes
+        "node1" [fillcolor=red,shape=house]
+    }
+    subgraph "cluster_2" {
+        node [style=filled];
+        style=filled;
+
+        label="Cluster 2";
+        color="lightblue";
+
+        #Nodes:
+        "node2" [fillcolor=red,shape=box3d]
+    }
+
+
+    # Edges
+    "node2" -> "node1" [color=red,arrowhead=dot]
+}
