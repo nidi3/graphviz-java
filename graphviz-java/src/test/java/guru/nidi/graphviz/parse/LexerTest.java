@@ -46,7 +46,7 @@ class LexerTest {
 
     @Test
     void hashComment() throws IOException {
-        assertTokens("=\n#{} \n=", token(EQUAL, "="), token(EQUAL, "="));
+        assertTokens("=\n   #{} \n=", token(EQUAL, "="), token(EQUAL, "="));
     }
 
     @Test

@@ -218,23 +218,25 @@ class Lexer {
             doReadRawChar();
             if (ch == '\n') {
                 pos.newLine();
-                final char next = doReadRawChar();
-                if (next == '#') {
+                do {
+                    doReadRawChar();
+                } while (ch <= ' ');
+                if (ch == '#') {
                     do {
                         doReadRawChar();
                     } while (ch != '\n' && ch != CH_EOF);
                     pos.newChar();
                 } else {
-                    unread('\n', next);
+                    unread('\n', ch);
                 }
             }
         }
         return ch;
     }
 
-    private char doReadRawChar() throws IOException {
+    private void doReadRawChar() throws IOException {
         pos.newChar();
-        return ch = (char) in.read();
+        ch = (char) in.read();
     }
 
     private void unread(char before, char next) throws IOException {
