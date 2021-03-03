@@ -41,7 +41,9 @@ class NashornJavascriptEngine extends AbstractJavascriptEngine {
                     + "Use javascript of Graal instead by adding this dependency: org.graalvm.js:js");
         }
         context.getBindings(ScriptContext.ENGINE_SCOPE).put("handler", resultHandler);
-        eval("function result(r){ handler.setResult(r); }" + "function error(r){ handler.setError(r); }");
+        eval("function result(r){ handler.setResult(r); }"
+                + "function error(r){ handler.setError(r); }"
+                + "function log(r){ handler.log(r); }");
     }
 
     @Override

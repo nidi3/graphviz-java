@@ -25,7 +25,8 @@ class GraalJavascriptEngine extends AbstractJavascriptEngine {
     GraalJavascriptEngine() {
         context.getPolyglotBindings().putMember("handler", resultHandler);
         eval("function result(r){ Polyglot.import('handler').setResult(r); }"
-                + "function error(r){ Polyglot.import('handler').setError(r); }");
+                + "function error(r){ Polyglot.import('handler').setError(r); }"
+                + "function log(r){ Polyglot.import('handler').log(r); }");
     }
 
     @Override

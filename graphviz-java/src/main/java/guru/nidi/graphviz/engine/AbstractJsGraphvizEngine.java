@@ -26,6 +26,7 @@ import static guru.nidi.graphviz.engine.StringFunctions.replaceRegex;
 import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
+    private static final String RENDER_JS = loadAsString("guru/nidi/graphviz/engine/render.js");
     private static final String VIZ_BASE = "META-INF/resources/webjars/viz.js-graphviz-java/2.1.3/";
     static final boolean AVAILABLE = isOnClasspath(VIZ_BASE + "viz.js");
     private static final Pattern FONT_NAME_PATTERN = Pattern.compile("\"?fontname\"?\\s*=\\s*\"?(.*?)[\",;\\]]");
@@ -47,7 +48,7 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
         if (state == null || !state.ininted) {
             final JavascriptEngine engine = engine(true);
             engine.executeJavascript(vizJsCode());
-            engine.executeJavascript(renderJsCode());
+            engine.executeJavascript(RENDER_JS);
             execute("graph g { a -- b }", Options.create(), Rasterizer.NONE);
         }
     }
@@ -134,27 +135,6 @@ public abstract class AbstractJsGraphvizEngine extends AbstractGraphvizEngine {
 
     protected String promiseJsCode() {
         return loadAsString("net/arnx/nashorn/lib/promise.js");
-    }
-
-    private String renderJsCode() {
-        return "var viz; var totalMemory = 16777216;"
-                + "function initViz(force){"
-                + "  if (force || !viz || viz.totalMemory !== totalMemory){"
-                + "    viz = new Viz({"
-                + "      Module: function(){ return Viz.Module({TOTAL_MEMORY: totalMemory}); },"
-                + "      render: Viz.render"
-                + "    });"
-                + "    viz.totalMemory = totalMemory;"
-                + "  }"
-                + "  return viz;"
-                + "}"
-                + "function render(src, options){"
-                + "  try {"
-                + "    initViz().renderString(src, options)"
-                + "      .then(function(res) { result(res); })"
-                + "      .catch(function(err) { initViz(true); error(err.toString()); });"
-                + "  } catch(e) { error(e.toString()); }"
-                + "}";
     }
 
     private static class EngineState {

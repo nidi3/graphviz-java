@@ -46,6 +46,9 @@ public class V8JavascriptEngine extends AbstractJavascriptEngine {
                     : rawMsg;
             resultHandler.setError(msg);
         }, "error");
+        v8.registerJavaMethod((receiver, parameters) -> {
+            resultHandler.log(parameters.getString(0));
+        }, "log");
         LOG.info("Initialized javascript.");
     }
 

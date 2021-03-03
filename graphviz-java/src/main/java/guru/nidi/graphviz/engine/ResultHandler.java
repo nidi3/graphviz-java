@@ -15,13 +15,21 @@
  */
 package guru.nidi.graphviz.engine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 //public because of nashorn
 public class ResultHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(ResultHandler.class);
     private final BlockingQueue<String> value = new ArrayBlockingQueue<>(1);
     private boolean ok;
+
+    public void log(String msg) {
+        LOG.warn(msg);
+    }
 
     public void setResult(String result) {
         ok = true;
