@@ -39,12 +39,7 @@ public class V8JavascriptEngine extends AbstractJavascriptEngine {
             resultHandler.setResult(parameters.getString(0));
         }, "result");
         v8.registerJavaMethod((receiver, parameters) -> {
-            final String rawMsg = parameters.getString(0);
-            final String msg = rawMsg.matches("TypeError: Module\\..*? is not a function")
-                    ? "Got Error: '" + rawMsg + "'. This is probably an out of memory error."
-                    + " Try using the totalMemory method."
-                    : rawMsg;
-            resultHandler.setError(msg);
+            resultHandler.setError(parameters.getString(0));
         }, "error");
         v8.registerJavaMethod((receiver, parameters) -> {
             resultHandler.log(parameters.getString(0));
