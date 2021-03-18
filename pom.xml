@@ -74,6 +74,7 @@
         <dependency>
             <groupId>guru.nidi</groupId>
             <artifactId>code-assert</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
