@@ -139,7 +139,7 @@ Graphviz.fromGraph(g).width(200).render(Format.PNG).toFile(new File("example/ex1
 The mutable API provides similar functions as the immutable one with slightly different syntax:
 - `mutGraph` instead of `graph`, `mutNode` instead of `node`
 - use setters: `setDirected` instead of `directed`
-- `add` instead of `width`  
+- `add` instead of `with`  
 
 ### Imperative
 There is a third possibility to use the API, based on the mutable version.
