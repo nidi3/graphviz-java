@@ -82,7 +82,7 @@ or [Log4j](https://logging.apache.org/log4j/2.x/)
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-core</artifactId>
-    <version>2.13.0</version>
+    <version>2.17.1</version>
 </dependency>
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
