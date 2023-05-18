@@ -26,31 +26,31 @@ public final class GraphAttr {
     /**
      * Center the drawing.
      * 
-     * @see https://www.graphviz.org/docs/attrs/center/
+     * @see <a href="https://www.graphviz.org/docs/attrs/center/">center</a>
      */
     public static final Attributes<ForGraph> CENTER = new SingleAttributes<>("center", true);
     /**
      * Allow edges between clusters.
      * 
-     * @see https://www.graphviz.org/docs/attrs/compound/
+     * @see <a href="https://www.graphviz.org/docs/attrs/compound/">compound</a>
      */
     public static final Attributes<ForGraph> COMPOUND = new SingleAttributes<>("compound", true);
     /**
      * Use edge concentrators.
      * 
-     * @see https://www.graphviz.org/docs/attrs/concentrate/
+     * @see <a href="https://www.graphviz.org/docs/attrs/concentrate/">concentrate</a>
      */
     public static final Attributes<ForGraph> CONCENTRATE = new SingleAttributes<>("concentrate", true);
     /**
      * Do not force placements of all xlabels.
      * 
-     * @see https://www.graphviz.org/docs/attrs/forcelabels/
+     * @see <a href="https://www.graphviz.org/docs/attrs/forcelabels/">forcelabels</a>
      */
     public static final Attributes<ForGraph> FORCE_LABELS_NOT = new SingleAttributes<>("forcelabels", false);
     /**
      * Set graph orientation to landscape.
      * 
-     * @see https://www.graphviz.org/docs/attrs/orientation/
+     * @see <a href="https://www.graphviz.org/docs/attrs/orientation/">orientation</a>
      */
     public static final Attributes<ForGraph> LANDSCAPE = new SingleAttributes<>("orientation", "L");
 
@@ -63,7 +63,7 @@ public final class GraphAttr {
      * @param dpi a DPI value
      * @return a DPI attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/dpi/
+     * @see <a href="https://www.graphviz.org/docs/attrs/dpi/">dpi</a>
      */
     public static Attributes<ForGraph> dpi(int dpi) {
         return new SingleAttributes<>("dpi", dpi);
@@ -75,7 +75,7 @@ public final class GraphAttr {
      * @param size maximum size of the graph
      * @return a size attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/size/
+     * @see <a href="https://www.graphviz.org/docs/attrs/size/">size</a>
      */
     public static Attributes<ForGraph> sizeMax(double size) {
         return new SingleAttributes<>(SIZE, size);
@@ -88,7 +88,7 @@ public final class GraphAttr {
      * @param sizeY maximum height of the graph
      * @return a size attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/size/
+     * @see <a href="<a href="https://www.graphviz.org/docs/attrs/size/">size</a>">size</a>
      */
     public static Attributes<ForGraph> sizeMax(double sizeX, double sizeY) {
         return new SingleAttributes<>(SIZE, sizeX + "," + sizeY);
@@ -100,7 +100,7 @@ public final class GraphAttr {
      * @param size preferred size of the graph
      * @return a size attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/size/
+     * @see <a href="https://www.graphviz.org/docs/attrs/size/">size</a>
      */
     public static Attributes<ForGraph> sizePreferred(double size) {
         return new SingleAttributes<>(SIZE, size + "!");
@@ -113,7 +113,7 @@ public final class GraphAttr {
      * @param sizeY preferred height of the graph
      * @return a size attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/size/
+     * @see <a href="https://www.graphviz.org/docs/attrs/size/">size</a>
      */
     public static Attributes<ForGraph> sizePreferred(double sizeX, double sizeY) {
         return new SingleAttributes<>(SIZE, sizeX + "," + sizeY + "!");
@@ -134,7 +134,7 @@ public final class GraphAttr {
      * @param mode spline mode
      * @return a splines attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/splines/
+     * @see <a href="https://www.graphviz.org/docs/attrs/splines/">dpi</a>
      */
     public static Attributes<ForGraph> splines(SplineMode mode) {
         return new SingleAttributes<>("splines", mode.toString().toLowerCase(ENGLISH));
@@ -146,7 +146,7 @@ public final class GraphAttr {
      * @param pad amount of padding
      * @return a padding attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/pad/
+     * @see <a href="https://www.graphviz.org/docs/attrs/pad/">dpi</a>
      */
     public static Attributes<ForGraph> pad(double pad) {
         return new SingleAttributes<>("pad", pad);
@@ -159,7 +159,7 @@ public final class GraphAttr {
      * @param padY amount of vertical padding
      * @return a padding attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/pad/
+     * @see <a href="https://www.graphviz.org/docs/attrs/pad/">dpi</a>
      */
     public static Attributes<ForGraph> pad(double padX, double padY) {
         return new SingleAttributes<>("pad", padX + "," + padY);
@@ -171,7 +171,7 @@ public final class GraphAttr {
      * @param margin the margin to use, in inches
      * @return a margin attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/margin/
+     * @see <a href="https://www.graphviz.org/docs/attrs/margin/">dpi</a>
      */
     public static Attributes<ForGraph> margin(double margin) {
         return new SingleAttributes<>("margin", margin);
@@ -184,7 +184,7 @@ public final class GraphAttr {
      * @param marginY the vertical margin to use, in inches
      * @return a margin attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/margin/
+     * @see <a href="https://www.graphviz.org/docs/attrs/margin/">dpi</a>
      */
     public static Attributes<ForGraph> margin(double marginX, double marginY) {
         return new SingleAttributes<>("margin", marginX + "," + marginY);

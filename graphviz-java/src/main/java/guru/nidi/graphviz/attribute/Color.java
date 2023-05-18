@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.joining;
 /**
  * Color attribute.
  * 
- * @see https://www.graphviz.org/docs/attrs/color/
+ * @see <a href="https://www.graphviz.org/docs/attrs/color/">color</a>
  */
 public class Color extends SingleAttributes<String, ForAll> {
     private Color(String key, String value) {
@@ -39,7 +39,7 @@ public class Color extends SingleAttributes<String, ForAll> {
      * 
      * @return this color as fill color attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/fillcolor/
+     * @see <a href="https://www.graphviz.org/docs/attrs/fillcolor/">fillcolor</a>
      */
     public Color fill() {
         return key("fillcolor");
@@ -50,7 +50,7 @@ public class Color extends SingleAttributes<String, ForAll> {
      * 
      * @return this color as background color attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/bgcolor/
+     * @see <a href="https://www.graphviz.org/docs/attrs/bgcolor/">bgcolor</a>
      */
     public Color background() {
         return key("bgcolor");
@@ -61,7 +61,7 @@ public class Color extends SingleAttributes<String, ForAll> {
      * 
      * @return this color as font color attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/fontcolor/
+     * @see <a href="https://www.graphviz.org/docs/attrs/fontcolor/">fontcolor</a>
      */
     public Color font() {
         return key("fontcolor");
@@ -72,7 +72,7 @@ public class Color extends SingleAttributes<String, ForAll> {
      * 
      * @return this color as label font color attribute
      * 
-     * @see https://www.graphviz.org/docs/attrs/labelfontcolor/
+     * @see <a href="https://www.graphviz.org/docs/attrs/labelfontcolor/">labelfontcolor</a>
      */
     public Color labelFont() {
         return key("labelfontcolor");
@@ -111,7 +111,7 @@ public class Color extends SingleAttributes<String, ForAll> {
      * @param c a color
      * @return a {@code colorList} of this color and argument
      * 
-     * @see https://www.graphviz.org/docs/attr-types/colorList/
+     * @see <a href="https://www.graphviz.org/docs/attr-types/colorList/">colorList</a>
      */
     public Color and(Color c) {
         return new Color(value + ":" + c.value);
@@ -123,7 +123,7 @@ public class Color extends SingleAttributes<String, ForAll> {
      * @param cs colors
      * @return a {@code colorList} of this color and arguments
      * 
-     * @see https://www.graphviz.org/docs/attr-types/colorList/
+     * @see <a href="https://www.graphviz.org/docs/attr-types/colorList/">colorList</a>
      */
     public Color and(Color... cs) {
         return new Color(value + ":" + Stream.of(cs).map(c -> c.value).collect(joining(":")));
@@ -138,7 +138,7 @@ public class Color extends SingleAttributes<String, ForAll> {
      * @return a {@code colorList} of this color and argument, with the
      *         specified gradient angle
      * 
-     * @see https://www.graphviz.org/docs/attr-types/colorList/
+     * @see <a href="https://www.graphviz.org/docs/attr-types/colorList/">colorList</a>
      */
     public Color and(Color c, double at) {
         return new Color(value + ":" + c.value + ";" + at);
@@ -150,7 +150,7 @@ public class Color extends SingleAttributes<String, ForAll> {
      * @param angle the angle of the fill
      * @return this color with the specified angle of gradient fill
      * 
-     * @see https://www.graphviz.org/docs/attrs/gradientangle/
+     * @see <a href="https://www.graphviz.org/docs/attrs/gradientangle/">gradientangle</a>
      */
     public Attributes<ForAll> angle(int angle) {
         return attrs(this, new SingleAttributes<>("gradientangle", angle));
