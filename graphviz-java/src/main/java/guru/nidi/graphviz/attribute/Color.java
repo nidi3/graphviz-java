@@ -20,6 +20,11 @@ import java.util.stream.Stream;
 import static guru.nidi.graphviz.attribute.Attributes.attrs;
 import static java.util.stream.Collectors.joining;
 
+/**
+ * Color attribute.
+ * 
+ * @see https://www.graphviz.org/docs/attrs/color/
+ */
 public class Color extends SingleAttributes<String, ForAll> {
     private Color(String key, String value) {
         super(key, value);
@@ -29,65 +34,177 @@ public class Color extends SingleAttributes<String, ForAll> {
         super("color", value);
     }
 
+    /**
+     * Returns this color as fill color attribute
+     * 
+     * @return this color as fill color attribute
+     * 
+     * @see https://www.graphviz.org/docs/attrs/fillcolor/
+     */
     public Color fill() {
         return key("fillcolor");
     }
 
+    /**
+     * Returns this color as background color attribute
+     * 
+     * @return this color as background color attribute
+     * 
+     * @see https://www.graphviz.org/docs/attrs/bgcolor/
+     */
     public Color background() {
         return key("bgcolor");
     }
 
+    /**
+     * Returns this color as font color attribute
+     * 
+     * @return this color as font color attribute
+     * 
+     * @see https://www.graphviz.org/docs/attrs/fontcolor/
+     */
     public Color font() {
         return key("fontcolor");
     }
 
+    /**
+     * Returns this color as label font color attribute
+     * 
+     * @return this color as label font color attribute
+     * 
+     * @see https://www.graphviz.org/docs/attrs/labelfontcolor/
+     */
     public Color labelFont() {
         return key("labelfontcolor");
     }
 
+    /**
+     * Creates a gradient of this color and another color. This method is
+     * an alias of {@link #and(Color)}.
+     * 
+     * @param c a color
+     * @return a gradient of this color and argument
+     * 
+     * @see #and(Color)
+     */
     public Color gradient(Color c) {
         return and(c);
     }
 
+    /**
+     * Creates a gradient of this color and another color with the specified
+     * gradient angle. This method is an alias of {@link #and(Color,double)}.
+     * 
+     * @param c  a color
+     * @param at the gradient angle
+     * @return a gradient of this color and argument
+     * 
+     * @see #and(Color,double)
+     */
     public Color gradient(Color c, double at) {
         return and(c, at);
     }
 
+    /**
+     * Creates a {@code colorList} of this color and another color.
+     * 
+     * @param c a color
+     * @return a {@code colorList} of this color and argument
+     * 
+     * @see https://www.graphviz.org/docs/attr-types/colorList/
+     */
     public Color and(Color c) {
         return new Color(value + ":" + c.value);
     }
 
+    /**
+     * Creates a {@code colorList} of this color and other colors.
+     * 
+     * @param cs colors
+     * @return a {@code colorList} of this color and arguments
+     * 
+     * @see https://www.graphviz.org/docs/attr-types/colorList/
+     */
     public Color and(Color... cs) {
         return new Color(value + ":" + Stream.of(cs).map(c -> c.value).collect(joining(":")));
     }
 
+    /**
+     * Creates a {@code colorList} of this color and another color with the
+     * specified gradient angle.
+     * 
+     * @param c  a color
+     * @param at the gradient angle
+     * @return a {@code colorList} of this color and argument, with the
+     *         specified gradient angle
+     * 
+     * @see https://www.graphviz.org/docs/attr-types/colorList/
+     */
     public Color and(Color c, double at) {
         return new Color(value + ":" + c.value + ";" + at);
     }
 
+    /**
+     * Specifies the angle of the gradient fill.
+     * 
+     * @param angle the angle of the fill
+     * @return this color with the specified angle of gradient fill
+     * 
+     * @see https://www.graphviz.org/docs/attrs/gradientangle/
+     */
     public Attributes<ForAll> angle(int angle) {
         return attrs(this, new SingleAttributes<>("gradientangle", angle));
     }
 
+    /**
+     * Creates a radial fill attribute with a gradient angle of 0.
+     * 
+     * @return a radial fill attribute
+     */
     public Attributes<ForGraphNode> radial() {
         return radial(0);
     }
 
+    /**
+     * Creates a radial fill attribute with the specified gradient angle.
+     * 
+     * @param angle the gradient angle
+     * @return a radial fill attribute
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Attributes<ForGraphNode> radial(int angle) {
         return attrs((Attributes) this, new SingleAttributes<>("gradientangle", angle), Style.RADIAL);
     }
 
+    /**
+     * Creates a striped fill attribute.
+     * 
+     * @return a striped fill attribute
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Attributes<ForGraphNode> striped() {
         return attrs((Attributes) this, Style.STRIPED);
     }
 
+    /**
+     * Creates a wedged fill attribute.
+     * 
+     * @return a wedged fill attribute
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Attributes<ForGraphNode> wedged() {
         return attrs((Attributes) this, Style.WEDGED);
     }
 
+    /**
+     * Creates a new color with the specified RGB value.
+     * 
+     * @param rgb the RGB value represented as a hexadecimal string
+     * @return a color with the specified RGB value
+     * 
+     * @throws IllegalArgumentException if argument is not a 6-digit
+     *                                  hexadecimal number
+     */
     public static Color rgb(String rgb) {
         final String val = rgb.startsWith("#") ? rgb.substring(1) : rgb;
         if (val.length() != 6) {
@@ -96,14 +213,37 @@ public class Color extends SingleAttributes<String, ForAll> {
         return new Color("#" + val);
     }
 
+    /**
+     * Creates a new color with the specified RGB value.
+     * 
+     * @param rgb the RGB value
+     * @return a color with the specified RGB value
+     */
     public static Color rgb(int rgb) {
         return rgb(hex(rgb >> 16) + hex(rgb >> 8) + hex(rgb));
     }
 
+    /**
+     * Creates a new color with the specified RGB value.
+     * 
+     * @param r the R value
+     * @param g the G value
+     * @param b the B value
+     * @return a color with the specified RGB value
+     */
     public static Color rgb(int r, int g, int b) {
         return rgb(hex(r) + hex(g) + hex(b));
     }
 
+    /**
+     * Creates a new color with the specified RGBA value.
+     * 
+     * @param rgba the RGBA value represented as a hexadecimal string
+     * @return a color with the specified RGBA value
+     * 
+     * @throws IllegalArgumentException if argument is not a 8-digit
+     *                                  hexadecimal number
+     */
     public static Color rgba(String rgba) {
         final String val = rgba.startsWith("#") ? rgba.substring(1) : rgba;
         if (val.length() != 8) {
@@ -112,10 +252,25 @@ public class Color extends SingleAttributes<String, ForAll> {
         return new Color("#" + val);
     }
 
+    /**
+     * Creates a new color with the specified RGBA value.
+     * 
+     * @param rgb a RGBA value
+     * @return a color with the specified RGBA value
+     */
     public static Color rgba(int rgba) {
         return rgba(hex(rgba >> 16) + hex(rgba >> 8) + hex(rgba) + hex(rgba >> 24));
     }
 
+    /**
+     * Creates a new color with the specified RGBA value.
+     * 
+     * @param r the R value
+     * @param g the G value
+     * @param b the B value
+     * @param a the A value
+     * @return a color with the specified RGBA value
+     */
     public static Color rgba(int r, int g, int b, int a) {
         return rgb(hex(r) + hex(g) + hex(b) + hex(a));
     }
@@ -125,6 +280,16 @@ public class Color extends SingleAttributes<String, ForAll> {
         return s.length() == 1 ? "0" + s : s;
     }
 
+    /**
+     * Creates a new color with the specified HSV value.
+     * 
+     * @param h the H value
+     * @param s the S value
+     * @param v the V value
+     * @return a color with the specified HSV value
+     * 
+     * @throws IllegalArgumentException if any of the arguments is {@code <0} or {@code >1}
+     */
     public static Color hsv(double h, double s, double v) {
         if (h < 0 || h > 1 || s < 0 || s > 1 || v < 0 || v > 1) {
             throw new IllegalArgumentException("Values must be 0<=value<=1");
@@ -132,6 +297,12 @@ public class Color extends SingleAttributes<String, ForAll> {
         return new Color(h + " " + s + " " + v);
     }
 
+    /**
+     * Creates a new color with the specified name.
+     * 
+     * @param name the name of the color
+     * @return a named color
+     */
     public static Color named(String name) {
         return new Color(name);
     }
