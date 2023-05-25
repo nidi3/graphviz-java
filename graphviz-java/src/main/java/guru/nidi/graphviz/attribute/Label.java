@@ -24,6 +24,11 @@ import static guru.nidi.graphviz.attribute.Label.Location.BOTTOM;
 import static guru.nidi.graphviz.attribute.Label.Location.TOP;
 import static java.util.stream.Collectors.joining;
 
+/**
+ * Text label for objects.
+ * 
+ * @see <a href="https://graphviz.org/docs/attrs/label/">label</a>
+ */
 public final class Label extends SimpleLabel implements Attributes<ForAll> {
     public static final String NODE_NAME = "\\N";
     public static final String GRAPH_NAME = "\\G";

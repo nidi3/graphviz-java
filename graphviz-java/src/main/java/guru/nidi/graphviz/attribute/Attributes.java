@@ -22,6 +22,11 @@ import java.util.Map.Entry;
 
 import static java.util.Arrays.asList;
 
+/**
+ * Customization options for Graphviz nodes, edges, graphs, etc.
+ * 
+ * @see <a href="https://graphviz.org/doc/info/attrs.html">Attributes</a>
+ */
 public interface Attributes<F extends For> extends Iterable<Entry<String, Object>> {
     static <F extends For> Attributes<F> attr(String key, @Nullable Object value) {
         return new MapAttributes<F>(key, value);
