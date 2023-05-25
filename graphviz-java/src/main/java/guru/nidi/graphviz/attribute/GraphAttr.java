@@ -88,7 +88,7 @@ public final class GraphAttr {
      * @param sizeY maximum height of the graph
      * @return a size attribute
      * 
-     * @see <a href="<a href="https://www.graphviz.org/docs/attrs/size/">size</a>">size</a>
+     * @see <a href="https://www.graphviz.org/docs/attrs/size/">size</a>">
      */
     public static Attributes<ForGraph> sizeMax(double sizeX, double sizeY) {
         return new SingleAttributes<>(SIZE, sizeX + "," + sizeY);

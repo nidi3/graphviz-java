@@ -255,7 +255,7 @@ public class Color extends SingleAttributes<String, ForAll> {
     /**
      * Creates a new color with the specified RGBA value.
      * 
-     * @param rgb a RGBA value
+     * @param rgba a RGBA value
      * @return a color with the specified RGBA value
      */
     public static Color rgba(int rgba) {
