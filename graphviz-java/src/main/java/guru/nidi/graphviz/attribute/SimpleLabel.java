@@ -34,10 +34,20 @@ public class SimpleLabel {
         return value instanceof SimpleLabel ? (SimpleLabel) value : of(value.toString());
     }
 
+    /**
+     * Returns the value stored in this label after serializing.
+     * 
+     * @return the value stored in this label, after serialization
+     */
     public String serialized() {
         return html ? ("<" + value + ">") : ("\"" + quoted() + "\"");
     }
 
+    /**
+     * Returns the value stored in this label after serializing, but without delimiters.
+     * 
+     * @return the value stored in this label, after serialization
+     */
     public String simpleSerialized() {
         return html ? value : quoted();
     }
@@ -57,18 +67,40 @@ public class SimpleLabel {
         return value;
     }
 
+    /**
+     * Determines whether a string is equal to the value stored in this label
+     * 
+     * @param s a string
+     * @return {@code true} if the value stored in this label is equal to the argument
+     */
     public boolean contentEquals(String s) {
         return value.equals(s);
     }
 
+    /**
+     * Determines whether the content of this label is empty.
+     * 
+     * @return {@code true} if the value stored in this label has length of 0.
+     */
     public boolean isContentEmpty() {
         return value.isEmpty();
     }
 
+    /**
+     * Determines whether this label represents an HTML string.
+     * 
+     * @return {@code true} if this label represents an HTML string
+     */
     public boolean isHtml() {
         return html;
     }
 
+    /**
+     * Determines whether an object is "equal" to this label.
+     * 
+     * @param o the reference object with which to compare.
+     * @return {@code true} if this label is the same as the {@code o} argument; {@code false} otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -82,11 +114,16 @@ public class SimpleLabel {
                 && Objects.equals(value, that.value);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(value, html);
     }
 
+    /**
+     * Returns the string representation of this label.
+     * @return the string representation of this label
+     */
     @Override
     public String toString() {
         return value;

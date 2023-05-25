@@ -35,10 +35,20 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
     public static final String HEAD_NAME = "\\H";
     public static final String TAIL_NAME = "\\T";
 
+    /**
+     * Justification options for a label.
+     * 
+     * @see <a href="https://graphviz.org/docs/attrs/labeljust/">labeljust</a>
+     */
     public enum Justification {
         LEFT, MIDDLE, RIGHT
     }
 
+    /**
+     * Location options for a label.
+     * 
+     * @see <a href="https://graphviz.org/docs/attrs/labelloc/">labelloc</a>
+     */
     public enum Location {
         TOP, CENTER, BOTTOM
     }
@@ -208,42 +218,116 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
         return hasTags ? html(untagged) : markdown(untagged);
     }
 
+    /**
+     * Returns this label as a head label.
+     * 
+     * @return a head label
+     * 
+     * @see <a href="https://graphviz.org/docs/attrs/headlabel/">headlabel</a>
+     */
     public EndLabel head() {
         return EndLabel.head(this, null, null);
     }
 
+    /**
+     * Returns this label as a head label, with the specified positioning attributes.
+     * 
+     * @param angle angle of rotation
+     * @param distance scaling factor for the distance from the head
+     * @return a head label
+     * 
+     * @see EndLabel#head(SimpleLabel, Double, Double)
+     */
     public EndLabel head(double angle, double distance) {
         return EndLabel.head(this, angle, distance);
     }
 
+    /**
+     * Returns this label as a tail label.
+     * 
+     * @return a tail label
+     * 
+     * @see <a href="https://graphviz.org/docs/attrs/taillabel/">taillabel</a>
+     */
     public EndLabel tail() {
         return EndLabel.tail(this, null, null);
     }
 
+    /**
+     * Returns this label as a tail label, with the specified positioning attributes.
+     * 
+     * @param angle angle of rotation
+     * @param distance scaling factor for the distance from the tail
+     * @return a tail label
+     * 
+     * @see EndLabel#tail(SimpleLabel, Double, Double)
+     */
     public EndLabel tail(double angle, double distance) {
         return EndLabel.tail(this, angle, distance);
     }
 
+    /**
+     * Returns this label as an external label.
+     * 
+     * @return an external label
+     * 
+     * @see <a href="https://graphviz.org/docs/attrs/xlabel/">xlabel</a>
+     */
     public Label external() {
         return new Label(value, html, true, floating, decorated, just, loc);
     }
 
+    /**
+     * Returns this label as a floating label.
+     * 
+     * @return a floating label
+     * 
+     * @see <a href="https://graphviz.org/docs/attrs/labelfloat/">labelfloat</a>
+     */
     public Label floating() {
         return new Label(value, html, external, true, decorated, just, loc);
     }
 
+    /**
+     * Returns this label as a decorating label for an edge.
+     * 
+     * @return a decorating label
+     * 
+     * @see <a href="https://graphviz.org/docs/attrs/decorate/">decorate</a>
+     */
     public Label decorated() {
         return new Label(value, html, external, floating, true, just, loc);
     }
 
+    /**
+     * Modifies justification for this label.
+     * 
+     * @param just a justification option
+     * @return a new label with the specified justification
+     * 
+     * @see <a href="https://graphviz.org/docs/attrs/labeljust/">labeljust</a>
+     */
     public Label justify(Justification just) {
         return new Label(value, html, external, floating, decorated, just, loc);
     }
 
+    /**
+     * Modifies location of this label, relative to the graph element.
+     * 
+     * @param just a location option
+     * @return a new label with the specified location
+     * 
+     * @see <a href="https://graphviz.org/docs/attrs/labelloc/">labelloc</a>
+     */
     public Label locate(Location loc) {
         return new Label(value, html, external, floating, decorated, just, loc);
     }
 
+    /**
+     * Determines whether this label is an external label.
+     * 
+     * @return {@code true} if this label is an external label
+     */
     public boolean isExternal() {
         return external;
     }
@@ -272,6 +356,7 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
         return attributes;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -291,11 +376,13 @@ public final class Label extends SimpleLabel implements Attributes<ForAll> {
                 && loc == label.loc;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), external, floating, decorated, just, loc);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return value;
